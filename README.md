@@ -2,7 +2,7 @@
 
 Game Name : Orbital
 
-Team Name : Aeri
+Team Name : TehPengNoIce
 
 Class/Section : CSD1451 Section B
 
