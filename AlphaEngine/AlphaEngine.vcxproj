@@ -16,6 +16,7 @@
     <ProjectGuid>{21ce79b3-c4c7-4541-8806-a936390bae1b}</ProjectGuid>
     <RootNamespace>AlphaEngine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Orbital</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -100,6 +101,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="main_menu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="masterlist.h" />

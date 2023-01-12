@@ -1,3 +1,4 @@
+/*-------------------------------------------------- Masterlist --------------------------------------------------*/
 #include "AEEngine.h"
 
 struct player
@@ -15,6 +16,7 @@ struct player
 	double current_capacity; // probably can shorten
 	double max_capacity;
 	double texture;
+	double velocity;
 };
 
 // e.g
@@ -71,7 +73,7 @@ struct planets
 
 struct drones
 {
-	double list[i];
+	//double list[i];
 	double x_pos;
 	double y_pos;
 	double size;
@@ -84,7 +86,7 @@ struct drones
 
 struct spaceStn
 {
-	double list[i];
+	//double list[i];
 	double x_pos;
 	double y_pos;
 	double size;
@@ -94,7 +96,7 @@ struct spaceStn
 	double texture;
 };
 
-struct Shop //walmart
+struct shop //walmart
 {
 	double x_pos;
 	double y_pos;
@@ -108,4 +110,68 @@ struct Shop //walmart
 	double button_capacity_y_pos;
 	double upgrade_speed;
 	double upgrade_strength;
+	double upgrade_capacity;
 };
+
+//typedef struct audio
+//{
+//	bgm;
+//	planet_spawn;
+//	planet_selected;
+//	player_thrusters_acceleration;
+//	player_thrusters_deceleration;
+//	player_planet_lock;
+//	player_planet_orbit;
+//	player_beam;
+//	player_beam_levitating;
+//	player_beam_cancelled;
+//	drone_valid;
+//	drone_invalid;
+//	drone_orbit;
+//	drone_beam;
+//	debris_hovering;
+//	shuttle_spawn;
+//	shuttle_countdown;
+//	shuttle_blastoff;
+//	spaceStn_valid;
+//	spaceStn_invalid;
+//	spaceStn_selected;
+//	shop_open;
+//	shop_close;
+//	shop_buy;
+//	shop_cancel;
+//
+//};
+
+
+/*-------------------------------------------------- General Formulas --------------------------------------------------*/
+/* ---------- Player's Velocity ----------*/
+//#define player.velocity = 00.0;
+//#define player.speed = 00.0;
+//#define shop.upgrade_speed = 0.00;
+//
+//#define player.velocity += player.speed * shop.upgrade_speed * dt; //  have yet to do dt
+//
+///* ---------- Player's Strength ----------*/
+//#define player.strength = 0.00;
+//#define shop.upgrade_strength = 0.00;
+//
+//#define player.strength = player.strength * shop.upgrade_strength;
+//
+///* ---------- Player's Capacity ----------*/
+//#define player.capacity = 0.00;
+//#define shop.upgrade_capacity = 0.00;
+//
+//#define player.capacity = player.capcaity + shop.upgrade_capacity; 
+//
+///* ---------- Player's Credit ----------*/
+//#define player.credit = 0.00;
+//#define shuttle.value = 0.00;
+//#define drone.value = 0.00;
+//#define spaceStn.value = 0.00;
+//
+//#define player.credit += shuttle.value + drone.value + spaceStn.value;
+//
+//// main menu
+//constexpr auto window_width = 1000;
+//constexpr auto window_height = 1000;

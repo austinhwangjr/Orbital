@@ -2,6 +2,7 @@
 // includes
 
 #include "AEEngine.h"
+#include "masterlist.h"
 
 
 
@@ -25,7 +26,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	AESysInit(hInstance, nCmdShow, 800, 600, 1, 60, true, NULL);
 
 	// Changing the window title
-	AESysSetWindowTitle("My New Demo!");
+	AESysSetWindowTitle("Orbital");
 
 	// reset the system modules
 	AESysReset();
