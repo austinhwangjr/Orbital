@@ -56,8 +56,22 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	// load texture
 	AEGfxTexture* pTex = AEGfxTextureLoad("Assets/PlanetTexture.png");
+	AEGfxTexture* playerTex = AEGfxTextureLoad("Assets/test-player.png");
 
 	f32 planet_x = 100.f, planet_y = 100.f;
+	f32 secondplanet_x = 200.f, secondplanet_y = 250.f;
+
+	f32 radius = 75.f;
+	f32 angle = 0.f;
+	f32 player_speed_scale = 5.f;
+
+	AEVec2 player_pos;
+	player_pos.x = planet_x;
+	player_pos.y = planet_y;
+
+	bool free_fly = false;
+	bool can_leave_orbit = true;
+
 
 	// TEST END
 
@@ -72,24 +86,73 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 		// Your own update logic goes here
 		
-		if (AEInputCheckCurr(AEVK_W)) {
+		AEVec2 planet_pos;
+		planet_pos.x = 1;
+		planet_pos.y = 0;
 
-			planet_y += 5.f;
+		if (player_pos.x <= AEGfxGetWinMinX() - 10) player_pos.x = AEGfxGetWinMinX() - 10;
+		else if (player_pos.x >= AEGfxGetWinMaxX() + 10) player_pos.x = AEGfxGetWinMaxX() + 10;
+		if (player_pos.y <= AEGfxGetWinMinY() - 10) player_pos.y = AEGfxGetWinMinY() - 10;
+		else if (player_pos.y >= AEGfxGetWinMaxY() + 10) player_pos.y = AEGfxGetWinMaxY() + 10;
+
+		if (free_fly == false) {
+			player_pos.x = radius * AECos(AEDegToRad(angle));
+			player_pos.y = radius * AESin(AEDegToRad(angle));
+
+			if (AEInputCheckCurr(AEVK_A)) {
+
+				angle += 3.f;
+			}
+
+			if (AEInputCheckCurr(AEVK_D)) {
+
+				angle -= 3.f;
+			}
+
+			if (AEInputCheckPrev(AEVK_W)) {
+				can_leave_orbit = false;
+			}
+			else can_leave_orbit = true;
+			if (AEInputCheckCurr(AEVK_W) && can_leave_orbit) {
+
+				player_pos.x *= 1.6f;
+				player_pos.y *= 1.6f;
+
+				free_fly = true;
+			}
 		}
 
-		if (AEInputCheckCurr(AEVK_A)) {
+		else if (free_fly) {
 
-			planet_x -= 5.f;
-		}
+			AEVec2 player_dir_vector;
+			player_dir_vector.x = AECos(AEDegToRad(angle));
+			player_dir_vector.y = AESin(AEDegToRad(angle));
+			AEVec2Normalize(&player_dir_vector, &player_dir_vector);
 
-		if (AEInputCheckCurr(AEVK_S)) {
+			if (AEInputCheckCurr(AEVK_W)) {
+				player_pos.x += player_dir_vector.x * player_speed_scale;
+				player_pos.y += player_dir_vector.y * player_speed_scale;
+			}
 
-			planet_y -= 5.f;
-		}
+			if (AEInputCheckCurr(AEVK_A)) {
 
-		if (AEInputCheckCurr(AEVK_D)) {
+				angle += player_speed_scale;
+			}
 
-			planet_x += 5.f;
+			if (AEInputCheckCurr(AEVK_S)) {
+				player_pos.x -= player_dir_vector.x * player_speed_scale;
+				player_pos.y -= player_dir_vector.y * player_speed_scale;
+			}
+
+			if (AEInputCheckCurr(AEVK_D)) {
+
+				angle -= player_speed_scale;
+			}
+
+			if (AEVec2Distance(&planet_pos, &player_pos) <= radius) {
+				angle = AERadToDeg(atan2(player_pos.y, player_pos.x));
+				free_fly = false;
+			}
 		}
 
 
@@ -125,7 +188,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		// Create a translation matrix that translates by 
 		// 100 in the x-axis and 100 in the y-axis 
 		AEMtx33 translate = { 0 }; 
-		AEMtx33Trans(&translate, planet_x, planet_y);
+		AEMtx33Trans(&translate, 0.f, 0.f);
 		
 		// Concat the matrices (TRS) 
 		AEMtx33 transform = { 0 }; 
@@ -137,6 +200,21 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		
 		// Actually drawing the mesh
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+
+		/*--------------------------------------------------------------------------*/
+		// 'Player' Orbit around test planet
+		AEGfxTextureSet(playerTex, 0, 0);
+		AEMtx33Scale(&scale, 20.f, 20.f);
+		AEMtx33Rot(&rotate, AEDegToRad(angle) + PI / 2);
+		AEMtx33Trans(&translate, player_pos.x, player_pos.y);
+
+		AEMtx33Concat(&transform, &rotate, &scale);
+		AEMtx33Concat(&transform, &translate, &transform);
+
+		AEGfxSetTransform(transform.m);
+
+		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+		/*--------------------------------------------------------------------------*/
 
 		// TEST END
 
@@ -153,6 +231,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	// free texture (TEXT)
 	AEGfxTextureUnload(pTex);
+	AEGfxTextureUnload(playerTex);
 
 	// free the system
 	AESysExit();
