@@ -1,5 +1,8 @@
 // ---------------------------------------------------------------------------
 // includes
+#pragma once
+
+
 
 #include "AEEngine.h"
 #include "masterlist.h"
@@ -23,7 +26,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// Initialization of your own variables go here
 
 	// Using custom window procedure
-	AESysInit(hInstance, nCmdShow, 800, 600, 1, 60, true, NULL);
+	AESysInit(hInstance, nCmdShow, window_width, window_height, 0, 60, true, NULL);
 
 	// Changing the window title
 	AESysSetWindowTitle("Orbital");
@@ -58,6 +61,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// load texture
 	AEGfxTexture* pTex = AEGfxTextureLoad("Assets/PlanetTexture.png");
 	AEGfxTexture* playerTex = AEGfxTextureLoad("Assets/test-player.png");
+	//AEGfxTexture* start_test = AEGfxTextureLoad("Assets/start_test.png");
 
 	f32 planet_x = 100.f, planet_y = 100.f;
 	f32 secondplanet_x = 200.f, secondplanet_y = 250.f;

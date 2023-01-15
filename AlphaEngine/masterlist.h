@@ -1,4 +1,6 @@
 /*-------------------------------------------------- Masterlist --------------------------------------------------*/
+#pragma once
+
 #include "AEEngine.h"
 
 struct player
@@ -173,5 +175,5 @@ struct shop //walmart
 //#define player.credit += shuttle.value + drone.value + spaceStn.value;
 //
 //// main menu
-//constexpr auto window_width = 1000;
-//constexpr auto window_height = 1000;
+constexpr auto window_width = 1600;
+constexpr auto window_height = 800;
