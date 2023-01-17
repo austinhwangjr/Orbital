@@ -15,39 +15,46 @@ Technology is prohibited.
 /* End Header **************************************************************************/
 #include "pch.h"
 #include "GameStateManager.h"
+#include "MainMenu.h"
 #include "MainLevel.h"
 
-int current = 0, previous = 0, next = 0;
+unsigned int current_state, previous_state, next_state;
 
-FP fpLoad = nullptr, fpInitialize = nullptr, fpUpdate = nullptr, fpDraw = nullptr, fpFree = nullptr, fpUnload = nullptr;
+FP fpLoad = nullptr, fpInit = nullptr, fpUpdate = nullptr, fpDraw = nullptr, fpFree = nullptr, fpUnload = nullptr;
 
 // ----------------------------------------------------------------------------
 // Initialize the Game State Manager
 // Set current, previous and next game state to be equal to starting state
 // ----------------------------------------------------------------------------
-void gsm_initialize(int startingState)
+void gsm::init(int start_state)
 {
-	current = previous = next = startingState;
+	current_state = previous_state = next_state = start_state;
 }
 
 // ----------------------------------------------------------------------------
 // Update the Game State Manager
 // Switch states depending on current state
 // ----------------------------------------------------------------------------
-void gsm_update()
+void gsm::update()
 {
 	// Depending on current state, assign function pointers to corresponding state
-	switch (current)
+	switch (current_state)
 	{
-	case GS_MAINLEVEL:		
-		fpLoad = main_level_load;
-		fpInitialize = main_level_initialize;
-		fpUpdate = main_level_update;
-		fpDraw = main_level_draw;
-		fpFree = main_level_free;
-		fpUnload = main_level_unload;
-		break;
 	case GS_MAINMENU:
+		fpLoad		= main_menu::load;
+		fpInit		= main_menu::init;
+		fpUpdate	= main_menu::update;
+		fpDraw		= main_menu::draw;
+		fpFree		= main_menu::free;
+		fpUnload	= main_menu::unload;
+		break;
+	case GS_MAINLEVEL:
+		fpLoad		= main_level::load;
+		fpInit		= main_level::init;
+		fpUpdate	= main_level::update;
+		fpDraw		= main_level::draw;
+		fpFree		= main_level::free;
+		fpUnload	= main_level::unload;
 		break;
 	case GS_RESTART:
 		break;

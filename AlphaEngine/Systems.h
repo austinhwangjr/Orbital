@@ -1,6 +1,6 @@
 /* Start Header ************************************************************************/
 /*!
-\file		System.h
+\file		Systems.h
 \author		Hwang Jing Rui, Austin, jingruiaustin.hwang, 2200601
 \par		jingruiaustin.hwang\@digipen.edu
 \date		Jan 14, 2023
@@ -13,7 +13,13 @@ without the prior written consent of DigiPen Institute of
 Technology is prohibited.
 */
 /* End Header **************************************************************************/
-#pragma once
 
-void system_initialize(_In_ HINSTANCE hInstance, _In_ int nCmdShow);
-void system_exit();
+namespace system_call
+{
+	//void load();
+	void init(_In_ HINSTANCE hInstance, _In_ int nCmdShow);
+	//void update();
+	//void draw();
+	//void free();
+	void unload();
+}

@@ -1,6 +1,6 @@
 /* Start Header ************************************************************************/
 /*!
-\file		System.cpp
+\file		Systems.cpp
 \author		Hwang Jing Rui, Austin, jingruiaustin.hwang, 2200601
 \par		jingruiaustin.hwang\@digipen.edu
 \date		Jan 14, 2023
@@ -14,28 +14,25 @@ Technology is prohibited.
 */
 /* End Header **************************************************************************/
 #include "pch.h"
-#include "System.h"
+#include "Systems.h"
+#include "Global.h"
 
 // ----------------------------------------------------------------------------
 // This function initializes the system
 // ----------------------------------------------------------------------------
-void system_initialize(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
+void system_call::init(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
 {
-	// Using custom window procedure
-	AESysInit(hInstance, nCmdShow, 1600, 900, 1, 60, true, NULL);
-
-	// Changing the window title
-	AESysSetWindowTitle("Orbital");
-
-	// reset the system modules
-	AESysReset();
+	AESysInit(hInstance, nCmdShow, g_windowWidth, g_windowHeight, g_consoleOff, 60, true, NULL);										// Using custom window procedure
+	AESysSetWindowTitle("Orbital");																										// Changing the window title
+	AESysReset();																														// reset the system modules
 }
 
 // ----------------------------------------------------------------------------
 // This function terminates the system
 // ----------------------------------------------------------------------------
-void system_exit()
+void system_call::unload()
 {
 	// free the system
 	AESysExit();
 }
+

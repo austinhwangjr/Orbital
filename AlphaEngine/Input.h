@@ -13,6 +13,7 @@ without the prior written consent of DigiPen Institute of
 Technology is prohibited.
 */
 /* End Header **************************************************************************/
-#pragma once
+
 
 void input_handle();
+

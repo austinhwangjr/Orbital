@@ -51,7 +51,7 @@ f64 current_time{}, elapsed_time{};
 // It should be called once before the start of the level
 // It loads assets like textures, meshes and music files, etc�
 // ----------------------------------------------------------------------------
-void main_level_load()
+void main_level::load()
 {
 	// load texture
 	pTex = AEGfxTextureLoad("Assets/PlanetTexture.png");
@@ -63,7 +63,7 @@ void main_level_load()
 // It should be called once after loading the level
 // It loads game objects (e.g. player, enemy, ...)
 // ----------------------------------------------------------------------------
-void main_level_initialize()
+void main_level::init()
 {
 	// create mesh
 	// Pointer to Mesh
@@ -117,7 +117,7 @@ void main_level_initialize()
 // It should be called once in the game loop after updating the input status
 // It updates game logic/behaviour
 // ----------------------------------------------------------------------------
-void main_level_update()
+void main_level::update()
 {
 	// Informing the system about the loop's start
 	AESysFrameStart();
@@ -232,12 +232,12 @@ void main_level_update()
 		elapsed_time = 0;
 	}
 	if (AEInputCheckTriggered(AEVK_R))
-		next = GS_RESTART;
+		next_state = GS_RESTART;
 	
 
 	// check if forcing the application to quit
 	if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
-		next = GS_QUIT;
+		next_state = GS_QUIT;
 		//gGameRunning = 0;
 }
 
@@ -246,7 +246,7 @@ void main_level_update()
 // It should be called once after updating the level
 // It renders game objects (e.g. player, enemy, ...)
 // ----------------------------------------------------------------------------
-void main_level_draw()
+void main_level::draw()
 {
 	// Your own rendering logic goes here
 
@@ -325,7 +325,7 @@ void main_level_draw()
 // This function cleans the game objects instances in Level1
 // It should be called once after the game loop ends
 // ----------------------------------------------------------------------------
-void main_level_free()
+void main_level::free()
 {
 	AEGfxMeshFree(pMesh);
 }
@@ -334,7 +334,7 @@ void main_level_free()
 // This function frees the memory allocated in Level1
 // It should be called once when the state is to be terminated
 // ----------------------------------------------------------------------------
-void main_level_unload()
+void main_level::unload()
 {
 	delete[] planet_list;
 	delete[] trans_x_array;

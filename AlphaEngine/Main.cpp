@@ -5,7 +5,7 @@
 
 #include "pch.h"
 #include "GameStateManager.h"
-#include "System.h"
+#include "Systems.h"
 #include "Input.h"
 
 
@@ -21,42 +21,29 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
-	//int gGameRunning = 1;
-	// 
-	// Initialization of your own variables go here
+	system_call::init(hInstance, nCmdShow);																		// Initialize the system
 
-	// Using custom window procedure
-	//AESysInit(hInstance, nCmdShow, 800, 600, 1, 60, true, NULL);
-
-	// Changing the window title
-	//AESysSetWindowTitle("Orbital");
-
-	// reset the system modules
-	//AESysReset();
-
-	system_initialize(hInstance, nCmdShow);			// Initialize the system
-
-	gsm_initialize(GS_MAINLEVEL);	// Initialize the Game State Manager (GSM) with Level1 as the initial game state
+	gsm::init(GS_MAINLEVEL);																					// Initialize the Game State Manager (GSM) with Level1 as the initial game state
 
 	// While the current game state is not equal to the quit state
-	while (current != GS_QUIT)
+	while (current_state != GS_QUIT)
 	{
 		// If the current game state is not equal to the restart state
-		if (current != GS_RESTART)
+		if (current_state != GS_RESTART)
 		{
-			gsm_update();       // Call Update() to update game state manager
+			gsm::update();       // Call Update() to update game state manager
 			fpLoad();           // Call Load() to load current game state
 		}
 		else
 		{
-			next = previous;    // Set next game state to be equal to previous game state
-			current = previous; // Set current game state to be equal to previous game state
+			next_state = previous_state;    // Set next game state to be equal to previous game state
+			current_state = previous_state; // Set current game state to be equal to previous game state
 		}
 
-		fpInitialize();         // Initialize current game state
+		fpInit();         // Initialize current game state
 
 		// The game loop (while the next game state is equal to the current state)
-		while (next == current)
+		while (next_state == current_state)
 		{
 			input_handle();     // Update input status
 			fpUpdate();         // Update current game state
@@ -66,16 +53,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		fpFree();               // Free current game state
 
 		// If next game state is not equal to restart game state
-		if (next != GS_RESTART)
+		if (next_state != GS_RESTART)
 		{
 			fpUnload();         // Unload() current game state
 		}
 
-		previous = current;     // Set previous game state to be equal to current game state
-		current = next;         // Set current game state to be equal to next game state
+		previous_state = current_state;     // Set previous game state to be equal to current game state
+		current_state = next_state;         // Set current game state to be equal to next game state
 	}
 
-	system_exit();              // Systems exit (terminate)
+	system_call::unload();              // Systems exit (terminate)
 
 
 

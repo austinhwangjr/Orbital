@@ -13,11 +13,14 @@ without the prior written consent of DigiPen Institute of
 Technology is prohibited.
 */
 /* End Header **************************************************************************/
-#pragma once
 
-void main_level_load();
-void main_level_initialize();
-void main_level_update();
-void main_level_draw();
-void main_level_free();
-void main_level_unload();
+
+namespace main_level
+{
+	void load();
+	void init();
+	void update();
+	void draw();
+	void free();
+	void unload();
+}
