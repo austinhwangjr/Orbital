@@ -26,17 +26,17 @@ AEGfxTexture* playerTex;
 AEGfxVertexList* pMesh;
 
 // test variables
-f32 planet_x = 100.f, planet_y = 100.f;
-f32 secondplanet_x = 200.f, secondplanet_y = 250.f;
+f32 planet_x, planet_y;
+f32 secondplanet_x, secondplanet_y;
 
-f32 radius = 75.f;
-f32 angle = 0.f;
-f32 player_speed_scale = 5.f;
+f32 radius;
+f32 angle;
+f32 player_speed_scale;
 
 AEVec2 player_pos;
 
-bool free_fly = false;
-bool can_leave_orbit = true;
+bool free_fly;
+bool can_leave_orbit;
 
 AEMtx33* planet_list;
 f32* trans_x_array;
@@ -49,7 +49,7 @@ f64 current_time{}, elapsed_time{};
 // ----------------------------------------------------------------------------
 // This function loads all necessary assets in Level1
 // It should be called once before the start of the level
-// It loads assets like textures, meshes and music files, etc…
+// It loads assets like textures, meshes and music files, etcï¿½
 // ----------------------------------------------------------------------------
 void main_level_load()
 {
@@ -97,6 +97,16 @@ void main_level_initialize()
 	// Saving the mesh (list of triangles) in pMesh 
 	pMesh = AEGfxMeshEnd();
 
+	// variables
+	planet_x = 100.f, planet_y = 100.f;
+	secondplanet_x = 200.f, secondplanet_y = 250.f;
+
+	radius = 75.f;
+	angle = 0.f;
+	player_speed_scale = 5.f;
+
+	free_fly = false;
+	can_leave_orbit = true;
 
 	player_pos.x = planet_x;
 	player_pos.y = planet_y;
@@ -221,6 +231,9 @@ void main_level_update()
 		if (planet_iterator < 10) planet_iterator++;
 		elapsed_time = 0;
 	}
+	if (AEInputCheckTriggered(AEVK_R))
+		next = GS_RESTART;
+	
 
 	// check if forcing the application to quit
 	if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
