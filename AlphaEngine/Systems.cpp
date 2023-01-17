@@ -22,7 +22,7 @@ Technology is prohibited.
 // ----------------------------------------------------------------------------
 void system_call::init(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
 {
-	AESysInit(hInstance, nCmdShow, g_windowWidth, g_windowHeight, g_consoleOff, 60, true, NULL);										// Using custom window procedure
+	AESysInit(hInstance, nCmdShow, g_windowWidth, g_windowHeight, g_consoleOn, 60, true, NULL);										// Using custom window procedure
 	AESysSetWindowTitle("Orbital");																										// Changing the window title
 	AESysReset();																														// reset the system modules
 }

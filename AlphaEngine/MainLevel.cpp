@@ -22,6 +22,7 @@ int g_game_running;
 
 AEGfxTexture* pTex;
 AEGfxTexture* playerTex;
+AEGfxTexture* starttest;
 
 AEGfxVertexList* pMesh;
 
@@ -56,6 +57,7 @@ void main_level::load()
 	// load texture
 	pTex = AEGfxTextureLoad("Assets/PlanetTexture.png");
 	playerTex = AEGfxTextureLoad("Assets/test-player.png");
+	starttest = AEGfxTextureLoad("Assets/start_test.png");
 }
 
 // ----------------------------------------------------------------------------
@@ -316,6 +318,19 @@ void main_level::draw()
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 	/*--------------------------------------------------------------------------*/
 	// TEST END
+
+	// 'Player' Orbit around test planet
+	AEGfxTextureSet(starttest, 0, 0);
+	AEMtx33Scale(&scale, 100.f, 100.f);
+	AEMtx33Rot(&rotate, AEDegToRad(angle) + PI / 2);
+	AEMtx33Trans(&translate, player_pos.x, player_pos.y);
+
+	AEMtx33Concat(&transform, &rotate, &scale);
+	AEMtx33Concat(&transform, &translate, &transform);
+
+	AEGfxSetTransform(transform.m);
+
+	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
 	// Informing the system about the loop's end
 	AESysFrameEnd();
