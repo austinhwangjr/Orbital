@@ -40,16 +40,16 @@ void gsm::update()
 	// Depending on current state, assign function pointers to corresponding state
 	switch (current_state)
 	{
-	//case GS_MAINMENU:
-	//	fpLoad		= main_menu::load;
-	//	fpInit		= main_menu::init;
-	//	fpUpdate	= main_menu::update;
-	//	fpDraw		= main_menu::draw;
-	//	fpFree		= main_menu::free;
-	//	fpUnload	= main_menu::unload;
+	case GS_MAINMENU:
+		fpLoad		= main_menu::load;
+		fpInit		= main_menu::init;
+		fpUpdate	= main_menu::update;
+		fpDraw		= main_menu::draw;
+		fpFree		= main_menu::free;
+		fpUnload	= main_menu::unload;
 		//void DrawSprite(AEGfxTexture * texture, float posX, float posY, float degree, float alpha, float xPixelSize, float yPixelSize);
 		//void DrawMapSprite(float dt);
-		//break;
+		break;
 	case GS_MAINLEVEL:
 		fpLoad		= main_level::load;
 		fpInit		= main_level::init;
