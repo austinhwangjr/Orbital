@@ -1,6 +1,6 @@
 /*-------------------------------------------------- Main Menu --------------------------------------------------*/
 #include "AEEngine.h"
-#include "masterlist.h"
+#include "GameObjects.h"
 
 void main_menu_load()
 {

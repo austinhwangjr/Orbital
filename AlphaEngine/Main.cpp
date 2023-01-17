@@ -1,8 +1,12 @@
 // ---------------------------------------------------------------------------
 // includes
 
-#include "AEEngine.h"
-#include "masterlist.h"
+#include "GameObjects.h"
+
+#include "pch.h"
+#include "GameStateManager.h"
+#include "System.h"
+#include "Input.h"
 
 
 
@@ -17,9 +21,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
-
-	int gGameRunning = 1;
-
+	//int gGameRunning = 1;
+	// 
 	// Initialization of your own variables go here
 
 	// Using custom window procedure
@@ -31,8 +34,67 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// reset the system modules
 	AESysReset();
 
+	//system_initialize();			// Initialize the system
+
+	gsm_initialize(GS_MAINLEVEL);	// Initialize the Game State Manager (GSM) with Level1 as the initial game state
+
+	// While the current game state is not equal to the quit state
+	while (current != GS_QUIT)
+	{
+		// If the current game state is not equal to the restart state
+		if (current != GS_RESTART)
+		{
+			gsm_update();       // Call Update() to update game state manager
+			fpLoad();           // Call Load() to load current game state
+		}
+		else
+		{
+			next = previous;    // Set next game state to be equal to previous game state
+			current = previous; // Set current game state to be equal to previous game state
+		}
+
+		fpInitialize();         // Initialize current game state
+
+		// The game loop (while the next game state is equal to the current state)
+		while (next == current)
+		{
+			input_handle();     // Update input status
+			fpUpdate();         // Update current game state
+			fpDraw();           // Render current game state
+		}
+
+		fpFree();               // Free current game state
+
+		// If next game state is not equal to restart game state
+		if (next != GS_RESTART)
+		{
+			fpUnload();         // Unload() current game state
+		}
+
+		previous = current;     // Set previous game state to be equal to current game state
+		current = next;         // Set current game state to be equal to next game state
+	}
+
+	system_exit();              // Systems exit (terminate)
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+	
+
 	//TEST START
-	// create mesh
+	/*// create mesh
 	// Pointer to Mesh
 	AEGfxVertexList * pMesh = 0;
 	
@@ -53,13 +115,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		-0.5f, 0.5f, 0xFFFFFFFF, 0.0f, 1.0f);
 
 	// Saving the mesh (list of triangles) in pMesh 
-	pMesh = AEGfxMeshEnd();
+	pMesh = AEGfxMeshEnd();*/
 
 	// load texture
-	AEGfxTexture* pTex = AEGfxTextureLoad("Assets/PlanetTexture.png");
-	AEGfxTexture* playerTex = AEGfxTextureLoad("Assets/test-player.png");
+	/*AEGfxTexture* pTex = AEGfxTextureLoad("Assets/PlanetTexture.png");
+	AEGfxTexture* playerTex = AEGfxTextureLoad("Assets/test-player.png");*/
 
-	f32 planet_x = 100.f, planet_y = 100.f;
+	/*f32 planet_x = 100.f, planet_y = 100.f;
 	f32 secondplanet_x = 200.f, secondplanet_y = 250.f;
 
 	f32 radius = 75.f;
@@ -71,13 +133,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	player_pos.y = planet_y;
 
 	bool free_fly = false;
-	bool can_leave_orbit = true;
+	bool can_leave_orbit = true;*/
 
 
 	// TEST END
 
 	// Game Loop
-	while (gGameRunning)
+	/*while (gGameRunning)
 	{
 		// Informing the system about the loop's start
 		AESysFrameStart();
@@ -200,10 +262,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		AEGfxSetTransform(transform.m);
 		
 		// Actually drawing the mesh
-		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);*/
 
 		/*--------------------------------------------------------------------------*/
-		// 'Player' Orbit around test planet
+		/*// 'Player' Orbit around test planet
 		AEGfxTextureSet(playerTex, 0, 0);
 		AEMtx33Scale(&scale, 20.f, 20.f);
 		AEMtx33Rot(&rotate, AEDegToRad(angle) + PI / 2);
@@ -214,26 +276,26 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 		AEGfxSetTransform(transform.m);
 
-		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);*/
 		/*--------------------------------------------------------------------------*/
 
 		// TEST END
 
 		// Informing the system about the loop's end
-		AESysFrameEnd();
+		/*AESysFrameEnd();
 
 		// check if forcing the application to quit
 		if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
 			gGameRunning = 0;
-	}
+	}*/
 
 	// free mesh (TEST)
-	AEGfxMeshFree(pMesh);
+	/*AEGfxMeshFree(pMesh);
 
 	// free texture (TEXT)
 	AEGfxTextureUnload(pTex);
-	AEGfxTextureUnload(playerTex);
+	AEGfxTextureUnload(playerTex);*/
 
 	// free the system
-	AESysExit();
+	//AESysExit();
 }
