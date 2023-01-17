@@ -4,6 +4,8 @@
 #include "Global.h"
 #include "GameStateManager.h"
 #include "Graphics.h"
+#include "SplashScreen.h"
+
 
 
 //void DrawSprite(AEGfxTexture* texture, float posX, float posY, float degree, float alpha, float xPixelSize, float yPixelSize)
