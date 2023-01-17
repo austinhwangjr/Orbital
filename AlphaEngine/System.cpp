@@ -22,7 +22,7 @@ Technology is prohibited.
 void system_initialize(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
 {
 	// Using custom window procedure
-	AESysInit(hInstance, nCmdShow, 800, 600, 1, 60, true, NULL);
+	AESysInit(hInstance, nCmdShow, 1600, 900, 1, 60, true, NULL);
 
 	// Changing the window title
 	AESysSetWindowTitle("Orbital");

@@ -15,7 +15,8 @@ Technology is prohibited.
 /* End Header **************************************************************************/
 #include "pch.h"
 #include "GameStateManager.h"
-#include "MainLEvel.h"
+#include "MainLevel.h"
+#include <cmath>
 
 int g_game_running;
 
@@ -36,6 +37,14 @@ AEVec2 player_pos;
 
 bool free_fly = false;
 bool can_leave_orbit = true;
+
+AEMtx33* planet_list;
+f32* trans_x_array;
+f32* trans_y_array;
+int x_max, y_max;
+int planet_iterator{};
+f64* pTime;
+f64 current_time{}, elapsed_time{};
 
 // ----------------------------------------------------------------------------
 // This function loads all necessary assets in Level1
@@ -59,6 +68,15 @@ void main_level_initialize()
 	// create mesh
 	// Pointer to Mesh
 	pMesh = 0;
+
+	// Ryan's stuff
+	srand(50);
+	trans_x_array = new f32[10];
+	trans_y_array = new f32[10];
+	planet_list = new AEMtx33[10];
+	planet_iterator = current_time = elapsed_time = 0;
+	pTime = nullptr;
+	x_max = 1400, y_max = 700;
 
 	// Informing the library that we're about to start adding triangles 
 	AEGfxMeshStart();
@@ -93,6 +111,8 @@ void main_level_update()
 {
 	// Informing the system about the loop's start
 	AESysFrameStart();
+	current_time += AEFrameRateControllerGetFrameTime();
+	elapsed_time += AEFrameRateControllerGetFrameTime();
 
 	// Handling Input
 	AEInputUpdate();
@@ -169,8 +189,38 @@ void main_level_update()
 	}
 
 	
+	if (elapsed_time >= 1 && planet_iterator < 10)
+	{
+		f32 trans_x{}, trans_y{};
+		AEMtx33 scale{};
+		AEMtx33 rotate{};
+		AEMtx33 translate{};
+		AEMtx33 transform{};
+		AEMtx33Scale(&scale, 100.f, 100.f);
+		AEMtx33Rot(&rotate, PI / 4);
 
-	
+		trans_x = static_cast<f32>(rand() % (x_max + 1) - x_max / 2);
+		trans_y = static_cast<f32>(rand() % (y_max + 1) - y_max / 2);
+
+		for (int i{}; i < planet_iterator; i++)
+		{
+			if (abs(trans_x_array[i] - trans_x) < 70 || abs(trans_y_array[i] - trans_y) < 70)
+			{
+				trans_x = static_cast<f32>(rand() % (x_max + 1) - x_max / 2);
+				trans_y = static_cast<f32>(rand() % (y_max + 1) - y_max / 2);
+				i = 0;
+			}
+		}
+
+		AEMtx33Trans(&translate, trans_x, trans_y);
+		AEMtx33Concat(&transform, &rotate, &scale);
+		AEMtx33Concat(&transform, &translate, &transform);
+		planet_list[planet_iterator] = transform;
+		trans_x_array[planet_iterator] = trans_x;
+		trans_y_array[planet_iterator] = trans_y;
+		if (planet_iterator < 10) planet_iterator++;
+		elapsed_time = 0;
+	}
 
 	// check if forcing the application to quit
 	if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
@@ -205,6 +255,14 @@ void main_level_draw()
 
 	// Set the texture to pTex 
 	AEGfxTextureSet(pTex, 0, 0);
+
+
+	for (int i{}; i < planet_iterator; i++)
+	{
+		AEGfxSetTransform(planet_list[i].m);
+		// Actually drawing the mesh
+		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	}
 
 	// Create a scale matrix that scales by 100 x and y 
 	AEMtx33 scale = { 0 };
@@ -265,6 +323,10 @@ void main_level_free()
 // ----------------------------------------------------------------------------
 void main_level_unload()
 {
+	delete[] planet_list;
+	delete[] trans_x_array;
+	delete[] trans_y_array;
+
 	// free texture (TEXT)
 	AEGfxTextureUnload(pTex);
 	AEGfxTextureUnload(playerTex);

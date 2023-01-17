@@ -100,7 +100,6 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="csd1130_gsm.cpp" />
     <ClCompile Include="GameStateManager.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Main.cpp" />

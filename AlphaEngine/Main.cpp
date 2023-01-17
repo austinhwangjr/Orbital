@@ -26,15 +26,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// Initialization of your own variables go here
 
 	// Using custom window procedure
-	AESysInit(hInstance, nCmdShow, 800, 600, 1, 60, true, NULL);
+	//AESysInit(hInstance, nCmdShow, 800, 600, 1, 60, true, NULL);
 
 	// Changing the window title
-	AESysSetWindowTitle("Orbital");
+	//AESysSetWindowTitle("Orbital");
 
 	// reset the system modules
-	AESysReset();
+	//AESysReset();
 
-	//system_initialize();			// Initialize the system
+	system_initialize(hInstance, nCmdShow);			// Initialize the system
 
 	gsm_initialize(GS_MAINLEVEL);	// Initialize the Game State Manager (GSM) with Level1 as the initial game state
 
