@@ -1,5 +1,6 @@
-#include "Global.h"										//Variable Declaration
+#include "Global.h"										
 #include "AEEngine.h"
+
 
 bool g_consoleOn = true;
 bool g_consoleOff = false;
