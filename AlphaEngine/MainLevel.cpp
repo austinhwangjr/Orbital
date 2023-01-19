@@ -47,6 +47,7 @@ int planet_iterator{};
 f64* pTime;
 f64 current_time{}, elapsed_time{};
 
+
 // ----------------------------------------------------------------------------
 // This function loads all necessary assets in Level1
 // It should be called once before the start of the level

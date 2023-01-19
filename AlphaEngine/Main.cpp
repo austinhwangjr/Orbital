@@ -23,8 +23,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	system_call::init(hInstance, nCmdShow);																		// Initialize the system
 
-	gsm::init(GS_MAINMENU);
-	//gsm::init(GS_MAINLEVEL);																					// Initialize the Game State Manager (GSM) with Level1 as the initial game state
+	//gsm::init(GS_MAINMENU);
+	gsm::init(GS_MAINLEVEL);																					// Initialize the Game State Manager (GSM) with Level1 as the initial game state
 
 	// While the current game state is not equal to the quit state
 	while (current_state != GS_QUIT)
