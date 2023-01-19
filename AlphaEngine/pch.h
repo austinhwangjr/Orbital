@@ -17,6 +17,7 @@ Technology is prohibited.
 
 #include "GameStateList.h"
 #include "AEEngine.h"
+#include "GameObjects.h"
 //#include <iostream>
 //#include <iomanip>
 //#include <fstream>
