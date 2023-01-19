@@ -5,9 +5,9 @@
 #include "masterlist.h"
 
 
-
 // ---------------------------------------------------------------------------
 // main
+
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -17,7 +17,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
-
+	
 	int gGameRunning = 1;
 
 	// Initialization of your own variables go here
@@ -32,16 +32,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	AESysReset();
 
 	//TEST START
-	// create mesh
-	// Pointer to Mesh
 	AEGfxVertexList * pMesh = 0;
-	
-	// Informing the library that we're about to start adding triangles 
 	AEGfxMeshStart();
-	
-	// This shape has 2 triangles that makes up a square
-	// Color parameters represent colours as ARGB
-	// UV coordinates to read from loaded textures
 	AEGfxTriAdd(
 		-0.5f, -0.5f, 0xFFFF00FF, 0.0f, 0.0f, 
 		0.5f, -0.5f, 0xFFFFFF00, 1.0f, 0.0f, 
@@ -58,13 +50,69 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// load texture
 	AEGfxTexture* pTex = AEGfxTextureLoad("Assets/PlanetTexture.png");
 	AEGfxTexture* playerTex = AEGfxTextureLoad("Assets/test-player.png");
+	AEGfxTexture* debrisTex = AEGfxTextureLoad("Assets/Debris.png");
 
 	f32 planet_x = 100.f, planet_y = 100.f;
 	f32 secondplanet_x = 200.f, secondplanet_y = 250.f;
 
-	f32 radius = 75.f;
+	f32 radius = 90.f;
 	f32 angle = 0.f;
 	f32 player_speed_scale = 5.f;
+
+	
+	/*--------------------------------------------------------------------------*/
+	/*
+	f32 debris_x = 70.f, debris_y = 70.f;		//starting position for debris spawn
+	f32 debris_scale_x = 15.f;					// Scale of debris in x-axis
+	f32 debris_scale_y = 15.f;					// Scale of debris in y-axis
+	int debris_angle = 1;						// debris rotation angle (rotate on the spot) 
+	f32 debris_turning_angle = 0.f;				// debris orbit angle (rotate around the planet)
+	AEVec2 debris_pos;							// debris position
+	debris_pos.x = debris_x;					
+	debris_pos.y = debris_y;
+	f32 debris_turning_speed = 0.125;			//debris turning speed
+	f32 debris_radius = 70.f;					//debris radius from the planet 
+	*/
+	/*--------------------------------------------------------------------------*/
+
+	// DEBRIS INITIALISATION
+
+	enum { num_stone = 20};					// change the number of stone u want to produce
+	struct debris array[num_stone];
+	AEMtx33 debris_array[num_stone];
+
+	double speed = 0.125f;					// Speed of rotation around the planet
+	int flag = 1;
+	int increase_num = 0;
+
+	for (int i = 0; i < num_stone; i++) {
+		array[i].id = i + 1;
+		array[i].angle = 1;
+		array[i].scale_x = 15.f;
+		array[i].scale_y = 15.f;
+		array[i].angle = 1;
+		array[i].turning_angle = 0.f+(i*50);
+		array[i].position.x = 70.f + (i * 5);
+		array[i].position.y = 70.f - (i * 5);
+		array[i].turning_speed = speed;   
+		array[i].dist_from_planet = 70.f;
+	}
+	
+	AEMtx33 debris_scale{};
+	AEMtx33 debris_rotate{};
+	AEMtx33 debris_translate{};
+	AEMtx33 debris_transform{};
+	for (int i = 0; i < num_stone; i++) {
+		AEMtx33Scale(&debris_scale, array[i].scale_x, array[i].scale_x);
+		AEMtx33Rot(&debris_rotate, array[i].angle);
+		AEMtx33Trans(&debris_translate, array[i].position.x, array[i].position.y);
+		AEMtx33Concat(&debris_transform, &debris_rotate, &debris_scale);
+		AEMtx33Concat(&debris_transform, &debris_translate, &debris_transform);
+		debris_array[i] = debris_transform;
+	}
+	/*--------------------------------------------------------------------------*/
+	
+	
 
 	AEVec2 player_pos;
 	player_pos.x = planet_x;
@@ -184,7 +232,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 		// Create a rotation matrix that rotates by 45 degrees 
 		AEMtx33 rotate = { 0 }; 
-		AEMtx33Rot(&rotate, PI/4);
+		AEMtx33Rot(&rotate, PI / 4);
 		
 		// Create a translation matrix that translates by 
 		// 100 in the x-axis and 100 in the y-axis 
@@ -217,6 +265,36 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 		/*--------------------------------------------------------------------------*/
 
+
+		
+		/*--------------------------------------------------------------------------*/
+		// 'DEBRIS' Orbit around test planet
+		for (int i = 0; i < num_stone; i++) {
+
+			if (gGameRunning) {
+
+				array[i].turning_angle -= array[i].turning_speed;
+			}
+
+			array[i].position.x = (array[i].dist_from_planet) * AECos(AEDegToRad(array[i].turning_angle));
+			array[i].position.y = (array[i].dist_from_planet) * AESin(AEDegToRad(array[i].turning_angle));
+
+
+			AEGfxTextureSet(debrisTex, 0, 0);
+			AEMtx33Scale(&debris_scale, array[i].scale_x, array[i].scale_x);
+			AEMtx33Rot(&debris_rotate, array[i].angle);
+			AEMtx33Trans(&debris_translate, array[i].position.x, array[i].position.y);
+			AEMtx33Concat(&debris_transform, &debris_rotate, &debris_scale);
+			AEMtx33Concat(&debris_transform, &debris_translate, &debris_transform);
+			debris_array[i] = debris_transform;
+			AEGfxSetTransform(debris_array[i].m);
+			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+
+			
+		}
+		/*--------------------------------------------------------------------------*/
+
+
 		// TEST END
 
 		// Informing the system about the loop's end
@@ -233,7 +311,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// free texture (TEXT)
 	AEGfxTextureUnload(pTex);
 	AEGfxTextureUnload(playerTex);
-
+	AEGfxTextureUnload(debrisTex);
 	// free the system
 	AESysExit();
 }
+
+
+
