@@ -40,14 +40,14 @@ void gsm::update()
 	// Depending on current state, assign function pointers to corresponding state
 	switch (current_state)
 	{
-	case GS_SPLASHSCREEN:
+	/*case GS_SPLASHSCREEN:
 		fpLoad = main_menu::load;
-		fpInit = main_menu::init;
-		fpUpdate = main_menu::update;
-		fpDraw = main_menu::draw;
-		fpFree = main_menu::free;
-		fpUnload = main_menu::unload;
-		break;
+		fpInit		= main_menu::init;
+		fpUpdate	= main_menu::update;
+		fpDraw		= main_menu::draw;
+		fpFree		= main_menu::free;
+		fpUnload	= main_menu::unload;
+		break;*/
 	case GS_MAINMENU:
 		fpLoad		= main_menu::load;
 		fpInit		= main_menu::init;

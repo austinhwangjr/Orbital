@@ -17,17 +17,22 @@ Technology is prohibited.
 #include "GameStateManager.h"
 #include "MainLevel.h"
 #include <cmath>
+#include <iostream>
 
 int g_game_running;
 
 AEGfxTexture* pTex;
 AEGfxTexture* playerTex;
 AEGfxTexture* starttest;
+s8 fontID;
+
+// String to print
+//s8* print_string;
 
 AEGfxVertexList* pMesh;
 
 // test variables
-player player;
+Player player;
 AEVec2 player_pos;
 // f32 planet_x, planet_y;
 f32 secondplanet_x, secondplanet_y;
@@ -47,6 +52,8 @@ int planet_iterator{};
 f64* pTime;
 f64 current_time{}, elapsed_time{};
 
+int wave;
+
 
 // ----------------------------------------------------------------------------
 // This function loads all necessary assets in Level1
@@ -59,6 +66,9 @@ void main_level::load()
 	pTex = AEGfxTextureLoad("Assets/PlanetTexture.png");
 	playerTex = AEGfxTextureLoad("Assets/test-player.png");
 	starttest = AEGfxTextureLoad("Assets/start_test.png");
+
+	// Font for text
+	fontID = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
 }
 
 // ----------------------------------------------------------------------------
@@ -80,6 +90,8 @@ void main_level::init()
 	planet_iterator = current_time = elapsed_time = 0;
 	pTime = nullptr;
 	x_max = 1400, y_max = 700;
+
+	wave = 0;
 
 	// Informing the library that we're about to start adding triangles 
 	AEGfxMeshStart();
@@ -120,6 +132,12 @@ void main_level::init()
 // It should be called once in the game loop after updating the input status
 // It updates game logic/behaviour
 // ----------------------------------------------------------------------------
+
+void add_wave() {
+	current_time = 0;
+	wave++;
+}
+
 void main_level::update()
 {
 	// Informing the system about the loop's start
@@ -237,6 +255,16 @@ void main_level::update()
 		if (planet_iterator < 10) planet_iterator++;
 		elapsed_time = 0;
 	}
+
+	// Add new wave
+	std::cout << "Time: " << current_time << ", current wave: " << wave << '\n';
+
+	//print_string = "Time";
+
+	if (current_time >= 5) {
+		add_wave();
+	}
+
 	if (AEInputCheckTriggered(AEVK_R))
 		next_state = GS_RESTART;
 	
@@ -320,11 +348,15 @@ void main_level::draw()
 	AEGfxSetTransform(transform.m);
 
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+
+
+	// DRAW TEXT
+	//AEGfxPrint(fontID, print_string, 0.5f, 0.5f, 1.f, 1.f, 1.f, 1.f);
 	/*--------------------------------------------------------------------------*/
 	// TEST END
 
 	// 'Player' Orbit around test planet
-	AEGfxTextureSet(starttest, 0, 0);
+	/*AEGfxTextureSet(starttest, 0, 0);
 	AEMtx33Scale(&scale, 100.f, 100.f);
 	AEMtx33Rot(&rotate, AEDegToRad(angle) + PI / 2);
 	AEMtx33Trans(&translate, player_pos.x, player_pos.y);
@@ -334,7 +366,7 @@ void main_level::draw()
 
 	AEGfxSetTransform(transform.m);
 
-	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);*/
 
 	// Informing the system about the loop's end
 	AESysFrameEnd();

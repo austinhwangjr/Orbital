@@ -2,7 +2,7 @@
 #pragma once
 #include "AEEngine.h"
 
-struct player
+struct Player
 {
 	double x_pos;
 	double y_pos;
