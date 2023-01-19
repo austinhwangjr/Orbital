@@ -27,14 +27,14 @@ AEGfxTexture* starttest;
 AEGfxVertexList* pMesh;
 
 // test variables
-f32 planet_x, planet_y;
+player player;
+AEVec2 player_pos;
+// f32 planet_x, planet_y;
 f32 secondplanet_x, secondplanet_y;
 
 f32 radius;
 f32 angle;
 f32 player_speed_scale;
-
-AEVec2 player_pos;
 
 bool free_fly;
 bool can_leave_orbit;
@@ -101,8 +101,11 @@ void main_level::init()
 	pMesh = AEGfxMeshEnd();
 
 	// variables
-	planet_x = 100.f, planet_y = 100.f;
+	//planet_x = 100.f, planet_y = 100.f;
 	secondplanet_x = 200.f, secondplanet_y = 250.f;
+
+	player.x_pos = 100.f;
+	player.y_pos = 100.f;
 
 	radius = 75.f;
 	angle = 0.f;
@@ -110,9 +113,6 @@ void main_level::init()
 
 	free_fly = false;
 	can_leave_orbit = true;
-
-	player_pos.x = planet_x;
-	player_pos.y = planet_y;
 }
 
 // ----------------------------------------------------------------------------
@@ -132,18 +132,21 @@ void main_level::update()
 
 	// Your own update logic goes here
 
+	player_pos.x = player.x_pos;
+	player_pos.y = player.y_pos;
+
 	AEVec2 planet_pos;
 	planet_pos.x = 1;
 	planet_pos.y = 0;
 
-	if (player_pos.x <= AEGfxGetWinMinX() - 10) player_pos.x = AEGfxGetWinMinX() - 10;
-	else if (player_pos.x >= AEGfxGetWinMaxX() + 10) player_pos.x = AEGfxGetWinMaxX() + 10;
-	if (player_pos.y <= AEGfxGetWinMinY() - 10) player_pos.y = AEGfxGetWinMinY() - 10;
-	else if (player_pos.y >= AEGfxGetWinMaxY() + 10) player_pos.y = AEGfxGetWinMaxY() + 10;
+	if (player.x_pos <= AEGfxGetWinMinX() - 10) player.x_pos = AEGfxGetWinMinX() - 10;
+	else if (player.x_pos >= AEGfxGetWinMaxX() + 10) player.x_pos = AEGfxGetWinMaxX() + 10;
+	if (player.y_pos <= AEGfxGetWinMinY() - 10) player.y_pos = AEGfxGetWinMinY() - 10;
+	else if (player.y_pos >= AEGfxGetWinMaxY() + 10) player.y_pos = AEGfxGetWinMaxY() + 10;
 
 	if (free_fly == false) {
-		player_pos.x = radius * AECos(AEDegToRad(angle));
-		player_pos.y = radius * AESin(AEDegToRad(angle));
+		player.x_pos = radius * AECos(AEDegToRad(angle));
+		player.y_pos = radius * AESin(AEDegToRad(angle));
 
 		if (AEInputCheckCurr(AEVK_A)) {
 
@@ -161,8 +164,8 @@ void main_level::update()
 		else can_leave_orbit = true;
 		if (AEInputCheckCurr(AEVK_W) && can_leave_orbit) {
 
-			player_pos.x *= 1.6f;
-			player_pos.y *= 1.6f;
+			player.x_pos *= 1.6f;
+			player.y_pos *= 1.6f;
 
 			free_fly = true;
 		}
@@ -176,8 +179,8 @@ void main_level::update()
 		AEVec2Normalize(&player_dir_vector, &player_dir_vector);
 
 		if (AEInputCheckCurr(AEVK_W)) {
-			player_pos.x += player_dir_vector.x * player_speed_scale;
-			player_pos.y += player_dir_vector.y * player_speed_scale;
+			player.x_pos += player_dir_vector.x * player_speed_scale;
+			player.y_pos += player_dir_vector.y * player_speed_scale;
 		}
 
 		if (AEInputCheckCurr(AEVK_A)) {
@@ -186,8 +189,8 @@ void main_level::update()
 		}
 
 		if (AEInputCheckCurr(AEVK_S)) {
-			player_pos.x -= player_dir_vector.x * player_speed_scale;
-			player_pos.y -= player_dir_vector.y * player_speed_scale;
+			player.x_pos -= player_dir_vector.x * player_speed_scale;
+			player.y_pos -= player_dir_vector.y * player_speed_scale;
 		}
 
 		if (AEInputCheckCurr(AEVK_D)) {
@@ -196,7 +199,7 @@ void main_level::update()
 		}
 
 		if (AEVec2Distance(&planet_pos, &player_pos) <= radius) {
-			angle = AERadToDeg(atan2(player_pos.y, player_pos.x));
+			angle = AERadToDeg(atan2(player.y_pos, player.x_pos));
 			free_fly = false;
 		}
 	}
@@ -309,7 +312,7 @@ void main_level::draw()
 	AEGfxTextureSet(playerTex, 0, 0);
 	AEMtx33Scale(&scale, 20.f, 20.f);
 	AEMtx33Rot(&rotate, AEDegToRad(angle) + PI / 2);
-	AEMtx33Trans(&translate, player_pos.x, player_pos.y);
+	AEMtx33Trans(&translate, player.x_pos, player.y_pos);
 
 	AEMtx33Concat(&transform, &rotate, &scale);
 	AEMtx33Concat(&transform, &translate, &transform);
