@@ -44,7 +44,8 @@ f32 player_speed_scale;
 bool free_fly;
 bool can_leave_orbit;
 
-AEMtx33* planet_list;
+#define max_planet 10
+Planets* planet_array{ new Planets[max_planet] };
 f32* trans_x_array;
 f32* trans_y_array;
 int x_max, y_max;
@@ -83,11 +84,12 @@ void main_level::init()
 	pMesh = 0;
 
 	// Ryan's stuff
-	srand(50);
-	trans_x_array = new f32[10];
-	trans_y_array = new f32[10];
-	planet_list = new AEMtx33[10];
-	planet_iterator = current_time = elapsed_time = 0;
+	srand(5);
+	//planet_array = new Planets[max_planet];
+	trans_x_array = new f32[max_planet];
+	trans_y_array = new f32[max_planet];
+	planet_iterator = 0;
+	current_time = elapsed_time = 0.0;
 	pTime = nullptr;
 	x_max = 1400, y_max = 700;
 
@@ -226,19 +228,15 @@ void main_level::update()
 	if (elapsed_time >= 1 && planet_iterator < 10)
 	{
 		f32 trans_x{}, trans_y{};
-		AEMtx33 scale{};
-		AEMtx33 rotate{};
-		AEMtx33 translate{};
-		AEMtx33 transform{};
-		AEMtx33Scale(&scale, 100.f, 100.f);
-		AEMtx33Rot(&rotate, PI / 4);
+		AEMtx33Scale(&planet_array[planet_iterator].scale, 100.f, 100.f);
+		AEMtx33Rot(&planet_array[planet_iterator].rotate, PI / 4);
 
 		trans_x = static_cast<f32>(rand() % (x_max + 1) - x_max / 2);
 		trans_y = static_cast<f32>(rand() % (y_max + 1) - y_max / 2);
 
 		for (int i{}; i < planet_iterator; i++)
 		{
-			if (abs(trans_x_array[i] - trans_x) < 70 || abs(trans_y_array[i] - trans_y) < 70)
+			if (abs(sqrt(pow(trans_y_array[i] - trans_y, 2) + pow(trans_x_array[i] - trans_x, 2)) < 300))
 			{
 				trans_x = static_cast<f32>(rand() % (x_max + 1) - x_max / 2);
 				trans_y = static_cast<f32>(rand() % (y_max + 1) - y_max / 2);
@@ -246,10 +244,9 @@ void main_level::update()
 			}
 		}
 
-		AEMtx33Trans(&translate, trans_x, trans_y);
-		AEMtx33Concat(&transform, &rotate, &scale);
-		AEMtx33Concat(&transform, &translate, &transform);
-		planet_list[planet_iterator] = transform;
+		AEMtx33Trans(&planet_array[planet_iterator].translate, trans_x, trans_y);
+		AEMtx33Concat(&planet_array[planet_iterator].transform, &planet_array[planet_iterator].rotate, &planet_array[planet_iterator].scale);
+		AEMtx33Concat(&planet_array[planet_iterator].transform, &planet_array[planet_iterator].translate, &planet_array[planet_iterator].transform);
 		trans_x_array[planet_iterator] = trans_x;
 		trans_y_array[planet_iterator] = trans_y;
 		if (planet_iterator < 10) planet_iterator++;
@@ -306,7 +303,7 @@ void main_level::draw()
 
 	for (int i{}; i < planet_iterator; i++)
 	{
-		AEGfxSetTransform(planet_list[i].m);
+		AEGfxSetTransform(planet_array[i].transform.m);
 		// Actually drawing the mesh
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 	}
@@ -387,7 +384,7 @@ void main_level::free()
 // ----------------------------------------------------------------------------
 void main_level::unload()
 {
-	delete[] planet_list;
+	delete[] planet_array;
 	delete[] trans_x_array;
 	delete[] trans_y_array;
 

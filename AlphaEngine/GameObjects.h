@@ -52,23 +52,24 @@ struct shuttles
 	double texture;
 };
 
-struct planets
+struct Planets
 {
 	//double list[i];	//isnt using int btr?
+
 	double name; // might not need
-	double x_pos;
-	double y_pos;
-	double size;
-	double shuttle_spawn_x;
-	double shuttle_spawn_y;
-	double shuttle_spawn_vector;
+	AEVec2 position;
+	AEMtx33 scale;
+	AEMtx33 rotate;
+	AEMtx33 translate;
+	AEMtx33 transform;
+	AEVec2 shuttle_spawn_pos;
 	double shuttle_timer; // shuttle countdown time displayed on planet
-	double current_shuttle;
 	double max_shuttle;
-	double current_debris;
+	double current_shuttle;
 	double max_debris;
-	double current_drones;
+	double current_debris;
 	double max_drones;
+	double current_drones;
 	double texture;
 };
 
