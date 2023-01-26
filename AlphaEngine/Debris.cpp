@@ -56,7 +56,6 @@ void debris::init(f32 planet_x_pos, f32 planet_y_pos, float scale_x, float scale
 
 void debris::update(f64 frame_time)
 {
-
 	for (int i = 0; i < num_stone; i++) {
 
 		array[i].turning_angle -= array[i].turning_speed;
