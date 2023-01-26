@@ -1,5 +1,6 @@
 #pragma once
 #define max_planet 10
+#include <vector>
 
 struct Planets
 {
@@ -29,4 +30,5 @@ struct Planets
 	void unload();
 };
 
-extern Planets* planet_array;
+extern std::vector<Planets> planet_vector;
+extern AEGfxTexture* planet_tex;

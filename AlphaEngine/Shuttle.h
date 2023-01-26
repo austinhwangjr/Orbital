@@ -1,4 +1,6 @@
 #pragma once
+#include "AEEngine.h"
+
 struct Shuttles
 {
 	double x_pos;
@@ -10,14 +12,11 @@ struct Shuttles
 	double lifespan;
 	double above_below; //random choice to shrink or increase size when passing by other planet
 	double texture;
-};
 
-namespace shuttles
-{
 	void load();
 	void init();
-	void update();
-	void draw();
+	void update(f64 frame_time);
+	void draw(AEGfxVertexList* pMesh);
 	void free();
 	void unload();
-}
+};
