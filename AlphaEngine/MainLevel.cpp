@@ -18,6 +18,7 @@ Technology is prohibited.
 #include "MainLevel.h"
 #include <cmath>
 #include <iostream>
+#include "Planet.h"
 
 int g_game_running;
 
@@ -44,17 +45,10 @@ f32 player_speed_scale;
 bool free_fly;
 bool can_leave_orbit;
 
-#define max_planet 10
-Planets* planet_array;
-f32* trans_x_array;
-f32* trans_y_array;
-int x_max, y_max;
-int planet_iterator{};
 f64* pTime;
-f64 current_time{}, elapsed_time{};
+f64 current_time{}, frame_time{};
 
 int wave;
-
 
 // ----------------------------------------------------------------------------
 // This function loads all necessary assets in Level1
@@ -84,14 +78,11 @@ void main_level::init()
 	pMesh = 0;
 
 	// Ryan's stuff
-	srand(5);
-	planet_array = new Planets[max_planet];
-	trans_x_array = new f32[max_planet];
-	trans_y_array = new f32[max_planet];
-	planet_iterator = 0;
-	current_time = elapsed_time = 0.0;
+
+	planet::init();
+
+	current_time = 0.0;
 	pTime = nullptr;
-	x_max = 1400, y_max = 700;
 
 	wave = 0;
 
@@ -144,13 +135,17 @@ void main_level::update()
 {
 	// Informing the system about the loop's start
 	AESysFrameStart();
-	current_time += AEFrameRateControllerGetFrameTime();
-	elapsed_time += AEFrameRateControllerGetFrameTime();
 
 	// Handling Input
 	AEInputUpdate();
 
 	// Your own update logic goes here
+	frame_time = AEFrameRateControllerGetFrameTime();
+	current_time += frame_time;
+
+	std::cout << current_time << '\n';
+
+	planet::update(frame_time);
 
 	player_pos.x = player.x_pos;
 	player_pos.y = player.y_pos;
@@ -224,35 +219,6 @@ void main_level::update()
 		}
 	}
 
-	
-	if (elapsed_time >= 1 && planet_iterator < 10)
-	{
-		f32 trans_x{}, trans_y{};
-		AEMtx33Scale(&planet_array[planet_iterator].scale, 100.f, 100.f);
-		AEMtx33Rot(&planet_array[planet_iterator].rotate, PI / 4);
-
-		trans_x = static_cast<f32>(rand() % (x_max + 1) - x_max / 2);
-		trans_y = static_cast<f32>(rand() % (y_max + 1) - y_max / 2);
-
-		for (int i{}; i < planet_iterator; i++)
-		{
-			if (abs(pow(trans_y_array[i] - trans_y, 2) + pow(trans_x_array[i] - trans_x, 2)) < pow(300, 2))
-			{
-				trans_x = static_cast<f32>(rand() % (x_max + 1) - x_max / 2);
-				trans_y = static_cast<f32>(rand() % (y_max + 1) - y_max / 2);
-				i = 0;
-			}
-		}
-
-		AEMtx33Trans(&planet_array[planet_iterator].translate, trans_x, trans_y);
-		AEMtx33Concat(&planet_array[planet_iterator].transform, &planet_array[planet_iterator].rotate, &planet_array[planet_iterator].scale);
-		AEMtx33Concat(&planet_array[planet_iterator].transform, &planet_array[planet_iterator].translate, &planet_array[planet_iterator].transform);
-		trans_x_array[planet_iterator] = trans_x;
-		trans_y_array[planet_iterator] = trans_y;
-		if (planet_iterator < 10) planet_iterator++;
-		elapsed_time = 0;
-	}
-
 	// Add new wave
 	std::cout << "Time: " << current_time << ", current wave: " << wave << '\n';
 
@@ -300,13 +266,7 @@ void main_level::draw()
 	// Set the texture to pTex 
 	AEGfxTextureSet(pTex, 0, 0);
 
-
-	for (int i{}; i < planet_iterator; i++)
-	{
-		AEGfxSetTransform(planet_array[i].transform.m);
-		// Actually drawing the mesh
-		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-	}
+	planet::draw(pMesh);
 
 	// Create a scale matrix that scales by 100 x and y 
 	AEMtx33 scale = { 0 };
@@ -375,6 +335,8 @@ void main_level::draw()
 // ----------------------------------------------------------------------------
 void main_level::free()
 {
+	planet::free();
+
 	AEGfxMeshFree(pMesh);
 }
 
@@ -384,9 +346,7 @@ void main_level::free()
 // ----------------------------------------------------------------------------
 void main_level::unload()
 {
-	delete[] planet_array;
-	delete[] trans_x_array;
-	delete[] trans_y_array;
+	planet::unload();
 
 	// free texture (TEXT)
 	AEGfxTextureUnload(pTex);
