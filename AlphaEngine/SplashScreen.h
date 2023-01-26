@@ -1,3 +1,4 @@
+#pragma once
 namespace splashscreen
 {
 	void load();

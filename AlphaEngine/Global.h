@@ -1,5 +1,5 @@
+#pragma once
 #include "AEEngine.h"	
-
 
 extern bool g_consoleOn;
 extern bool g_consoleOff;

@@ -1,5 +1,4 @@
-
-
+#pragma once
 //namespace graphics
 //{
 //	void load();

@@ -16,13 +16,12 @@ Technology is prohibited.
 #include "pch.h"
 #include "GameStateManager.h"
 #include "MainLevel.h"
+#include "Planet.h"
 #include <cmath>
 #include <iostream>
-#include "Planet.h"
 
 int g_game_running;
 
-AEGfxTexture* pTex;
 AEGfxTexture* playerTex;
 AEGfxTexture* starttest;
 s8 fontID;
@@ -58,7 +57,7 @@ int wave;
 void main_level::load()
 {
 	// load texture
-	pTex = AEGfxTextureLoad("Assets/PlanetTexture.png");
+	planet::load();
 	playerTex = AEGfxTextureLoad("Assets/test-player.png");
 	starttest = AEGfxTextureLoad("Assets/start_test.png");
 
@@ -263,9 +262,6 @@ void main_level::draw()
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxSetTransparency(1.0f);
 
-	// Set the texture to pTex 
-	AEGfxTextureSet(pTex, 0, 0);
-
 	planet::draw(pMesh);
 
 	// Create a scale matrix that scales by 100 x and y 
@@ -349,6 +345,5 @@ void main_level::unload()
 	planet::unload();
 
 	// free texture (TEXT)
-	AEGfxTextureUnload(pTex);
 	AEGfxTextureUnload(playerTex);
 }

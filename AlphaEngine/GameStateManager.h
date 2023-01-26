@@ -1,3 +1,4 @@
+#pragma once
 enum GS_STATES
 {
 	GS_SPLASHSCREEN = 0,

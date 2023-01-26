@@ -2,19 +2,17 @@
 #include "Planet.h"
 #include <cmath>
 
-int x_max, y_max;
-
-f32* trans_x_array;
-f32* trans_y_array;
-
-int planet_count{};
+AEGfxTexture* pTex;
 Planets* planet_array;
+
+int x_max, y_max;
+int planet_count{};
 
 f64 elapsed_time{};
 
 void planet::load()
 {
-
+	pTex = AEGfxTextureLoad("Assets/PlanetTexture.png");
 }
 
 void planet::init()
@@ -22,9 +20,7 @@ void planet::init()
 	srand(5);
 
 	elapsed_time = 0.0;
-	planet_array = new Planets[max_planet];
-	trans_x_array = new f32[max_planet];
-	trans_y_array = new f32[max_planet];
+	planet_array = new Planets[max_planet]{};
 	planet_count = 0;
 	x_max = 1400, y_max = 700;
 }
@@ -45,7 +41,7 @@ void planet::update(f64 frame_time)
 
 		for (int i{}; i < planet_count; i++)
 		{
-			if (abs(pow(trans_y_array[i] - newPlanet.position.y, 2) + pow(trans_x_array[i] - newPlanet.position.x, 2)) < pow(300, 2))
+			if (abs(pow(planet_array[i].position.y - newPlanet.position.y, 2) + pow(planet_array[i].position.x - newPlanet.position.x, 2)) < pow(300, 2))
 			{
 				newPlanet.position.x = static_cast<f32>(rand() % (x_max + 1) - x_max / 2);
 				newPlanet.position.y = static_cast<f32>(rand() % (y_max + 1) - y_max / 2);
@@ -58,9 +54,6 @@ void planet::update(f64 frame_time)
 		AEMtx33Concat(&newPlanet.transform, &newPlanet.translate, &newPlanet.transform);
 
 		planet_array[planet_count] = newPlanet;
-
-		trans_x_array[planet_count] = newPlanet.position.x;
-		trans_y_array[planet_count] = newPlanet.position.y;
 		
 		if (planet_count < 10) planet_count++;
 		elapsed_time = 0;
@@ -69,6 +62,8 @@ void planet::update(f64 frame_time)
 
 void planet::draw(AEGfxVertexList* pMesh)
 {
+	// Set the texture to pTex 
+	AEGfxTextureSet(pTex, 0, 0);
 	for (int i{}; i < planet_count; i++)
 	{
 		AEGfxSetTransform(planet_array[i].transform.m);
@@ -84,7 +79,6 @@ void planet::free()
 
 void planet::unload()
 {
+	AEGfxTextureUnload(pTex);
 	delete[] planet_array;
-	delete[] trans_x_array;
-	delete[] trans_y_array;
 }

@@ -1,3 +1,4 @@
+#pragma once
 /* Start Header ************************************************************************/
 /*!
 \file		Input.h
@@ -13,7 +14,6 @@ without the prior written consent of DigiPen Institute of
 Technology is prohibited.
 */
 /* End Header **************************************************************************/
-
 
 void input_handle();
 

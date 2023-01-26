@@ -1,5 +1,4 @@
 #pragma once
-
 #define max_planet 10
 
 struct Planets
@@ -22,6 +21,8 @@ struct Planets
 	double current_drones;
 	double texture;
 };
+
+extern Planets* planet_array;
 
 namespace planet
 {

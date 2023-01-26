@@ -39,19 +39,6 @@ struct debris
 	
 };
 
-struct shuttles
-{
-	double x_pos;
-	double y_pos;
-	double size;
-	double speed;
-	double vector;
-	double value;
-	double lifespan;
-	double above_below; //random choice to shrink or increase size when passing by other planet
-	double texture;
-};
-
 struct drones
 {
 	//double list[i];
