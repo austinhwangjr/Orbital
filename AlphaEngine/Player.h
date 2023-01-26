@@ -1,21 +1,28 @@
 #pragma once
+#include "Planet.h"
+
+enum PLAYER_STATES
+{
+	PLAYER_ORBIT = 0,
+	PLAYER_FLY
+};
 
 struct Player
 {
-	AEVec2 position;
-	int state;
-	double size;
-	double dist_from_planet;
-	double speed;
-	double angle;
+	AEVec2			position;
+	PLAYER_STATES	state;
+	double			size;
+	double			dist_from_planet;
+	double			speed;
+	f32				angle;
 	//double free; // what is free
-	double beam_str;
-	double beam_width;
-	double current_planet;
-	double current_capacity; // probably can shorten
-	double max_capacity;
-	double texture;
-	double velocity;
+	double			beam_str;
+	double			beam_width;
+	Planets			current_planet;
+	double			current_capacity; // probably can shorten
+	double			max_capacity;
+	double			texture;
+	double			velocity;
 
 
 	void load();

@@ -1,23 +1,19 @@
 #include "AEEngine.h"
 #include "Player.h"
+#include <iostream>
 
 
 AEGfxTexture* playerTex;
 
-Player player;
+extern Player player;
 
 f32 dist_from_planet_centre;
-f32 angle_around_planet;
 f32 player_speed_scale;
-
-enum PLAYER_STATES
-{
-	PLAYER_ORBIT = 0,
-	PLAYER_FLY
-};
 
 bool player_leave_orbit;
 
+// Test for multiple planet check
+f32 shortest_distance;
 
 void Player::load()
 {
@@ -29,14 +25,16 @@ void Player::init()
 {
 	player.position.x = 100.f;
 	player.position.y = 100.f;
+	player.angle = 0.f;
 
 	// variables
 	dist_from_planet_centre = 75.f;
-	angle_around_planet = 0.f;
 	player_speed_scale = 5.f;
 
 	player.state = PLAYER_ORBIT;
 	player_leave_orbit = true;
+
+	shortest_distance = 0.f;
 }
 
 void Player::update(f64 frame_time)
@@ -47,20 +45,21 @@ void Player::update(f64 frame_time)
 	else if (player.position.y >= AEGfxGetWinMaxY() + 10) player.position.y = AEGfxGetWinMaxY() + 10;
 
 
+	// Change player state
 	AEVec2 planet_pos;
 	planet_pos.x = 1;
 	planet_pos.y = 0;
 
 	if (player.state == PLAYER_ORBIT) {
-		player.position.x = dist_from_planet_centre * AECos(AEDegToRad(angle_around_planet));
-		player.position.y = dist_from_planet_centre * AESin(AEDegToRad(angle_around_planet));
+		player.position.x = player.current_planet.position.x + dist_from_planet_centre * AECos(AEDegToRad(player.angle));
+		player.position.y = player.current_planet.position.y + dist_from_planet_centre * AESin(AEDegToRad(player.angle));
 
 		if (AEInputCheckCurr(AEVK_A)) {
-			angle_around_planet += 3.f;
+			player.angle += 3.f;
 		}
 
 		if (AEInputCheckCurr(AEVK_D)) {
-			angle_around_planet -= 3.f;
+			player.angle -= 3.f;
 		}
 
 		if (AEInputCheckPrev(AEVK_W)) {
@@ -69,8 +68,8 @@ void Player::update(f64 frame_time)
 		else player_leave_orbit = true;
 		if (AEInputCheckCurr(AEVK_W) && player_leave_orbit) {
 
-			player.position.x *= 1.6f;
-			player.position.y *= 1.6f;
+			player.position.x = player.current_planet.position.x + ((player.position.x - player.current_planet.position.x) * 1.6f);
+			player.position.y = player.current_planet.position.y + ((player.position.y - player.current_planet.position.y) * 1.6f);
 
 			player.state = PLAYER_FLY;
 		}
@@ -78,9 +77,22 @@ void Player::update(f64 frame_time)
 
 	else if (player.state == PLAYER_FLY) {
 
+		if (planet_vector.size() > 0) {
+
+			player.current_planet = planet_vector[0];
+			shortest_distance = AEVec2Distance(&player.position, &planet_vector[0].position);
+
+			for (size_t i = 1; i < planet_vector.size(); ++i) {
+				if (AEVec2Distance(&player.position, &planet_vector[i].position) < shortest_distance) {
+					player.current_planet = planet_vector[i];
+					shortest_distance = AEVec2Distance(&player.position, &planet_vector[i].position);
+				}
+			}
+		}
+
 		AEVec2 player_dir_vector;
-		player_dir_vector.x = AECos(AEDegToRad(angle_around_planet));
-		player_dir_vector.y = AESin(AEDegToRad(angle_around_planet));
+		player_dir_vector.x = AECos(AEDegToRad(player.angle));
+		player_dir_vector.y = AESin(AEDegToRad(player.angle));
 		AEVec2Normalize(&player_dir_vector, &player_dir_vector);
 
 		if (AEInputCheckCurr(AEVK_W)) {
@@ -90,7 +102,7 @@ void Player::update(f64 frame_time)
 
 		if (AEInputCheckCurr(AEVK_A)) {
 
-			angle_around_planet += player_speed_scale;
+			player.angle += player_speed_scale;
 		}
 
 		if (AEInputCheckCurr(AEVK_S)) {
@@ -100,11 +112,11 @@ void Player::update(f64 frame_time)
 
 		if (AEInputCheckCurr(AEVK_D)) {
 
-			angle_around_planet -= player_speed_scale;
+			player.angle -= player_speed_scale;
 		}
 
-		if (AEVec2Distance(&planet_pos, &player.position) <= dist_from_planet_centre) {
-			angle_around_planet = AERadToDeg(atan2(player.position.y, player.position.x));
+		if (AEVec2Distance(&player.current_planet.position, &player.position) <= dist_from_planet_centre) {
+			player.angle = AERadToDeg(atan2(player.position.y - player.current_planet.position.y, player.position.x - player.current_planet.position.x));
 			player.state = PLAYER_ORBIT;
 		}
 	}
@@ -119,7 +131,7 @@ void Player::draw(AEGfxVertexList* pMesh)
 
 
 	AEMtx33 rotate = { 0 };
-	AEMtx33Rot(&rotate, AEDegToRad(angle_around_planet) + PI / 2);
+	AEMtx33Rot(&rotate, AEDegToRad(player.angle) + PI / 2);
 
 
 	AEMtx33 translate = { 0 };

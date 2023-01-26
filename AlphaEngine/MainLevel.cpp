@@ -24,7 +24,7 @@ Technology is prohibited.
 
 int g_game_running;
 
-AEGfxTexture* pTex;
+extern AEGfxTexture* pTex;
 AEGfxTexture* starttest;
 s8 fontID;
 
@@ -37,7 +37,7 @@ AEGfxVertexList* pMesh;
 f64* pTime;
 f64 total_time{}, frame_time{};
 
-extern Player player;
+Player player;
 
 int wave;
 
@@ -243,7 +243,4 @@ void main_level::unload()
 {
 	planet.unload();
 	player.unload();
-
-	// free texture (TEXT)
-	AEGfxTextureUnload(pTex);
 }
