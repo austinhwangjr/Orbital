@@ -1,11 +1,6 @@
 #include "AEEngine.h"
-#include "GameObjects.h"
-#include "MainMenu.h"
-#include "Global.h"
-#include "GameStateManager.h"
-#include "Graphics.h"
-#include <cmath>
 #include "Planet.h"
+#include <cmath>
 
 int x_max, y_max;
 
