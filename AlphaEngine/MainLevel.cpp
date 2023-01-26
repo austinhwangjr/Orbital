@@ -45,7 +45,7 @@ bool free_fly;
 bool can_leave_orbit;
 
 #define max_planet 10
-Planets* planet_array{ new Planets[max_planet] };
+Planets* planet_array;
 f32* trans_x_array;
 f32* trans_y_array;
 int x_max, y_max;
@@ -85,7 +85,7 @@ void main_level::init()
 
 	// Ryan's stuff
 	srand(5);
-	//planet_array = new Planets[max_planet];
+	planet_array = new Planets[max_planet];
 	trans_x_array = new f32[max_planet];
 	trans_y_array = new f32[max_planet];
 	planet_iterator = 0;
@@ -236,7 +236,7 @@ void main_level::update()
 
 		for (int i{}; i < planet_iterator; i++)
 		{
-			if (abs(sqrt(pow(trans_y_array[i] - trans_y, 2) + pow(trans_x_array[i] - trans_x, 2)) < 300))
+			if (abs(pow(trans_y_array[i] - trans_y, 2) + pow(trans_x_array[i] - trans_x, 2)) < pow(300, 2))
 			{
 				trans_x = static_cast<f32>(rand() % (x_max + 1) - x_max / 2);
 				trans_y = static_cast<f32>(rand() % (y_max + 1) - y_max / 2);
