@@ -46,7 +46,7 @@ bool free_fly;
 bool can_leave_orbit;
 
 f64* pTime;
-f64 current_time{}, frame_time{};
+f64 total_time{}, frame_time{};
 
 int wave;
 
@@ -81,7 +81,7 @@ void main_level::init()
 
 	planet::init();
 
-	current_time = 0.0;
+	total_time = 0.0;
 	pTime = nullptr;
 
 	wave = 0;
@@ -127,7 +127,7 @@ void main_level::init()
 // ----------------------------------------------------------------------------
 
 void add_wave() {
-	current_time = 0;
+	total_time = 0;
 	wave++;
 }
 
@@ -141,9 +141,9 @@ void main_level::update()
 
 	// Your own update logic goes here
 	frame_time = AEFrameRateControllerGetFrameTime();
-	current_time += frame_time;
+	total_time += frame_time;
 
-	std::cout << current_time << '\n';
+	std::cout << total_time << '\n';
 
 	planet::update(frame_time);
 
@@ -220,11 +220,11 @@ void main_level::update()
 	}
 
 	// Add new wave
-	std::cout << "Time: " << current_time << ", current wave: " << wave << '\n';
+	std::cout << "Time: " << total_time << ", current wave: " << wave << '\n';
 
 	//print_string = "Time";
 
-	if (current_time >= 5) {
+	if (total_time >= 5) {
 		add_wave();
 	}
 
