@@ -6,7 +6,7 @@
 enum { num_stone=20 };
 float planet_radius = 50.f;
 float space = 20.f;
-f64 elapsed_time{};
+static f64 elapsed_time{};
 struct Debris array[num_stone];
 AEMtx33 debris_array[num_stone];
 AEGfxTexture* debrisTex;
@@ -56,11 +56,8 @@ void debris::init(f32 planet_x_pos, f32 planet_y_pos, float scale_x, float scale
 
 void debris::update(f64 frame_time)
 {
-	elapsed_time += frame_time;
 
 	for (int i = 0; i < num_stone; i++) {
-
-		
 
 		array[i].turning_angle -= array[i].turning_speed;
 		

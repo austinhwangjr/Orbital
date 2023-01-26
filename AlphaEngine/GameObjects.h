@@ -24,21 +24,6 @@ struct Player
 //player.x_pos = screen / 2;
 //player.y_pos = screen / 2;
 
-struct debris
-{
-	//int debris[i];
-	double x_pos;
-	double y_pos;
-	double size;
-	double dist_from_planet;
-	double speed;
-	double angle;
-	double is_collide;
-	double is_collect;
-	double texture; // maybe 3-5 textures
-	
-};
-
 struct drones
 {
 	//double list[i];

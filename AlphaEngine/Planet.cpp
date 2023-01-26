@@ -10,12 +10,12 @@ int planet_count{};
 
 f64 elapsed_time{};
 
-void planet::load()
+void Planets::load()
 {
 	pTex = AEGfxTextureLoad("Assets/PlanetTexture.png");
 }
 
-void planet::init()
+void Planets::init()
 {
 	srand(5);
 
@@ -25,7 +25,7 @@ void planet::init()
 	x_max = 1400, y_max = 700;
 }
 
-void planet::update(f64 frame_time)
+void Planets::update(f64 frame_time)
 {
 	elapsed_time += frame_time;
 
@@ -60,7 +60,7 @@ void planet::update(f64 frame_time)
 	}
 }
 
-void planet::draw(AEGfxVertexList* pMesh)
+void Planets::draw(AEGfxVertexList* pMesh)
 {
 	// Set the texture to pTex 
 	AEGfxTextureSet(pTex, 0, 0);
@@ -72,12 +72,12 @@ void planet::draw(AEGfxVertexList* pMesh)
 	}
 }
 
-void planet::free()
+void Planets::free()
 {
 
 }
 
-void planet::unload()
+void Planets::unload()
 {
 	AEGfxTextureUnload(pTex);
 	delete[] planet_array;

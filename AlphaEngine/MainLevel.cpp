@@ -49,6 +49,8 @@ f64 total_time{}, frame_time{};
 
 int wave;
 
+Planets planet;
+
 // ----------------------------------------------------------------------------
 // This function loads all necessary assets in Level1
 // It should be called once before the start of the level
@@ -57,7 +59,7 @@ int wave;
 void main_level::load()
 {
 	// load texture
-	planet::load();
+	planet.load();
 	playerTex = AEGfxTextureLoad("Assets/test-player.png");
 	starttest = AEGfxTextureLoad("Assets/start_test.png");
 
@@ -78,7 +80,7 @@ void main_level::init()
 
 	// Ryan's stuff
 
-	planet::init();
+	planet.init();
 
 	total_time = 0.0;
 	pTime = nullptr;
@@ -144,7 +146,7 @@ void main_level::update()
 
 	std::cout << total_time << '\n';
 
-	planet::update(frame_time);
+	planet.update(frame_time);
 
 	player_pos.x = player.x_pos;
 	player_pos.y = player.y_pos;
@@ -262,7 +264,7 @@ void main_level::draw()
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxSetTransparency(1.0f);
 
-	planet::draw(pMesh);
+	planet.draw(pMesh);
 
 	// Create a scale matrix that scales by 100 x and y 
 	AEMtx33 scale = { 0 };
@@ -331,7 +333,7 @@ void main_level::draw()
 // ----------------------------------------------------------------------------
 void main_level::free()
 {
-	planet::free();
+	planet.free();
 
 	AEGfxMeshFree(pMesh);
 }
@@ -342,7 +344,7 @@ void main_level::free()
 // ----------------------------------------------------------------------------
 void main_level::unload()
 {
-	planet::unload();
+	planet.unload();
 
 	// free texture (TEXT)
 	AEGfxTextureUnload(playerTex);

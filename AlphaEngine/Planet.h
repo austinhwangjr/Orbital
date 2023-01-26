@@ -20,16 +20,13 @@ struct Planets
 	double max_drones;
 	double current_drones;
 	double texture;
-};
 
-extern Planets* planet_array;
-
-namespace planet
-{
 	void load();
 	void init();
 	void update(f64 elapsed_time);
 	void draw(AEGfxVertexList* pMesh);
 	void free();
 	void unload();
-}
+};
+
+extern Planets* planet_array;
