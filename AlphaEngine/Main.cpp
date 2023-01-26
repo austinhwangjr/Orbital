@@ -75,9 +75,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	*/
 	/*--------------------------------------------------------------------------*/
 
+	float planet_radius = 50.f;
+	float space = 20.f;
+
 	// DEBRIS INITIALISATION
 
-	enum { num_stone = 20};					// change the number of stone u want to produce
+	enum { num_stone = 30};					// change the number of stone u want to produce
 	struct debris array[num_stone];
 	AEMtx33 debris_array[num_stone];
 
@@ -92,8 +95,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		array[i].scale_y = 15.f;
 		array[i].angle = 1;
 		array[i].turning_angle = 0.f+(i*50);
-		array[i].position.x = 70.f + (i * 5);
-		array[i].position.y = 70.f - (i * 5);
+		array[i].position.x = planet_radius + space + (i * 5);
+		array[i].position.y = planet_radius + space - (i * 5);
 		array[i].turning_speed = speed;   
 		array[i].dist_from_planet = 70.f;
 	}
