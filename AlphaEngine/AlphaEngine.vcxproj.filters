@@ -57,6 +57,9 @@
     <ClCompile Include="SupplyShuttle.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="Debris.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameObjects.h">
@@ -93,6 +96,9 @@
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
     <ClInclude Include="SupplyShuttle.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClCompile>
+    <ClInclude Include="Debris.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
   </ItemGroup>
