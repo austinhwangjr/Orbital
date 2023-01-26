@@ -54,10 +54,13 @@
     <ClCompile Include="Planet.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="SupplyShuttle.cpp">
+    <ClCompile Include="Debris.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="Debris.cpp">
+    <ClCompile Include="Shuttle.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
   </ItemGroup>
@@ -95,10 +98,13 @@
     <ClInclude Include="Planet.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="SupplyShuttle.h">
+    <ClInclude Include="Debris.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="Debris.h">
+    <ClInclude Include="Shuttle.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
   </ItemGroup>
