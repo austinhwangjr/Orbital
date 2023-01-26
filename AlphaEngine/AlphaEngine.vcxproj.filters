@@ -97,7 +97,7 @@
     </ClInclude>
     <ClInclude Include="SupplyShuttle.h">
       <Filter>Header Files\Objects</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="Debris.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
