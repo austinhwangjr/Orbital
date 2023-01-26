@@ -2,27 +2,18 @@
 #pragma once
 #include "AEEngine.h"
 
-struct Player
+struct shuttles
 {
 	double x_pos;
 	double y_pos;
 	double size;
-	double dist_from_planet;
 	double speed;
-	double angle;
-	double free; // what is free
-	double beam_str;
-	double beam_width;
-	double current_planet;
-	double current_capacity; // probably can shorten
-	double max_capacity;
+	double vector;
+	double value;
+	double lifespan;
+	double above_below; //random choice to shrink or increase size when passing by other planet
 	double texture;
-	double velocity;
 };
-
-// e.g
-//player.x_pos = screen / 2;
-//player.y_pos = screen / 2;
 
 struct drones
 {

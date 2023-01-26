@@ -19,10 +19,12 @@ Technology is prohibited.
 #include "Planet.h"
 #include <cmath>
 #include <iostream>
+#include "Planet.h"
+#include "Player.h"
 
 int g_game_running;
 
-AEGfxTexture* playerTex;
+AEGfxTexture* pTex;
 AEGfxTexture* starttest;
 s8 fontID;
 
@@ -32,20 +34,10 @@ s8 fontID;
 AEGfxVertexList* pMesh;
 
 // test variables
-Player player;
-AEVec2 player_pos;
-// f32 planet_x, planet_y;
-f32 secondplanet_x, secondplanet_y;
-
-f32 radius;
-f32 angle;
-f32 player_speed_scale;
-
-bool free_fly;
-bool can_leave_orbit;
-
 f64* pTime;
 f64 total_time{}, frame_time{};
+
+extern Player player;
 
 int wave;
 
@@ -60,7 +52,8 @@ void main_level::load()
 {
 	// load texture
 	planet.load();
-	playerTex = AEGfxTextureLoad("Assets/test-player.png");
+	player.load();
+	
 	starttest = AEGfxTextureLoad("Assets/start_test.png");
 
 	// Font for text
@@ -81,6 +74,7 @@ void main_level::init()
 	// Ryan's stuff
 
 	planet.init();
+	player.init();
 
 	total_time = 0.0;
 	pTime = nullptr;
@@ -105,20 +99,6 @@ void main_level::init()
 
 	// Saving the mesh (list of triangles) in pMesh 
 	pMesh = AEGfxMeshEnd();
-
-	// variables
-	//planet_x = 100.f, planet_y = 100.f;
-	secondplanet_x = 200.f, secondplanet_y = 250.f;
-
-	player.x_pos = 100.f;
-	player.y_pos = 100.f;
-
-	radius = 75.f;
-	angle = 0.f;
-	player_speed_scale = 5.f;
-
-	free_fly = false;
-	can_leave_orbit = true;
 }
 
 // ----------------------------------------------------------------------------
@@ -147,78 +127,7 @@ void main_level::update()
 	std::cout << total_time << '\n';
 
 	planet.update(frame_time);
-
-	player_pos.x = player.x_pos;
-	player_pos.y = player.y_pos;
-
-	AEVec2 planet_pos;
-	planet_pos.x = 1;
-	planet_pos.y = 0;
-
-	if (player.x_pos <= AEGfxGetWinMinX() - 10) player.x_pos = AEGfxGetWinMinX() - 10;
-	else if (player.x_pos >= AEGfxGetWinMaxX() + 10) player.x_pos = AEGfxGetWinMaxX() + 10;
-	if (player.y_pos <= AEGfxGetWinMinY() - 10) player.y_pos = AEGfxGetWinMinY() - 10;
-	else if (player.y_pos >= AEGfxGetWinMaxY() + 10) player.y_pos = AEGfxGetWinMaxY() + 10;
-
-	if (free_fly == false) {
-		player.x_pos = radius * AECos(AEDegToRad(angle));
-		player.y_pos = radius * AESin(AEDegToRad(angle));
-
-		if (AEInputCheckCurr(AEVK_A)) {
-
-			angle += 3.f;
-		}
-
-		if (AEInputCheckCurr(AEVK_D)) {
-
-			angle -= 3.f;
-		}
-
-		if (AEInputCheckPrev(AEVK_W)) {
-			can_leave_orbit = false;
-		}
-		else can_leave_orbit = true;
-		if (AEInputCheckCurr(AEVK_W) && can_leave_orbit) {
-
-			player.x_pos *= 1.6f;
-			player.y_pos *= 1.6f;
-
-			free_fly = true;
-		}
-	}
-
-	else if (free_fly) {
-
-		AEVec2 player_dir_vector;
-		player_dir_vector.x = AECos(AEDegToRad(angle));
-		player_dir_vector.y = AESin(AEDegToRad(angle));
-		AEVec2Normalize(&player_dir_vector, &player_dir_vector);
-
-		if (AEInputCheckCurr(AEVK_W)) {
-			player.x_pos += player_dir_vector.x * player_speed_scale;
-			player.y_pos += player_dir_vector.y * player_speed_scale;
-		}
-
-		if (AEInputCheckCurr(AEVK_A)) {
-
-			angle += player_speed_scale;
-		}
-
-		if (AEInputCheckCurr(AEVK_S)) {
-			player.x_pos -= player_dir_vector.x * player_speed_scale;
-			player.y_pos -= player_dir_vector.y * player_speed_scale;
-		}
-
-		if (AEInputCheckCurr(AEVK_D)) {
-
-			angle -= player_speed_scale;
-		}
-
-		if (AEVec2Distance(&planet_pos, &player_pos) <= radius) {
-			angle = AERadToDeg(atan2(player.y_pos, player.x_pos));
-			free_fly = false;
-		}
-	}
+	player.update(frame_time);
 
 	// Add new wave
 	std::cout << "Time: " << total_time << ", current wave: " << wave << '\n';
@@ -265,6 +174,7 @@ void main_level::draw()
 	AEGfxSetTransparency(1.0f);
 
 	planet.draw(pMesh);
+	player.draw(pMesh);
 
 	// Create a scale matrix that scales by 100 x and y 
 	AEMtx33 scale = { 0 };
@@ -288,20 +198,6 @@ void main_level::draw()
 	AEGfxSetTransform(transform.m);
 
 	// Actually drawing the mesh
-	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-
-	/*--------------------------------------------------------------------------*/
-	// 'Player' Orbit around test planet
-	AEGfxTextureSet(playerTex, 0, 0);
-	AEMtx33Scale(&scale, 20.f, 20.f);
-	AEMtx33Rot(&rotate, AEDegToRad(angle) + PI / 2);
-	AEMtx33Trans(&translate, player.x_pos, player.y_pos);
-
-	AEMtx33Concat(&transform, &rotate, &scale);
-	AEMtx33Concat(&transform, &translate, &transform);
-
-	AEGfxSetTransform(transform.m);
-
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
 
@@ -334,6 +230,7 @@ void main_level::draw()
 void main_level::free()
 {
 	planet.free();
+	player.free();
 
 	AEGfxMeshFree(pMesh);
 }
@@ -345,7 +242,8 @@ void main_level::free()
 void main_level::unload()
 {
 	planet.unload();
+	player.unload();
 
 	// free texture (TEXT)
-	AEGfxTextureUnload(playerTex);
+	AEGfxTextureUnload(pTex);
 }

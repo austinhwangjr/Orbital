@@ -8,5 +8,3 @@ namespace splashscreen
 	void free();
 	void unload();
 }
-
-

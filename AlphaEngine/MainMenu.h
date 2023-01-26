@@ -1,4 +1,5 @@
 #pragma once
+
 namespace main_menu
 {
 	void load();
