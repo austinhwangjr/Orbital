@@ -124,8 +124,6 @@ void main_level::update()
 	frame_time = AEFrameRateControllerGetFrameTime();
 	total_time += frame_time;
 
-	std::cout << total_time << '\n';
-
 	planet.update(frame_time);
 	player.update(frame_time);
 
@@ -198,7 +196,7 @@ void main_level::draw()
 	AEGfxSetTransform(transform.m);
 
 	// Actually drawing the mesh
-	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	//AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
 
 	// DRAW TEXT

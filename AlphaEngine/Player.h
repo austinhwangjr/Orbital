@@ -10,9 +10,10 @@ enum PLAYER_STATES
 struct Player
 {
 	AEVec2			position;
+	AEVec2			direction;
 	PLAYER_STATES	state;
 	double			size;
-	double			dist_from_planet;
+	f32				dist_from_planet;
 	double			speed;
 	f32				angle;
 	//double free; // what is free
