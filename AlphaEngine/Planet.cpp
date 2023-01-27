@@ -1,15 +1,20 @@
 #include "AEEngine.h"
 #include "Planet.h"
 #include <cmath>
+#include "Debris.h"
 
 extern Planets planet;
 AEGfxTexture* planet_tex;
 std::vector<Planets> planet_vector;
+Debris debris_init;
+
+
 
 int x_max, y_max;
 int planet_count{};
 
 f64 elapsed_time{};
+
 
 void Planets::load()
 {
@@ -53,8 +58,12 @@ void Planets::update(f64 frame_time)
 		AEMtx33Concat(&newPlanet.transform, &newPlanet.rotate, &newPlanet.scale);
 		AEMtx33Concat(&newPlanet.transform, &newPlanet.translate, &newPlanet.transform);
 
-		planet_vector.push_back(newPlanet);
 		
+		newPlanet.max_debris = 10;
+		
+		debris_init.create_debris(*newPlanet.debris_vector, newPlanet.max_debris);
+		
+		planet_vector.push_back(newPlanet);
 		if (planet_count < 10) planet_count++;
 		elapsed_time = 0;
 	}

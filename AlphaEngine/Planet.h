@@ -1,11 +1,12 @@
 #pragma once
 #define max_planet 10
+#include "Debris.h"
 #include <vector>
 
 struct Planets
 {
 	//double list[i];	//isnt using int btr?
-
+	std::vector <Debris>* debris_vector{};
 	double name; // might not need
 	AEVec2 position;
 	AEMtx33 scale;
@@ -16,7 +17,7 @@ struct Planets
 	double shuttle_timer; // shuttle countdown time displayed on planet
 	double max_shuttle;
 	double current_shuttle;
-	double max_debris;
+	int max_debris;
 	double current_debris;
 	double max_drones;
 	double current_drones;

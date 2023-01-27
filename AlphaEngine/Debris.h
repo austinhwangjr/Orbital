@@ -1,6 +1,6 @@
 #pragma once
 #include "pch.h"
-
+#include "Planet.h"
 
 struct Debris
 {
@@ -16,14 +16,18 @@ struct Debris
 	double is_collide;
 	double is_collect;
 	double texture; // maybe 3-5 textures
-};
+	AEMtx33 scale;
+	AEMtx33 rotate;
+	AEMtx33 translate;
+	AEMtx33 transform;
 
-namespace debris
-{
+	void create_debris(std::vector <Debris> debris_array, int total_debris);
+
 	void load();
-	void init(f32 planet_x_pos, f32 planet_y_pos, float scale_x, float scale_y, double max_debris);
+	void init();
 	void update(f64 frame_time);
 	void draw(AEGfxVertexList* pMesh);
 	void free();
 	void unload();
-}
+};
+

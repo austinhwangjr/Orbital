@@ -40,7 +40,7 @@ f64 total_time{}, frame_time{};
 Player player;
 
 int wave;
-
+Debris debris;
 Planets planet;
 
 // ----------------------------------------------------------------------------
@@ -75,6 +75,7 @@ void main_level::init()
 
 	planet.init();
 	player.init();
+	//debris.init();
 
 	total_time = 0.0;
 	pTime = nullptr;
@@ -173,6 +174,7 @@ void main_level::draw()
 
 	planet.draw(pMesh);
 	player.draw(pMesh);
+	debris.draw(pMesh);
 
 	// Create a scale matrix that scales by 100 x and y 
 	AEMtx33 scale = { 0 };
@@ -229,6 +231,7 @@ void main_level::free()
 {
 	planet.free();
 	player.free();
+	debris.free();
 
 	AEGfxMeshFree(pMesh);
 }
@@ -241,4 +244,6 @@ void main_level::unload()
 {
 	planet.unload();
 	player.unload();
+	debris.unload();
+
 }
