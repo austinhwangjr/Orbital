@@ -21,7 +21,7 @@ struct Debris
 	AEMtx33 translate;
 	AEMtx33 transform;
 
-	void create_debris(std::vector <Debris> debris_array, int total_debris);
+	//void create_debris(std::vector <Debris> debris_array, int total_debris);
 
 	void load();
 	void init();

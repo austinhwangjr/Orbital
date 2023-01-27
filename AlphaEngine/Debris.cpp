@@ -33,7 +33,7 @@ void Debris::init()
 	float space = 20.f;
 	double speed = 0.125f;
 }
-
+/*
 void Debris::create_debris(std::vector <Debris> debris_array, int total_debris){
 		for (int i = 0; i < total_debris; i++) {
 			debris_array[i].id = i + 1;
@@ -57,8 +57,8 @@ void Debris::create_debris(std::vector <Debris> debris_array, int total_debris){
 			debris_draw_array[i] = debris_transform;
 		}
 }
-
-
+*/
+/*
 
 void Debris::update(f64 frame_time)
 {
@@ -96,6 +96,7 @@ void Debris::draw(AEGfxVertexList* pMesh)
 		}
 	}
 }
+*/
 
 void Debris::free()
 {

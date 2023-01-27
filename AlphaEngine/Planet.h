@@ -6,7 +6,7 @@
 struct Planets
 {
 	//double list[i];	//isnt using int btr?
-	std::vector <Debris>* debris_vector{};
+	//std::vector <Debris>* debris_vector{};
 	double name; // might not need
 	AEVec2 position;
 	AEMtx33 scale;
