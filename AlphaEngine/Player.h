@@ -20,7 +20,7 @@ struct Player
 	double			beam_str;
 	double			beam_width;
 	Planets			current_planet;
-	double			current_capacity; // probably can shorten
+	int				current_capacity; // probably can shorten
 	double			max_capacity;
 	double			texture;
 	double			velocity;

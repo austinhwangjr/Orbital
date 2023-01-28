@@ -1,14 +1,13 @@
 #pragma once
 #include "pch.h"
 
-
 struct Debris
 {
 	int id;
 	AEVec2 position;
 	f32 scale_x;
 	f32 scale_y;
-	int angle;
+	f32 angle;
 	f32 turning_angle;
 	f32 turning_speed;
 	double dist_from_planet;

@@ -20,7 +20,7 @@ enum PLANET_ID
 struct Planets
 {
 	//double list[i];	//isnt using int btr?
-	Debris* debris_arr; //dynamic array of debris
+	std::vector<Debris> debris_arr; //dynamic array of debris
 	AEMtx33* debris_draw_array;
 	//std::vector <Debris>* debris_vector{};
 	int id;
@@ -52,5 +52,5 @@ extern std::vector<Planets> planet_vector;
 extern AEGfxTexture* planet_tex;
 
 
-Debris* create_debris(Planets planet, int total_debris);
-AEMtx33* draw_debris(Planets planet, int total_debris);
+std::vector<Debris> create_debris(Planets planet, int total_debris);
+//AEMtx33* draw_debris(Planets planet, int total_debris);

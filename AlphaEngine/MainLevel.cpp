@@ -80,7 +80,7 @@ void main_level::init()
 	planet.init();
 	player.init();
 	shuttle.init();
-	//debris.init();
+	debris.init();
 
 	total_time = 0.0;
 	pTime = nullptr;
@@ -133,11 +133,11 @@ void main_level::update()
 	planet.update(frame_time);
 	player.update(frame_time);
 	shuttle.update(frame_time);
-
 	debris.update(frame_time);
+
 	
 	// Add new wave
-	std::cout << "Time: " << total_time << ", current wave: " << wave << '\n';
+	//std::cout << "Time: " << total_time << ", current wave: " << wave << '\n';
 
 	//print_string = "Time";
 
@@ -184,7 +184,6 @@ void main_level::draw()
 	player.draw(pMesh);
 	debris.draw(pMesh);
 	shuttle.draw(pMesh);
-	//debris.draw(pMesh);
 	
 	AESysFrameEnd();
 }

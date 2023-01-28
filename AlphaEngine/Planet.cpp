@@ -29,6 +29,9 @@ void Planets::init()
 	planet_spawn_time = 0.0;
 	planet_count = 0;
 	x_max = 1400, y_max = 700;
+
+	// debris
+	current_debris = 0;
 }
 
 void Planets::update(f64 frame_time)
@@ -69,7 +72,7 @@ void Planets::update(f64 frame_time)
 		//new_planet.max_debris = 10;
 		
 		new_planet.max_debris = 10;
-		new_planet.debris_draw_array = draw_debris(new_planet, new_planet.max_debris);
+		//new_planet.debris_draw_array = draw_debris(new_planet, new_planet.max_debris);
 		new_planet.debris_arr = create_debris(new_planet, new_planet.max_debris);
 		
 		planet_vector.push_back(new_planet);
