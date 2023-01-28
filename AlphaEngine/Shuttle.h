@@ -1,17 +1,19 @@
 #pragma once
 #include "AEEngine.h"
+#include <vector>
 
 struct Shuttles
 {
-	double x_pos;
-	double y_pos;
-	double size;
+	AEVec2 position;
+	AEVec2 vector;
+	AEMtx33 scale;
+	AEMtx33 rotate;
+	AEMtx33 translate;
+	AEMtx33 transform;
+	f64 lifespan;
 	double speed;
-	double vector;
 	double value;
-	double lifespan;
-	double above_below; //random choice to shrink or increase size when passing by other planet
-	double texture;
+	bool active;
 
 	void load();
 	void init();
@@ -19,4 +21,9 @@ struct Shuttles
 	void draw(AEGfxVertexList* pMesh);
 	void free();
 	void unload();
+	
+	void spawn(int planet_id);
 };
+
+extern std::vector<Shuttles> shuttle_vector;
+extern AEGfxTexture* shuttle_tex;

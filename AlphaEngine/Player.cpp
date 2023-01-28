@@ -45,8 +45,8 @@ void Player::init()
 	shortest_distance = 0.f;
 
 	// tractor beam
-	beam_x = 0.f;
-	beam_y = 0.f;
+	beam_x = 100.f;
+	beam_y = 100.f;
 }
 
 void Player::update(f64 frame_time)
@@ -154,14 +154,11 @@ void Player::draw(AEGfxVertexList* pMesh)
 	AEMtx33 scale = { 0 };
 	AEMtx33Scale(&scale, 20.f, 20.f);
 
-
 	AEMtx33 rotate = { 0 };
 	AEMtx33Rot(&rotate, AEDegToRad(player.angle) + PI / 2);
 
-
 	AEMtx33 translate = { 0 };
 	AEMtx33Trans(&translate, player.position.x, player.position.y);
-
 
 	AEMtx33 transform = { 0 };
 	AEMtx33Concat(&transform, &rotate, &scale);

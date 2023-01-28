@@ -1,20 +1,21 @@
 #include "AEEngine.h"
 #include "Planet.h"
+#include "Shuttle.h"
 #include <cmath>
 #include "Debris.h"
 
-extern Planets planet;
+Planets planet;
 AEGfxTexture* planet_tex;
 std::vector<Planets> planet_vector;
+
+extern Shuttles shuttle;
+
 Debris debris_init;
-
-
 
 int x_max, y_max;
 int planet_count{};
 
-f64 elapsed_time{};
-
+static f64 planet_spawn_time{};
 
 void Planets::load()
 {
@@ -25,47 +26,72 @@ void Planets::init()
 {
 	srand(5);
 
-	elapsed_time = 0.0;
+	planet_spawn_time = 0.0;
 	planet_count = 0;
 	x_max = 1400, y_max = 700;
 }
 
 void Planets::update(f64 frame_time)
 {
-	elapsed_time += frame_time;
+	planet_spawn_time += frame_time;
 
-	if (elapsed_time >= 2 && planet_count < 10)
+	if (planet_spawn_time >= 2 && planet_count < 10)
 	{
-		Planets newPlanet;
+		Planets new_planet;
 
-		AEMtx33Scale(&newPlanet.scale, 100.f, 100.f);
-		AEMtx33Rot(&newPlanet.rotate, PI / 4);
+		new_planet.id = planet_count;
 
-		newPlanet.position.x = static_cast<f32>(rand() % (x_max + 1) - x_max / 2);
-		newPlanet.position.y = static_cast<f32>(rand() % (y_max + 1) - y_max / 2);
+		AEMtx33Scale(&new_planet.scale, 100.f, 100.f);
+		AEMtx33Rot(&new_planet.rotate, PI / 4);
+
+		new_planet.position.x = static_cast<f32>(rand() % (x_max + 1) - x_max / 2);
+		new_planet.position.y = static_cast<f32>(rand() % (y_max + 1) - y_max / 2);
 
 		for (int i{}; i < planet_count; i++)
 		{
-			if (abs(pow(planet_vector[i].position.y - newPlanet.position.y, 2) + pow(planet_vector[i].position.x - newPlanet.position.x, 2)) < pow(300, 2))
+			if (abs(pow(planet_vector[i].position.y - new_planet.position.y, 2) + pow(planet_vector[i].position.x - new_planet.position.x, 2)) < pow(300, 2))
 			{
-				newPlanet.position.x = static_cast<f32>(rand() % (x_max + 1) - x_max / 2);
-				newPlanet.position.y = static_cast<f32>(rand() % (y_max + 1) - y_max / 2);
+				new_planet.position.x = static_cast<f32>(rand() % (x_max + 1) - x_max / 2);
+				new_planet.position.y = static_cast<f32>(rand() % (y_max + 1) - y_max / 2);
 				i = 0;
 			}
 		}
 
-		AEMtx33Trans(&newPlanet.translate, newPlanet.position.x, newPlanet.position.y);
-		AEMtx33Concat(&newPlanet.transform, &newPlanet.rotate, &newPlanet.scale);
-		AEMtx33Concat(&newPlanet.transform, &newPlanet.translate, &newPlanet.transform);
+		AEMtx33Trans(&new_planet.translate, new_planet.position.x, new_planet.position.y);
+		AEMtx33Concat(&new_planet.transform, &new_planet.rotate, &new_planet.scale);
+		AEMtx33Concat(&new_planet.transform, &new_planet.translate, &new_planet.transform);
 
+		new_planet.shuttle_spawn_timer = 0.0;
+		new_planet.shuttle_time_spawn = 2.0;
+		new_planet.shuttle_spawn_pos.x = new_planet.position.x;
+		new_planet.shuttle_spawn_pos.y = new_planet.position.y;
+
+		//new_planet.max_debris = 10;
 		
-		newPlanet.max_debris = 10;
-		newPlanet.debris_draw_array = draw_debris(newPlanet, newPlanet.max_debris);
-		newPlanet.debris_arr = create_debris(newPlanet, newPlanet.max_debris);
+		new_planet.max_debris = 10;
+		new_planet.debris_draw_array = draw_debris(new_planet, new_planet.max_debris);
+		new_planet.debris_arr = create_debris(new_planet, new_planet.max_debris);
 		
-		planet_vector.push_back(newPlanet);
-		if (planet_count < 10) planet_count++;
-		elapsed_time = 0;
+		planet_vector.push_back(new_planet);
+		if (planet_count < max_planet) planet_count++;
+		planet_spawn_time = 0;
+	}
+
+	for (size_t i{}; i < planet_vector.size(); i++)
+	{
+		if (planet_vector[i].shuttle_spawn_timer > planet_vector[i].shuttle_time_spawn)
+		{
+			planet_vector[i].shuttle_spawn_timer = 0.0;
+		}
+		planet_vector[i].shuttle_spawn_timer += frame_time;
+	}
+
+	for (Planets const &current_planet : planet_vector)
+	{
+		if (current_planet.shuttle_spawn_timer >= current_planet.shuttle_time_spawn)
+		{
+			shuttle.Shuttles::spawn(current_planet.id);
+		}
 	}
 }
 
