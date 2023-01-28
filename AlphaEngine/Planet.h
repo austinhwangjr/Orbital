@@ -6,7 +6,8 @@
 struct Planets
 {
 	//double list[i];	//isnt using int btr?
-	//std::vector <Debris>* debris_vector{};
+	Debris* debris_arr; //dynamic array of debris
+	AEMtx33* debris_draw_array;
 	double name; // might not need
 	AEVec2 position;
 	AEMtx33 scale;
@@ -33,3 +34,7 @@ struct Planets
 
 extern std::vector<Planets> planet_vector;
 extern AEGfxTexture* planet_tex;
+
+
+Debris* create_debris(Planets planet, int total_debris);
+AEMtx33* draw_debris(Planets planet, int total_debris);

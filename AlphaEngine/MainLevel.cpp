@@ -53,6 +53,7 @@ void main_level::load()
 	// load texture
 	planet.load();
 	player.load();
+	debris.load();
 	
 	starttest = AEGfxTextureLoad("Assets/start_test.png");
 
@@ -128,6 +129,8 @@ void main_level::update()
 	planet.update(frame_time);
 	player.update(frame_time);
 
+	debris.update(frame_time);
+	
 	// Add new wave
 	std::cout << "Time: " << total_time << ", current wave: " << wave << '\n';
 
@@ -174,7 +177,7 @@ void main_level::draw()
 
 	planet.draw(pMesh);
 	player.draw(pMesh);
-	//debris.draw(pMesh);
+	debris.draw(pMesh);
 
 	// Create a scale matrix that scales by 100 x and y 
 	AEMtx33 scale = { 0 };

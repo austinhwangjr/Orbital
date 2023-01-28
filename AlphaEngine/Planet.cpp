@@ -59,9 +59,9 @@ void Planets::update(f64 frame_time)
 		AEMtx33Concat(&newPlanet.transform, &newPlanet.translate, &newPlanet.transform);
 
 		
-		//newPlanet.max_debris = 10;
-		
-		//debris_init.create_debris(*newPlanet.debris_vector, newPlanet.max_debris);
+		newPlanet.max_debris = 10;
+		newPlanet.debris_draw_array = draw_debris(newPlanet, newPlanet.max_debris);
+		newPlanet.debris_arr = create_debris(newPlanet, newPlanet.max_debris);
 		
 		planet_vector.push_back(newPlanet);
 		if (planet_count < 10) planet_count++;
