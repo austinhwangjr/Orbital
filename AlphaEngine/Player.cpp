@@ -7,8 +7,6 @@ Player player;
 
 extern std::vector<Planets> planet_vector;
 
-f32 player_speed_scale;
-
 f32* cam_x;
 f32* cam_y;
 
@@ -64,27 +62,28 @@ void Player::load()
 
 void Player::init()
 {
-	player.position.x = 100.f;
-	player.position.y = 100.f;
-	player.angle = 0.f;
+	player.position.x		= 100.f;
+	player.position.y		= 100.f;
+	player.angle			= 0.f;
 	player.current_capacity = 0;
-	player.max_capacity = 5;
+	player.max_capacity		= 5;
 
 	// variables
 	player.dist_from_planet = 90.f;
-	player_speed_scale = 5.f;
+	player.speed			= 3.f;
+	player.speed_upgrade	= 1.0f;
 
-	player.state = PLAYER_FLY;
-	player_leave_orbit = true;
+	player.state			= PLAYER_FLY;
+	player_leave_orbit		= true;
 
-	shortest_distance = 0.f;
+	shortest_distance		= 0.f;
 
 	// tractor beam
-	beam_x = 0.f;
-	beam_y = 0.f;
+	beam_x					= 0.f;
+	beam_y					= 0.f;
 
-	collision_x = 0.f;
-	collision_y = 0.f;
+	collision_x				= 0.f;
+	collision_y				= 0.f;
 
 	// shop icon test
 	ShopOption shop_open{};
@@ -112,11 +111,11 @@ void Player::update(f64 frame_time)
 		player.position.y = player.current_planet.position.y + player.dist_from_planet * AESin(AEDegToRad(player.angle));
 
 		if (AEInputCheckCurr(AEVK_A)) {
-			player.angle += 3.f;
+			player.angle += player.speed;
 		}
 
 		if (AEInputCheckCurr(AEVK_D)) {
-			player.angle -= 3.f;
+			player.angle -= player.speed;
 		}
 
 		if (AEInputCheckPrev(AEVK_W)) {
@@ -150,23 +149,23 @@ void Player::update(f64 frame_time)
 		// INPUT-------------------------------------
 
 		if (AEInputCheckCurr(AEVK_W)) {
-			player.position.x += player.direction.x * player_speed_scale;
-			player.position.y += player.direction.y * player_speed_scale;
+			player.position.x += player.direction.x * player.speed * player.speed_upgrade;
+			player.position.y += player.direction.y * player.speed * player.speed_upgrade;
 		}
 
 		if (AEInputCheckCurr(AEVK_A)) {
 
-			player.angle += player_speed_scale;
+			player.angle += player.speed * player.speed_upgrade;
 		}
 
 		if (AEInputCheckCurr(AEVK_S)) {
-			player.position.x -= player.direction.x * player_speed_scale;
-			player.position.y -= player.direction.y * player_speed_scale;
+			player.position.x -= player.direction.x * player.speed * player.speed_upgrade;
+			player.position.y -= player.direction.y * player.speed * player.speed_upgrade;
 		}
 
 		if (AEInputCheckCurr(AEVK_D)) {
 
-			player.angle -= player_speed_scale;
+			player.angle -= player.speed * player.speed_upgrade;
 		}
 
 		if (AEVec2Distance(&player.current_planet.position, &player.position) <= player.dist_from_planet) {
@@ -203,12 +202,32 @@ void Player::update(f64 frame_time)
 		}
 	}
 
-	else if (button_list.size() == 4) {
-		if ((button_list[0].position.x - button_list[0].size / 2 < mouse_x_actual) && (button_list[0].position.x + button_list[0].size / 2 > mouse_x_actual)) {
-			if ((button_list[0].position.y - button_list[0].size / 2 < mouse_y_actual) && (button_list[0].position.y + button_list[0].size / 2 > mouse_y_actual)) {
-				if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-					for (int i = 0; i < 3; ++i) {
-						button_list.pop_back();
+	else {
+		for (int i = 0; i < button_list.size(); ++i) {
+			if ((button_list[i].position.x - button_list[i].size / 2 < mouse_x_actual) &&
+				(button_list[i].position.x + button_list[i].size / 2 > mouse_x_actual))
+			{
+				if ((button_list[i].position.y - button_list[i].size / 2 < mouse_y_actual) &&
+					(button_list[i].position.y + button_list[i].size / 2 > mouse_y_actual))
+				{
+					if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+						if (button_list[i].button_type == SHOP_OPEN) {
+							for (int i = 0; i < button_list.size() - 1; ++i) {
+								button_list.pop_back();
+							}
+						}
+						else if (button_list[i].button_type == CAPACITY) {
+							if (player.current_capacity > 0) {
+								player.current_capacity--;
+								player.max_capacity++;
+							}
+						}
+						else if (button_list[i].button_type == MOVEMENT_SPEED) {
+							if (player.current_capacity > 1) {
+								player.current_capacity -= 2;
+								player.speed_upgrade += 0.5;
+							}
+						}
 					}
 				}
 			}

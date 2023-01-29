@@ -14,7 +14,8 @@ struct Player
 	PLAYER_STATES	state;
 	double			size;
 	f32				dist_from_planet;
-	double			speed;
+	f32				speed;
+	f32				speed_upgrade;
 	f32				angle;
 	//double free; // what is free
 	double			beam_str;
@@ -24,6 +25,7 @@ struct Player
 	int				max_capacity;
 	double			texture;
 	double			velocity;
+
 
 
 	void load();
