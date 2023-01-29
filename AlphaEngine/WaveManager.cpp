@@ -71,8 +71,8 @@ void WaveManager::update(f64 frame_time)
 	{
 		if (!shuttle_vector[i].active)
 		{
-			std::cout << "Shuttle has escaped!" << '\n';
-			std::cout << get_total_shuttles() - shuttle_escaped << " Shuttle(s) left to escape." << '\n';
+			/*std::cout << "Shuttle has escaped!" << '\n';
+			std::cout << get_total_shuttles() - shuttle_escaped << " Shuttle(s) left to escape." << '\n';*/
 		}
 	}
 
@@ -95,14 +95,14 @@ void WaveManager::update(f64 frame_time)
 		}
 	}
 
-	player_capacity = std::to_string(player.current_capacity);
+	player_capacity = "Capacity: " + std::to_string(player.current_capacity) + " / " + std::to_string(player.max_capacity);
 	print_string = player_capacity.c_str();
 }
 
 void WaveManager::draw(AEGfxVertexList *pMesh)
 {
 	// DRAW TEXT
-	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.75f, 0.75f, 1.f, 1.f, 1.f, 1.f);
+	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.5f, 0.75f, 1.f, 1.f, 1.f, 1.f);
 }
 
 void WaveManager::free()

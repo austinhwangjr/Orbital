@@ -25,22 +25,28 @@ f32 beam_y;
 // Test some variables
 f32 collision_x;
 f32 collision_y;
-AEGfxTexture* Planet_Texture;
 
+extern std::vector<std::vector<Debris>> debris_vector_all;
 
-//AEGfxTexture* debris_tex;
-//std::vector<Debris> debris_vectoray;
+// Print text
+s8 font_id_shop;
+const char* shop_option_name_c_str;
+std::string shop_option_name;
 
 enum BUTTON_TYPE {
 	SHOP_OPEN = 0,
-	SHOP_OPTION
+	CREATE_DRONE,
+	MOVEMENT_SPEED,
+	CAPACITY,
+	TRACTOR_BEAM_STRENGTH,
+	SPACE_STATION
 };
 
 struct ShopOption
 {
 	AEVec2 position;
 	f32 size;
-	BUTTON_TYPE button_type;
+	int button_type;
 };
 AEGfxTexture* shop_icon_tex;
 std::vector<ShopOption> button_list;
@@ -50,11 +56,10 @@ void Player::load()
 	// load texture
 	player_tex = AEGfxTextureLoad("Assets/test-player.png");
 	tractor_beam_tex = AEGfxTextureLoad("Assets/TractorBeam.png");
-
-	Planet_Texture = AEGfxTextureLoad("Assets/PlanetTexture.png");
-
-	//debris_tex = AEGfxTextureLoad("Assets/Debris.png");
 	shop_icon_tex = AEGfxTextureLoad("Assets/YellowTexture.png");
+
+	// Font for text
+	font_id_shop = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 20);
 }
 
 void Player::init()
@@ -63,6 +68,7 @@ void Player::init()
 	player.position.y = 100.f;
 	player.angle = 0.f;
 	player.current_capacity = 0;
+	player.max_capacity = 5;
 
 	// variables
 	player.dist_from_planet = 90.f;
@@ -79,16 +85,6 @@ void Player::init()
 
 	collision_x = 0.f;
 	collision_y = 0.f;
-
-
-	// debris test
-	/*for (int i = 0; i < 10; ++i) {
-		Debris debris_test{};
-
-		debris_test.angle = i * 30;
-
-		debris_vectoray.push_back(debris_test);
-	}*/
 
 	// shop icon test
 	ShopOption shop_open{};
@@ -132,8 +128,8 @@ void Player::update(f64 frame_time)
 			//player.position.x = player.current_planet.position.x + ((player.position.x - player.current_planet.position.x) * 1.6f);
 			//player.position.y = player.current_planet.position.y + ((player.position.y - player.current_planet.position.y) * 1.6f);
 
-			player.position.x += player.direction.x * dist_from_planet;
-			player.position.y += player.direction.y * dist_from_planet;
+			player.position.x += player.direction.x;
+			player.position.y += player.direction.y;
 
 			player.state = PLAYER_FLY;
 		}
@@ -141,23 +137,17 @@ void Player::update(f64 frame_time)
 
 	else if (player.state == PLAYER_FLY) {
 
-		if (planet_vector.size() > 0) {
+		player.current_planet = planet_vector[0];
+		shortest_distance = AEVec2Distance(&player.position, &planet_vector[0].position);
 
-			player.current_planet = planet_vector[0];
-			shortest_distance = AEVec2Distance(&player.position, &planet_vector[0].position);
-
-			for (size_t i = 1; i < planet_vector.size(); ++i) {
-				if (AEVec2Distance(&player.position, &planet_vector[i].position) < shortest_distance) {
-					player.current_planet = planet_vector[i];
-					shortest_distance = AEVec2Distance(&player.position, &planet_vector[i].position);
-				}
+		for (size_t i = 1; i < planet_vector.size(); ++i) {
+			if (AEVec2Distance(&player.position, &planet_vector[i].position) < shortest_distance) {
+				player.current_planet = planet_vector[i];
+				shortest_distance = AEVec2Distance(&player.position, &planet_vector[i].position);
 			}
-
-			// debris test
-			//debris_vectoray[0].position.x = planet_vector[0].position.x + 60;
-			//debris_vectoray[0].position.y = planet_vector[0].position.y;
-			//debris_exist = true;
 		}
+
+		// INPUT-------------------------------------
 
 		if (AEInputCheckCurr(AEVK_W)) {
 			player.position.x += player.direction.x * player_speed_scale;
@@ -189,14 +179,6 @@ void Player::update(f64 frame_time)
 	if (AEInputCheckCurr(AEVK_F)) AEGfxSetCamPosition(player.current_planet.position.x, player.current_planet.position.y);
 	else AEGfxSetCamPosition(0, 0);
 
-	// debris test another one
-	/*if (planet_vector.size() > 0) {
-		for (int i = 0; i < debris_vectoray.size(); ++i) {
-			debris_vectoray[i].position.x = planet_vector[0].position.x + 60 * AECos(AEDegToRad(debris_vectoray[i].angle));
-			debris_vectoray[i].position.y = planet_vector[0].position.y + 60 * AESin(AEDegToRad(debris_vectoray[i].angle));
-		}
-	}*/
-
 	// shop icon test
 	s32 mouse_x, mouse_y;
 	AEInputGetCursorPosition(&mouse_x, &mouse_y);
@@ -212,8 +194,8 @@ void Player::update(f64 frame_time)
 						ShopOption player_upgrade;
 						player_upgrade.size = 80.f;
 						player_upgrade.position.x = button_list[0].position.x - 150;
-						player_upgrade.position.y = (i + 1) * 90;
-						player_upgrade.button_type = SHOP_OPTION;
+						player_upgrade.position.y = button_list[0].position.y - i * 115;
+						player_upgrade.button_type = SHOP_OPEN + i + 1;
 						button_list.push_back(player_upgrade);
 					}
 				}
@@ -238,9 +220,6 @@ void Player::update(f64 frame_time)
 		beam_x = player.position.x - player.direction.x * 20;
 		beam_y = player.position.y - player.direction.y * 20;
 
-		/* = player.position.x - player.direction.x * 30;
-		collision_y = player.position.y - player.direction.y * 30;*/
-
 		// Space between planet and debris to change to proper variable
 		collision_x = player.current_planet.position.x + 70 * AECos(AEDegToRad(player.angle));
 		collision_y = player.current_planet.position.y + 70 * AESin(AEDegToRad(player.angle));
@@ -249,24 +228,16 @@ void Player::update(f64 frame_time)
 		coll_pos.x = collision_x;
 		coll_pos.y = collision_y;
 
-		if (player.current_planet.debris_vector.size() > 0)
+		if (debris_vector_all[player.current_planet.id].size() > 0)
 		{
-			for (int i = 0; i < player.current_planet.debris_vector.size(); ++i) {
-				if (AEVec2Distance(&coll_pos, &player.current_planet.debris_vector[i].position) <= 10) {
-					player.current_planet.debris_vector.erase(player.current_planet.debris_vector.begin() + i);
-					//player.current_planet.debris_vector.pop_back();
+			for (int i = 0; i < debris_vector_all[player.current_planet.id].size(); ++i) {
+				if (player.current_capacity < player.max_capacity && AEVec2Distance(&coll_pos, &debris_vector_all[player.current_planet.id][i].position) <= 10) {
+					debris_vector_all[player.current_planet.id].erase(debris_vector_all[player.current_planet.id].begin() + i);
 					player.current_capacity++;
 					break;
 				}
 			}
 		}
-
-		/*for (int i = 0; i < debris_vector.size(); ++i) {
-			if (AEVec2Distance(&coll_pos, &debris_vector[i].position) <= 10) {
-				debris_vector.erase(debris_vector.begin() + i);
-				player.current_capacity++;
-			}
-		}*/
 	}
 }
 
@@ -291,24 +262,10 @@ void Player::draw(AEGfxVertexList* pMesh)
 
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
-	/*if (debris_vectoray.size() > 0) {
-		for (int i = 0; i < debris_vectoray.size(); ++i) {
-			AEGfxTextureSet(debris_tex, 0, 0);
-			AEMtx33Scale(&scale, 20.f, 20.f);
-			AEMtx33Rot(&rotate, AEDegToRad(player.angle) + PI / 2);
-			AEMtx33Trans(&translate, debris_vectoray[i].position.x, debris_vectoray[i].position.y);
-			AEMtx33Concat(&transform, &rotate, &scale);
-			AEMtx33Concat(&transform, &translate, &transform);
-			AEGfxSetTransform(transform.m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-		}
-	}*/
-
-
 	// tractor beam
 	if (AEInputCheckCurr(AEVK_SPACE) && player.state == PLAYER_ORBIT) {
 		// test collision
-		AEGfxTextureSet(Planet_Texture, 0, 0);
+		AEGfxTextureSet(nullptr, 0, 0);
 		AEMtx33Scale(&scale, 20.f, 20.f);
 		AEMtx33Rot(&rotate, AEDegToRad(player.angle) + PI / 2);
 		AEMtx33Trans(&translate, collision_x, collision_y);
@@ -333,7 +290,7 @@ void Player::draw(AEGfxVertexList* pMesh)
 		if (button_list[i].button_type == SHOP_OPEN) {
 			AEMtx33Scale(&scale, button_list[i].size, button_list[i].size);
 		}
-		else if (button_list[i].button_type == SHOP_OPTION) {
+		else {
 			AEMtx33Scale(&scale, button_list[i].size * 2, button_list[i].size);
 		}
 
@@ -343,6 +300,41 @@ void Player::draw(AEGfxVertexList* pMesh)
 		AEMtx33Concat(&transform, &translate, &transform);
 		AEGfxSetTransform(transform.m);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	}
+
+	// Top box
+	for (int i = 0; i < button_list.size(); ++i) {
+
+		if (button_list[i].button_type == SHOP_OPEN) {
+			shop_option_name = "SHOP";
+			shop_option_name_c_str = shop_option_name.c_str();
+			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_option_name_c_str),
+				(button_list[i].position.x - button_list[i].size / 2) / 800, button_list[i].position.y / 400, 1.f, 0.f, 0.f, 0.f);
+		}
+		else if (button_list[i].button_type == CREATE_DRONE) {
+			AEGfxTextureSet(player_tex, 0, 0);
+			AEMtx33Scale(&scale, 20.f, 20.f);
+			AEMtx33Rot(&rotate, PI);
+			AEMtx33Trans(&translate, button_list[i].position.x, button_list[i].position.y);
+			AEMtx33Concat(&transform, &rotate, &scale);
+			AEMtx33Concat(&transform, &translate, &transform);
+			AEGfxSetTransform(transform.m);
+			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+		}
+
+		else if (button_list[i].button_type == MOVEMENT_SPEED) {
+			shop_option_name = "Movement Speed";
+			shop_option_name_c_str = shop_option_name.c_str();
+			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_option_name_c_str), 
+				(button_list[i].position.x - button_list[i].size) / 800, button_list[i].position.y / 400, 1.f, 0.f, 0.f, 0.f);
+		}
+
+		else if (button_list[i].button_type == CAPACITY) {
+			shop_option_name = "Increase Capacity";
+			shop_option_name_c_str = shop_option_name.c_str();
+			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_option_name_c_str), 
+				(button_list[i].position.x - button_list[i].size) / 800, button_list[i].position.y / 400, 1.f, 0.f, 0.f, 0.f);
+		}
 	}
 }
 
@@ -356,8 +348,8 @@ void Player::unload()
 	AEGfxTextureUnload(player_tex);
 	AEGfxTextureUnload(tractor_beam_tex);
 
-	AEGfxTextureUnload(Planet_Texture);
-
 	//AEGfxTextureUnload(debris_tex);
 	AEGfxTextureUnload(shop_icon_tex);
+
+	AEGfxDestroyFont(font_id_shop);
 }

@@ -134,11 +134,11 @@ void main_level::update()
 	frame_time = AEFrameRateControllerGetFrameTime();
 	total_time += frame_time;
 
+	wave_manager.update(frame_time);
 	planet.update(frame_time);
 	player.update(frame_time);
 	shuttle.update(frame_time);
 	debris.update(frame_time);
-	wave_manager.update(frame_time);
 
 	// Add new wave
 	//std::cout << "Time: " << total_time << ", current wave: " << wave << '\n';

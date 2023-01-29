@@ -7,6 +7,8 @@ Debris debris;
 
 extern std::vector<Planets> planet_vector;
 
+std::vector<std::vector<Debris>> debris_vector_all;
+
 //enum { num_stone=20 };
 float planet_radius = 50.f;
 float space = 20.f;
@@ -30,84 +32,95 @@ void Debris::init()
 
 void Debris::update(f64 frame_time)
 {
-	for (int j = 0; j < planet_vector.size(); j++) {
-		for (size_t i = 0; i < planet_vector[j].debris_vector.size(); i++) {
-			planet_vector[j].debris_vector[i].angle -= 1.f;
+	for (int j = 0; j < debris_vector_all.size(); j++) {
+		for (size_t i = 0; i < debris_vector_all[j].size(); i++) {
+			debris_vector_all[j][i].angle -= 1.f;
 
-			planet_vector[j].debris_vector[i].position.x = planet_vector[j].position.x + (space + planet_radius) * AECos(AEDegToRad(planet_vector[j].debris_vector[i].angle));
-			planet_vector[j].debris_vector[i].position.y = planet_vector[j].position.y + (space + planet_radius) * AESin(AEDegToRad(planet_vector[j].debris_vector[i].angle));
+			debris_vector_all[j][i].position.x = planet_vector[j].position.x + (space + planet_radius) * AECos(AEDegToRad(debris_vector_all[j][i].angle));
+			debris_vector_all[j][i].position.y = planet_vector[j].position.y + (space + planet_radius) * AESin(AEDegToRad(debris_vector_all[j][i].angle));
 
 		}
-		/*for (int i = 0; i < planet_vector[j].max_debris; i++) {
-			
-			planet_vector[j].debris_vector[i].angle -= 3.f;
-
-
-			planet_vector[j].debris_vector[i].position.x = planet_vector[j].position.x + (space+planet_radius) * AECos(AEDegToRad(planet_vector[j].debris_vector[i].angle));
-			planet_vector[j].debris_vector[i].position.y = planet_vector[j].position.y + (space + planet_radius) * AESin(AEDegToRad(planet_vector[j].debris_vector[i].angle));
-
-		}*/
 	}	
 }
 
 void Debris::draw(AEGfxVertexList* pMesh)
 {
 	AEGfxTextureSet(debrisTex, 0, 0);
-	for (size_t j = 0; j < planet_vector.size(); j++) {
-		for (size_t i = 0; i < planet_vector[j].debris_vector.size(); i++) {
+	//for (size_t j = 0; j < planet_vector.size(); j++) {
+	//	for (size_t i = 0; i < planet_vector[j].debris_vector.size(); i++) {
 
-			/*AEMtx33Scale(&planet_vector[j].debris_vector[i].scale, planet_vector[j].debris_vector[i].scale_x, planet_vector[j].debris_vector[i].scale_y);
+	//		/*AEMtx33Scale(&planet_vector[j].debris_vector[i].scale, planet_vector[j].debris_vector[i].scale_x, planet_vector[j].debris_vector[i].scale_y);
 
-			AEMtx33Rot(&planet_vector[j].debris_vector[i].rotate, AEDegToRad(planet_vector[j].debris_vector[i].angle));
+	//		AEMtx33Rot(&planet_vector[j].debris_vector[i].rotate, AEDegToRad(planet_vector[j].debris_vector[i].angle));
 
-			AEMtx33Trans(&planet_vector[j].debris_vector[i].translate, planet_vector[j].debris_vector[i].position.x, planet_vector[j].debris_vector[i].position.y);
+	//		AEMtx33Trans(&planet_vector[j].debris_vector[i].translate, planet_vector[j].debris_vector[i].position.x, planet_vector[j].debris_vector[i].position.y);
 
-			AEMtx33Concat(&planet_vector[j].debris_vector[i].transform, &planet_vector[j].debris_vector[i].rotate, &planet_vector[j].debris_vector[i].scale);
+	//		AEMtx33Concat(&planet_vector[j].debris_vector[i].transform, &planet_vector[j].debris_vector[i].rotate, &planet_vector[j].debris_vector[i].scale);
 
-			AEMtx33Concat(&planet_vector[j].debris_vector[i].transform, &planet_vector[j].debris_vector[i].translate, &planet_vector[j].debris_vector[i].transform);
+	//		AEMtx33Concat(&planet_vector[j].debris_vector[i].transform, &planet_vector[j].debris_vector[i].translate, &planet_vector[j].debris_vector[i].transform);
 
-			planet_vector[j].debris_draw_array[i] = planet_vector[j].debris_vector[i].transform;
+	//		planet_vector[j].debris_draw_array[i] = planet_vector[j].debris_vector[i].transform;
 
-			AEGfxSetTransform(planet_vector[j].debris_draw_array[i].m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);*/
-			if (planet_vector[j].debris_vector[i].active)
+	//		AEGfxSetTransform(planet_vector[j].debris_draw_array[i].m);
+	//		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);*/
+	//		if (planet_vector[j].debris_vector[i].active)
+	//		{
+	//			//AEMtx33 scale = { 0 };
+	//			AEMtx33Scale(&planet_vector[j].debris_vector[i].scale, planet_vector[j].debris_vector[i].scale_x, planet_vector[j].debris_vector[i].scale_y);
+
+	//			//AEMtx33 rotate = { 0 };
+	//			AEMtx33Rot(&planet_vector[j].debris_vector[i].rotate, AEDegToRad(planet_vector[j].debris_vector[i].angle));
+
+	//			//AEMtx33 translate = { 0 };
+	//			AEMtx33Trans(&planet_vector[j].debris_vector[i].translate, planet_vector[j].debris_vector[i].position.x, planet_vector[j].debris_vector[i].position.y);
+
+	//			//AEMtx33 transform = { 0 };
+	//			AEMtx33Concat(&planet_vector[j].debris_vector[i].transform, &planet_vector[j].debris_vector[i].rotate, &planet_vector[j].debris_vector[i].scale);
+	//			AEMtx33Concat(&planet_vector[j].debris_vector[i].transform, &planet_vector[j].debris_vector[i].translate, &planet_vector[j].debris_vector[i].transform);
+
+	//			AEGfxSetTransform(planet_vector[j].debris_vector[i].transform.m);
+
+	//			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	//		}
+	//	}
+	//	/*for (int i = 0; i < planet_vector[j].max_debris; i++) {
+
+
+	//		AEMtx33Scale(&planet_vector[j].debris_vector[i].scale, planet_vector[j].debris_vector[i].scale_x, planet_vector[j].debris_vector[i].scale_y);
+
+	//		AEMtx33Rot(&planet_vector[j].debris_vector[i].rotate, AEDegToRad(planet_vector[j].debris_vector[i].angle));
+
+	//		AEMtx33Trans(&planet_vector[j].debris_vector[i].translate, planet_vector[j].debris_vector[i].position.x, planet_vector[j].debris_vector[i].position.y);
+
+	//		AEMtx33Concat(&planet_vector[j].debris_vector[i].transform, &planet_vector[j].debris_vector[i].rotate, &planet_vector[j].debris_vector[i].scale);
+
+	//		AEMtx33Concat(&planet_vector[j].debris_vector[i].transform, &planet_vector[j].debris_vector[i].translate, &planet_vector[j].debris_vector[i].transform);
+
+	//		planet_vector[j].debris_draw_array[i] = planet_vector[j].debris_vector[i].transform;
+
+	//		AEGfxSetTransform(planet_vector[j].debris_draw_array[i].m);
+	//		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	//	}*/
+	//}
+
+	for (int j = 0; j < debris_vector_all.size(); j++) {
+		for (size_t i = 0; i < debris_vector_all[j].size(); i++) {
+			if (debris_vector_all[j][i].active)
 			{
-				//AEMtx33 scale = { 0 };
-				AEMtx33Scale(&planet_vector[j].debris_vector[i].scale, planet_vector[j].debris_vector[i].scale_x, planet_vector[j].debris_vector[i].scale_y);
+				AEMtx33Scale(&debris_vector_all[j][i].scale, debris_vector_all[j][i].scale_x, debris_vector_all[j][i].scale_y);
 
-				//AEMtx33 rotate = { 0 };
-				AEMtx33Rot(&planet_vector[j].debris_vector[i].rotate, AEDegToRad(planet_vector[j].debris_vector[i].angle));
+				AEMtx33Rot(&debris_vector_all[j][i].rotate, AEDegToRad(debris_vector_all[j][i].angle));
 
-				//AEMtx33 translate = { 0 };
-				AEMtx33Trans(&planet_vector[j].debris_vector[i].translate, planet_vector[j].debris_vector[i].position.x, planet_vector[j].debris_vector[i].position.y);
+				AEMtx33Trans(&debris_vector_all[j][i].translate, debris_vector_all[j][i].position.x, debris_vector_all[j][i].position.y);
 
-				//AEMtx33 transform = { 0 };
-				AEMtx33Concat(&planet_vector[j].debris_vector[i].transform, &planet_vector[j].debris_vector[i].rotate, &planet_vector[j].debris_vector[i].scale);
-				AEMtx33Concat(&planet_vector[j].debris_vector[i].transform, &planet_vector[j].debris_vector[i].translate, &planet_vector[j].debris_vector[i].transform);
+				AEMtx33Concat(&debris_vector_all[j][i].transform, &debris_vector_all[j][i].rotate, &debris_vector_all[j][i].scale);
+				AEMtx33Concat(&debris_vector_all[j][i].transform, &debris_vector_all[j][i].translate, &debris_vector_all[j][i].transform);
 
-				AEGfxSetTransform(planet_vector[j].debris_vector[i].transform.m);
+				AEGfxSetTransform(debris_vector_all[j][i].transform.m);
 
 				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 			}
 		}
-		/*for (int i = 0; i < planet_vector[j].max_debris; i++) {
-
-
-			AEMtx33Scale(&planet_vector[j].debris_vector[i].scale, planet_vector[j].debris_vector[i].scale_x, planet_vector[j].debris_vector[i].scale_y);
-
-			AEMtx33Rot(&planet_vector[j].debris_vector[i].rotate, AEDegToRad(planet_vector[j].debris_vector[i].angle));
-
-			AEMtx33Trans(&planet_vector[j].debris_vector[i].translate, planet_vector[j].debris_vector[i].position.x, planet_vector[j].debris_vector[i].position.y);
-
-			AEMtx33Concat(&planet_vector[j].debris_vector[i].transform, &planet_vector[j].debris_vector[i].rotate, &planet_vector[j].debris_vector[i].scale);
-
-			AEMtx33Concat(&planet_vector[j].debris_vector[i].transform, &planet_vector[j].debris_vector[i].translate, &planet_vector[j].debris_vector[i].transform);
-
-			planet_vector[j].debris_draw_array[i] = planet_vector[j].debris_vector[i].transform;
-
-			AEGfxSetTransform(planet_vector[j].debris_draw_array[i].m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-		}*/
 	}
 }
 
@@ -144,6 +157,7 @@ std::vector<Debris> Debris::create_debris(f32 planet_x, f32 planet_y, int total_
 
 		debris_vector.push_back(new_debris);
 	}
+	debris_vector_all.push_back(debris_vector);
 
 	/*
 	for (int i = 0; i < total_debris; i++) {
@@ -157,9 +171,3 @@ std::vector<Debris> Debris::create_debris(f32 planet_x, f32 planet_y, int total_
 	*/
 	return debris_vector;
 }
-
-//AEMtx33* draw_debris(Planets planet, int total_debris) {
-//	AEMtx33* arr{ new AEMtx33[total_debris] };
-//
-//	return arr;
-//}
