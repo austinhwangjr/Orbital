@@ -1,5 +1,5 @@
 #pragma once
-#include "pch.h"
+#include <vector>
 
 struct Debris
 {
@@ -7,6 +7,10 @@ struct Debris
 	AEVec2 position;
 	f32 scale_x;
 	f32 scale_y;
+	AEMtx33 scale;
+	AEMtx33 rotate;
+	AEMtx33 translate;
+	AEMtx33 transform;
 	f32 angle;
 	f32 turning_angle;
 	f32 turning_speed;
@@ -15,11 +19,7 @@ struct Debris
 	double is_collide;
 	double is_collect;
 	double texture; // maybe 3-5 textures
-	AEMtx33 scale;
-	AEMtx33 rotate;
-	AEMtx33 translate;
-	AEMtx33 transform;
-
+	bool active;
 
 	void load();
 	void init();
@@ -27,5 +27,8 @@ struct Debris
 	void draw(AEGfxVertexList* pMesh);
 	void free();
 	void unload();
+
+	std::vector<Debris> create_debris(f32 x, f32 y, int total_debris);
 };
 
+extern std::vector<Debris> debris_vector;

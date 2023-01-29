@@ -1,6 +1,7 @@
 #include "AEEngine.h"
 #include "Shuttle.h"
 #include "Planet.h"
+#include "WaveManager.h"
 #include <cmath>
 
 Shuttles shuttle;
@@ -14,7 +15,7 @@ void Shuttles::load()
 
 void Shuttles::init()
 {
-
+	srand(5);
 }
 
 void Shuttles::update(f64 frame_time)
@@ -29,7 +30,6 @@ void Shuttles::update(f64 frame_time)
 			if (shuttle_vector[i].lifespan <= 0)
 			{
 				shuttle_vector[i].active = false;
-				shuttle_vector.erase(shuttle_vector.begin() + i);
 			}
 			shuttle_vector[i].lifespan -= frame_time;
 		}
@@ -58,7 +58,7 @@ void Shuttles::draw(AEGfxVertexList* pMesh)
 
 void Shuttles::free()
 {
-
+	shuttle_vector.clear();
 }
 
 void Shuttles::unload()

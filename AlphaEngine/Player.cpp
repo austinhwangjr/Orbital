@@ -1,12 +1,11 @@
 #include "AEEngine.h"
 #include "Player.h"
 #include <iostream>
-#include <string>
-
 
 AEGfxTexture* player_tex;
+Player player;
 
-extern Player player;
+extern std::vector<Planets> planet_vector;
 
 f32 player_speed_scale;
 
@@ -30,12 +29,7 @@ AEGfxTexture* Planet_Texture;
 
 
 //AEGfxTexture* debris_tex;
-//std::vector<Debris> debris_array;
-
-// Text
-s8 font_id;
-const char* print_string;
-std::string temp;
+//std::vector<Debris> debris_vectoray;
 
 enum BUTTON_TYPE {
 	SHOP_OPEN = 0,
@@ -61,9 +55,6 @@ void Player::load()
 
 	//debris_tex = AEGfxTextureLoad("Assets/Debris.png");
 	shop_icon_tex = AEGfxTextureLoad("Assets/YellowTexture.png");
-
-	// Font for text
-	font_id = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
 }
 
 void Player::init()
@@ -96,7 +87,7 @@ void Player::init()
 
 		debris_test.angle = i * 30;
 
-		debris_array.push_back(debris_test);
+		debris_vectoray.push_back(debris_test);
 	}*/
 
 	// shop icon test
@@ -105,9 +96,6 @@ void Player::init()
 	shop_open.position.x = AEGfxGetWinMaxX() - shop_open.size / 2;
 	shop_open.position.y = AEGfxGetWinMaxY() * 2 / 3;
 	button_list.push_back(shop_open);
-
-	temp = std::to_string(player.current_capacity);
-	print_string = temp.c_str();
 }
 
 void Player::update(f64 frame_time)
@@ -166,8 +154,8 @@ void Player::update(f64 frame_time)
 			}
 
 			// debris test
-			//debris_array[0].position.x = planet_vector[0].position.x + 60;
-			//debris_array[0].position.y = planet_vector[0].position.y;
+			//debris_vectoray[0].position.x = planet_vector[0].position.x + 60;
+			//debris_vectoray[0].position.y = planet_vector[0].position.y;
 			//debris_exist = true;
 		}
 
@@ -203,9 +191,9 @@ void Player::update(f64 frame_time)
 
 	// debris test another one
 	/*if (planet_vector.size() > 0) {
-		for (int i = 0; i < debris_array.size(); ++i) {
-			debris_array[i].position.x = planet_vector[0].position.x + 60 * AECos(AEDegToRad(debris_array[i].angle));
-			debris_array[i].position.y = planet_vector[0].position.y + 60 * AESin(AEDegToRad(debris_array[i].angle));
+		for (int i = 0; i < debris_vectoray.size(); ++i) {
+			debris_vectoray[i].position.x = planet_vector[0].position.x + 60 * AECos(AEDegToRad(debris_vectoray[i].angle));
+			debris_vectoray[i].position.y = planet_vector[0].position.y + 60 * AESin(AEDegToRad(debris_vectoray[i].angle));
 		}
 	}*/
 
@@ -261,23 +249,25 @@ void Player::update(f64 frame_time)
 		coll_pos.x = collision_x;
 		coll_pos.y = collision_y;
 
-		for (int i = 0; i < player.current_planet.debris_arr.size(); ++i) {
-			if (AEVec2Distance(&coll_pos, &player.current_planet.debris_arr[i].position) <= 10) {
-				player.current_planet.debris_arr.erase(player.current_planet.debris_arr.begin() + i);
-				player.current_capacity++;
+		if (player.current_planet.debris_vector.size() > 0)
+		{
+			for (int i = 0; i < player.current_planet.debris_vector.size(); ++i) {
+				if (AEVec2Distance(&coll_pos, &player.current_planet.debris_vector[i].position) <= 10) {
+					player.current_planet.debris_vector.erase(player.current_planet.debris_vector.begin() + i);
+					//player.current_planet.debris_vector.pop_back();
+					player.current_capacity++;
+					break;
+				}
 			}
 		}
 
-		/*for (int i = 0; i < debris_array.size(); ++i) {
-			if (AEVec2Distance(&coll_pos, &debris_array[i].position) <= 10) {
-				debris_array.erase(debris_array.begin() + i);
+		/*for (int i = 0; i < debris_vector.size(); ++i) {
+			if (AEVec2Distance(&coll_pos, &debris_vector[i].position) <= 10) {
+				debris_vector.erase(debris_vector.begin() + i);
 				player.current_capacity++;
 			}
 		}*/
 	}
-
-	temp = std::to_string(player.current_capacity);
-	print_string = temp.c_str();
 }
 
 void Player::draw(AEGfxVertexList* pMesh)
@@ -301,12 +291,12 @@ void Player::draw(AEGfxVertexList* pMesh)
 
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
-	/*if (debris_array.size() > 0) {
-		for (int i = 0; i < debris_array.size(); ++i) {
+	/*if (debris_vectoray.size() > 0) {
+		for (int i = 0; i < debris_vectoray.size(); ++i) {
 			AEGfxTextureSet(debris_tex, 0, 0);
 			AEMtx33Scale(&scale, 20.f, 20.f);
 			AEMtx33Rot(&rotate, AEDegToRad(player.angle) + PI / 2);
-			AEMtx33Trans(&translate, debris_array[i].position.x, debris_array[i].position.y);
+			AEMtx33Trans(&translate, debris_vectoray[i].position.x, debris_vectoray[i].position.y);
 			AEMtx33Concat(&transform, &rotate, &scale);
 			AEMtx33Concat(&transform, &translate, &transform);
 			AEGfxSetTransform(transform.m);
@@ -354,9 +344,6 @@ void Player::draw(AEGfxVertexList* pMesh)
 		AEGfxSetTransform(transform.m);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 	}
-
-	// DRAW TEXT
-	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.5f, 0.5f, 1.f, 1.f, 1.f, 1.f);
 }
 
 void Player::free()

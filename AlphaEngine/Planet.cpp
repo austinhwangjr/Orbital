@@ -1,21 +1,21 @@
 #include "AEEngine.h"
 #include "Planet.h"
+#include "WaveManager.h"
 #include "Shuttle.h"
 #include <cmath>
-#include "Debris.h"
 
 Planets planet;
 AEGfxTexture* planet_tex;
 std::vector<Planets> planet_vector;
 
+extern WaveManager wave_manager;
 extern Shuttles shuttle;
+extern Debris debris;
 
 Debris debris_init;
 
 int x_max, y_max;
 int planet_count{};
-
-static f64 planet_spawn_time{};
 
 void Planets::load()
 {
@@ -26,9 +26,10 @@ void Planets::init()
 {
 	srand(5);
 
-	planet_spawn_time = 0.0;
 	planet_count = 0;
 	x_max = 1400, y_max = 700;
+	max_shuttle = 3;
+	current_shuttle = 0;
 
 	// debris
 	current_debris = 0;
@@ -36,50 +37,6 @@ void Planets::init()
 
 void Planets::update(f64 frame_time)
 {
-	planet_spawn_time += frame_time;
-
-	if (planet_spawn_time >= 2 && planet_count < 10)
-	{
-		Planets new_planet;
-
-		new_planet.id = planet_count;
-
-		AEMtx33Scale(&new_planet.scale, 100.f, 100.f);
-		AEMtx33Rot(&new_planet.rotate, PI / 4);
-
-		new_planet.position.x = static_cast<f32>(rand() % (x_max + 1) - x_max / 2);
-		new_planet.position.y = static_cast<f32>(rand() % (y_max + 1) - y_max / 2);
-
-		for (int i{}; i < planet_count; i++)
-		{
-			if (abs(pow(planet_vector[i].position.y - new_planet.position.y, 2) + pow(planet_vector[i].position.x - new_planet.position.x, 2)) < pow(300, 2))
-			{
-				new_planet.position.x = static_cast<f32>(rand() % (x_max + 1) - x_max / 2);
-				new_planet.position.y = static_cast<f32>(rand() % (y_max + 1) - y_max / 2);
-				i = 0;
-			}
-		}
-
-		AEMtx33Trans(&new_planet.translate, new_planet.position.x, new_planet.position.y);
-		AEMtx33Concat(&new_planet.transform, &new_planet.rotate, &new_planet.scale);
-		AEMtx33Concat(&new_planet.transform, &new_planet.translate, &new_planet.transform);
-
-		new_planet.shuttle_spawn_timer = 0.0;
-		new_planet.shuttle_time_spawn = 2.0;
-		new_planet.shuttle_spawn_pos.x = new_planet.position.x;
-		new_planet.shuttle_spawn_pos.y = new_planet.position.y;
-
-		//new_planet.max_debris = 10;
-		
-		new_planet.max_debris = 10;
-		//new_planet.debris_draw_array = draw_debris(new_planet, new_planet.max_debris);
-		new_planet.debris_arr = create_debris(new_planet, new_planet.max_debris);
-		
-		planet_vector.push_back(new_planet);
-		if (planet_count < max_planet) planet_count++;
-		planet_spawn_time = 0;
-	}
-
 	for (size_t i{}; i < planet_vector.size(); i++)
 	{
 		if (planet_vector[i].shuttle_spawn_timer > planet_vector[i].shuttle_time_spawn)
@@ -87,13 +44,11 @@ void Planets::update(f64 frame_time)
 			planet_vector[i].shuttle_spawn_timer = 0.0;
 		}
 		planet_vector[i].shuttle_spawn_timer += frame_time;
-	}
 
-	for (Planets const &current_planet : planet_vector)
-	{
-		if (current_planet.shuttle_spawn_timer >= current_planet.shuttle_time_spawn)
+		if (!planet_vector[i].complete && planet_vector[i].shuttle_spawn_timer >= planet_vector[i].shuttle_time_spawn)
 		{
-			shuttle.Shuttles::spawn(current_planet.id);
+			shuttle.Shuttles::spawn(planet_vector[i].id);
+			planet_vector[i].current_shuttle++;
 		}
 	}
 }
@@ -103,7 +58,7 @@ void Planets::draw(AEGfxVertexList* pMesh)
 	// Set the texture to pTex 
 	AEGfxTextureSet(planet_tex, 0, 0);
 
-	for (int i{}; i < planet_count; i++)
+	for (int i{}; i < wave_manager.planet_count; i++)
 	{
 		AEGfxSetTransform(planet_vector[i].transform.m);
 		// Actually drawing the mesh
@@ -113,10 +68,57 @@ void Planets::draw(AEGfxVertexList* pMesh)
 
 void Planets::free()
 {
-
+	for (size_t i{}; i < planet_vector.size(); i++)
+	{
+		planet_vector[i].debris_vector.clear();
+	}
+	planet_vector.clear();
 }
 
 void Planets::unload()
 {
 	AEGfxTextureUnload(planet_tex);
+}
+
+void Planets::spawn()
+{
+	Planets new_planet;
+
+	new_planet.id = wave_manager.planet_count;
+
+	AEMtx33Scale(&new_planet.scale, 100.f, 100.f);
+	AEMtx33Rot(&new_planet.rotate, PI / 4);
+
+	new_planet.position.x = static_cast<f32>(rand() % (x_max + 1) - x_max / 2);
+	new_planet.position.y = static_cast<f32>(rand() % (y_max + 1) - y_max / 2);
+
+	// Re-randomize new planet position if too close to another planet
+	for (int i{}; i < wave_manager.planet_count; i++)
+	{
+		if (abs(pow(planet_vector[i].position.y - new_planet.position.y, 2) + pow(planet_vector[i].position.x - new_planet.position.x, 2)) < pow(300, 2))
+		{
+			new_planet.position.x = static_cast<f32>(rand() % (x_max + 1) - x_max / 2);
+			new_planet.position.y = static_cast<f32>(rand() % (y_max + 1) - y_max / 2);
+			i = 0;
+		}
+	}
+
+	AEMtx33Trans(&new_planet.translate, new_planet.position.x, new_planet.position.y);
+	AEMtx33Concat(&new_planet.transform, &new_planet.rotate, &new_planet.scale);
+	AEMtx33Concat(&new_planet.transform, &new_planet.translate, &new_planet.transform);
+
+	new_planet.shuttle_spawn_timer = 0.0;
+	new_planet.shuttle_time_spawn = 2.0;
+	new_planet.shuttle_spawn_pos.x = new_planet.position.x;
+	new_planet.shuttle_spawn_pos.y = new_planet.position.y;
+
+	new_planet.max_shuttle = 3;
+	new_planet.current_shuttle = 0;
+	new_planet.complete = false;
+
+	new_planet.max_debris = 10;
+	new_planet.debris_vector = debris.Debris::create_debris(new_planet.position.x, new_planet.position.y, new_planet.max_debris);
+
+	planet_vector.push_back(new_planet);
+	//if (planet_count < max_planet) planet_count++;
 }

@@ -16,12 +16,13 @@ Technology is prohibited.
 #include "pch.h"
 #include "GameStateManager.h"
 #include "MainLevel.h"
-#include "Planet.h"
 #include <cmath>
 #include <iostream>
 #include "Planet.h"
 #include "Player.h"
 #include "Shuttle.h"
+#include "Debris.h"
+#include "WaveManager.h"
 
 int g_game_running;
 
@@ -38,12 +39,13 @@ AEGfxVertexList* pMesh;
 f64* pTime;
 f64 total_time{}, frame_time{};
 
-Player player;
 
 int wave;
-Debris debris;
+extern Player player;
 extern Planets planet;
+extern Debris debris;
 extern Shuttles shuttle;
+extern WaveManager wave_manager;
 
 // ----------------------------------------------------------------------------
 // This function loads all necessary assets in Level1
@@ -57,6 +59,7 @@ void main_level::load()
 	player.load();
 	debris.load();
 	shuttle.load();
+	wave_manager.load();
 	
 	starttest = AEGfxTextureLoad("Assets/start_test.png");
 
@@ -81,6 +84,7 @@ void main_level::init()
 	player.init();
 	shuttle.init();
 	debris.init();
+	wave_manager.init();
 
 	total_time = 0.0;
 	pTime = nullptr;
@@ -134,8 +138,8 @@ void main_level::update()
 	player.update(frame_time);
 	shuttle.update(frame_time);
 	debris.update(frame_time);
+	wave_manager.update(frame_time);
 
-	
 	// Add new wave
 	//std::cout << "Time: " << total_time << ", current wave: " << wave << '\n';
 
@@ -182,8 +186,9 @@ void main_level::draw()
 
 	planet.draw(pMesh);
 	player.draw(pMesh);
-	debris.draw(pMesh);
 	shuttle.draw(pMesh);
+	debris.draw(pMesh);
+	wave_manager.draw(pMesh);
 	
 	AESysFrameEnd();
 }
@@ -198,6 +203,7 @@ void main_level::free()
 	player.free();
 	shuttle.free();
 	debris.free();
+	wave_manager.free();
 
 	AEGfxMeshFree(pMesh);
 }
@@ -212,5 +218,6 @@ void main_level::unload()
 	player.unload();
 	shuttle.unload();
 	debris.unload();
+	wave_manager.unload();
 
 }

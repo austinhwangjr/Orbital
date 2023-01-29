@@ -43,6 +43,9 @@
     <ClCompile Include="Player.cpp">
       <Filter>Source\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="WaveManager.cpp">
+      <Filter>Source\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Global.h">
@@ -85,6 +88,9 @@
       <Filter>Header\Objects</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
+      <Filter>Header\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="WaveManager.h">
       <Filter>Header\Objects</Filter>
     </ClInclude>
   </ItemGroup>

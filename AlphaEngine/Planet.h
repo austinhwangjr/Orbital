@@ -20,9 +20,7 @@ enum PLANET_ID
 struct Planets
 {
 	//double list[i];	//isnt using int btr?
-	std::vector<Debris> debris_arr; //dynamic array of debris
-	AEMtx33* debris_draw_array;
-	//std::vector <Debris>* debris_vector{};
+	std::vector<Debris> debris_vector; //dynamic array of debris
 	int id;
 	AEVec2 position;
 	AEMtx33 scale;
@@ -32,13 +30,13 @@ struct Planets
 	AEVec2 shuttle_spawn_pos;
 	f64 shuttle_spawn_timer;
 	f64 shuttle_time_spawn;
-	double max_shuttle;
-	double current_shuttle;
+	int max_shuttle;
+	int current_shuttle;
 	int max_debris;
 	double current_debris;
 	double max_drones;
 	double current_drones;
-	double texture;
+	bool complete;
 
 	void load();
 	void init();
@@ -46,11 +44,9 @@ struct Planets
 	void draw(AEGfxVertexList* pMesh);
 	void free();
 	void unload();
+
+	void spawn();
 };
 
 extern std::vector<Planets> planet_vector;
 extern AEGfxTexture* planet_tex;
-
-
-std::vector<Debris> create_debris(Planets planet, int total_debris);
-//AEMtx33* draw_debris(Planets planet, int total_debris);
