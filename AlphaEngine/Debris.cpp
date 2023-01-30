@@ -1,11 +1,14 @@
 #include "AEEngine.h"
 #include "Debris.h"
 #include "Planet.h"
+#include "Shuttle.h"
 #include <cmath>
 
 Debris debris;
 
 extern std::vector<Planets> planet_vector;
+extern std::vector<Shuttles> shuttle_vector;
+
 
 std::vector<std::vector<Debris>> debris_vector_all;
 
@@ -17,6 +20,9 @@ extern int planet_count;
 static f64 elapsed_time{};
 
 AEGfxTexture* debrisTex;
+
+f32 collision_shuttle_x;
+f32 collision_shuttle_y;
 
 double speed = 0.125f;
 void Debris::load()
@@ -34,13 +40,33 @@ void Debris::update(f64 frame_time)
 {
 	for (int j = 0; j < debris_vector_all.size(); j++) {
 		for (size_t i = 0; i < debris_vector_all[j].size(); i++) {
-			debris_vector_all[j][i].angle -= 1.f;
+			debris_vector_all[j][i].angle -= 1.5f;
 
 			debris_vector_all[j][i].position.x = planet_vector[j].position.x + (space + planet_radius) * AECos(AEDegToRad(debris_vector_all[j][i].angle));
 			debris_vector_all[j][i].position.y = planet_vector[j].position.y + (space + planet_radius) * AESin(AEDegToRad(debris_vector_all[j][i].angle));
 
 		}
-	}	
+	}
+
+	//collision check for debris
+	for (size_t i{}; i < shuttle_vector.size(); i++) {
+		collision_shuttle_x = shuttle_vector[i].position.x;
+		collision_shuttle_y = shuttle_vector[i].position.y;
+
+		AEVec2 coll_shuttle_pos;
+		coll_shuttle_pos.x = collision_shuttle_x;
+		coll_shuttle_pos.y = collision_shuttle_y;
+		for (int j = 0; j < debris_vector_all.size(); j++) {
+			for (int k = 0; k < debris_vector_all[j].size(); ++k) {
+				if (AEVec2Distance(&coll_shuttle_pos, &debris_vector_all[j][k].position) <= 10) {
+					debris_vector_all[j].erase(debris_vector_all[j].begin() + k);
+					shuttle_vector.erase(shuttle_vector.begin()+i);
+					break;
+				}
+			}
+		}
+	}
+
 }
 
 void Debris::draw(AEGfxVertexList* pMesh)
