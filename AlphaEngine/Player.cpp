@@ -206,11 +206,11 @@ void Player::update(f64 frame_time)
 
 	else {
 		for (int i = 0; i < button_list.size(); ++i) {
-			if ((button_list[i].position.x - button_list[i].size / 2 < mouse_x_actual) &&
-				(button_list[i].position.x + button_list[i].size / 2 > mouse_x_actual))
+			if ((button_list[i].position.x - button_list[i].size < mouse_x_actual) &&
+				(button_list[i].position.x + button_list[i].size > mouse_x_actual))
 			{
-				if ((button_list[i].position.y - button_list[i].size / 2 < mouse_y_actual) &&
-					(button_list[i].position.y + button_list[i].size / 2 > mouse_y_actual))
+				if ((button_list[i].position.y - button_list[i].size < mouse_y_actual) &&
+					(button_list[i].position.y + button_list[i].size > mouse_y_actual))
 				{
 					if (AEInputCheckTriggered(AEVK_LBUTTON)) {
 						if (button_list[i].button_type == SHOP_OPEN) {
