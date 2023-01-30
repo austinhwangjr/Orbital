@@ -30,12 +30,13 @@ extern std::vector<std::vector<Debris>> debris_vector_all;
 s8 font_id_shop;
 const char* shop_option_name_c_str;
 std::string shop_option_name;
+bool shop_open = false;
 
 enum BUTTON_TYPE {
 	SHOP_OPEN = 0,
-	CREATE_DRONE,
 	MOVEMENT_SPEED,
 	CAPACITY,
+	CREATE_DRONE,
 	TRACTOR_BEAM_STRENGTH,
 	SPACE_STATION
 };
@@ -185,11 +186,11 @@ void Player::update(f64 frame_time)
 	f32 mouse_x_actual = mouse_x - 800;
 	f32	mouse_y_actual = 400 - mouse_y;
 
-	if (button_list.size() == 1) {
+	if (!shop_open) {
 		if ((button_list[0].position.x - button_list[0].size / 2 < mouse_x_actual) && (button_list[0].position.x + button_list[0].size / 2 > mouse_x_actual)) {
 			if ((button_list[0].position.y - button_list[0].size / 2 < mouse_y_actual) && (button_list[0].position.y + button_list[0].size / 2 > mouse_y_actual)) {
 				if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-					for (int i = 0; i < 3; ++i) {
+					for (int i = 0; i < 2; ++i) {
 						ShopOption player_upgrade;
 						player_upgrade.size = 80.f;
 						player_upgrade.position.x = button_list[0].position.x - 150;
@@ -197,6 +198,7 @@ void Player::update(f64 frame_time)
 						player_upgrade.button_type = SHOP_OPEN + i + 1;
 						button_list.push_back(player_upgrade);
 					}
+					shop_open = true;
 				}
 			}
 		}
@@ -212,9 +214,10 @@ void Player::update(f64 frame_time)
 				{
 					if (AEInputCheckTriggered(AEVK_LBUTTON)) {
 						if (button_list[i].button_type == SHOP_OPEN) {
-							for (int i = 0; i < button_list.size() - 1; ++i) {
+							for (int i = 0; i < 2; ++i) {
 								button_list.pop_back();
 							}
+							shop_open = false;
 						}
 						else if (button_list[i].button_type == CAPACITY) {
 							if (player.current_capacity > 0) {
