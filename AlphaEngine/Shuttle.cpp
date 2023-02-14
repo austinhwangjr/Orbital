@@ -39,6 +39,7 @@ void Shuttles::update(f64 frame_time)
 				wave_manager.shuttle_has_escaped = true;
 				wave_manager.shuttle_left_planet++;
 				shuttle_vector[i].active = false;
+				spawn_debris(2, shuttle_vector[i].planet_id);
 			}
 			shuttle_vector[i].lifespan -= frame_time;
 		}
@@ -88,6 +89,8 @@ void Shuttles::spawn(int planet_id)
 
 	new_shuttle->vector.x = cos(rand_angle);
 	new_shuttle->vector.y = sin(rand_angle);
+
+	new_shuttle->planet_id = planet_id;
 
 	AEMtx33Scale(&new_shuttle->scale, 20.f, 20.f);
 	AEMtx33Rot(&new_shuttle->rotate, PI / 2 + rand_angle);

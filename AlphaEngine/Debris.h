@@ -28,7 +28,8 @@ struct Debris
 	void free();
 	void unload();
 
-	std::vector<Debris> create_debris(f32 x, f32 y, int total_debris);
+	std::vector<Debris> create_debris(f32 planet_x, f32 planet_y, double size, int total_debris);
 };
 
 extern std::vector<Debris> debris_vector;
+void spawn_debris(int num_of_debris, int planet_id);

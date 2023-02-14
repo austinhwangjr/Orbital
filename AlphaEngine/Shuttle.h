@@ -15,6 +15,8 @@ struct Shuttles
 	double value;
 	bool active;
 
+	int planet_id;
+
 	void load();
 	void init();
 	void update(f64 frame_time);

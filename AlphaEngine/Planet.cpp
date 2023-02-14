@@ -121,7 +121,7 @@ void Planets::spawn(int shuttle_randomize_amount)
 	new_planet.shuttle_spawn_pos.x = new_planet.position.x;
 	new_planet.shuttle_spawn_pos.y = new_planet.position.y;
 
-	new_planet.debris_vector = debris.Debris::create_debris(new_planet.position.x, new_planet.position.y, new_planet.max_debris);
+	new_planet.debris_vector = debris.Debris::create_debris(new_planet.position.x, new_planet.position.y, new_planet.size, new_planet.max_debris);
 
 	planet_vector.push_back(new_planet);
 	//if (planet_count < MAX_PLANET) planet_count++;
