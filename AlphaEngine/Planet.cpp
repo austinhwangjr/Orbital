@@ -47,7 +47,7 @@ void Planets::update(f64 frame_time)
 		if (!planet_vector[i].wave_complete && planet_vector[i].shuttle_spawn_timer >= planet_vector[i].shuttle_time_spawn)
 		{
 			shuttle.Shuttles::spawn(planet_vector[i].id);
-			planet_vector[i].current_shuttle++;
+			planet_vector[i].current_shuttle--;
 		}
 	}
 }
@@ -86,15 +86,15 @@ void Planets::spawn(int shuttle_randomize_amount)
 	new_planet.id = wave_manager.planet_count;
 
 	new_planet.max_shuttle = shuttle_randomize_amount;
-	new_planet.current_shuttle = 0;
+	new_planet.current_shuttle = new_planet.max_shuttle;
 	new_planet.wave_complete = false;
 
 	new_planet.max_debris = 10;
 
-	new_planet.size = PLANET_SIZE * (max_shuttle / 2.0f);
+	new_planet.size = PLANET_SIZE * (new_planet.max_shuttle / 2.0f);
 
 // SETTING POSITION / TRANSFORM FOR PLANETS---------------------------------------------------------------------------------------------------
-	AEMtx33Scale(&new_planet.scale, new_planet.size , new_planet.size);
+	AEMtx33Scale(&new_planet.scale, new_planet.size, new_planet.size);
 	AEMtx33Rot(&new_planet.rotate, PI / 4);
 
 	new_planet.position.x = static_cast<f32>(rand() % (x_max + 1) - x_max / 2);

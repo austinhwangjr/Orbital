@@ -14,10 +14,11 @@ struct WaveManager
 	int wave_progress;
 	bool wave_completed;
 
-	int shuttle_escaped;
+	int shuttle_left_planet;
 	int shuttle_increase_amount;
 	int shuttle_randomize_amount;
-	bool shuttle_value_change;
+	bool shuttle_has_escaped;
+	bool shuttle_has_collided;
 
 	int planet_count;
 	int planet_spawn_interval;

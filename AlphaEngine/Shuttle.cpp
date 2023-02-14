@@ -36,8 +36,8 @@ void Shuttles::update(f64 frame_time)
 			// If shuttle escapes
 			if (shuttle_vector[i].lifespan <= 0)
 			{
-				wave_manager.shuttle_value_change = true;
-				wave_manager.shuttle_escaped++;
+				wave_manager.shuttle_has_escaped = true;
+				wave_manager.shuttle_left_planet++;
 				shuttle_vector[i].active = false;
 			}
 			shuttle_vector[i].lifespan -= frame_time;
@@ -75,20 +75,22 @@ void Shuttles::spawn(int planet_id)
 {
 	Shuttles* new_shuttle{ new Shuttles };
 
-	AEMtx33Scale(&new_shuttle->scale, 20.f, 20.f);
-	AEMtx33Rot(&new_shuttle->rotate, PI / 4);
-
-	new_shuttle->position.x = planet_vector[planet_id].shuttle_spawn_pos.x;
-	new_shuttle->position.y = planet_vector[planet_id].shuttle_spawn_pos.y;
-
-	//AEVec2Sub(&new_shuttle->vector, &planet_vector[planet_id].position, &new_shuttle->position);
-	new_shuttle->vector.x = 1;
-	new_shuttle->vector.y = -1;
 
 	new_shuttle->lifespan = 2;
 	new_shuttle->speed = 100;
 
 	new_shuttle->active = true;
+
+	new_shuttle->position.x = planet_vector[planet_id].shuttle_spawn_pos.x;
+	new_shuttle->position.y = planet_vector[planet_id].shuttle_spawn_pos.y;
+
+	f32 rand_angle = AEDegToRad(rand() % 360);
+
+	new_shuttle->vector.x = cos(rand_angle);
+	new_shuttle->vector.y = sin(rand_angle);
+
+	AEMtx33Scale(&new_shuttle->scale, 20.f, 20.f);
+	AEMtx33Rot(&new_shuttle->rotate, PI / 2 + rand_angle);
 
 	shuttle_vector.push_back(*new_shuttle);
 }

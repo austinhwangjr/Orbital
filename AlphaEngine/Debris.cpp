@@ -2,6 +2,7 @@
 #include "Debris.h"
 #include "Planet.h"
 #include "Shuttle.h"
+#include "WaveManager.h"
 #include <cmath>
 
 Debris debris;
@@ -9,6 +10,7 @@ Debris debris;
 extern std::vector<Planets> planet_vector;
 extern std::vector<Shuttles> shuttle_vector;
 
+extern WaveManager wave_manager;
 
 std::vector<std::vector<Debris>> debris_vector_all;
 
@@ -59,6 +61,8 @@ void Debris::update(f64 frame_time)
 		for (int j = 0; j < debris_vector_all.size(); j++) {
 			for (int k = 0; k < debris_vector_all[j].size(); ++k) {
 				if (AEVec2Distance(&coll_shuttle_pos, &debris_vector_all[j][k].position) <= 10) {
+					wave_manager.shuttle_has_collided = true;
+					wave_manager.shuttle_left_planet++;
 					debris_vector_all[j].erase(debris_vector_all[j].begin() + k);
 					shuttle_vector.erase(shuttle_vector.begin()+i);
 					break;

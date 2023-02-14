@@ -17,6 +17,7 @@ void WaveManager::load()
 
 void WaveManager::init()
 {
+	srand(5);
 	std::cout << '\n' << "Wave Manager Initialized." << '\n' << '\n';
 
 	wave_completed = false;
@@ -25,9 +26,10 @@ void WaveManager::init()
 	planet_count = 0;
 	planet_spawn_interval = 3;
 
-	shuttle_escaped = 0;
+	shuttle_left_planet = 0;
 	shuttle_increase_amount = 1;
-	shuttle_value_change = false;
+	shuttle_has_escaped = false;
+	shuttle_has_collided = false;
 
 	planet.Planets::spawn(rand() % MAX_SHUTTLE);
 	planet_count++;
@@ -39,29 +41,24 @@ void WaveManager::update(f64 frame_time)
 {
 	//planet_spawn_timer += frame_time;
 
-	// Add Planets at Intervals
-	if (0 == (wave_number % planet_spawn_interval) && planet_count < MAX_PLANET && (planet_count * planet_spawn_interval) == wave_number)
-	{
-		std::cout << '\n' << "Wave " << wave_number << '\t' << "Added Planet." << '\t';
-
-		planet.Planets::spawn(rand() % MAX_SHUTTLE);
-		planet_count++;
-		
-		std::cout << "Planet Count: " << planet_count << '\n';
-	}
-
-	if (shuttle_value_change)
+	if (shuttle_has_escaped)
 	{
 		std::cout << '\n' << "Shuttle has escaped!" << '\n';
-		std::cout << get_total_shuttles() - shuttle_escaped << " Shuttle(s) left to escape." << '\n' << '\n';
-		shuttle_value_change = false;
+		std::cout << get_total_shuttles() - shuttle_left_planet << " Shuttle(s) left to escape." << '\n' << '\n';
+		shuttle_has_escaped = false;
 	}
 
+	if (shuttle_has_collided)
+	{
+		std::cout << '\n' << "Shuttle has been destroyed!" << '\n';
+		std::cout << get_total_shuttles() - shuttle_left_planet << " Shuttle(s) left to escape." << '\n' << '\n';
+		shuttle_has_collided = false;
+	}
 
 	// Check Wave Progress
 	for (size_t i{}; i < planet_vector.size(); i++)
 	{
-		if (!planet_vector[i].wave_complete && planet_vector[i].current_shuttle == planet_vector[i].max_shuttle)
+		if (!planet_vector[i].wave_complete && 0 == planet_vector[i].current_shuttle)
 		{
 			planet_vector[i].wave_complete = true;
 			wave_progress++;
@@ -77,27 +74,39 @@ void WaveManager::update(f64 frame_time)
 		}
 	}
 
+	// Add Planets at Intervals
+	if (0 == (wave_number % planet_spawn_interval) && (planet_count < MAX_PLANET) && (planet_count * planet_spawn_interval) == wave_number)
+	{
+		std::cout << '\n' << "Wave " << wave_number << '\t' << "Added Planet." << '\t';
+
+		planet.Planets::spawn(rand() % MAX_SHUTTLE);
+		planet_count++;
+
+		std::cout << "Planet Count: " << planet_count << '\n';
+	}
+
 // START OF NEW WAVE-----------------------------------------------------
 	if (wave_completed)
 	{
 		for (size_t i{}; i < planet_vector.size(); i++)
 		{
 			planet_vector[i].max_shuttle += shuttle_increase_amount;
-			planet_vector[i].current_shuttle = 0;
+			planet_vector[i].current_shuttle = planet_vector[i].max_shuttle;
 			planet_vector[i].wave_complete = false;
 		}
 
-		shuttle_escaped = 0;
+		shuttle_left_planet = 0;
 
 		wave_completed = false;
 		wave_progress = 0;
 		wave_number++;
 
-		std::cout << '\n' << "Wave " << wave_number << " has begun." << '\n';
+		std::cout << '\n' << "Wave " << wave_number << " has begun." << '\t';
 		for (size_t i{}; i < planet_vector.size(); i++)
 		{
-			std::cout << "Planet " << planet_vector[i].id << ": " << planet_vector[i].max_shuttle << " Shuttles." << '\n';
+			std::cout << "Planet " << planet_vector[i].id << ": " << planet_vector[i].max_shuttle << " Shuttles." << '\t';
 		}
+		std::cout << '\n';
 
 	}
 // START OF NEW WAVE-----------------------------------------------------
