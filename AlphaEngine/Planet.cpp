@@ -1,7 +1,6 @@
 #include "AEEngine.h"
 #include "Planet.h"
 #include "WaveManager.h"
-#include "Shuttle.h"
 #include <cmath>
 
 Planets planet;
@@ -12,7 +11,7 @@ extern WaveManager wave_manager;
 extern Shuttles shuttle;
 extern Debris debris;
 
-Debris debris_init;
+//Debris debris_init;
 
 int x_max, y_max;
 int planet_count{};
@@ -45,7 +44,7 @@ void Planets::update(f64 frame_time)
 		}
 		planet_vector[i].shuttle_spawn_timer += frame_time;
 
-		if (!planet_vector[i].complete && planet_vector[i].shuttle_spawn_timer >= planet_vector[i].shuttle_time_spawn)
+		if (!planet_vector[i].wave_complete && planet_vector[i].shuttle_spawn_timer >= planet_vector[i].shuttle_time_spawn)
 		{
 			shuttle.Shuttles::spawn(planet_vector[i].id);
 			planet_vector[i].current_shuttle++;
@@ -80,13 +79,22 @@ void Planets::unload()
 	AEGfxTextureUnload(planet_tex);
 }
 
-void Planets::spawn()
+void Planets::spawn(int shuttle_randomize_amount)
 {
 	Planets new_planet;
 
 	new_planet.id = wave_manager.planet_count;
 
-	AEMtx33Scale(&new_planet.scale, 100.f, 100.f);
+	new_planet.max_shuttle = shuttle_randomize_amount;
+	new_planet.current_shuttle = 0;
+	new_planet.wave_complete = false;
+
+	new_planet.max_debris = 10;
+
+	new_planet.size = PLANET_SIZE * (max_shuttle / 2.0f);
+
+// SETTING POSITION / TRANSFORM FOR PLANETS---------------------------------------------------------------------------------------------------
+	AEMtx33Scale(&new_planet.scale, new_planet.size , new_planet.size);
 	AEMtx33Rot(&new_planet.rotate, PI / 4);
 
 	new_planet.position.x = static_cast<f32>(rand() % (x_max + 1) - x_max / 2);
@@ -106,19 +114,15 @@ void Planets::spawn()
 	AEMtx33Trans(&new_planet.translate, new_planet.position.x, new_planet.position.y);
 	AEMtx33Concat(&new_planet.transform, &new_planet.rotate, &new_planet.scale);
 	AEMtx33Concat(&new_planet.transform, &new_planet.translate, &new_planet.transform);
+// SETTING POSITION / TRANSFORM FOR PLANETS---------------------------------------------------------------------------------------------------
 
 	new_planet.shuttle_spawn_timer = 0.0;
 	new_planet.shuttle_time_spawn = 2.0;
 	new_planet.shuttle_spawn_pos.x = new_planet.position.x;
 	new_planet.shuttle_spawn_pos.y = new_planet.position.y;
 
-	new_planet.max_shuttle = 3;
-	new_planet.current_shuttle = 0;
-	new_planet.complete = false;
-
-	new_planet.max_debris = 10;
 	new_planet.debris_vector = debris.Debris::create_debris(new_planet.position.x, new_planet.position.y, new_planet.max_debris);
 
 	planet_vector.push_back(new_planet);
-	//if (planet_count < max_planet) planet_count++;
+	//if (planet_count < MAX_PLANET) planet_count++;
 }

@@ -149,8 +149,11 @@ void main_level::update()
 		add_wave();
 	}
 
+	// Testing
+	/*
 	if (AEInputCheckTriggered(AEVK_R))
 		next_state = GS_RESTART;
+	*/
 	
 
 	// check if forcing the application to quit

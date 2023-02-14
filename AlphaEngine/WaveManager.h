@@ -1,4 +1,8 @@
 #pragma once
+#define PLANET_SIZE 100.0f
+#define MAX_PLANET 10
+#define MAX_SHUTTLE 5
+
 #include "AEEngine.h"
 #include "Player.h"
 #include "Planet.h"
@@ -12,6 +16,8 @@ struct WaveManager
 
 	int shuttle_escaped;
 	int shuttle_increase_amount;
+	int shuttle_randomize_amount;
+	bool shuttle_value_change;
 
 	int planet_count;
 	int planet_spawn_interval;

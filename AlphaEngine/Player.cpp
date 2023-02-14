@@ -89,7 +89,7 @@ void Player::init()
 	// shop icon test
 	ShopOption shop_open{};
 	shop_open.size = 70.f;
-	shop_open.position.x = AEGfxGetWinMaxX() - shop_open.size / 2;
+	shop_open.position.x = AEGfxGetWinMaxX() - shop_open.size;
 	shop_open.position.y = AEGfxGetWinMaxY() * 2 / 3;
 	button_list.push_back(shop_open);
 }
@@ -176,8 +176,10 @@ void Player::update(f64 frame_time)
 	}
 
 	// camera stuff lol
+	/*
 	if (AEInputCheckCurr(AEVK_F)) AEGfxSetCamPosition(player.current_planet.position.x, player.current_planet.position.y);
 	else AEGfxSetCamPosition(0, 0);
+	*/
 
 	// shop icon test
 	s32 mouse_x, mouse_y;

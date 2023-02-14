@@ -8,9 +8,11 @@ Shuttles shuttle;
 AEGfxTexture* shuttle_tex;
 std::vector<Shuttles> shuttle_vector;
 
+extern WaveManager wave_manager;
+
 void Shuttles::load()
 {
-	shuttle_tex = AEGfxTextureLoad("Assets/test-player.png");
+	shuttle_tex = AEGfxTextureLoad("Assets/test-shuttle.png");
 }
 
 void Shuttles::init()
@@ -26,9 +28,16 @@ void Shuttles::update(f64 frame_time)
 		{
 			shuttle_vector[i].position.x += shuttle_vector[i].speed * shuttle_vector[i].vector.x * frame_time;
 			shuttle_vector[i].position.y += shuttle_vector[i].speed * shuttle_vector[i].vector.y * frame_time;
-
+			
+			AEMtx33Trans(&shuttle_vector[i].translate, shuttle_vector[i].position.x, shuttle_vector[i].position.y);
+			AEMtx33Concat(&shuttle_vector[i].transform, &shuttle_vector[i].rotate, &shuttle_vector[i].scale);
+			AEMtx33Concat(&shuttle_vector[i].transform, &shuttle_vector[i].translate, &shuttle_vector[i].transform);
+			
+			// If shuttle escapes
 			if (shuttle_vector[i].lifespan <= 0)
 			{
+				wave_manager.shuttle_value_change = true;
+				wave_manager.shuttle_escaped++;
 				shuttle_vector[i].active = false;
 			}
 			shuttle_vector[i].lifespan -= frame_time;
@@ -45,10 +54,6 @@ void Shuttles::draw(AEGfxVertexList* pMesh)
 	{
 		if (shuttle_vector[i].active)
 		{
-			AEMtx33Trans(&shuttle_vector[i].translate, shuttle_vector[i].position.x, shuttle_vector[i].position.y);
-			AEMtx33Concat(&shuttle_vector[i].transform, &shuttle_vector[i].rotate, &shuttle_vector[i].scale);
-			AEMtx33Concat(&shuttle_vector[i].transform, &shuttle_vector[i].translate, &shuttle_vector[i].transform);
-
 			AEGfxSetTransform(shuttle_vector[i].transform.m);
 			// Actually drawing the mesh
 			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);

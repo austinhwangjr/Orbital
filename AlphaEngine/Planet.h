@@ -1,5 +1,5 @@
 #pragma once
-#define max_planet 10
+
 #include "Debris.h"
 #include <vector>
 
@@ -19,7 +19,6 @@ enum PLANET_ID
 
 struct Planets
 {
-	//double list[i];	//isnt using int btr?
 	std::vector<Debris> debris_vector; //dynamic array of debris
 	int id;
 	AEVec2 position;
@@ -30,13 +29,14 @@ struct Planets
 	AEVec2 shuttle_spawn_pos;
 	f64 shuttle_spawn_timer;
 	f64 shuttle_time_spawn;
+	double size;
 	int max_shuttle;
 	int current_shuttle;
 	int max_debris;
-	double current_debris;
-	double max_drones;
-	double current_drones;
-	bool complete;
+	int current_debris;
+	int max_drones;
+	int current_drones;
+	bool wave_complete;
 
 	void load();
 	void init();
@@ -45,7 +45,7 @@ struct Planets
 	void free();
 	void unload();
 
-	void spawn();
+	void spawn(int shuttle_randomize_amount);
 };
 
 extern std::vector<Planets> planet_vector;
