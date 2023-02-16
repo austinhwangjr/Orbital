@@ -42,7 +42,7 @@ f64 total_time{}, frame_time{};
 
 int wave;
 extern Player player;
-extern Planets planet;
+Planets planet;
 extern Debris debris;
 extern Shuttles shuttle;
 extern WaveManager wave_manager;

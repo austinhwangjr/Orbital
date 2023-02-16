@@ -1,7 +1,8 @@
 #pragma once
 #define PLANET_SIZE 100.0f
 #define MAX_PLANET 10
-#define MAX_SHUTTLE 5
+#define MAX_SHUTTLE 6
+#define INITIAL_SHUTTLE 4
 
 #include "AEEngine.h"
 #include "Player.h"

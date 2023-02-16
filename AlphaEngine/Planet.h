@@ -1,5 +1,7 @@
 #pragma once
 
+#define TIME_TO_SPAWN 10
+
 #include "Debris.h"
 #include <vector>
 
@@ -27,8 +29,8 @@ struct Planets
 	AEMtx33 translate;
 	AEMtx33 transform;
 	AEVec2 shuttle_spawn_pos;
-	f64 shuttle_spawn_timer;
-	f64 shuttle_time_spawn;
+	f64 shuttle_timer;
+	f64 shuttle_time_to_spawn;
 	double size;
 	int max_shuttle;
 	int current_shuttle;

@@ -3,7 +3,6 @@
 #include "WaveManager.h"
 #include <cmath>
 
-Planets planet;
 AEGfxTexture* planet_tex;
 std::vector<Planets> planet_vector;
 
@@ -38,13 +37,14 @@ void Planets::update(f64 frame_time)
 {
 	for (size_t i{}; i < planet_vector.size(); i++)
 	{
-		if (planet_vector[i].shuttle_spawn_timer > planet_vector[i].shuttle_time_spawn)
+		if (planet_vector[i].shuttle_timer > planet_vector[i].shuttle_time_to_spawn)
 		{
-			planet_vector[i].shuttle_spawn_timer = 0.0;
+			planet_vector[i].shuttle_timer = 0.0;
+			planet_vector[i].shuttle_time_to_spawn = static_cast<f64>(rand() % TIME_TO_SPAWN + 1);
 		}
-		planet_vector[i].shuttle_spawn_timer += frame_time;
+		planet_vector[i].shuttle_timer += frame_time;
 
-		if (!planet_vector[i].wave_complete && planet_vector[i].shuttle_spawn_timer >= planet_vector[i].shuttle_time_spawn)
+		if (!planet_vector[i].wave_complete && planet_vector[i].shuttle_timer >= planet_vector[i].shuttle_time_to_spawn)
 		{
 			shuttle.Shuttles::spawn(planet_vector[i].id);
 			planet_vector[i].current_shuttle--;
@@ -103,7 +103,7 @@ void Planets::spawn(int shuttle_randomize_amount)
 	// Re-randomize new planet position if too close to another planet
 	for (int i{}; i < wave_manager.planet_count; i++)
 	{
-		if (abs(pow(planet_vector[i].position.y - new_planet.position.y, 2) + pow(planet_vector[i].position.x - new_planet.position.x, 2)) < pow(300, 2))
+		if (AEVec2Distance(&planet_vector[i].position, &new_planet.position) < (planet_vector[i].size + new_planet.size))
 		{
 			new_planet.position.x = static_cast<f32>(rand() % (x_max + 1) - x_max / 2);
 			new_planet.position.y = static_cast<f32>(rand() % (y_max + 1) - y_max / 2);
@@ -116,8 +116,8 @@ void Planets::spawn(int shuttle_randomize_amount)
 	AEMtx33Concat(&new_planet.transform, &new_planet.translate, &new_planet.transform);
 // SETTING POSITION / TRANSFORM FOR PLANETS---------------------------------------------------------------------------------------------------
 
-	new_planet.shuttle_spawn_timer = 0.0;
-	new_planet.shuttle_time_spawn = 2.0;
+	new_planet.shuttle_timer = 0.0;
+	new_planet.shuttle_time_to_spawn = static_cast<f64>(rand() % TIME_TO_SPAWN + 1);
 	new_planet.shuttle_spawn_pos.x = new_planet.position.x;
 	new_planet.shuttle_spawn_pos.y = new_planet.position.y;
 

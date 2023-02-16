@@ -4,6 +4,8 @@
 #include "WaveManager.h"
 #include <cmath>
 
+#include <iostream>
+
 Shuttles shuttle;
 AEGfxTexture* shuttle_tex;
 std::vector<Shuttles> shuttle_vector;
@@ -17,7 +19,7 @@ void Shuttles::load()
 
 void Shuttles::init()
 {
-	srand(5);
+
 }
 
 void Shuttles::update(f64 frame_time)
@@ -76,7 +78,6 @@ void Shuttles::spawn(int planet_id)
 {
 	Shuttles* new_shuttle{ new Shuttles };
 
-
 	new_shuttle->lifespan = 2;
 	new_shuttle->speed = 100;
 
@@ -85,7 +86,9 @@ void Shuttles::spawn(int planet_id)
 	new_shuttle->position.x = planet_vector[planet_id].shuttle_spawn_pos.x;
 	new_shuttle->position.y = planet_vector[planet_id].shuttle_spawn_pos.y;
 
-	f32 rand_angle = AEDegToRad(rand() % 360);
+	f32 rand_angle = AERandFloat() * (2 * PI);
+
+	std::cout << rand_angle;
 
 	new_shuttle->vector.x = cos(rand_angle);
 	new_shuttle->vector.y = sin(rand_angle);

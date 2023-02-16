@@ -31,7 +31,7 @@ void WaveManager::init()
 	shuttle_has_escaped = false;
 	shuttle_has_collided = false;
 
-	planet.Planets::spawn(rand() % MAX_SHUTTLE);
+	planet.Planets::spawn(rand() % INITIAL_SHUTTLE + 1);
 	planet_count++;
 
 	std::cout << "Wave " << wave_number << " has begun." << '\n';
@@ -75,11 +75,11 @@ void WaveManager::update(f64 frame_time)
 	}
 
 	// Add Planets at Intervals
-	if (0 == (wave_number % planet_spawn_interval) && (planet_count < MAX_PLANET) && (planet_count * planet_spawn_interval) == wave_number)
+	if ((planet_count < MAX_PLANET) && (planet_count * planet_spawn_interval) == wave_number)
 	{
 		std::cout << '\n' << "Wave " << wave_number << '\t' << "Added Planet." << '\t';
 
-		planet.Planets::spawn(rand() % MAX_SHUTTLE);
+		planet.Planets::spawn(rand() % INITIAL_SHUTTLE + 1);
 		planet_count++;
 
 		std::cout << "Planet Count: " << planet_count << '\n';
@@ -90,7 +90,10 @@ void WaveManager::update(f64 frame_time)
 	{
 		for (size_t i{}; i < planet_vector.size(); i++)
 		{
-			planet_vector[i].max_shuttle += shuttle_increase_amount;
+			if (planet_vector[i].max_shuttle <= MAX_SHUTTLE)
+			{
+				planet_vector[i].max_shuttle += shuttle_increase_amount;
+			}
 			planet_vector[i].current_shuttle = planet_vector[i].max_shuttle;
 			planet_vector[i].wave_complete = false;
 		}
@@ -110,14 +113,22 @@ void WaveManager::update(f64 frame_time)
 
 	}
 // START OF NEW WAVE-----------------------------------------------------
-
-	player_capacity = "Capacity: " + std::to_string(player.current_capacity) + " / " + std::to_string(player.max_capacity);
-	print_string = player_capacity.c_str();
 }
 
 void WaveManager::draw(AEGfxVertexList *pMesh)
 {
+	for (size_t i{}; i < planet_vector.size(); i++)
+	{
+		std::string timer = std::to_string(static_cast<int>(planet_vector[i].shuttle_time_to_spawn - planet_vector[i].shuttle_timer));
+		print_string = timer.c_str();
+		AEGfxPrint(font_id, const_cast<s8*>(print_string), 
+			planet_vector[i].position.x / AEGfxGetWinMaxX(),
+			planet_vector[i].position.y / AEGfxGetWinMaxY(), 1.f, 0.f, 0.f, 0.f);
+	}
+
 	// DRAW TEXT
+	player_capacity = "Capacity: " + std::to_string(player.current_capacity) + " / " + std::to_string(player.max_capacity);
+	print_string = player_capacity.c_str();
 	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.5f, 0.75f, 1.f, 1.f, 1.f, 1.f);
 }
 

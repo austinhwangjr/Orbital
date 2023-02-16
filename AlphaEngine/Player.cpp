@@ -125,7 +125,7 @@ void Player::update(f64 frame_time)
 		else player_leave_orbit = true;
 		if (AEInputCheckCurr(AEVK_W) && player_leave_orbit) {
 
-			//player.position.x = player.current_planet.position.x + ((player.position.x - player.current_planet.position.x) * 1.6f);
+			//player.position.x = player.current_planet.position.x + ((player.position.x - player.currenat_planet.position.x) * 1.6f);
 			//player.position.y = player.current_planet.position.y + ((player.position.y - player.current_planet.position.y) * 1.6f);
 
 			player.position.x += player.direction.x;
