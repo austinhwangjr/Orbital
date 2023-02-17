@@ -101,6 +101,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.09\lib\fmod.dll" "$(OutDir)" /s /r /y
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Debris.cpp" />
+    <ClCompile Include="Drone.cpp" />
     <ClCompile Include="GameStateManager.cpp" />
     <ClCompile Include="Global.cpp" />
     <ClCompile Include="Graphics.cpp" />
@@ -111,6 +112,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.09\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Planet.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerUI.cpp" />
     <ClCompile Include="SplashScreen.cpp" />
     <ClCompile Include="Shuttle.cpp" />
     <ClCompile Include="Systems.cpp" />
@@ -118,6 +120,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.09\lib\fmod.dll" "$(OutDir)" /s /r /y
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Debris.h" />
+    <ClInclude Include="Drone.h" />
     <ClInclude Include="GameStateManager.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="Graphics.h" />
@@ -128,6 +131,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.09\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClInclude Include="pch.h" />
     <ClInclude Include="Planet.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerUI.h" />
     <ClInclude Include="SplashScreen.h" />
     <ClInclude Include="Shuttle.h" />
     <ClInclude Include="Systems.h" />

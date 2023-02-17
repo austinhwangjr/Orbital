@@ -46,6 +46,12 @@
     <ClCompile Include="WaveManager.cpp">
       <Filter>Source\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerUI.cpp">
+      <Filter>Source\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Drone.cpp">
+      <Filter>Source\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Global.h">
@@ -91,6 +97,12 @@
       <Filter>Header\Objects</Filter>
     </ClInclude>
     <ClInclude Include="WaveManager.h">
+      <Filter>Header\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerUI.h">
+      <Filter>Header\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Drone.h">
       <Filter>Header\Objects</Filter>
     </ClInclude>
   </ItemGroup>

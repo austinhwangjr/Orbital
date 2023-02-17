@@ -20,6 +20,8 @@ Technology is prohibited.
 #include <iostream>
 #include "Planet.h"
 #include "Player.h"
+#include "PlayerUI.h"
+#include "Drone.h"
 #include "Shuttle.h"
 #include "Debris.h"
 #include "WaveManager.h"
@@ -38,8 +40,11 @@ AEGfxVertexList* pMesh;
 // test variables
 f64 total_time{}, frame_time{};
 
-extern Player player;
+
+Player player;
 Planets planet;
+PlayerUI player_ui;
+Drone drone;
 extern Debris debris;
 Shuttles shuttle;
 extern WaveManager wave_manager;
@@ -54,6 +59,8 @@ void main_level::load()
 	// load texture
 	planet.load();
 	player.load();
+	player_ui.load();
+	drone.load();
 	debris.load();
 	shuttle.load();
 	wave_manager.load();
@@ -77,6 +84,8 @@ void main_level::init()
 
 	planet.init();
 	player.init();
+	player_ui.init();
+	drone.init(player);
 	shuttle.init();
 	debris.init();
 	wave_manager.init();
@@ -123,6 +132,8 @@ void main_level::update()
 
 	planet.update(frame_time);
 	player.update(frame_time);
+	player_ui.update(frame_time, player);
+	drone.update(frame_time, player, player_ui);
 	shuttle.update(frame_time);
 	debris.update(frame_time);
 	wave_manager.update(frame_time);
@@ -170,7 +181,9 @@ void main_level::draw()
 	debris.draw(pMesh);
 	shuttle.draw(pMesh);
 	wave_manager.draw(pMesh);
-	
+
+	player_ui.draw(pMesh, player);
+	drone.draw(pMesh, player_ui);
 	AESysFrameEnd();
 }
 
@@ -182,6 +195,8 @@ void main_level::free()
 {
 	planet.free();
 	player.free();
+	player_ui.free();
+	drone.free();
 	shuttle.free();
 	debris.free();
 	wave_manager.free();
@@ -197,8 +212,9 @@ void main_level::unload()
 {
 	planet.unload();
 	player.unload();
+	player_ui.unload();
+	drone.unload();
 	shuttle.unload();
 	debris.unload();
 	wave_manager.unload();
-
 }
