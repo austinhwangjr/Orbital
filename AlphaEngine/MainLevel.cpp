@@ -36,15 +36,12 @@ s8 fontID;
 AEGfxVertexList* pMesh;
 
 // test variables
-f64* pTime;
 f64 total_time{}, frame_time{};
 
-
-int wave;
 extern Player player;
 Planets planet;
 extern Debris debris;
-extern Shuttles shuttle;
+Shuttles shuttle;
 extern WaveManager wave_manager;
 
 // ----------------------------------------------------------------------------
@@ -78,8 +75,6 @@ void main_level::init()
 	// Pointer to Mesh
 	pMesh = 0;
 
-	// Ryan's stuff
-
 	planet.init();
 	player.init();
 	shuttle.init();
@@ -87,9 +82,6 @@ void main_level::init()
 	wave_manager.init();
 
 	total_time = 0.0;
-	pTime = nullptr;
-
-	wave = 0;
 
 	// Informing the library that we're about to start adding triangles 
 	AEGfxMeshStart();
@@ -117,11 +109,6 @@ void main_level::init()
 // It updates game logic/behaviour
 // ----------------------------------------------------------------------------
 
-void add_wave() {
-	total_time = 0;
-	wave++;
-}
-
 void main_level::update()
 {
 	// Informing the system about the loop's start
@@ -134,20 +121,11 @@ void main_level::update()
 	frame_time = AEFrameRateControllerGetFrameTime();
 	total_time += frame_time;
 
-	wave_manager.update(frame_time);
 	planet.update(frame_time);
 	player.update(frame_time);
 	shuttle.update(frame_time);
 	debris.update(frame_time);
-
-	// Add new wave
-	//std::cout << "Time: " << total_time << ", current wave: " << wave << '\n';
-
-	//print_string = "Time";
-
-	if (total_time >= 5) {
-		add_wave();
-	}
+	wave_manager.update(frame_time);
 
 	// Testing
 	/*
@@ -189,8 +167,8 @@ void main_level::draw()
 
 	planet.draw(pMesh);
 	player.draw(pMesh);
-	shuttle.draw(pMesh);
 	debris.draw(pMesh);
+	shuttle.draw(pMesh);
 	wave_manager.draw(pMesh);
 	
 	AESysFrameEnd();

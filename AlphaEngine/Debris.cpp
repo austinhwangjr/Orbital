@@ -64,6 +64,7 @@ void Debris::update(f64 frame_time)
 					wave_manager.shuttle_has_collided = true;
 					wave_manager.shuttle_left_planet++;
 					debris_vector_all[j].erase(debris_vector_all[j].begin() + k);
+					shuttle_vector[i].active = false;
 					shuttle_vector.erase(shuttle_vector.begin()+i);
 
 					spawn_debris(5, j);
@@ -111,6 +112,7 @@ void Debris::draw(AEGfxVertexList* pMesh)
 		for (size_t i = 0; i < debris_vector_all[j].size(); i++) {
 			if (debris_vector_all[j][i].active)
 			{
+				//AEGfxSetTransparency(1.0f);
 				AEMtx33Scale(&debris_vector_all[j][i].scale, debris_vector_all[j][i].scale_x, debris_vector_all[j][i].scale_y);
 
 				AEMtx33Rot(&debris_vector_all[j][i].rotate, AEDegToRad(debris_vector_all[j][i].angle));

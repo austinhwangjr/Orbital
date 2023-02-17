@@ -10,11 +10,6 @@ extern WaveManager wave_manager;
 extern Shuttles shuttle;
 extern Debris debris;
 
-//Debris debris_init;
-
-int x_max, y_max;
-int planet_count{};
-
 void Planets::load()
 {
 	planet_tex = AEGfxTextureLoad("Assets/PlanetTexture.png");
@@ -23,31 +18,26 @@ void Planets::load()
 void Planets::init()
 {
 	srand(5);
-
-	planet_count = 0;
-	x_max = 1400, y_max = 700;
-	max_shuttle = 3;
-	current_shuttle = 0;
-
-	// debris
-	current_debris = 0;
 }
 
 void Planets::update(f64 frame_time)
 {
 	for (size_t i{}; i < planet_vector.size(); i++)
 	{
-		if (planet_vector[i].shuttle_timer > planet_vector[i].shuttle_time_to_spawn)
+		if (!planet_vector[i].wave_complete)
 		{
-			planet_vector[i].shuttle_timer = 0.0;
-			planet_vector[i].shuttle_time_to_spawn = static_cast<f64>(rand() % TIME_TO_SPAWN + 1);
-		}
-		planet_vector[i].shuttle_timer += frame_time;
+			if (planet_vector[i].shuttle_timer > planet_vector[i].shuttle_time_to_spawn)
+			{
+				planet_vector[i].shuttle_timer = 0.0;
+				planet_vector[i].shuttle_time_to_spawn = static_cast<f64>(rand() % TIME_TO_SPAWN + MIN_SHUTTLE_TIME);
+			}
+			planet_vector[i].shuttle_timer += frame_time;
 
-		if (!planet_vector[i].wave_complete && planet_vector[i].shuttle_timer >= planet_vector[i].shuttle_time_to_spawn)
-		{
-			shuttle.Shuttles::spawn(planet_vector[i].id);
-			planet_vector[i].current_shuttle--;
+			if (planet_vector[i].shuttle_timer >= planet_vector[i].shuttle_time_to_spawn)
+			{
+				shuttle.Shuttles::spawn(planet_vector[i].id);
+				planet_vector[i].current_shuttle--;
+			}
 		}
 	}
 }
@@ -97,17 +87,21 @@ void Planets::spawn(int shuttle_randomize_amount)
 	AEMtx33Scale(&new_planet.scale, new_planet.size, new_planet.size);
 	AEMtx33Rot(&new_planet.rotate, PI / 4);
 
-	new_planet.position.x = static_cast<f32>(rand() % (x_max + 1) - x_max / 2);
-	new_planet.position.y = static_cast<f32>(rand() % (y_max + 1) - y_max / 2);
+	AEVec2Set(&new_planet.position,
+		static_cast<f32>(rand() % (static_cast<int>(AEGfxGetWinMaxX()) + 1) - AEGfxGetWinMaxX() / 2),
+		static_cast<f32>(rand() % (static_cast<int>(AEGfxGetWinMaxY()) + 1) - AEGfxGetWinMaxY() / 2));
 
 	// Re-randomize new planet position if too close to another planet
 	for (int i{}; i < wave_manager.planet_count; i++)
 	{
+		//std::cout << "Distance" << AEVec2Distance(&planet_vector[i].position, &new_planet.position) << '\n';
+		//std::cout << "Radius" << (planet_vector[i].size + new_planet.size) << '\n';
 		if (AEVec2Distance(&planet_vector[i].position, &new_planet.position) < (planet_vector[i].size + new_planet.size))
 		{
-			new_planet.position.x = static_cast<f32>(rand() % (x_max + 1) - x_max / 2);
-			new_planet.position.y = static_cast<f32>(rand() % (y_max + 1) - y_max / 2);
-			i = 0;
+			AEVec2Set(&new_planet.position,
+				static_cast<f32>(rand() % (static_cast<int>(AEGfxGetWinMaxX()) + 1) - AEGfxGetWinMaxX() / 2),
+				static_cast<f32>(rand() % (static_cast<int>(AEGfxGetWinMaxY()) + 1) - AEGfxGetWinMaxY() / 2));
+			(1 == wave_manager.planet_count) ? i-- : i = 0;
 		}
 	}
 
@@ -117,12 +111,11 @@ void Planets::spawn(int shuttle_randomize_amount)
 // SETTING POSITION / TRANSFORM FOR PLANETS---------------------------------------------------------------------------------------------------
 
 	new_planet.shuttle_timer = 0.0;
-	new_planet.shuttle_time_to_spawn = static_cast<f64>(rand() % TIME_TO_SPAWN + 1);
+	new_planet.shuttle_time_to_spawn = static_cast<f64>(rand() % TIME_TO_SPAWN + MIN_SHUTTLE_TIME);
 	new_planet.shuttle_spawn_pos.x = new_planet.position.x;
 	new_planet.shuttle_spawn_pos.y = new_planet.position.y;
 
 	new_planet.debris_vector = debris.Debris::create_debris(new_planet.position.x, new_planet.position.y, new_planet.size, new_planet.max_debris);
 
 	planet_vector.push_back(new_planet);
-	//if (planet_count < MAX_PLANET) planet_count++;
 }

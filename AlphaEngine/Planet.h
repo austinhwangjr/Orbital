@@ -1,6 +1,7 @@
 #pragma once
 
-#define TIME_TO_SPAWN 10
+#define TIME_TO_SPAWN 5
+#define MIN_SHUTTLE_TIME 3
 
 #include "Debris.h"
 #include <vector>
@@ -49,6 +50,3 @@ struct Planets
 
 	void spawn(int shuttle_randomize_amount);
 };
-
-extern std::vector<Planets> planet_vector;
-extern AEGfxTexture* planet_tex;

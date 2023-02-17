@@ -7,7 +7,7 @@ WaveManager wave_manager;
 // Text
 s8 font_id;
 const char* print_string;
-std::string player_capacity;
+std::string str_player_capacity; std::string str_wave_complete;
 
 void WaveManager::load()
 {
@@ -22,6 +22,7 @@ void WaveManager::init()
 
 	wave_completed = false;
 	wave_number = 1;
+	wave_interval_timer = 0;
 
 	planet_count = 0;
 	planet_spawn_interval = 3;
@@ -34,7 +35,8 @@ void WaveManager::init()
 	planet.Planets::spawn(rand() % INITIAL_SHUTTLE + 1);
 	planet_count++;
 
-	std::cout << "Wave " << wave_number << " has begun." << '\n';
+	std::cout << "Wave " << wave_number << " has begun." << '\t';
+	std::cout << "Planet Count: " << planet_count << '\n';
 }
 
 void WaveManager::update(f64 frame_time)
@@ -55,6 +57,16 @@ void WaveManager::update(f64 frame_time)
 		shuttle_has_collided = false;
 	}
 
+	// Add Planets at Intervals
+	if ((planet_count < MAX_PLANET) && (planet_count * planet_spawn_interval) == wave_number)
+	{
+		planet.Planets::spawn(rand() % INITIAL_SHUTTLE + 1);
+		planet_count++;
+
+		std::cout << '\n' << "Wave " << wave_number << '\t' << "Added Planet." << '\t';
+		std::cout << "Planet Count: " << planet_count << '\n';
+	}
+
 	// Check Wave Progress
 	for (size_t i{}; i < planet_vector.size(); i++)
 	{
@@ -62,47 +74,40 @@ void WaveManager::update(f64 frame_time)
 		{
 			planet_vector[i].wave_complete = true;
 			wave_progress++;
-
-			//std::cout << '\n' << "Wave Progress: " << wave_progress << "/" << planet_count << '\n';
-
-			// Check for completion of Wave
-			if (wave_progress == planet_count)
-			{
-				wave_completed = true;
-				std::cout << '\n' << "Wave " << wave_number << " Completed." << '\n';
-			}
 		}
 	}
 
-	// Add Planets at Intervals
-	if ((planet_count < MAX_PLANET) && (planet_count * planet_spawn_interval) == wave_number)
+	// Check for completion of Wave
+	if (wave_progress == planet_count && no_more_shuttles())
 	{
-		std::cout << '\n' << "Wave " << wave_number << '\t' << "Added Planet." << '\t';
+		wave_completed = true;
+		str_wave_complete = "Wave " + std::to_string(wave_number) + " Completed";
+	}
 
-		planet.Planets::spawn(rand() % INITIAL_SHUTTLE + 1);
-		planet_count++;
-
-		std::cout << "Planet Count: " << planet_count << '\n';
+	if (wave_completed)
+	{
+		wave_interval_timer += frame_time;
 	}
 
 // START OF NEW WAVE-----------------------------------------------------
-	if (wave_completed)
+	if (wave_completed && wave_interval_timer >= WAVE_INTERVAL_TIME)
 	{
 		for (size_t i{}; i < planet_vector.size(); i++)
 		{
+			// If not at max number of shuttles, increment max number for each planet
 			if (planet_vector[i].max_shuttle <= MAX_SHUTTLE)
 			{
 				planet_vector[i].max_shuttle += shuttle_increase_amount;
 			}
-			planet_vector[i].current_shuttle = planet_vector[i].max_shuttle;
-			planet_vector[i].wave_complete = false;
+			planet_vector[i].current_shuttle = planet_vector[i].max_shuttle;	// Set current shuttles to be max at start of wave
+			planet_vector[i].wave_complete = false;								// Reset planet wave complete flag
 		}
 
-		shuttle_left_planet = 0;
-
-		wave_completed = false;
-		wave_progress = 0;
-		wave_number++;
+		shuttle_left_planet = 0;	// Reset number of shuttles successfully escaped during wave
+		wave_completed = false;		// Reset wave complete flag
+		wave_progress = 0;			// Reset wave progress to 0
+		wave_number++;				// Increment wave number
+		wave_interval_timer = 0;	// Reset wave interval timer
 
 		std::cout << '\n' << "Wave " << wave_number << " has begun." << '\t';
 		for (size_t i{}; i < planet_vector.size(); i++)
@@ -123,12 +128,19 @@ void WaveManager::draw(AEGfxVertexList *pMesh)
 		print_string = timer.c_str();
 		AEGfxPrint(font_id, const_cast<s8*>(print_string), 
 			planet_vector[i].position.x / AEGfxGetWinMaxX(),
-			planet_vector[i].position.y / AEGfxGetWinMaxY(), 1.f, 0.f, 0.f, 0.f);
+			planet_vector[i].position.y / AEGfxGetWinMaxY(),
+			1.f, planet_vector[i].shuttle_timer * 1.5 / planet_vector[i].shuttle_time_to_spawn, 0.f, 0.f);
+	}
+
+	if (wave_interval_timer <= WAVE_INTERVAL_TIME)
+	{
+		print_string = str_wave_complete.c_str();
+		AEGfxPrint(font_id, const_cast<s8*>(print_string), -0.2f, 0.85f + abs((WAVE_INTERVAL_TIME - (wave_interval_timer * 2)) / WAVE_INTERVAL_TIME) * 0.2f, 1.f, 1.f, 1.f, 1.f);
 	}
 
 	// DRAW TEXT
-	player_capacity = "Capacity: " + std::to_string(player.current_capacity) + " / " + std::to_string(player.max_capacity);
-	print_string = player_capacity.c_str();
+	str_player_capacity = "Capacity: " + std::to_string(player.current_capacity) + " / " + std::to_string(player.max_capacity);
+	print_string = str_player_capacity.c_str();
 	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.5f, 0.75f, 1.f, 1.f, 1.f, 1.f);
 }
 
@@ -150,4 +162,14 @@ int WaveManager::get_total_shuttles()
 		total_shuttles += planet_vector[i].max_shuttle;
 	}
 	return total_shuttles;
+}
+
+bool WaveManager::no_more_shuttles()
+{
+	bool check = false;
+	for (size_t i{}; i < shuttle_vector.size(); i++)
+	{
+		check = (shuttle_vector[i].active) ? false : true;
+	}
+	return check;
 }

@@ -1,8 +1,9 @@
 #pragma once
-#define PLANET_SIZE 100.0f
+#define PLANET_SIZE 150.0f
 #define MAX_PLANET 10
 #define MAX_SHUTTLE 6
 #define INITIAL_SHUTTLE 4
+#define WAVE_INTERVAL_TIME 3
 
 #include "AEEngine.h"
 #include "Player.h"
@@ -14,6 +15,7 @@ struct WaveManager
 	int wave_number;
 	int wave_progress;
 	bool wave_completed;
+	f64 wave_interval_timer;
 
 	int shuttle_left_planet;
 	int shuttle_increase_amount;
@@ -34,6 +36,7 @@ struct WaveManager
 
 	//void set_shuttle_max(std::vector<Planets> planet_vector, int max_shuttle);
 	int get_total_shuttles();
+	bool no_more_shuttles();
 };
 
 extern Player player;

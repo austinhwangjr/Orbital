@@ -1,12 +1,8 @@
 #include "AEEngine.h"
 #include "Shuttle.h"
-#include "Planet.h"
 #include "WaveManager.h"
 #include <cmath>
 
-#include <iostream>
-
-Shuttles shuttle;
 AEGfxTexture* shuttle_tex;
 std::vector<Shuttles> shuttle_vector;
 
@@ -28,8 +24,16 @@ void Shuttles::update(f64 frame_time)
 	{
 		if (shuttle_vector[i].active)
 		{
-			shuttle_vector[i].position.x += shuttle_vector[i].speed * shuttle_vector[i].vector.x * frame_time;
-			shuttle_vector[i].position.y += shuttle_vector[i].speed * shuttle_vector[i].vector.y * frame_time;
+			AEVec2 added{};
+
+			AEVec2Add(&added, &added, &shuttle_vector[i].direction);
+			AEVec2Scale(&added, &added, shuttle_vector[i].acceleration * frame_time);
+			AEVec2Add(&shuttle_vector[i].velocity, &added, &shuttle_vector[i].velocity);
+
+			AEVec2Scale(&shuttle_vector[i].velocity, &shuttle_vector[i].velocity, 0.99f);
+
+			shuttle_vector[i].position.x += shuttle_vector[i].velocity.x * frame_time;
+			shuttle_vector[i].position.y += shuttle_vector[i].velocity.y * frame_time;
 			
 			AEMtx33Trans(&shuttle_vector[i].translate, shuttle_vector[i].position.x, shuttle_vector[i].position.y);
 			AEMtx33Concat(&shuttle_vector[i].transform, &shuttle_vector[i].rotate, &shuttle_vector[i].scale);
@@ -57,11 +61,17 @@ void Shuttles::draw(AEGfxVertexList* pMesh)
 	{
 		if (shuttle_vector[i].active)
 		{
+			if (shuttle_vector[i].lifespan <= SHUTTLE_MAX_LIFESPAN / 2.f)
+			{
+				AEGfxSetTransparency(shuttle_vector[i].lifespan / (SHUTTLE_MAX_LIFESPAN / 2.0f));
+			}
 			AEGfxSetTransform(shuttle_vector[i].transform.m);
 			// Actually drawing the mesh
 			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 		}
 	}
+
+	AEGfxSetTransparency(1.0f);
 }
 
 void Shuttles::free()
@@ -76,27 +86,26 @@ void Shuttles::unload()
 
 void Shuttles::spawn(int planet_id)
 {
-	Shuttles* new_shuttle{ new Shuttles };
+	Shuttles new_shuttle;
 
-	new_shuttle->lifespan = 2;
-	new_shuttle->speed = 100;
+	new_shuttle.lifespan = SHUTTLE_MAX_LIFESPAN;
+	new_shuttle.acceleration = SHUTTLE_MAX_ACCEL;
 
-	new_shuttle->active = true;
+	new_shuttle.active = true;
 
-	new_shuttle->position.x = planet_vector[planet_id].shuttle_spawn_pos.x;
-	new_shuttle->position.y = planet_vector[planet_id].shuttle_spawn_pos.y;
+	AEVec2Zero(&new_shuttle.velocity);
+
+	new_shuttle.position.x = planet_vector[planet_id].shuttle_spawn_pos.x;
+	new_shuttle.position.y = planet_vector[planet_id].shuttle_spawn_pos.y;
 
 	f32 rand_angle = AERandFloat() * (2 * PI);
+	new_shuttle.direction.x = cos(rand_angle);
+	new_shuttle.direction.y = sin(rand_angle);
 
-	std::cout << rand_angle;
+	new_shuttle.planet_id = planet_id;
 
-	new_shuttle->vector.x = cos(rand_angle);
-	new_shuttle->vector.y = sin(rand_angle);
+	AEMtx33Scale(&new_shuttle.scale, 20.f, 20.f);
+	AEMtx33Rot(&new_shuttle.rotate, PI / 2 + rand_angle);
 
-	new_shuttle->planet_id = planet_id;
-
-	AEMtx33Scale(&new_shuttle->scale, 20.f, 20.f);
-	AEMtx33Rot(&new_shuttle->rotate, PI / 2 + rand_angle);
-
-	shuttle_vector.push_back(*new_shuttle);
+	shuttle_vector.push_back(new_shuttle);
 }

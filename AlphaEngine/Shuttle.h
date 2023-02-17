@@ -1,20 +1,23 @@
 #pragma once
-#include "AEEngine.h"
+
+#define SHUTTLE_MAX_LIFESPAN 3.f
+#define SHUTTLE_MAX_ACCEL 100.f
+
 #include <vector>
 
 struct Shuttles
 {
 	AEVec2 position;
-	AEVec2 vector;
+	AEVec2 direction;
+	AEVec2 velocity;
 	AEMtx33 scale;
 	AEMtx33 rotate;
 	AEMtx33 translate;
 	AEMtx33 transform;
 	f64 lifespan;
-	double speed;
+	double acceleration;
 	double value;
 	bool active;
-
 	int planet_id;
 
 	void load();
@@ -26,6 +29,3 @@ struct Shuttles
 	
 	void spawn(int planet_id);
 };
-
-extern std::vector<Shuttles> shuttle_vector;
-extern AEGfxTexture* shuttle_tex;
