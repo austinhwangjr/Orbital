@@ -38,7 +38,7 @@ void Shuttles::update(f64 frame_time)
 			AEMtx33Trans(&shuttle_vector[i].translate, shuttle_vector[i].position.x, shuttle_vector[i].position.y);
 			AEMtx33Concat(&shuttle_vector[i].transform, &shuttle_vector[i].rotate, &shuttle_vector[i].scale);
 			AEMtx33Concat(&shuttle_vector[i].transform, &shuttle_vector[i].translate, &shuttle_vector[i].transform);
-			
+
 			// If shuttle escapes
 			if (shuttle_vector[i].lifespan <= 0)
 			{

@@ -4,6 +4,7 @@
 #define MAX_SHUTTLE 6
 #define INITIAL_SHUTTLE 4
 #define WAVE_INTERVAL_TIME 3
+#define MAX_DEBRIS 20
 
 #include "AEEngine.h"
 #include "Player.h"

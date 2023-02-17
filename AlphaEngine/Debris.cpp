@@ -14,9 +14,7 @@ extern WaveManager wave_manager;
 
 std::vector<std::vector<Debris>> debris_vector_all;
 
-//enum { num_stone=20 };
-//float planet_radius = 50.f;
-//float space = 20.f;
+
 extern int planet_count;
 
 static f64 elapsed_time{};
@@ -42,7 +40,7 @@ void Debris::update(f64 frame_time)
 {
 	for (int j = 0; j < debris_vector_all.size(); j++) {
 		for (size_t i = 0; i < debris_vector_all[j].size(); i++) {
-			debris_vector_all[j][i].angle -= 0.5f;
+			debris_vector_all[j][i].angle -= 0.125f;
 
 			debris_vector_all[j][i].position.x = planet_vector[j].position.x + ((planet_vector[j].size/2)+20) * AECos(AEDegToRad(debris_vector_all[j][i].angle));
 			debris_vector_all[j][i].position.y = planet_vector[j].position.y + ((planet_vector[j].size/2)+20) * AESin(AEDegToRad(debris_vector_all[j][i].angle));
@@ -67,7 +65,7 @@ void Debris::update(f64 frame_time)
 					shuttle_vector[i].active = false;
 					shuttle_vector.erase(shuttle_vector.begin()+i);
 
-					spawn_debris(5, j);
+					spawn_debris(2, j);
 					break;
 				}
 			}
@@ -77,29 +75,100 @@ void Debris::update(f64 frame_time)
 }
 
 
-/// new function
+AEVec2 distance_from_radius(AEVec2 planet_radius, AEVec2 position, int planet_id) { //position of shuttle
+	double radius=0;
+	double radius_x;
+	double radius_y;
+	for (int i = 0; i < debris_vector_all[planet_id].size(); i++) {
+		radius_x = pow((debris_vector_all[planet_id][i].position.x - planet_vector[planet_id].position.x), 2);
+		radius_y = pow((debris_vector_all[planet_id][i].position.y - planet_vector[planet_id].position.y), 2);
+		radius = sqrt((radius_x + radius_y));
+	}
+
+	if (AEVec2Distance(&planet_radius, &position) > radius) {
+		return position;
+	}
+	
+}
+
+/// new function (Ensure that there is no overlap of debris when spawn)
 void spawn_debris(int num_of_debris, int planet_id) {
-	srand(3);
-	for (int k = 0; k <= num_of_debris; k++)
-	{
-		Debris new_debris;
+	if (debris_vector_all[planet_id].size() + num_of_debris < MAX_DEBRIS) {
+		srand(3);
 
-		new_debris.id = debris_vector_all[planet_id].size() + 1;
-		new_debris.angle = rand() * 40;
-		new_debris.scale_x = 15.f;
-		new_debris.scale_y = 15.f;
-		//new_debris.dist_from_planet = planet_radius + space;
-		new_debris.position.x = planet_vector[planet_id].position.x + ((planet_vector[planet_id].size / 2) + 20) * AECos(AEDegToRad(new_debris.angle));
-		new_debris.position.y = planet_vector[planet_id].position.y + ((planet_vector[planet_id].size / 2) + 20) * AESin(AEDegToRad(new_debris.angle));
-		new_debris.turning_speed = speed;
-		new_debris.active = true;
+		//for (int k = 0; k <= num_of_debris; k++)
+		//{
+		//	Debris new_debris;
 
-		new_debris.scale = { 0 };
-		new_debris.rotate = { 0 };
-		new_debris.translate = { 0 };
-		new_debris.transform = { 0 };
+		//	new_debris.id = debris_vector_all[planet_id].size() + 1;
+		//	new_debris.angle = rand() * 40;
+		//	new_debris.scale_x = 15.f;
+		//	new_debris.scale_y = 15.f;
+		//	//new_debris.dist_from_planet = planet_radius + space;
+		//	new_debris.position.x = planet_vector[planet_id].position.x + ((planet_vector[planet_id].size / 2) + 20) * AECos(AEDegToRad(new_debris.angle));
+		//	new_debris.position.y = planet_vector[planet_id].position.y + ((planet_vector[planet_id].size / 2) + 20) * AESin(AEDegToRad(new_debris.angle));
+		//	new_debris.turning_speed = speed;
+		//	new_debris.active = true;
 
-		debris_vector_all[planet_id].push_back(new_debris);
+		//	new_debris.scale = { 0 };
+		//	new_debris.rotate = { 0 };
+		//	new_debris.translate = { 0 };
+		//	new_debris.transform = { 0 };
+
+		//	debris_vector_all[planet_id].push_back(new_debris);
+		//}
+		int safe = 0;
+		int not_collide = 0;
+		int current_count = 0;
+		while (current_count != num_of_debris) {
+			
+			Debris new_debris;
+			new_debris.angle = rand();
+			new_debris.position.x = planet_vector[planet_id].position.x + ((planet_vector[planet_id].size / 2) + 20) * AECos(AEDegToRad(new_debris.angle));
+			new_debris.position.y = planet_vector[planet_id].position.y + ((planet_vector[planet_id].size / 2) + 20) * AESin(AEDegToRad(new_debris.angle));
+
+			AEVec2 coll_debris_pos;
+			coll_debris_pos.x = new_debris.position.x;
+			coll_debris_pos.y = new_debris.position.y;
+
+			
+			for (int k = 0; k < debris_vector_all[planet_id].size(); ++k) {
+				if (AEVec2Distance(&coll_debris_pos, &debris_vector_all[planet_id][k].position) >= 8) { //if its colliding when it spawn with nearest debris
+					safe += 1;
+				}
+					
+			}
+			
+			if (safe == debris_vector_all[planet_id].size()) {
+				not_collide = 1;
+			}
+			else {
+				safe = 0;
+
+			}
+
+			
+			if (not_collide == 1) {
+				current_count += 1;
+				new_debris.id = debris_vector_all[planet_id].size() + 1;
+				new_debris.scale_x = 15.f;
+				new_debris.scale_y = 15.f;
+				new_debris.turning_speed = speed;
+				new_debris.active = true;
+
+				new_debris.scale = { 0 };
+				new_debris.rotate = { 0 };
+				new_debris.translate = { 0 };
+				new_debris.transform = { 0 };
+
+				debris_vector_all[planet_id].push_back(new_debris);
+				not_collide = 0;
+				
+			}
+
+		}
+
+
 	}
 }
 
