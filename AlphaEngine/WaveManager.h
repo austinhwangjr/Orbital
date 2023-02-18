@@ -10,6 +10,8 @@
 #include "Player.h"
 #include "Planet.h"
 #include "Shuttle.h"
+#include "Camera.h"
+#include "Global.h"
 
 struct WaveManager
 {
@@ -42,5 +44,6 @@ struct WaveManager
 
 extern Player player;
 extern Planets planet;
+extern Camera camera;
 extern std::vector<Planets> planet_vector;
 extern std::vector<Shuttles> shuttle_vector;

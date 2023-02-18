@@ -43,7 +43,7 @@ struct Planets
 
 	void load();
 	void init();
-	void update(f64 elapsed_time);
+	void update(f64 frame_time);
 	void draw(AEGfxVertexList* pMesh);
 	void free();
 	void unload();

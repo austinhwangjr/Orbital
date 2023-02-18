@@ -90,6 +90,7 @@ void Shuttles::spawn(int planet_id)
 
 	new_shuttle.lifespan = SHUTTLE_MAX_LIFESPAN;
 	new_shuttle.acceleration = SHUTTLE_MAX_ACCEL;
+	new_shuttle.value = SHUTTLE_VALUE;
 
 	new_shuttle.active = true;
 

@@ -24,6 +24,7 @@ Technology is prohibited.
 #include "Drone.h"
 #include "Shuttle.h"
 #include "Debris.h"
+#include "Camera.h"
 #include "WaveManager.h"
 
 int g_game_running;
@@ -45,6 +46,7 @@ Player player;
 Planets planet;
 PlayerUI player_ui;
 Drone drone;
+Camera camera;
 extern Debris debris;
 Shuttles shuttle;
 extern WaveManager wave_manager;
@@ -84,6 +86,7 @@ void main_level::init()
 
 	planet.init();
 	player.init();
+	camera.init(player);
 	player_ui.init();
 	drone.init(player);
 	shuttle.init();
@@ -132,6 +135,7 @@ void main_level::update()
 
 	planet.update(frame_time);
 	player.update(frame_time);
+	camera.update(frame_time, player);
 	player_ui.update(frame_time, player);
 	drone.update(frame_time, player, player_ui);
 	shuttle.update(frame_time);
