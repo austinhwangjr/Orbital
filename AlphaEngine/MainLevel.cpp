@@ -121,10 +121,10 @@ void main_level::init()
 void main_level::update()
 {
 	// Informing the system about the loop's start
-	AESysFrameStart();
+	//AESysFrameStart();
 
-	// Handling Input
-	AEInputUpdate();
+	//// Handling Input
+	//AEInputUpdate();
 
 	// Your own update logic goes here
 	frame_time = AEFrameRateControllerGetFrameTime();
@@ -184,7 +184,7 @@ void main_level::draw()
 
 	player_ui.draw(pMesh, player);
 	drone.draw(pMesh, player_ui);
-	AESysFrameEnd();
+	/*AESysFrameEnd();*/
 }
 
 // ----------------------------------------------------------------------------

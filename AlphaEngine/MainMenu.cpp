@@ -60,9 +60,6 @@ void main_menu::init()
 void main_menu::update()
 {
     //std::cout << "GameState: " << current_state << std::endl;
-    AESysFrameStart();
-
-    AEInputUpdate();
 
     startButton.update();
 
@@ -75,13 +72,11 @@ void main_menu::update()
 
 void main_menu::draw()
 {
-
     // Clear the screen
     AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
     startButton.draw(pMesh1);
 
-    AESysFrameEnd();
     //std::cout << "--------------------main_menu::draw completed--------------------" << std::endl;
     
 }

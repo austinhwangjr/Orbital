@@ -38,6 +38,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// While the current game state is not equal to the quit state
 	while (current_state != GS_QUIT)
 	{
+		// reset the system modules
+		AESysReset();
+
 		// If the current game state is not equal to the restart state
 		if (current_state != GS_RESTART)
 		{
@@ -56,8 +59,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		while (next_state == current_state)
 		{
 			input_handle();     // Update input status
+
+			AESysFrameStart();
+
+			AEInputUpdate();
+
 			fpUpdate();         // Update current game state
 			fpDraw();           // Render current game state
+
+			AESysFrameEnd();
 		}
 
 		// debugging log for mainmenu -yy
