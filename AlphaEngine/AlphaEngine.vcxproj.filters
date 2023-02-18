@@ -52,6 +52,9 @@
     <ClCompile Include="Drone.cpp">
       <Filter>Source\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="StartButton.cpp">
+      <Filter>Source\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Global.h">
@@ -103,6 +106,9 @@
       <Filter>Header\Objects</Filter>
     </ClInclude>
     <ClInclude Include="Drone.h">
+      <Filter>Header\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="StartButton.h">
       <Filter>Header\Objects</Filter>
     </ClInclude>
   </ItemGroup>

@@ -7,8 +7,7 @@
 #include "GameStateManager.h"
 #include "Systems.h"
 #include "Input.h"
-
-
+#include <memory>
 
 // ---------------------------------------------------------------------------
 // main
@@ -21,9 +20,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
+	// Enable run-time memory check for debug builds.
+	#if defined(DEBUG) | defined(_DEBUG)
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	#endif
+
 	system_call::init(hInstance, nCmdShow);																		// Initialize the system
 
+	// debugging log for mainmenu -yy
+	AEGfxReset();											// Reset the graphics engine before initializing the game state manager
+	
+	// Initialize the game state manager with the starting state
 	gsm::init(GS_MAINMENU);
+
 	//gsm::init(GS_MAINLEVEL);																					// Initialize the Game State Manager (GSM) with Level1 as the initial game state
 
 	// While the current game state is not equal to the quit state
@@ -50,6 +59,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			fpUpdate();         // Update current game state
 			fpDraw();           // Render current game state
 		}
+
+		// debugging log for mainmenu -yy
+		//AEGfxReset();				// Reset graphics context
 
 		fpFree();               // Free current game state
 

@@ -5,135 +5,93 @@
 #include "Global.h"
 #include "GameStateManager.h"
 
-#include "MainMenu.h"
-#include "Global.h"
-#include "Systems.h"
-#include "iostream"
+#include "mainmenu.h"
+#include "AEEngine.h"
+#include <iostream>
+#include "StartButton.h"
 
-static float texWidth = 100.0f;
-static float texHeight = 50.0f;
+AEGfxVertexList* pMesh1;
 
-AEGfxVertexList* startButtonMesh;
-AEGfxTexture* startButtonTex;
+Start_Button startButton;
+//s8 fontID;
 
 void main_menu::load()
 {
-	startButtonTex = AEGfxTextureLoad("Assets/start_test.png");
+    startButton.load();
+    std::cout << "--------------------main_menu::load completed--------------------" << std::endl;
+
+    // Font for text
+    //fontID = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
 }
 
 void main_menu::init()
 {
-	startButtonMesh = 0;
+    //pMesh1 = 0;
 
-	// Calculate the size of the texture in screen space
-	float texWidth = 100.0f / (float)g_windowWidth * 2.0f;
-	float texHeight = 50.0f / (float)g_windowHeight * -2.0f;
+    startButton.init();
 
-	// Quad Mesh Code Start
-	AEGfxMeshStart();
+    // Informing the library that we're about to start adding triangles 
+    AEGfxMeshStart();
 
-	AEGfxTriAdd(
-		-texWidth, -texHeight, 0xFFFFFFFF, 0.0f, 1.0f,
-		texWidth, -texHeight, 0xFFFFFFFF, 1.0f, 1.0f,
-		-texWidth, texHeight, 0xFFFFFFFF, 0.0f, 0.0f);
+    // This shape has 2 triangles that makes up a square
+    // Color parameters represent colours as ARGB
+    // UV coordinates to read from loaded textures
+    AEGfxTriAdd(
+        -0.5f, -0.5f, 0xFFFF00FF, 0.0f, 0.0f,
+        0.5f, -0.5f, 0xFFFFFF00, 1.0f, 0.0f,
+        -0.5f, 0.5f, 0xFF00FFFF, 0.0f, 1.0f);
 
-	AEGfxTriAdd(
-		texWidth, -texHeight, 0xFFFFFFFF, 1.0f, 1.0f,
-		texWidth, texHeight, 0xFFFFFFFF, 1.0f, 0.0f,
-		-texWidth, texHeight, 0xFFFFFFFF, 0.0f, 0.0f);
+    AEGfxTriAdd(
+        0.5f, -0.5f, 0xFFFFFFFF, 1.0f, 0.0f,
+        0.5f, 0.5f, 0xFFFFFFFF, 1.0f, 1.0f,
+        -0.5f, 0.5f, 0xFFFFFFFF, 0.0f, 1.0f);
 
-	// Quad Mesh Code End
-	startButtonMesh = AEGfxMeshEnd();
+    // Saving the mesh (list of triangles) in pMesh 
+    pMesh1 = AEGfxMeshEnd();
+
+    // debugging logs
+    AE_ASSERT_MESG(pMesh1, "Error: Failed to create mesh in MainMenu.cpp!");
+
+    std::cout << "--------------------main_menu::init completed--------------------" << std::endl;
+
+
 }
 
 void main_menu::update()
 {
-	std::cout << "GameState: " << current_state << std::endl;
+    //std::cout << "GameState: " << current_state << std::endl;
+    AESysFrameStart();
 
-	AESysFrameStart();
-	AEInputUpdate();
+    AEInputUpdate();
 
-	if (AEInputCheckTriggered(AEVK_LBUTTON))
-	{
-		s32 mouseX, mouseY;
-		AEInputGetCursorPosition(&mouseX, &mouseY);
+    startButton.update();
 
-		float screenX = (mouseX / (float)g_windowWidth) * 2.0f - 1.0f;
-		float screenY = (mouseY / (float)g_windowHeight) * -2.0f + 1.0f;
+    if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
+        next_state = GS_QUIT;
 
-		if (screenX > -0.5f && screenX < 0.5f && screenY > -0.5f && screenY < 0.5f)
-		{
-			// Start button clicked, go to game state
-			if (current_state == GS_MAINMENU) {
-				next_state = GS_MAINLEVEL;
-				std::cout << "GameState changed to: " << current_state << std::endl;
-			}
-		}
-	}
+    //std::cout << "--------------------main_menu::update completed--------------------" << std::endl;
 
-	if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
-		next_state = GS_QUIT;
 }
-
-
-
-
 
 void main_menu::draw()
 {
-	// Clear the screen
-	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
-	// Set the render mode to texture
-	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+    // Clear the screen
+    AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
-	// Set the tint color to white
-	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+    startButton.draw(pMesh1);
 
-	// Set the blend mode to blend
-	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-
-	AEGfxSetTransparency(1.0f);
-
-	// Set the texture to startButtonTex
-	AEGfxTextureSet(startButtonTex, 0, 0);
-
-	// Create a scale matrix that scales by 100 x and y 
-	AEMtx33 scale = { 0 };
-	AEMtx33Scale(&scale, texWidth * 2, texHeight * 2);
-
-	// Create a rotation matrix that rotates by 45 degrees 
-	AEMtx33 rotate = { 0 };
-	AEMtx33Rot(&rotate, 0);
-
-	// Create a translation matrix that translates by 
-	// 100 in the x-axis and 100 in the y-axis 
-	AEMtx33 translate = { 0 };
-	AEMtx33Trans(&translate, 0.f, 0.f);
-
-	// Concat the matrices (TRS) 
-	AEMtx33 transform = { 0 };
-	AEMtx33Concat(&transform, &rotate, &scale);
-	AEMtx33Concat(&transform, &translate, &transform);
-
-	// Set the transform
-	AEGfxSetTransform(transform.m);
-
-	// Draw the mesh
-	AEGfxMeshDraw(startButtonMesh, AE_GFX_MDM_TRIANGLES);
-
-	// Swap buffers and present the frame
-	AESysFrameEnd();
+    AESysFrameEnd();
+    //std::cout << "--------------------main_menu::draw completed--------------------" << std::endl;
+    
 }
-
 
 void main_menu::free()
 {
-	AEGfxMeshFree(startButtonMesh);
-
+    AEGfxMeshFree(pMesh1);
 }
 
 void main_menu::unload()
 {
-	AEGfxTextureUnload(startButtonTex);
+    startButton.unload();
 }

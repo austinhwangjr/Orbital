@@ -15,6 +15,7 @@ Technology is prohibited.
 /* End Header **************************************************************************/
 #include "pch.h"
 #include "Input.h"
+#include <iostream>
 
 // ----------------------------------------------------------------------------
 // This function handles the input in the game loop
