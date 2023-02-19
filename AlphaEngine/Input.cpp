@@ -13,10 +13,13 @@ without the prior written consent of DigiPen Institute of
 Technology is prohibited.
 */
 /* End Header **************************************************************************/
+#include <iostream>
 #include "pch.h"
 #include "Input.h"
-#include <iostream>
+
 #include "global.h"
+#include "Graphics.h"
+#include <algorithm>
 
 // This initializes the mouse coordinates to 0.
 int mouseX = 0;
@@ -51,13 +54,23 @@ bool IsButtonClicked(float center_x, float center_y, float width, float height)
     float y_min = center_y - height / 2.0f;
     float y_max = center_y + height / 2.0f;
 
+    // Debugging output
+    std::cout << "Mouse coordinates: (" << mouseX << ", " << mouseY << ")\n";
+    std::cout << "Screen coordinates: (" << screen_x << ", " << screen_y << ")\n";
+    std::cout << "Button bounds: (" << x_min << ", " << y_min << ") to (" << x_max << ", " << y_max << ")\n";
+
     // Check if the click coordinates are within the bounds of the button
-    if (screen_x >= x_min && screen_x <= x_max && screen_y >= y_min && screen_y <= y_max) {
+    if (screen_x >= x_min && screen_x <= x_max && screen_y >= y_min && screen_y <= y_max)
+    {
         return true;
     }
 
     return false;
 }
+
+
+
+
 
 
 

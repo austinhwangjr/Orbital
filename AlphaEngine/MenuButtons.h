@@ -1,23 +1,26 @@
 #pragma once
+#include "Graphics.h"
 
-extern AEGfxTexture* startButtonTex;
-
-class Menu_Button
+class Menu_Button : public graphics
 {
 public:
-	void load();
-	void init();
-	void update();
-	void draw(AEGfxVertexList* pMesh1);
-	void free();
-	void unload();
+    AEGfxTexture* howToPlayButtonTexture;
+    AEGfxTexture* creditsButtonTexture;
+    AEGfxTexture* optionsButtonTexture;
+    AEGfxTexture* quitButtonTexture;
 
-	float width;
-	float height;
+    void load(const char* filename);
+    void init();
+    void update();
+    void draw(AEGfxVertexList* pMesh1);
+    void free();
+    void unload();
+
+    float width;
+    float height;
+    
 
 private:
-	AEMtx33 scale;
-	AEMtx33 rotate;
-	AEMtx33 translate;
-	AEMtx33 transform;
+    AEMtx33 transform;
+    AEGfxTexture* buttonTexture;
 };

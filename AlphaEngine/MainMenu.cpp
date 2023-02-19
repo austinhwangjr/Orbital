@@ -9,16 +9,18 @@
 #include "AEEngine.h"
 #include <iostream>
 #include "MenuButtons.h"
+#include "Graphics.h"
 
 AEGfxVertexList* pMesh1;
+AEGfxTexture* buttonTexture = nullptr;
 
+// class declearation 
 Menu_Button menuButtons;
-//s8 fontID;
 
 void main_menu::load()
 {
-    menuButtons.load();
-    std::cout << "--------------------main_menu::load completed--------------------" << std::endl;
+    menuButtons.load("Assets/buttonTest.png");
+    std::cout << "--------------------MainMenu::load completed--------------------" << std::endl;
 
     // Font for text
     //fontID = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
@@ -27,7 +29,7 @@ void main_menu::load()
 void main_menu::init()
 {
     menuButtons.init();
-
+   
     // Informing the library that we're about to start adding triangles 
     AEGfxMeshStart();
 
@@ -50,9 +52,7 @@ void main_menu::init()
     // debugging logs
     AE_ASSERT_MESG(pMesh1, "Error: Failed to create pMesh1 in MainMenu.cpp!");
 
-    std::cout << "--------------------main_menu::init completed--------------------" << std::endl;
-
-
+    std::cout << "--------------------MainMenu::init completed--------------------" << std::endl;
 }
 
 void main_menu::update()
@@ -74,14 +74,12 @@ void main_menu::draw()
     // Clear the screen
     AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
-
-
+    // Call the draw function of the menuButtons object
     menuButtons.draw(pMesh1);
 
-
     //std::cout << "--------------------main_menu::draw completed--------------------" << std::endl;
-    
 }
+
 
 void main_menu::free()
 {

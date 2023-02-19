@@ -6,9 +6,10 @@
 #include "MenuButtons.h"
 #include <iostream>
 #include "input.h"
+#include "Graphics.h"
 
 // declare a pointer to a texture object for the start button
-AEGfxTexture* startButtonTex;
+//AEGfxTexture* startButtonTex;
 
 // declare variables for the transformation matrix
 //static float texWidth = 100.0f;
@@ -18,11 +19,15 @@ AEMtx33 scale = {};
 AEMtx33 rotate = {};
 AEMtx33 translate = {};
 
-void Menu_Button::load()
+void Menu_Button::load(const char* filename)
 {
-    // load the texture image for the start button
-    startButtonTex = AEGfxTextureLoad("Assets/buttonTest.png");
+    buttonTexture = AEGfxTextureLoad(filename);
+    //howToPlayButtonTexture = AEGfxTextureLoad(filename);
+    //creditsButtonTexture = AEGfxTextureLoad(filename);
+    //optionsButtonTexture = AEGfxTextureLoad(filename);
+    quitButtonTexture = AEGfxTextureLoad(filename);
 }
+
 
 void Menu_Button::init()
 {
@@ -52,31 +57,57 @@ void Menu_Button::update()
         }
     }
 
-    // check if the escape key has been pressed or the window has been closed
-    if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
-        next_state = GS_QUIT;
+    // Check if the Quit button has been clicked
+    if (AEInputCheckTriggered(AEVK_LBUTTON))
+    {
+        float center_x = 0.0f;
+        float center_y = -1.5f * height;
+        if (IsButtonClicked(center_x, center_y, width, height))
+        {
+            // Quit the game
+            next_state = GS_QUIT;
+        }
+    }
 
-    // set up the transformation matrix for the start button
-    AEMtx33Scale(&scale, width, height);                     // scale the button by given dimensions
-    AEMtx33Rot(&rotate, 0);                                 // set the rotation angle to 0 degrees
-    AEMtx33Trans(&translate, 0.f, 0.f);                     // set the translation to (0, 0)
-    AEMtx33Concat(&transform, &rotate, &scale);             // concatenate the scale and rotation matrices
-    AEMtx33Concat(&transform, &translate, &transform);      // concatenate the translation matrix
+    //// check if the escape key has been pressed or the window has been closed
+    //if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
+    //    next_state = GS_QUIT;
 }
-
 
 void Menu_Button::draw(AEGfxVertexList* pMesh1)
 {
-    // set up the rendering pipeline for the start button
-    AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);                  // set the render mode to use textures
-    AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);              // set the tint color to white
-    AEGfxSetBlendMode(AE_GFX_BM_BLEND);                     // set the blend mode to alpha blending
-    AEGfxSetTransparency(1.0f);                             // set the transparency to fully opaque
+    // Set the position and dimensions of the button
+    float centerX = 0.0f;
+    float centerY = -25.0f;
+    float width = 200.f;
+    float height = 50.f;
 
-    AEGfxTextureSet(startButtonTex, 0, 0);                  // set the texture to use for drawing
-    AEGfxSetTransform(transform.m);                         // set the transformation matrix for the mesh
-    AEGfxMeshDraw(pMesh1, AE_GFX_MDM_TRIANGLES);            // draw the mesh
+    // Call the DrawButton function to draw the button with the desired texture and dimensions
+    DrawButton(this->buttonTexture, centerX, centerY, width, height, pMesh1);
+    //    // Draw the How To Play button
+    //centerX = 0.0f;
+    //centerY = -1.5f * height;
+    //graphics::DrawButton(quitButtonTexture, centerX, centerY, width, height, pMesh1);
 }
+
+//void Menu_Button::draw(AEGfxVertexList* pMesh1)
+//{
+//    // Set the position and dimensions of the button
+//    float centerX = 0.0f;
+//    float centerY = -0.5f * height;
+//    float width = 200.f;
+//    float height = 50.f;
+//
+//    // Call the DrawButton function to draw the button with the desired texture and dimensions
+//    graphics::DrawButton(this->buttonTexture, centerX, centerY, width, height, pMesh1);
+//
+//    // Draw the How To Play button
+//    centerX = 0.0f;
+//    centerY = -1.5f * height;
+//    graphics::DrawButton(quitButtonTexture, centerX, centerY, width, height, pMesh1);
+//}
+
+
 
 void Menu_Button::free()
 {
@@ -86,5 +117,6 @@ void Menu_Button::free()
 void Menu_Button::unload()
 {
     // unload the texture for the start button
-    AEGfxTextureUnload(startButtonTex);
+    AEGfxTextureUnload(buttonTexture);
+    AEGfxTextureUnload(quitButtonTexture);
 }
