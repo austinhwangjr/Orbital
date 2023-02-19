@@ -12,12 +12,12 @@
 
 AEGfxVertexList* pMesh1;
 
-Start_Button startButton;
+Menu_Button menuButtons;
 //s8 fontID;
 
 void main_menu::load()
 {
-    startButton.load();
+    menuButtons.load();
     std::cout << "--------------------main_menu::load completed--------------------" << std::endl;
 
     // Font for text
@@ -26,7 +26,7 @@ void main_menu::load()
 
 void main_menu::init()
 {
-    startButton.init();
+    menuButtons.init();
 
     // Informing the library that we're about to start adding triangles 
     AEGfxMeshStart();
@@ -60,7 +60,7 @@ void main_menu::update()
     //std::cout << "GameState: " << current_state << std::endl;
 
 
-    startButton.update();
+    menuButtons.update();
 
     if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
         next_state = GS_QUIT;
@@ -76,7 +76,7 @@ void main_menu::draw()
 
 
 
-    startButton.draw(pMesh1);
+    menuButtons.draw(pMesh1);
 
 
     //std::cout << "--------------------main_menu::draw completed--------------------" << std::endl;
@@ -90,5 +90,5 @@ void main_menu::free()
 
 void main_menu::unload()
 {
-    startButton.unload();
+    menuButtons.unload();
 }
