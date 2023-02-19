@@ -3,7 +3,7 @@
 #include "MainMenu.h"
 #include "Global.h"
 #include "GameStateManager.h"
-#include "StartButton.h"
+#include "MenuButtons.h"
 #include <iostream>
 #include "input.h"
 
@@ -16,12 +16,12 @@ AEGfxTexture* startButtonTex;
 AEMtx33 transform;
 AEMtx33 scale = {};
 AEMtx33 rotate = {};
-AEMtx33 translate = { 0 };
+AEMtx33 translate = {};
 
 void Start_Button::load()
 {
     // load the texture image for the start button
-    startButtonTex = AEGfxTextureLoad("Assets/start_test.png");
+    startButtonTex = AEGfxTextureLoad("Assets/buttonTest.png");
 }
 
 void Start_Button::init()
@@ -35,7 +35,7 @@ void Start_Button::update()
     if (AEInputCheckTriggered(AEVK_LBUTTON))
     {
         // Check if the mouse is within the bounds of the start button
-        if (IsButtonClicked(0.0f, 0.0f, 100.0f, 50.0f)) {
+        if (IsButtonClicked(0.0f, 0.0f, 600.0f, 200.0f)) {
             // if the start button is clicked, change the game state to main level
             if (current_state == GS_MAINMENU)
             {
@@ -43,8 +43,6 @@ void Start_Button::update()
                 std::cout << "GameState changed to: " << current_state << std::endl;
             }
         }
-
-
     }
 
     // check if the escape key has been pressed or the window has been closed
@@ -52,7 +50,7 @@ void Start_Button::update()
         next_state = GS_QUIT;
 
     // set up the transformation matrix for the start button
-    AEMtx33Scale(&scale, 50, 50);                           // scale the button by 50 units in both dimensions
+    AEMtx33Scale(&scale, 300, 100);                           // scale the button by 50 units in both dimensions
     AEMtx33Rot(&rotate, 0);                                 // set the rotation angle to 0 degrees
     AEMtx33Trans(&translate, 0.f, 0.f);                     // set the translation to (0, 0)
     AEMtx33Concat(&transform, &rotate, &scale);             // concatenate the scale and rotation matrices
@@ -66,6 +64,7 @@ void Start_Button::draw(AEGfxVertexList* pMesh1)
     AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);              // set the tint color to white
     AEGfxSetBlendMode(AE_GFX_BM_BLEND);                     // set the blend mode to alpha blending
     AEGfxSetTransparency(1.0f);                             // set the transparency to fully opaque
+
     AEGfxTextureSet(startButtonTex, 0, 0);                  // set the texture to use for drawing
     AEGfxSetTransform(transform.m);                         // set the transformation matrix for the mesh
     AEGfxMeshDraw(pMesh1, AE_GFX_MDM_TRIANGLES);            // draw the mesh

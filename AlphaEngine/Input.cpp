@@ -23,17 +23,14 @@ int mouseX = 0;
 int mouseY = 0;
 
 // ----------------------------------------------------------------------------
-// This function handles the input in the game loop
-// ----------------------------------------------------------------------------
-void input_handle()
-{
-	// Message to show input handling is successfully carried out
-	//std::cout << "Input:Handle\n";
-}
-
-// ----------------------------------------------------------------------------
-// This function checks if the button is clicked by the user and returns true if the button is clicked,
-// and false otherwise.
+/*
+ * Check if a button is clicked by the user.
+ * @param center_x The x coordinate of the center of the button.
+ * @param center_y The y coordinate of the center of the button.
+ * @param width The width of the button.
+ * @param height The height of the button.
+ * @return True if the button is clicked, false otherwise.
+ */
 // ----------------------------------------------------------------------------
 bool IsButtonClicked(float center_x, float center_y, float width, float height)
 {
@@ -57,3 +54,14 @@ bool IsButtonClicked(float center_x, float center_y, float width, float height)
 
     return false;
 }
+
+// ----------------------------------------------------------------------------
+// This function handles the input in the game loop
+// ----------------------------------------------------------------------------
+void input_handle()
+{
+	// Message to show input handling is successfully carried out
+	//std::cout << "Input:Handle\n";
+}
+
+

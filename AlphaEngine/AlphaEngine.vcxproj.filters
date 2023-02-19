@@ -52,7 +52,7 @@
     <ClCompile Include="Drone.cpp">
       <Filter>Source\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="StartButton.cpp">
+    <ClCompile Include="MenuButtons.cpp">
       <Filter>Source\Buttons</Filter>
     </ClCompile>
   </ItemGroup>
@@ -108,7 +108,7 @@
     <ClInclude Include="Drone.h">
       <Filter>Header\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="StartButton.h">
+    <ClInclude Include="MenuButtons.h">
       <Filter>Header\Buttons</Filter>
     </ClInclude>
   </ItemGroup>
