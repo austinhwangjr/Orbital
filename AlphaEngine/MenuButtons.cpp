@@ -45,8 +45,8 @@ void Menu_Button::update()
     {
         // Check if the mouse is within the bounds of the start button
         float center_x = 0.0f;
-        float center_y = -0.5f * height;
-        if (IsButtonClicked(center_x, center_y, width, height))
+        float center_y = -25.f;
+        if (Input::isButtonClicked(center_x, center_y, width, height))
         {
             // if the start button is clicked, change the game state to main level
             if (current_state == GS_MAINMENU)
@@ -57,17 +57,19 @@ void Menu_Button::update()
         }
     }
 
-    // Check if the Quit button has been clicked
-    if (AEInputCheckTriggered(AEVK_LBUTTON))
-    {
-        float center_x = 0.0f;
-        float center_y = -1.5f * height;
-        if (IsButtonClicked(center_x, center_y, width, height))
-        {
-            // Quit the game
-            next_state = GS_QUIT;
-        }
-    }
+    
+
+    //// Check if the Quit button has been clicked
+    //if (AEInputCheckTriggered(AEVK_LBUTTON))
+    //{
+    //    float center_x = 0.0f;
+    //    float center_y = -1.5f * height;
+    //    if (Input::isButtonClicked(center_x, center_y, width, height))
+    //    {
+    //        // Quit the game
+    //        next_state = GS_QUIT;
+    //    }
+    //}
 
     //// check if the escape key has been pressed or the window has been closed
     //if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
@@ -83,31 +85,13 @@ void Menu_Button::draw(AEGfxVertexList* pMesh1)
     float height = 50.f;
 
     // Call the DrawButton function to draw the button with the desired texture and dimensions
-    DrawButton(this->buttonTexture, centerX, centerY, width, height, pMesh1);
-    //    // Draw the How To Play button
+    RenderSprite(this->buttonTexture, centerX, centerY, width, height, pMesh1);
+    
+    //// Draw the How To Play button
     //centerX = 0.0f;
     //centerY = -1.5f * height;
-    //graphics::DrawButton(quitButtonTexture, centerX, centerY, width, height, pMesh1);
+    //RenderSprite(quitButtonTexture, centerX, centerY, width, height, pMesh1);
 }
-
-//void Menu_Button::draw(AEGfxVertexList* pMesh1)
-//{
-//    // Set the position and dimensions of the button
-//    float centerX = 0.0f;
-//    float centerY = -0.5f * height;
-//    float width = 200.f;
-//    float height = 50.f;
-//
-//    // Call the DrawButton function to draw the button with the desired texture and dimensions
-//    graphics::DrawButton(this->buttonTexture, centerX, centerY, width, height, pMesh1);
-//
-//    // Draw the How To Play button
-//    centerX = 0.0f;
-//    centerY = -1.5f * height;
-//    graphics::DrawButton(quitButtonTexture, centerX, centerY, width, height, pMesh1);
-//}
-
-
 
 void Menu_Button::free()
 {

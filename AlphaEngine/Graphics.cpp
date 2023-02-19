@@ -10,7 +10,19 @@
 #include "MenuButtons.h"
 #include "Input.h"
 
-void graphics::DrawButton(AEGfxTexture* buttonTexture, float centerX, float centerY, float width, float height, AEGfxVertexList* pMesh)
+// ----------------------------------------------------------------------------
+/*
+ * Draws a button with a given texture and dimensions at the specified center coordinates.
+ *
+ * @param buttonTexture A pointer to the AEGfxTexture object to use for the button texture
+ * @param centerX The X coordinate of the center of the button
+ * @param centerY The Y coordinate of the center of the button
+ * @param width The width of the button
+ * @param height The height of the button
+ * @param pMesh A pointer to the AEGfxVertexList object to use for the button mesh
+ */
+ // ----------------------------------------------------------------------------
+void Rendering::RenderSprite(AEGfxTexture* buttonTexture, float centerX, float centerY, float width, float height, AEGfxVertexList* pMesh)
 {
     // Set up the transformation matrix for the button
     AEMtx33 scale = {};
@@ -18,19 +30,19 @@ void graphics::DrawButton(AEGfxTexture* buttonTexture, float centerX, float cent
     AEMtx33 translate = {};
     AEMtx33 transform = {};
 
-    AEMtx33Scale(&scale, width, height);                         // Scale the button by given dimensions
-    AEMtx33Rot(&rotate, 0);                                     // Set the rotation angle to 0 degrees
-    AEMtx33Trans(&translate, centerX, centerY);                 // Set the translation to (centerX, centerY)
-    AEMtx33Concat(&transform, &rotate, &scale);                 // Concatenate the scale and rotation matrices
-    AEMtx33Concat(&transform, &translate, &transform);          // Concatenate the translation matrix
+    AEMtx33Scale(&scale, width, height);                    // Scale the button by given dimensions
+    AEMtx33Rot(&rotate, 0);                                 // Set the rotation angle to 0 degrees
+    AEMtx33Trans(&translate, centerX, centerY);             // Set the translation to (centerX, centerY)
+    AEMtx33Concat(&transform, &rotate, &scale);             // Concatenate the scale and rotation matrices
+    AEMtx33Concat(&transform, &translate, &transform);      // Concatenate the translation matrix
 
     // Set up the rendering pipeline for the button
-    AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);                      // Set the render mode to use textures
-    AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);                  // Set the tint color to white
-    AEGfxSetBlendMode(AE_GFX_BM_BLEND);                         // Set the blend mode to alpha blending
-    AEGfxSetTransparency(1.0f);                                 // Set the transparency to fully opaque
+    AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);                  // Set the render mode to use textures
+    AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);              // Set the tint color to white
+    AEGfxSetBlendMode(AE_GFX_BM_BLEND);                     // Set the blend mode to alpha blending
+    AEGfxSetTransparency(1.0f);                             // Set the transparency to fully opaque
 
-    AEGfxTextureSet(buttonTexture, 0, 0);                       // Set the texture to use for drawing
-    AEGfxSetTransform(transform.m);                             // Set the transformation matrix for the mesh
-    AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);                 // Draw the mesh
+    AEGfxTextureSet(buttonTexture, 0, 0);                   // Set the texture to use for drawing
+    AEGfxSetTransform(transform.m);                         // Set the transformation matrix for the mesh
+    AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);             // Draw the mesh
 }

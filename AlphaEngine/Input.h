@@ -14,15 +14,15 @@ Technology is prohibited.
 */
 /* End Header **************************************************************************/
 #pragma once
-//#include "AEEngine.h"
 
+class Input
+{
+public:
+    Input();
 
-//extern int mouseX;
-//extern int mouseY;
+    // Member function to handle input
+    void handle();
 
-extern s32 mouseX;
-extern s32 mouseY;
-
-void input_handle();
-
-bool IsButtonClicked(float center_x, float center_y, float width, float height);
+    // Static function to check if a button is clicked by the user
+    static bool isButtonClicked(float center_x, float center_y, float width, float height);
+};

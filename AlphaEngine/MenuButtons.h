@@ -1,7 +1,7 @@
 #pragma once
 #include "Graphics.h"
 
-class Menu_Button : public graphics
+class Menu_Button : public Rendering
 {
 public:
     AEGfxTexture* howToPlayButtonTexture;
