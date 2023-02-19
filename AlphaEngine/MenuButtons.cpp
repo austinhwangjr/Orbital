@@ -31,21 +31,14 @@ void Menu_Button::init()
 
 void Menu_Button::update()
 {
-    Menu_Button buttonStart;
-    buttonStart.width = 200.f;
-    buttonStart.height = 50.f;
-
-    // check if the left mouse button has been clicked
-    if (AEInputCheckTriggered(AEVK_LBUTTON))
+    // Check if the mouse is within the bounds of the start button
+    if (IsButtonClicked(0.0f, 0.0f, width, height))
     {
-        // Check if the mouse is within the bounds of the start button
-        if (IsButtonClicked(0.0f, 0.0f, 600.0f, 200.0f)) {
-            // if the start button is clicked, change the game state to main level
-            if (current_state == GS_MAINMENU)
-            {
-                next_state = GS_MAINLEVEL;
-                std::cout << "GameState changed to: " << current_state << std::endl;
-            }
+        // if the start button is clicked, change the game state to main level
+        if (current_state == GS_MAINMENU)
+        {
+            next_state = GS_MAINLEVEL;
+            std::cout << "GameState changed to: " << current_state << std::endl;
         }
     }
 
@@ -54,12 +47,13 @@ void Menu_Button::update()
         next_state = GS_QUIT;
 
     // set up the transformation matrix for the start button
-    AEMtx33Scale(&buttonStart.scale, buttonStart.width, buttonStart.height);                           // scale the button by 50 units in both dimensions
-    AEMtx33Rot(&buttonStart.rotate, 0);                                 // set the rotation angle to 0 degrees
+    AEMtx33Scale(&scale, width, height);                           // scale the button by given dimensions
+    AEMtx33Rot(&rotate, 0);                                 // set the rotation angle to 0 degrees
     AEMtx33Trans(&translate, 0.f, 0.f);                     // set the translation to (0, 0)
-    AEMtx33Concat(&transform, &buttonStart.rotate, &buttonStart.scale);             // concatenate the scale and rotation matrices
+    AEMtx33Concat(&transform, &rotate, &scale);             // concatenate the scale and rotation matrices
     AEMtx33Concat(&transform, &translate, &transform);      // concatenate the translation matrix
 }
+
 
 void Menu_Button::draw(AEGfxVertexList* pMesh1)
 {
