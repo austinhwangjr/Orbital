@@ -90,7 +90,7 @@ void main_level::init()
 	debris.init();
 	wave_manager.init();
 
-	total_time = 0.0;
+	total_time = 0.0f;
 
 	// Informing the library that we're about to start adding triangles 
 	AEGfxMeshStart();
@@ -110,6 +110,8 @@ void main_level::init()
 
 	// Saving the mesh (list of triangles) in pMesh 
 	pMesh = AEGfxMeshEnd();
+	// debugging logs
+	AE_ASSERT_MESG(pMesh, "Error: Failed to create pMesh in MainLevel.cpp!");
 }
 
 // ----------------------------------------------------------------------------
@@ -184,7 +186,7 @@ void main_level::draw()
 
 	player_ui.draw(pMesh, player);
 	drone.draw(pMesh, player_ui);
-	/*AESysFrameEnd();*/
+	//AESysFrameEnd();
 }
 
 // ----------------------------------------------------------------------------

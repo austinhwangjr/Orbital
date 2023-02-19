@@ -26,8 +26,6 @@ void main_menu::load()
 
 void main_menu::init()
 {
-    //pMesh1 = 0;
-
     startButton.init();
 
     // Informing the library that we're about to start adding triangles 
@@ -50,7 +48,7 @@ void main_menu::init()
     pMesh1 = AEGfxMeshEnd();
 
     // debugging logs
-    AE_ASSERT_MESG(pMesh1, "Error: Failed to create mesh in MainMenu.cpp!");
+    AE_ASSERT_MESG(pMesh1, "Error: Failed to create pMesh1 in MainMenu.cpp!");
 
     std::cout << "--------------------main_menu::init completed--------------------" << std::endl;
 
@@ -61,13 +59,14 @@ void main_menu::update()
 {
     //std::cout << "GameState: " << current_state << std::endl;
 
+
     startButton.update();
 
     if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
         next_state = GS_QUIT;
 
     //std::cout << "--------------------main_menu::update completed--------------------" << std::endl;
-
+    
 }
 
 void main_menu::draw()
@@ -75,7 +74,10 @@ void main_menu::draw()
     // Clear the screen
     AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
+
+
     startButton.draw(pMesh1);
+
 
     //std::cout << "--------------------main_menu::draw completed--------------------" << std::endl;
     

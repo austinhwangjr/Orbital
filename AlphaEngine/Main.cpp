@@ -8,7 +8,7 @@
 #include "Systems.h"
 #include "Input.h"
 #include <memory>
-
+#include <iostream>
 // ---------------------------------------------------------------------------
 // main
 
@@ -58,16 +58,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		// The game loop (while the next game state is equal to the current state)
 		while (next_state == current_state)
 		{
-			input_handle();     // Update input status
+			//input_handle();     // Update input status
 
 			AESysFrameStart();
 
 			AEInputUpdate();
 
 			fpUpdate();         // Update current game state
-			fpDraw();           // Render current game state
 
+			fpDraw();           // Render current game state
 			AESysFrameEnd();
+
 		}
 
 		// debugging log for mainmenu -yy

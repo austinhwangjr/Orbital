@@ -15,4 +15,12 @@ Technology is prohibited.
 /* End Header **************************************************************************/
 #pragma once
 
+//extern int mouseX;
+//extern int mouseY;
+
+extern s32 mouseX;
+extern s32 mouseY;
+
 void input_handle();
+
+bool IsButtonClicked(float center_x, float center_y, float width, float height);
