@@ -8,7 +8,7 @@
 #include "input.h"
 
 // declare a pointer to a texture object for the start button
-AEGfxTexture* startButtonTex;   
+AEGfxTexture* startButtonTex;
 
 // declare variables for the transformation matrix
 //static float texWidth = 100.0f;
@@ -31,14 +31,24 @@ void Menu_Button::init()
 
 void Menu_Button::update()
 {
-    // Check if the mouse is within the bounds of the start button
-    if (IsButtonClicked(0.0f, 0.0f, width, height))
+    // Set the dimensions of the button
+    float width = 200.f;
+    float height = 50.f;
+
+    // Check if the left mouse button has been clicked
+    if (AEInputCheckTriggered(AEVK_LBUTTON))
     {
-        // if the start button is clicked, change the game state to main level
-        if (current_state == GS_MAINMENU)
+        // Check if the mouse is within the bounds of the start button
+        float center_x = 0.0f;
+        float center_y = -0.5f * height;
+        if (IsButtonClicked(center_x, center_y, width, height))
         {
-            next_state = GS_MAINLEVEL;
-            std::cout << "GameState changed to: " << current_state << std::endl;
+            // if the start button is clicked, change the game state to main level
+            if (current_state == GS_MAINMENU)
+            {
+                next_state = GS_MAINLEVEL;
+                std::cout << "GameState changed to: " << current_state << std::endl;
+            }
         }
     }
 
@@ -47,7 +57,7 @@ void Menu_Button::update()
         next_state = GS_QUIT;
 
     // set up the transformation matrix for the start button
-    AEMtx33Scale(&scale, width, height);                           // scale the button by given dimensions
+    AEMtx33Scale(&scale, width, height);                     // scale the button by given dimensions
     AEMtx33Rot(&rotate, 0);                                 // set the rotation angle to 0 degrees
     AEMtx33Trans(&translate, 0.f, 0.f);                     // set the translation to (0, 0)
     AEMtx33Concat(&transform, &rotate, &scale);             // concatenate the scale and rotation matrices
@@ -78,5 +88,3 @@ void Menu_Button::unload()
     // unload the texture for the start button
     AEGfxTextureUnload(startButtonTex);
 }
-
-

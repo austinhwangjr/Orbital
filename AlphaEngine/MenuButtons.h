@@ -12,14 +12,12 @@ public:
 	void free();
 	void unload();
 
-
+	float width;
+	float height;
 
 private:
-	float width = 200.0f;
-	float height = 50.0f;
 	AEMtx33 scale;
 	AEMtx33 rotate;
 	AEMtx33 translate;
 	AEMtx33 transform;
 };
-

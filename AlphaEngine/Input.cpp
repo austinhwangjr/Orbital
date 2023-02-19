@@ -37,9 +37,13 @@ bool IsButtonClicked(float center_x, float center_y, float width, float height)
     // Get the current mouse position
     AEInputGetCursorPosition(&mouseX, &mouseY);
 
+    // Get the window width and height
+    int windowWidth = AEGetWindowWidth();
+    int windowHeight = AEGetWindowHeight();
+
     // Convert the click coordinates to normalized device coordinates
-    float screen_x = (mouseX / (float)g_windowWidth) * 2.0f - 1.0f;
-    float screen_y = (mouseY / (float)g_windowHeight) * -2.0f + 1.0f;
+    float screen_x = (mouseX / (float)windowWidth) * 2.0f - 1.0f;
+    float screen_y = (mouseY / (float)windowHeight) * -2.0f + 1.0f;
 
     // Calculate the minimum and maximum x and y coordinates of the button
     float x_min = center_x - width / 2.0f;
@@ -54,6 +58,8 @@ bool IsButtonClicked(float center_x, float center_y, float width, float height)
 
     return false;
 }
+
+
 
 // ----------------------------------------------------------------------------
 // This function handles the input in the game loop
