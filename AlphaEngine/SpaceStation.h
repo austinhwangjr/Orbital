@@ -7,7 +7,8 @@ struct SpaceStation
 	f32				size;
 	int				current_capacity;
 	int				max_capacity;
-	
+	Planets			current_planet;
+	f32				shortest_distance_spacestation;
 	// Transform
 	AEMtx33			transform;
 
