@@ -73,10 +73,10 @@ void main_level::load()
 	shuttle.load();
 	wave_manager.load();
 	
-	starttest = AEGfxTextureLoad("Assets/start_test.png");
+	//starttest = AEGfxTextureLoad("Assets/start_test.png");
 
 	// Font for text
-	fontID = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
+	//fontID = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
 }
 
 // ----------------------------------------------------------------------------
@@ -101,9 +101,10 @@ void main_level::init()
 	debris.init();
 	wave_manager.init();
 
-	total_time = 0.0;
+	total_time = 0.0f;
 
 	// Informing the library that we're about to start adding triangles 
+
 	AEGfxMeshStart();
 
 	// This shape has 2 triangles that makes up a square
@@ -121,6 +122,9 @@ void main_level::init()
 
 	// Saving the mesh (list of triangles) in pMesh 
 	pMesh = AEGfxMeshEnd();
+
+	// debugging logs
+	AE_ASSERT_MESG(pMesh, "Error: Failed to create pMesh in MainLevel.cpp!");
 }
 
 // ----------------------------------------------------------------------------

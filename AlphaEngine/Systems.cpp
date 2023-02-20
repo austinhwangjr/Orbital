@@ -16,6 +16,7 @@ Technology is prohibited.
 #include "pch.h"
 #include "Systems.h"
 #include "Global.h"
+#include <iostream>
 
 // Fonts
 s8 font_id, font_id_shop;
@@ -28,6 +29,8 @@ void system_call::init(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
 	AESysInit(hInstance, nCmdShow, g_windowWidth, g_windowHeight, g_consoleOn, 60, true, NULL);										// Using custom window procedure
 	AESysSetWindowTitle("Orbital");																										// Changing the window title
 	AESysReset();																														// reset the system modules
+
+  std::cout << "--------------------Initializing system--------------------" << std::endl;
 
 	// Fonts
 	font_id = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
