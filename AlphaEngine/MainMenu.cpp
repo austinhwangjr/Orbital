@@ -19,7 +19,7 @@ Menu_Button menuButtons;
 
 void main_menu::load()
 {
-    menuButtons.load("Assets/buttonTest.png");
+    menuButtons.load("../Assets/buttonTest.png");
     std::cout << "--------------------MainMenu::load completed--------------------" << std::endl;
 
     // Font for text

@@ -65,10 +65,10 @@ void main_level::load()
 	shuttle.load();
 	wave_manager.load();
 	
-	starttest = AEGfxTextureLoad("Assets/start_test.png");
+	starttest = AEGfxTextureLoad("../Assets/start_test.png");
 
 	// Font for text
-	fontID = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
+	fontID = AEGfxCreateFont("../Assets/Roboto-Regular.ttf", 50);
 }
 
 // ----------------------------------------------------------------------------
