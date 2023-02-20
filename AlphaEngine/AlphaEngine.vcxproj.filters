@@ -52,14 +52,14 @@
     <ClCompile Include="Drone.cpp">
       <Filter>Source\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="PlayerProj.cpp">
       <Filter>Source\Objects</Filter>
     </ClCompile>
     <ClCompile Include="SpaceStation.cpp">
       <Filter>Source\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -114,14 +114,14 @@
     <ClInclude Include="Drone.h">
       <Filter>Header\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerProj.h">
       <Filter>Header\Objects</Filter>
     </ClInclude>
     <ClInclude Include="SpaceStation.h">
       <Filter>Header\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

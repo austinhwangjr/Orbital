@@ -10,7 +10,7 @@ AEGfxTexture* shop_icon_tex;
 AEGfxTexture* space_station_tex;
 
 // Variables for shop
-s8				font_id_shop;
+extern s8		font_id_shop;
 std::string		shop_option_name;
 bool			shop_triggered;
 
@@ -30,7 +30,7 @@ void PlayerUI::load()
 	space_station_tex = AEGfxTextureLoad("Assets/space-station.png");
 
 	// Font for text
-	font_id_shop = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 20);
+	//font_id_shop = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 20);
 }
 
 void PlayerUI::init()
@@ -163,7 +163,7 @@ void PlayerUI::unload()
 {
 	AEGfxTextureUnload(shop_icon_tex);
 	AEGfxTextureUnload(space_station_tex);
-	AEGfxDestroyFont(font_id_shop);
+	//AEGfxDestroyFont(font_id_shop);
 }
 
 void PlayerUI::shop_open(Player& player)
