@@ -55,7 +55,7 @@ void PlayerUI::update(Player& player)
 	AEInputGetCursorPosition(&mouse_x_screen, &mouse_y_screen);
 
 	mouse_pos_world.x = cam_x + mouse_x_screen - 800;
-	mouse_pos_world.y = cam_y + 400 - mouse_y_screen;
+	mouse_pos_world.y = cam_y + 450 - mouse_y_screen;
 
 	if (shop_triggered)
 		shop_open(player);
@@ -116,17 +116,17 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player& player)
 		if (button_vector[i].button_type == SHOP_OPEN) {
 			shop_option_name = "SHOP";
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_option_name.c_str()),
-				(button_vector[i].position.x - button_vector[i].width / 2 - cam_x) / 800, (button_vector[i].position.y - cam_y) / 400, 1.f, 0.f, 0.f, 0.f);
+				(button_vector[i].position.x - button_vector[i].width / 2 - cam_x) / 800, (button_vector[i].position.y - button_vector[i].height / 2 - cam_y) / 400, 1.f, 0.f, 0.f, 0.f);
 		}
 		else if (button_vector[i].button_type == MOVEMENT_SPEED) {
 			shop_option_name = "Movement Speed";
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_option_name.c_str()),
-				(button_vector[i].position.x - button_vector[i].width / 2 - cam_x) / 800, (button_vector[i].position.y - cam_y) / 400, 1.f, 0.f, 0.f, 0.f);
+				(button_vector[i].position.x - button_vector[i].width / 2 - cam_x) / 800, (button_vector[i].position.y - button_vector[i].height / 2 - cam_y) / 400, 1.f, 0.f, 0.f, 0.f);
 		}
 		else if (button_vector[i].button_type == CAPACITY) {
 			shop_option_name = "Increase Capacity";
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_option_name.c_str()),
-				(button_vector[i].position.x - button_vector[i].width / 2 - cam_x) / 800, (button_vector[i].position.y - cam_y) / 400, 1.f, 0.f, 0.f, 0.f);
+				(button_vector[i].position.x - button_vector[i].width / 2 - cam_x) / 800, (button_vector[i].position.y - button_vector[i].height / 2 - cam_y) / 400, 1.f, 0.f, 0.f, 0.f);
 		}
 		else if (button_vector[i].button_type == CREATE_DRONE) {
 			AEGfxTextureSet(player_tex, 0, 0);
