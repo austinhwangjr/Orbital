@@ -35,8 +35,11 @@ bool Input::isButtonClicked(float center_x, float center_y, float width, float h
     int windowHeight = AEGetWindowHeight();
 
     // Convert the click coordinates to normalized device coordinates
-    float screen_x = (mouseX / (float)windowWidth) * 2.0f - 1.0f;
-    float screen_y = (mouseY / (float)windowHeight) * -2.0f + 1.0f;
+    float screen_x = mouseX - (float)windowWidth / 2.0f;
+    float screen_y = -mouseY - (float)windowHeight /-2.0f;
+
+  /*  float screen_x = (mouseX / (float)windowWidth) * 2.0f - 1.0f;
+    float screen_y = (mouseY / (float)windowHeight) * -2.0f + 1.0f;*/
 
     // Calculate the minimum and maximum x and y coordinates of the button
     float x_min = center_x - width / 2.0f;

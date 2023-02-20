@@ -57,8 +57,6 @@ void Menu_Button::update()
         }
     }
 
-    
-
     //// Check if the Quit button has been clicked
     //if (AEInputCheckTriggered(AEVK_LBUTTON))
     //{
