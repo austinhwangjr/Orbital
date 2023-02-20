@@ -25,7 +25,7 @@ void Menu_Button::load(const char* filename)
     //howToPlayButtonTexture = AEGfxTextureLoad(filename);
     //creditsButtonTexture = AEGfxTextureLoad(filename);
     //optionsButtonTexture = AEGfxTextureLoad(filename);
-    quitButtonTexture = AEGfxTextureLoad(filename);
+    //quitButtonTexture = AEGfxTextureLoad(filename);
 }
 
 
@@ -99,6 +99,6 @@ void Menu_Button::free()
 void Menu_Button::unload()
 {
     // unload the texture for the start button
-    //AEGfxTextureUnload(buttonTexture);
+    AEGfxTextureUnload(buttonTexture);
     //AEGfxTextureUnload(quitButtonTexture);
 }
