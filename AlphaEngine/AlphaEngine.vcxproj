@@ -94,17 +94,54 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.09\lib\fmodL.dll" "$(OutDir)" /s /r /
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q
-xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\freetype.dll" "$(OutDir)" /s /r /y /q
-xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\Alpha_Engine.dll" "$(OutDir)" /s /r /y /q
-xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y /q</Command>
+xcopy "$(SolutionDir)Extern\AlphaEngine_V3.09\lib\freetype.dll" "$(OutDir)" /s /r /y /q
+xcopy "$(SolutionDir)Extern\AlphaEngine_V3.09\lib\Alpha_Engine.dll" "$(OutDir)" /s /r /y /q
+xcopy "$(SolutionDir)Extern\AlphaEngine_V3.09\lib\fmod.dll" "$(OutDir)" /s /r /y /q</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Debris.cpp" />
+    <ClCompile Include="Drone.cpp" />
+    <ClCompile Include="GameStateManager.cpp" />
+    <ClCompile Include="Global.cpp" />
+    <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="main_menu.cpp" />
+    <ClCompile Include="MainLevel.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Planet.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerProj.cpp" />
+    <ClCompile Include="PlayerUI.cpp" />
+    <ClCompile Include="SpaceStation.cpp" />
+    <ClCompile Include="SplashScreen.cpp" />
+    <ClCompile Include="Shuttle.cpp" />
+    <ClCompile Include="Systems.cpp" />
+    <ClCompile Include="WaveManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="masterlist.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Debris.h" />
+    <ClInclude Include="Drone.h" />
+    <ClInclude Include="GameStateManager.h" />
+    <ClInclude Include="Global.h" />
+    <ClInclude Include="Graphics.h" />
+    <ClInclude Include="Input.h" />
+    <ClInclude Include="MainLevel.h" />
+    <ClInclude Include="GameObjects.h" />
+    <ClInclude Include="MainMenu.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="Planet.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerProj.h" />
+    <ClInclude Include="PlayerUI.h" />
+    <ClInclude Include="SpaceStation.h" />
+    <ClInclude Include="SplashScreen.h" />
+    <ClInclude Include="Shuttle.h" />
+    <ClInclude Include="Systems.h" />
+    <ClInclude Include="WaveManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
