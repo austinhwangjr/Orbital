@@ -16,3 +16,8 @@ void Camera::update(f64 frame_time, Player player)
 
 	AEGfxSetCamPosition(position.x, position.y);
 }
+
+void Camera::planet_transition(f64 frame_time, Planets planet)
+{
+	
+}

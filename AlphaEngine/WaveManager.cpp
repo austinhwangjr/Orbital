@@ -28,6 +28,7 @@ void WaveManager::init()
 	planet_spawn_interval = 3;
 
 	shuttle_left_planet = 0;
+	shuttle_destroyed = 0;
 	shuttle_increase_amount = 1;
 	shuttle_has_escaped = false;
 	shuttle_has_collided = false;
@@ -42,11 +43,10 @@ void WaveManager::init()
 void WaveManager::update(f64 frame_time)
 {
 // Lose Condition--------------------------------------------------------
-	if (shuttle_has_collided == get_total_shuttles() / 4)
+	if (shuttle_destroyed == get_total_shuttles() / 4)
 	{
 		//next_state = lose;
 	}
-
 // Lost Condition--------------------------------------------------------
 
 // Track shuttles left---------------------------------------------------
@@ -59,6 +59,7 @@ void WaveManager::update(f64 frame_time)
 
 	if (shuttle_has_collided)
 	{
+		shuttle_destroyed++;
 		std::cout << '\n' << "Shuttle has been destroyed!" << '\n';
 		std::cout << get_total_shuttles() - shuttle_left_planet << " Shuttle(s) left to escape." << '\n' << '\n';
 		shuttle_has_collided = false;
@@ -117,6 +118,7 @@ void WaveManager::update(f64 frame_time)
 		}
 
 		shuttle_left_planet = 0;	// Reset number of shuttles successfully escaped during wave
+		shuttle_destroyed = 0;		// Reset number of shuttles that have been destroyed
 		wave_completed = false;		// Reset wave complete flag
 		wave_progress = 0;			// Reset wave progress to 0
 		wave_number++;				// Increment wave number
@@ -139,14 +141,12 @@ void WaveManager::draw(AEGfxVertexList *pMesh)
 	{
 		std::string timer = std::to_string(static_cast<int>(planet_vector[i].shuttle_time_to_spawn - planet_vector[i].shuttle_timer));
 		print_string = timer.c_str();
-		if (planet_vector[i].position.x >= (camera.position.x - (g_windowWidth / 2.f)) && planet_vector[i].position.y >= (camera.position.y - (g_windowHeight / 2.f))
-			&& planet_vector[i].position.x <= (camera.position.x + (g_windowWidth / 2.f)) && planet_vector[i].position.y <= (camera.position.y + (g_windowHeight / 2.f)))
-		{
-			AEGfxPrint(font_id, const_cast<s8*>(print_string),
-				planet_vector[i].position.x / AEGfxGetWinMaxX(),
-				planet_vector[i].position.y / AEGfxGetWinMaxY(),
-				1.f, planet_vector[i].shuttle_timer * 1.5 / planet_vector[i].shuttle_time_to_spawn, 0.f, 0.f);
-		}
+		AEVec2 pos;
+		AEVec2Sub(&pos, &planet_vector[i].position, &camera.position);
+		AEGfxPrint(font_id, const_cast<s8*>(print_string),
+			2 * (pos.x) / AEGetWindowWidth(),
+			2 * (pos.y) / AEGetWindowHeight(),
+			1.f, planet_vector[i].shuttle_timer * 1.5 / planet_vector[i].shuttle_time_to_spawn, 0.f, 0.f);
 	}
 
 	if (wave_interval_timer <= WAVE_INTERVAL_TIME)

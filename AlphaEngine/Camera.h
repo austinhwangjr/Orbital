@@ -10,4 +10,5 @@ struct Camera
 
 	void init(Player player);
 	void update(f64 frame_time, Player player);
+	void planet_transition(f64 frame_time, Planets planet);
 };

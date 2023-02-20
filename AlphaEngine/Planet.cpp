@@ -88,8 +88,8 @@ void Planets::spawn(int shuttle_randomize_amount)
 	AEMtx33Rot(&new_planet.rotate, PI / 4);
 
 	AEVec2Set(&new_planet.position,
-		static_cast<f32>(rand() % (static_cast<int>(AEGfxGetWinMaxX()) + 1) - AEGfxGetWinMaxX() / 2),
-		static_cast<f32>(rand() % (static_cast<int>(AEGfxGetWinMaxY()) + 1) - AEGfxGetWinMaxY() / 2));
+		static_cast<f32>(rand() % (static_cast<int>(AEGetWindowWidth()) + 1) - AEGetWindowWidth() / 2),
+		static_cast<f32>(rand() % (static_cast<int>(AEGetWindowHeight()) + 1) - AEGetWindowHeight() / 2));
 
 	// Re-randomize new planet position if too close to another planet
 	for (int i{}; i < wave_manager.planet_count; i++)
@@ -99,8 +99,8 @@ void Planets::spawn(int shuttle_randomize_amount)
 		if (AEVec2Distance(&planet_vector[i].position, &new_planet.position) < (planet_vector[i].size + new_planet.size))
 		{
 			AEVec2Set(&new_planet.position,
-				static_cast<f32>(rand() % (static_cast<int>(AEGfxGetWinMaxX()) + 1) - AEGfxGetWinMaxX() / 2),
-				static_cast<f32>(rand() % (static_cast<int>(AEGfxGetWinMaxY()) + 1) - AEGfxGetWinMaxY() / 2));
+				static_cast<f32>(rand() % (static_cast<int>(AEGetWindowWidth()) + 1) - AEGetWindowWidth() / 2),
+				static_cast<f32>(rand() % (static_cast<int>(AEGetWindowHeight()) + 1) - AEGetWindowHeight() / 2));
 			(1 == wave_manager.planet_count) ? i-- : i = 0;
 		}
 	}

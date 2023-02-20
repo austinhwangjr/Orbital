@@ -23,6 +23,7 @@ struct WaveManager
 	int shuttle_left_planet;
 	int shuttle_increase_amount;
 	int shuttle_randomize_amount;
+	int shuttle_destroyed;
 	bool shuttle_has_escaped;
 	bool shuttle_has_collided;
 
