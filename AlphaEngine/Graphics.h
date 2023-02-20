@@ -16,9 +16,7 @@ public:
  */
  // ----------------------------------------------------------------------------
     void RenderSprite(AEGfxTexture* buttonTexture,
-                      float centerX,
-                      float centerY, 
-                      float width,
-                      float height,
-                      AEGfxVertexList* pMesh);
+                    float centerX, float centerY, 
+                    float width, float height,
+                    AEGfxVertexList* pMesh);
 };

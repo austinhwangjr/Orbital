@@ -12,7 +12,7 @@ extern Debris debris;
 
 void Planets::load()
 {
-	planet_tex = AEGfxTextureLoad("../Assets/PlanetTexture.png");
+	planet_tex = AEGfxTextureLoad("Assets/PlanetTexture.png");
 }
 
 void Planets::init()
