@@ -22,8 +22,11 @@ Technology is prohibited.
 #include "Player.h"
 #include "PlayerUI.h"
 #include "Drone.h"
+#include "SpaceStation.h"
+#include  "PlayerProj.h"
 #include "Shuttle.h"
 #include "Debris.h"
+#include "Camera.h"
 #include "WaveManager.h"
 
 int g_game_running;
@@ -45,6 +48,9 @@ Player player;
 Planets planet;
 PlayerUI player_ui;
 Drone drone;
+SpaceStation space_station;
+PlayerProj player_proj;
+Camera camera;
 extern Debris debris;
 Shuttles shuttle;
 extern WaveManager wave_manager;
@@ -61,6 +67,8 @@ void main_level::load()
 	player.load();
 	player_ui.load();
 	drone.load();
+	space_station.load();
+	player_proj.load();
 	debris.load();
 	shuttle.load();
 	wave_manager.load();
@@ -84,8 +92,11 @@ void main_level::init()
 
 	planet.init();
 	player.init();
+	camera.init(player);
 	player_ui.init();
 	drone.init(player);
+	space_station.init();
+	player_proj.init();
 	shuttle.init();
 	debris.init();
 	wave_manager.init();
@@ -124,20 +135,17 @@ void main_level::init()
 
 void main_level::update()
 {
-	// Informing the system about the loop's start
-	//AESysFrameStart();
-
-	//// Handling Input
-	//AEInputUpdate();
-
 	// Your own update logic goes here
 	frame_time = AEFrameRateControllerGetFrameTime();
 	total_time += frame_time;
 
 	planet.update(frame_time);
 	player.update(frame_time);
-	player_ui.update(frame_time, player);
+	camera.update(frame_time, player);
+	player_ui.update(player);
 	drone.update(frame_time, player, player_ui);
+	space_station.update(frame_time, player_ui);
+	player_proj.update(frame_time, player);
 	shuttle.update(frame_time);
 	debris.update(frame_time);
 	wave_manager.update(frame_time);
@@ -182,13 +190,13 @@ void main_level::draw()
 
 	planet.draw(pMesh);
 	player.draw(pMesh);
+	player_ui.draw(pMesh, player);
+	drone.draw(pMesh, player_ui);
+	space_station.draw(pMesh, player_ui);
+	player_proj.draw(pMesh);
 	debris.draw(pMesh);
 	shuttle.draw(pMesh);
 	wave_manager.draw(pMesh);
-
-	player_ui.draw(pMesh, player);
-	drone.draw(pMesh, player_ui);
-	//AESysFrameEnd();
 }
 
 // ----------------------------------------------------------------------------
@@ -201,6 +209,8 @@ void main_level::free()
 	player.free();
 	player_ui.free();
 	drone.free();
+	space_station.free();
+	player_proj.free();
 	shuttle.free();
 	debris.free();
 	wave_manager.free();
@@ -218,6 +228,8 @@ void main_level::unload()
 	player.unload();
 	player_ui.unload();
 	drone.unload();
+	space_station.unload();
+	player_proj.unload();
 	shuttle.unload();
 	debris.unload();
 	wave_manager.unload();

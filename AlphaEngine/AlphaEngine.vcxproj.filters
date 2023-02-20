@@ -52,6 +52,15 @@
     <ClCompile Include="Drone.cpp">
       <Filter>Source\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerProj.cpp">
+      <Filter>Source\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="SpaceStation.cpp">
+      <Filter>Source\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
     <ClCompile Include="MenuButtons.cpp">
       <Filter>Source\Buttons</Filter>
     </ClCompile>
@@ -107,6 +116,15 @@
     </ClInclude>
     <ClInclude Include="Drone.h">
       <Filter>Header\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerProj.h">
+      <Filter>Header\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaceStation.h">
+      <Filter>Header\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="MenuButtons.h">
       <Filter>Header\Buttons</Filter>
