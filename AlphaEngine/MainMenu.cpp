@@ -73,10 +73,10 @@ void main_menu::draw()
 {
     // Clear the screen
     AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
-
+#if 0
     // Call the draw function of the menuButtons object
     menuButtons.draw(pMesh1);
-
+#endif
     //std::cout << "--------------------main_menu::draw completed--------------------" << std::endl;
 }
 

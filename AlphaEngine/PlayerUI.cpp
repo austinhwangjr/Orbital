@@ -41,7 +41,7 @@ void PlayerUI::load()
 	player_tex = AEGfxTextureLoad("Assets/test-player.png");
 
 	// Font for text
-	font_id_shop = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 20);
+	//font_id_shop = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 20);
 }
 
 void PlayerUI::init()

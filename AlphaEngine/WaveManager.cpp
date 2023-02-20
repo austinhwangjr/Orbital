@@ -12,7 +12,7 @@ std::string str_player_capacity; std::string str_wave_complete;
 void WaveManager::load()
 {
 	// Font for text
-	font_id = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
+	//font_id = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
 }
 
 void WaveManager::init()

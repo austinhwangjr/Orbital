@@ -99,6 +99,6 @@ void Menu_Button::free()
 void Menu_Button::unload()
 {
     // unload the texture for the start button
-    AEGfxTextureUnload(buttonTexture);
-    AEGfxTextureUnload(quitButtonTexture);
+    //AEGfxTextureUnload(buttonTexture);
+    //AEGfxTextureUnload(quitButtonTexture);
 }
