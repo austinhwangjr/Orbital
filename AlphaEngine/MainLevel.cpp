@@ -131,12 +131,6 @@ void main_level::init()
 
 void main_level::update()
 {
-	// Informing the system about the loop's start
-	AESysFrameStart();
-
-	// Handling Input
-	AEInputUpdate();
-
 	// Your own update logic goes here
 	frame_time = AEFrameRateControllerGetFrameTime();
 	total_time += frame_time;
@@ -199,8 +193,6 @@ void main_level::draw()
 	debris.draw(pMesh);
 	shuttle.draw(pMesh);
 	wave_manager.draw(pMesh);
-
-	AESysFrameEnd();
 }
 
 // ----------------------------------------------------------------------------

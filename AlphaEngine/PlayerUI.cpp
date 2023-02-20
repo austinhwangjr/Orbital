@@ -28,9 +28,6 @@ void PlayerUI::load()
 	// Load textures
 	shop_icon_tex = AEGfxTextureLoad("Assets/YellowTexture.png");
 	space_station_tex = AEGfxTextureLoad("Assets/space-station.png");
-
-	// Font for text
-	//font_id_shop = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 20);
 }
 
 void PlayerUI::init()
@@ -163,7 +160,6 @@ void PlayerUI::unload()
 {
 	AEGfxTextureUnload(shop_icon_tex);
 	AEGfxTextureUnload(space_station_tex);
-	//AEGfxDestroyFont(font_id_shop);
 }
 
 void PlayerUI::shop_open(Player& player)

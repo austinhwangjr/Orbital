@@ -8,9 +8,6 @@
 #include "Systems.h"
 #include "Input.h"
 
-// Fonts
-s8 font_id, font_id_shop;
-
 // ---------------------------------------------------------------------------
 // main
 
@@ -23,11 +20,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
 	system_call::init(hInstance, nCmdShow);																		// Initialize the system
-	
-
-	// Fonts
-	font_id = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
-	font_id_shop = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 20);
 
 	//gsm::init(GS_MAINMENU);
 	gsm::init(GS_MAINLEVEL);																					// Initialize the Game State Manager (GSM) with Level1 as the initial game state
@@ -52,9 +44,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		// The game loop (while the next game state is equal to the current state)
 		while (next_state == current_state)
 		{
+			// Informing the system about the loop's start
+			AESysFrameStart();
+
+			// Handling Input
+			AEInputUpdate();
+
 			input_handle();     // Update input status
 			fpUpdate();         // Update current game state
 			fpDraw();           // Render current game state
+
+			AESysFrameEnd();
 		}
 
 		fpFree();               // Free current game state
