@@ -10,7 +10,6 @@
 #include "MenuButtons.h"
 #include "Input.h"
 
-
 // ----------------------------------------------------------------------------
 /*
  * Draws a button with a given texture and dimensions at the specified center coordinates.
@@ -25,19 +24,6 @@
  // ----------------------------------------------------------------------------
 void Rendering::RenderSprite(AEGfxTexture* buttonTexture, float centerX, float centerY, float width, float height, AEGfxVertexList* pMesh)
 {
-    // Calculate the screen aspect ratio
-    float aspectRatio = AEGetWindowWidth() / AEGetWindowHeight();
-
-    // Calculate the aspect ratio multiplier
-    float multiplier = aspectRatio / (16.0f / 9.0f);
-
-    // Scale the width of the button based on the aspect ratio
-    width *= multiplier;    
-
-    // Calculate the center coordinates of the button based on the screen size
-    centerX = (centerX / AEGfxGetWinMaxX()) * (AEGetWindowWidth() * multiplier);
-    centerY = (centerY / AEGfxGetWinMaxY()) * AEGetWindowHeight();
-
     // Set up the transformation matrix for the button
     AEMtx33 scale = {};
     AEMtx33 rotate = {};
@@ -60,4 +46,3 @@ void Rendering::RenderSprite(AEGfxTexture* buttonTexture, float centerX, float c
     AEGfxSetTransform(transform.m);                         // Set the transformation matrix for the mesh
     AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);             // Draw the mesh
 }
-
