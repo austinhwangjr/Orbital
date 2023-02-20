@@ -1,5 +1,6 @@
 #include "AEEngine.h"
 #include "PlayerUI.h"
+#include "Global.h"
 #include <iostream>
 #include <vector>
 
@@ -12,6 +13,9 @@ AEGfxTexture* space_station_tex;
 s8				font_id_shop;
 std::string		shop_option_name;
 bool			shop_triggered;
+
+// Variables for camera
+f32 cam_x, cam_y;
 
 // Mouse coordinates
 AEVec2 mouse_pos_world;
@@ -33,9 +37,10 @@ void PlayerUI::init()
 {
 	// Add shop button to vector
 	ShopOption shop_open_button{};
-	shop_open_button.size = 70.f;
-	shop_open_button.position.x = AEGfxGetWinMaxX() - shop_open_button.size;
-	shop_open_button.position.y = AEGfxGetWinMaxY() * 2 / 3;
+	shop_open_button.width	= 70.f;
+	shop_open_button.height = 70.f;
+	/*shop_open_button.position.x = AEGfxGetWinMaxX() - shop_open_button.width / 2;
+	shop_open_button.position.y = AEGfxGetWinMaxY() * 2 / 3;*/
 	button_vector.push_back(shop_open_button);
 
 	// Not in placing mode initially
@@ -52,14 +57,27 @@ void PlayerUI::update(Player& player)
 	s32 mouse_x_screen, mouse_y_screen;
 	AEInputGetCursorPosition(&mouse_x_screen, &mouse_y_screen);
 
-	mouse_pos_world.x = mouse_x_screen - 800;
-	mouse_pos_world.y = 400 - mouse_y_screen;
+	mouse_pos_world.x = cam_x + mouse_x_screen - 800;
+	mouse_pos_world.y = cam_y + 400 - mouse_y_screen;
 
 	if (shop_triggered)
 		shop_open(player);
 
 	else
 		shop_closed();
+
+	// ================================
+	// Update open shop button position
+	// ================================
+
+	AEGfxGetCamPosition(&cam_x, &cam_y);
+	button_vector[0].position.x = cam_x + g_windowWidth / 2 - button_vector[0].width / 2;
+	button_vector[0].position.y = cam_y + g_windowHeight / 2 - button_vector[0].height * 2.5f;
+
+	for (int i = 1; i < button_vector.size(); ++i) {
+		button_vector[i].position.x = button_vector[0].position.x - 150;
+		button_vector[i].position.y = button_vector[0].position.y - (i - 1) * 115;
+	}
 
 	// =================================
 	// Calculate the matrix for buttons
@@ -69,12 +87,7 @@ void PlayerUI::update(Player& player)
 
 	for (int i = 0; i < button_vector.size(); ++i) {
 		ShopOption& button = button_vector[i];
-
-		if (button.button_type == SHOP_OPEN)
-			AEMtx33Scale(&scale, button.size, button.size);
-		else
-			AEMtx33Scale(&scale, button.size * 2, button.size);
-
+		AEMtx33Scale(&scale, button.width, button.height);
 		AEMtx33Rot(&rot, 0.f);
 		AEMtx33Trans(&trans, button.position.x, button.position.y);
 		AEMtx33Concat(&button.transform, &rot, &scale);
@@ -106,17 +119,17 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player& player)
 		if (button_vector[i].button_type == SHOP_OPEN) {
 			shop_option_name = "SHOP";
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_option_name.c_str()),
-				(button_vector[i].position.x - button_vector[i].size / 2) / 800, button_vector[i].position.y / 400, 1.f, 0.f, 0.f, 0.f);
+				(button_vector[i].position.x - button_vector[i].width / 2 - cam_x) / 800, (button_vector[i].position.y - cam_y) / 400, 1.f, 0.f, 0.f, 0.f);
 		}
 		else if (button_vector[i].button_type == MOVEMENT_SPEED) {
 			shop_option_name = "Movement Speed";
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_option_name.c_str()),
-				(button_vector[i].position.x - button_vector[i].size) / 800, button_vector[i].position.y / 400, 1.f, 0.f, 0.f, 0.f);
+				(button_vector[i].position.x - button_vector[i].width / 2 - cam_x) / 800, (button_vector[i].position.y - cam_y) / 400, 1.f, 0.f, 0.f, 0.f);
 		}
 		else if (button_vector[i].button_type == CAPACITY) {
 			shop_option_name = "Increase Capacity";
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_option_name.c_str()),
-				(button_vector[i].position.x - button_vector[i].size) / 800, button_vector[i].position.y / 400, 1.f, 0.f, 0.f, 0.f);
+				(button_vector[i].position.x - button_vector[i].width / 2 - cam_x) / 800, (button_vector[i].position.y - cam_y) / 400, 1.f, 0.f, 0.f, 0.f);
 		}
 		else if (button_vector[i].button_type == CREATE_DRONE) {
 			AEGfxTextureSet(player_tex, 0, 0);
@@ -161,11 +174,11 @@ void PlayerUI::shop_open(Player& player)
 
 	for (int i = 0; i < button_vector.size(); ++i) {
 
-		if ((button_vector[i].position.x - button_vector[i].size < mouse_pos_world.x) &&
-			(button_vector[i].position.x + button_vector[i].size > mouse_pos_world.x)) {
+		if ((button_vector[i].position.x - button_vector[i].width < mouse_pos_world.x) &&
+			(button_vector[i].position.x + button_vector[i].width > mouse_pos_world.x)) {
 
-			if ((button_vector[i].position.y - button_vector[i].size / 2 < mouse_pos_world.y) &&
-				(button_vector[i].position.y + button_vector[i].size / 2 > mouse_pos_world.y)) {
+			if ((button_vector[i].position.y - button_vector[i].height / 2 < mouse_pos_world.y) &&
+				(button_vector[i].position.y + button_vector[i].height / 2 > mouse_pos_world.y)) {
 
 				if (AEInputCheckTriggered(AEVK_LBUTTON)) {
 					if (button_vector[i].button_type == SHOP_OPEN) {
@@ -213,10 +226,10 @@ void PlayerUI::shop_closed()
 	// Check for input
 	// ================
 
-	f32 button_left		= button_vector[0].position.x - button_vector[0].size / 2;
-	f32 button_right	= button_vector[0].position.x + button_vector[0].size / 2;
-	f32 button_top		= button_vector[0].position.y + button_vector[0].size / 2;
-	f32 button_bottom	= button_vector[0].position.y - button_vector[0].size / 2;
+	f32 button_left		= button_vector[0].position.x - button_vector[0].width / 2;
+	f32 button_right	= button_vector[0].position.x + button_vector[0].width / 2;
+	f32 button_top		= button_vector[0].position.y + button_vector[0].height / 2;
+	f32 button_bottom	= button_vector[0].position.y - button_vector[0].height / 2;
 
 	if ((button_left < mouse_pos_world.x) && (button_right > mouse_pos_world.x)) {
 		if ((button_bottom < mouse_pos_world.y) && (button_top > mouse_pos_world.y)) {
@@ -224,9 +237,10 @@ void PlayerUI::shop_closed()
 				for (int i = 0; i < 4; ++i) {
 					// Populate button vector
 					ShopOption player_upgrade;
-					player_upgrade.size = 80.f;
-					player_upgrade.position.x = button_vector[0].position.x - 150;
-					player_upgrade.position.y = button_vector[0].position.y - i * 115;
+					player_upgrade.width	= 160.f;
+					player_upgrade.height	= 80.f;
+					/*player_upgrade.position.x = button_vector[0].position.x - 150;
+					player_upgrade.position.y = button_vector[0].position.y - i * 115;*/
 					player_upgrade.button_type = SHOP_OPEN + i + 1;
 					button_vector.push_back(player_upgrade);
 				}

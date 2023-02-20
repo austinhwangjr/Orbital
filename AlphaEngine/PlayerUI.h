@@ -31,6 +31,7 @@ struct ShopOption
 {
 	AEVec2	position;
 	AEMtx33 transform;
-	f32		size;
+	f32		width;
+	f32		height;
 	int		button_type;
 };

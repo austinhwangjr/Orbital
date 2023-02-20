@@ -96,7 +96,7 @@ void main_level::init()
 	player_ui.init();
 	drone.init(player);
 	space_station.init();
-	player_proj.init(player);
+	player_proj.init();
 	shuttle.init();
 	debris.init();
 	wave_manager.init();

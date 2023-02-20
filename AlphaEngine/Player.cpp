@@ -147,6 +147,8 @@ void Player::orbit_state(f64 frame_time)
 	// Draw tractor beam
 	if (AEInputCheckCurr(AEVK_SPACE))
 		beam_active = true;
+	else
+		beam_active = false;
 
 	// ================================
 	// Check for beam-debris collision

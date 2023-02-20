@@ -20,14 +20,15 @@ void PlayerProj::load()
 	player_proj_tex = AEGfxTextureLoad("Assets/Debris.png");
 }
 
-void PlayerProj::init(Player player)
+void PlayerProj::init()
 {
-	position		= player.position;
+	position.x		= 0.f;
+	position.y		= 0.f;
 
 	velocity.x		= 0.f;
 	velocity.y		= 0.f;
 
-	size			= player.size;
+	size			= 30.f;
 
 	speed			= 150.f;
 
@@ -42,6 +43,7 @@ void PlayerProj::update(f64 frame_time, Player& player)
 
 	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
 
+		position = player.position;
 		AEVec2Sub(&velocity, &mouse_pos_world, &player.position);
 		AEVec2Normalize(&velocity, &velocity);
 		AEVec2Scale(&velocity, &velocity, speed);

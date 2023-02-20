@@ -13,7 +13,7 @@ struct PlayerProj
 	AEMtx33			transform;
 
 	void load();
-	void init(Player);
+	void init();
 	void update(f64, Player&);
 	void draw(AEGfxVertexList*);
 	void free();
