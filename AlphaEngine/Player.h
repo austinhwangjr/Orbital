@@ -23,7 +23,10 @@ struct Player
 	f32				direction;
 	int				current_capacity;
 	int				max_capacity;
+	int				score;
+	int				credits;
 	bool			can_leave_orbit;
+
 
 	// Tractor beam
 	AEVec2			beam_pos;

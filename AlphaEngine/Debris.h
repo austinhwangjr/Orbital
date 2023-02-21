@@ -20,6 +20,7 @@ struct Debris
 	double is_collect;
 	double texture; // maybe 3-5 textures
 	bool active;
+	bool to_erase = false;
 
 	void load();
 	void init();

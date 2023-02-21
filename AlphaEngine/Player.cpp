@@ -44,6 +44,10 @@ void Player::init()
 	current_capacity		= 0;
 	max_capacity			= 5;
 
+	// Score-keeping
+	score					= 0;
+	credits					= 0;
+
 	can_leave_orbit			= true;
 
 	// Tractor beam
@@ -63,7 +67,7 @@ void Player::update(f64 frame_time)
 		orbit_state(frame_time);
 
 	// Player is in free-flying mode
-	else if (state == PLAYER_FLY)
+	if (state == PLAYER_FLY)
 		flying_state(frame_time);
 
 	// =========================================
@@ -124,10 +128,16 @@ void Player::orbit_state(f64 frame_time)
 	// ================
 	if (AEInputCheckCurr(AEVK_A)) {
 		direction += (rot_speed / 2) * speed_upgrade * static_cast<f32>(frame_time);
+
+		position.x = current_planet.position.x + (current_planet.size / 2 + dist_from_planet) * AECos(direction);
+		position.y = current_planet.position.y + (current_planet.size / 2 + dist_from_planet) * AESin(direction);
 	}
 
 	if (AEInputCheckCurr(AEVK_D)) {
 		direction -= (rot_speed / 2) * speed_upgrade * static_cast<f32>(frame_time);
+
+		position.x = current_planet.position.x + (current_planet.size / 2 + dist_from_planet) * AECos(direction);
+		position.y = current_planet.position.y + (current_planet.size / 2 + dist_from_planet) * AESin(direction);
 	}
 
 	if (AEInputCheckPrev(AEVK_W))
@@ -136,11 +146,7 @@ void Player::orbit_state(f64 frame_time)
 		can_leave_orbit = true;
 
 	if (AEInputCheckCurr(AEVK_W) && can_leave_orbit) {
-		position.x += AECos(direction);
-		position.y += AESin(direction);
-
 		AEVec2Zero(&velocity);
-
 		state = PLAYER_FLY;
 	}
 
@@ -156,13 +162,10 @@ void Player::orbit_state(f64 frame_time)
 	
 	if (beam_active) {
 		// Check for collision between tractor beam and debris
-		if (debris_vector_all[current_planet.id].size() > 0) {
-			for (int i = 0; i < debris_vector_all[current_planet.id].size(); ++i) {
-				if (current_capacity < max_capacity && AEVec2Distance(&beam_collision_pos, &debris_vector_all[current_planet.id][i].position) <= beam_width / 2) {
-					debris_vector_all[current_planet.id].erase(debris_vector_all[current_planet.id].begin() + i);
-					current_capacity++;
-					break;
-				}
+		for (int i = 0; i < debris_vector_all[current_planet.id].size(); ++i) {
+			if (current_capacity < max_capacity && AEVec2Distance(&beam_collision_pos, &debris_vector_all[current_planet.id][i].position) <= beam_width / 2) {
+				debris_vector_all[current_planet.id][i].to_erase = true;
+				break;
 			}
 		}
 	}
@@ -176,8 +179,15 @@ void Player::orbit_state(f64 frame_time)
 	// ================================
 	// Update player and beam position
 	// ================================
-	position.x = current_planet.position.x + (current_planet.size / 2 + dist_from_planet) * AECos(direction);
-	position.y = current_planet.position.y + (current_planet.size / 2 + dist_from_planet) * AESin(direction);
+
+	if (AEInputCheckCurr(AEVK_W) && can_leave_orbit) {
+		position.x += AECos(direction);
+		position.y += AESin(direction);
+	}
+	else {
+		position.x = current_planet.position.x + (current_planet.size / 2 + dist_from_planet) * AECos(direction);
+		position.y = current_planet.position.y + (current_planet.size / 2 + dist_from_planet) * AESin(direction);
+	}
 
 	if (beam_active) {
 		beam_pos.x = position.x - AECos(direction) * 20;
@@ -185,6 +195,16 @@ void Player::orbit_state(f64 frame_time)
 
 		beam_collision_pos.x = beam_pos.x - AECos(direction) * 10;
 		beam_collision_pos.y = beam_pos.y - AESin(direction) * 10;
+	}
+
+	// ===========================
+	// Remove debris to be erased
+	// ===========================
+	for (int i = 0; i < debris_vector_all[current_planet.id].size(); ++i) {
+		if (debris_vector_all[current_planet.id][i].to_erase) {
+			debris_vector_all[current_planet.id].erase(debris_vector_all[current_planet.id].begin() + i);
+			current_capacity++;
+		}
 	}
 }
 
@@ -229,6 +249,7 @@ void Player::flying_state(f64 frame_time)
 
 	if (AEVec2Distance(&current_planet.position, &position) <= (current_planet.size / 2 + dist_from_planet)) {
 		direction = atan2(position.y - current_planet.position.y, position.x - current_planet.position.x);
+		//AEVec2Zero(&velocity);
 		state = PLAYER_ORBIT;
 	}
 

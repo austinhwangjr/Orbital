@@ -156,9 +156,9 @@ void WaveManager::draw(AEGfxVertexList *pMesh)
 	}
 
 	// DRAW TEXT
-	str_player_capacity = "Capacity: " + std::to_string(player.current_capacity) + " / " + std::to_string(player.max_capacity);
+	/*str_player_capacity = "Capacity: " + std::to_string(player.current_capacity) + " / " + std::to_string(player.max_capacity);
 	print_string = str_player_capacity.c_str();
-	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.5f, 0.75f, 1.f, 1.f, 1.f, 1.f);
+	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.5f, 0.75f, 1.f, 1.f, 1.f, 1.f);*/
 }
 
 void WaveManager::free()

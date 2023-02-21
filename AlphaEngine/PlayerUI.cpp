@@ -3,11 +3,16 @@
 #include "Global.h"
 #include <iostream>
 #include <vector>
+#include <string>
 
 // Textures
 extern AEGfxTexture* player_tex;
 AEGfxTexture* shop_icon_tex;
 AEGfxTexture* space_station_tex;
+
+// Variables for general UI
+std::string		score, credits, capacity;
+extern s8		font_id;
 
 // Variables for shop
 extern s8		font_id_shop;
@@ -102,6 +107,21 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player& player)
 	AEMtx33 scale{}, rotate{}, translate{}, transform{};
 
 	AEGfxSetBlendColor(0.f, 0.f, 0.f, 0.f);
+
+	// Print score
+	score = "Score: " + std::to_string(player.score);
+	AEGfxPrint(font_id_shop, const_cast<s8*>(score.c_str()),
+		-0.75f, 0.75f, 1.f, 1.f, 1.f, 1.f);
+	
+	// Print credits
+	credits = "Credits: " + std::to_string(player.credits);
+
+	// Print capacity
+	//capacity = "Capacity: " + player.current_capacity + '\\' + player.max_capacity;
+
+	capacity = "Capacity: " + std::to_string(player.current_capacity) + " / " + std::to_string(player.max_capacity);
+	//print_string = str_player_capacity.c_str();
+	AEGfxPrint(font_id, const_cast<s8*>(capacity.c_str()), 0.5f, 0.75f, 1.f, 1.f, 1.f, 1.f);
 
 	// Shop icon test
 	AEGfxTextureSet(shop_icon_tex, 0, 0);
