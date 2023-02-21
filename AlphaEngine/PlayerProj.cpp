@@ -1,6 +1,7 @@
 #include "AEEngine.h"
 #include "PlayerProj.h"
 #include <vector>
+#include "SpaceStation.h"
 
 // Textures
 AEGfxTexture* player_proj_tex;
@@ -12,8 +13,15 @@ AEGfxTexture* player_proj_tex;
 // Mouse coordinates
 extern AEVec2 mouse_pos_world;
 
-// Vector of space stations
+// Vector of projectile
 std::vector<PlayerProj> player_proj_vector;
+
+// Vector of spacestation
+extern std::vector<SpaceStation> space_station_vector;
+
+f32 collision_proj_x;
+f32 collision_proj_y;
+
 
 void PlayerProj::load()
 {
@@ -42,13 +50,15 @@ void PlayerProj::update(f64 frame_time, Player& player)
 	// =========================
 
 	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+		if (player.current_capacity != 0) {
+			position = player.position;
+			AEVec2Sub(&velocity, &mouse_pos_world, &player.position);
+			AEVec2Normalize(&velocity, &velocity);
+			AEVec2Scale(&velocity, &velocity, speed);
 
-		position = player.position;
-		AEVec2Sub(&velocity, &mouse_pos_world, &player.position);
-		AEVec2Normalize(&velocity, &velocity);
-		AEVec2Scale(&velocity, &velocity, speed);
-
-		player_proj_vector.push_back(*this);
+			player_proj_vector.push_back(*this);
+			player.current_capacity--;
+		}
 	}
 
 	// =====================================
@@ -65,6 +75,28 @@ void PlayerProj::update(f64 frame_time, Player& player)
 	// ====================
 	// check for collision
 	// ====================
+
+
+	//collision check for debris and spacestation
+
+	for (int i = 0; i < player_proj_vector.size(); ++i) {
+		collision_proj_x = player_proj_vector[i].position.x;
+		collision_proj_y = player_proj_vector[i].position.y;
+
+		AEVec2 coll_proj_pos;
+		coll_proj_pos.x = collision_proj_x;
+		coll_proj_pos.y = collision_proj_y;
+
+		for (int j = 0; j < space_station_vector.size(); j++) {
+
+			int radius = space_station_vector[j].size / 2 + 15 / 2;
+
+			if (AEVec2Distance(&coll_proj_pos, &space_station_vector[j].position) <= radius) {
+				player_proj_vector.erase(player_proj_vector.begin() + i);
+				//space_station_vector[j].start_process = 1;
+			}
+		}
+	}
 
 
 
