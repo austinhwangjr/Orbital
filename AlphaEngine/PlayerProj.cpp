@@ -19,10 +19,6 @@ std::vector<PlayerProj> player_proj_vector;
 // Vector of spacestation
 extern std::vector<SpaceStation> space_station_vector;
 
-f32 collision_proj_x;
-f32 collision_proj_y;
-
-
 void PlayerProj::load()
 {
 	player_proj_tex = AEGfxTextureLoad("Assets/Debris.png");
@@ -68,8 +64,8 @@ void PlayerProj::update(f64 frame_time, Player& player)
 	for (int i = 0; i < player_proj_vector.size(); ++i) {
 		PlayerProj& player_proj = player_proj_vector[i];
 
-		player_proj.position.x += player_proj.velocity.x * frame_time;
-		player_proj.position.y += player_proj.velocity.y * frame_time;
+		player_proj.position.x += player_proj.velocity.x * static_cast<f32>(frame_time);
+		player_proj.position.y += player_proj.velocity.y * static_cast<f32>(frame_time);
 	}
 
 	// ====================
@@ -80,19 +76,13 @@ void PlayerProj::update(f64 frame_time, Player& player)
 	//collision check for debris and spacestation
 
 	for (int i = 0; i < player_proj_vector.size(); ++i) {
-		collision_proj_x = player_proj_vector[i].position.x;
-		collision_proj_y = player_proj_vector[i].position.y;
-
-		AEVec2 coll_proj_pos;
-		coll_proj_pos.x = collision_proj_x;
-		coll_proj_pos.y = collision_proj_y;
-
 		for (int j = 0; j < space_station_vector.size(); j++) {
+			f32 radius = size / 2 + space_station_vector[j].size / 2;
 
-			int radius = space_station_vector[j].size / 2 + 15 / 2;
-
-			if (AEVec2Distance(&coll_proj_pos, &space_station_vector[j].position) <= radius) {
+			if (AEVec2Distance(&player_proj_vector[i].position, &space_station_vector[j].position) <= radius) {
 				player_proj_vector.erase(player_proj_vector.begin() + i);
+				player.credits += 100;
+				player.score += 100;
 				//space_station_vector[j].start_process = 1;
 			}
 		}

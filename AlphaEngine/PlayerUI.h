@@ -7,6 +7,14 @@ struct PlayerUI
 	bool			placing_station;
 	AEMtx33			transform;
 
+	// Cost of upgrades
+	const int mov_speed_cost		= 100;
+	const int capacity_cost			= 200;
+	const int drone_cost			= 250;
+	const int space_station_cost	= 300;
+	const int beam_strength_cost	= 150;
+
+
 	void load();
 	void init();
 	void update(Player&);
@@ -19,12 +27,13 @@ struct PlayerUI
 };
 
 enum BUTTON_TYPE {
-	SHOP_OPEN = 0,
-	MOVEMENT_SPEED,
+	MOVEMENT_SPEED = 0,
 	CAPACITY,
 	CREATE_DRONE,
 	SPACE_STATION,
-	TRACTOR_BEAM_STRENGTH
+	TRACTOR_BEAM_STRENGTH,
+	UPGRADE_COUNT,
+	SHOP_OPEN,
 };
 
 struct ShopOption

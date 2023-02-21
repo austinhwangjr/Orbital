@@ -144,7 +144,7 @@ void main_level::update()
 	camera.update(frame_time, player);
 	player_ui.update(player);
 	drone.update(frame_time, player, player_ui);
-	space_station.update(frame_time, player_ui);
+	space_station.update(frame_time, player, player_ui);
 	player_proj.update(frame_time, player);
 	shuttle.update(frame_time);
 	debris.update(frame_time);

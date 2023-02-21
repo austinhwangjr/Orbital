@@ -46,7 +46,7 @@ void Player::init()
 
 	// Score-keeping
 	score					= 0;
-	credits					= 0;
+	credits					= 500;
 
 	can_leave_orbit			= true;
 
@@ -129,15 +129,15 @@ void Player::orbit_state(f64 frame_time)
 	if (AEInputCheckCurr(AEVK_A)) {
 		direction += (rot_speed / 2) * speed_upgrade * static_cast<f32>(frame_time);
 
-		position.x = current_planet.position.x + (current_planet.size / 2 + dist_from_planet) * AECos(direction);
-		position.y = current_planet.position.y + (current_planet.size / 2 + dist_from_planet) * AESin(direction);
+		position.x = current_planet.position.x + (static_cast<f32>(current_planet.size) / 2 + dist_from_planet) * AECos(direction);
+		position.y = current_planet.position.y + (static_cast<f32>(current_planet.size) / 2 + dist_from_planet) * AESin(direction);
 	}
 
 	if (AEInputCheckCurr(AEVK_D)) {
 		direction -= (rot_speed / 2) * speed_upgrade * static_cast<f32>(frame_time);
 
-		position.x = current_planet.position.x + (current_planet.size / 2 + dist_from_planet) * AECos(direction);
-		position.y = current_planet.position.y + (current_planet.size / 2 + dist_from_planet) * AESin(direction);
+		position.x = current_planet.position.x + (static_cast<f32>(current_planet.size) / 2 + dist_from_planet) * AECos(direction);
+		position.y = current_planet.position.y + (static_cast<f32>(current_planet.size) / 2 + dist_from_planet) * AESin(direction);
 	}
 
 	if (AEInputCheckPrev(AEVK_W))
@@ -155,6 +155,27 @@ void Player::orbit_state(f64 frame_time)
 		beam_active = true;
 	else
 		beam_active = false;
+
+	// ================================
+	// Update player and beam position
+	// ================================
+
+	if (AEInputCheckCurr(AEVK_W) && can_leave_orbit) {
+		position.x += AECos(direction);
+		position.y += AESin(direction);
+	}
+	else {
+		position.x = current_planet.position.x + (static_cast<f32>(current_planet.size) / 2.f + dist_from_planet) * AECos(direction);
+		position.y = current_planet.position.y + (static_cast<f32>(current_planet.size) / 2.f + dist_from_planet) * AESin(direction);
+	}
+
+	if (beam_active) {
+		beam_pos.x = position.x - AECos(direction) * 20;
+		beam_pos.y = position.y - AESin(direction) * 20;
+
+		beam_collision_pos.x = beam_pos.x - AECos(direction) * 10;
+		beam_collision_pos.y = beam_pos.y - AESin(direction) * 10;
+	}
 
 	// ================================
 	// Check for beam-debris collision
@@ -175,27 +196,6 @@ void Player::orbit_state(f64 frame_time)
 	// ===================================
 
 	
-
-	// ================================
-	// Update player and beam position
-	// ================================
-
-	if (AEInputCheckCurr(AEVK_W) && can_leave_orbit) {
-		position.x += AECos(direction);
-		position.y += AESin(direction);
-	}
-	else {
-		position.x = current_planet.position.x + (current_planet.size / 2 + dist_from_planet) * AECos(direction);
-		position.y = current_planet.position.y + (current_planet.size / 2 + dist_from_planet) * AESin(direction);
-	}
-
-	if (beam_active) {
-		beam_pos.x = position.x - AECos(direction) * 20;
-		beam_pos.y = position.y - AESin(direction) * 20;
-
-		beam_collision_pos.x = beam_pos.x - AECos(direction) * 10;
-		beam_collision_pos.y = beam_pos.y - AESin(direction) * 10;
-	}
 
 	// ===========================
 	// Remove debris to be erased
@@ -248,7 +248,8 @@ void Player::flying_state(f64 frame_time)
 	}
 
 	if (AEVec2Distance(&current_planet.position, &position) <= (current_planet.size / 2 + dist_from_planet)) {
-		direction = atan2(position.y - current_planet.position.y, position.x - current_planet.position.x);
+		//direction = atan2(position.y - current_planet.position.y, position.x - current_planet.position.x);
+		direction = static_cast<f32>(atan2(position.y - current_planet.position.y, position.x - current_planet.position.x));
 		//AEVec2Zero(&velocity);
 		state = PLAYER_ORBIT;
 	}

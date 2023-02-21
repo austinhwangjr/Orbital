@@ -41,8 +41,7 @@ void PlayerUI::init()
 	ShopOption shop_open_button{};
 	shop_open_button.width	= 70.f;
 	shop_open_button.height = 70.f;
-	/*shop_open_button.position.x = AEGfxGetWinMaxX() - shop_open_button.width / 2;
-	shop_open_button.position.y = AEGfxGetWinMaxY() * 2 / 3;*/
+	shop_open_button.button_type = SHOP_OPEN;
 	button_vector.push_back(shop_open_button);
 
 	// Not in placing mode initially
@@ -73,8 +72,8 @@ void PlayerUI::update(Player& player)
 	// ================================
 
 	AEGfxGetCamPosition(&cam_x, &cam_y);
-	button_vector[0].position.x = cam_x + g_windowWidth / 2 - button_vector[0].width / 2;
-	button_vector[0].position.y = cam_y + g_windowHeight / 2 - button_vector[0].height * 2.5f;
+	button_vector[0].position.x = cam_x + static_cast<f32>(AEGetWindowWidth()) / 2.f - button_vector[0].width / 2.f;
+	button_vector[0].position.y = cam_y + static_cast<f32>(AEGetWindowHeight()) / 2.f - button_vector[0].height * 2.5f;
 
 	for (int i = 1; i < button_vector.size(); ++i) {
 		button_vector[i].position.x = button_vector[0].position.x - 150;
@@ -110,18 +109,16 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player& player)
 
 	// Print score
 	score = "Score: " + std::to_string(player.score);
-	AEGfxPrint(font_id_shop, const_cast<s8*>(score.c_str()),
-		-0.75f, 0.75f, 1.f, 1.f, 1.f, 1.f);
+	AEGfxPrint(font_id, const_cast<s8*>(score.c_str()),
+		-0.85f, 0.75f, 1.f, 1.f, 1.f, 1.f);
 	
 	// Print credits
 	credits = "Credits: " + std::to_string(player.credits);
+	AEGfxPrint(font_id, const_cast<s8*>(credits.c_str()), 0.5f, 0.75f, 1.f, 1.f, 1.f, 1.f);
 
 	// Print capacity
-	//capacity = "Capacity: " + player.current_capacity + '\\' + player.max_capacity;
-
 	capacity = "Capacity: " + std::to_string(player.current_capacity) + " / " + std::to_string(player.max_capacity);
-	//print_string = str_player_capacity.c_str();
-	AEGfxPrint(font_id, const_cast<s8*>(capacity.c_str()), 0.5f, 0.75f, 1.f, 1.f, 1.f, 1.f);
+	AEGfxPrint(font_id, const_cast<s8*>(capacity.c_str()), -0.25f, -0.75f, 1.f, 1.f, 1.f, 1.f);
 
 	// Shop icon test
 	AEGfxTextureSet(shop_icon_tex, 0, 0);
@@ -199,21 +196,29 @@ void PlayerUI::shop_open(Player& player)
 				if (AEInputCheckTriggered(AEVK_LBUTTON)) {
 					if (button_vector[i].button_type == SHOP_OPEN) {
 						// remove buttons from list
-						for (int i = 0; i < 4; ++i) {
+						for (int i = 0; i < UPGRADE_COUNT; ++i) {
 							button_vector.pop_back();
 						}
 						shop_triggered = false;
 					}
-					else if (button_vector[i].button_type == CAPACITY) {
-						if (player.current_capacity > 0) {
-							player.current_capacity--;
-							player.max_capacity++;
-						}
-					}
 					else if (button_vector[i].button_type == MOVEMENT_SPEED) {
-						if (player.current_capacity > 1) {
+						/*if (player.current_capacity > 1) {
 							player.current_capacity -= 2;
 							player.speed_upgrade += 0.5;
+						}*/
+						if (player.credits >= mov_speed_cost) {
+							player.credits -= mov_speed_cost;
+							player.speed_upgrade += 0.5;
+						}
+					}
+					else if (button_vector[i].button_type == CAPACITY) {
+						/*if (player.current_capacity > 0) {
+							player.current_capacity--;
+							player.max_capacity++;
+						}*/
+						if (player.credits >= capacity_cost) {
+							player.credits -= capacity_cost;
+							player.max_capacity++;
 						}
 					}
 					else if (button_vector[i].button_type == CREATE_DRONE || button_vector[i].button_type == SPACE_STATION) {
@@ -224,7 +229,7 @@ void PlayerUI::shop_open(Player& player)
 							placing_station = true;
 
 						// Remove buttons from list
-						for (int i = 0; i < 4; ++i)
+						for (int i = 0; i < UPGRADE_COUNT; ++i)
 							button_vector.pop_back();
 
 						// Close shop
@@ -250,14 +255,13 @@ void PlayerUI::shop_closed()
 	if ((button_left < mouse_pos_world.x) && (button_right > mouse_pos_world.x)) {
 		if ((button_bottom < mouse_pos_world.y) && (button_top > mouse_pos_world.y)) {
 			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-				for (int i = 0; i < 4; ++i) {
+				//for (int i = 0; i < 4; ++i) {
+				for (int i = 0; i < UPGRADE_COUNT; ++i) {
 					// Populate button vector
-					ShopOption player_upgrade;
+					ShopOption player_upgrade{};
 					player_upgrade.width	= 160.f;
 					player_upgrade.height	= 80.f;
-					/*player_upgrade.position.x = button_vector[0].position.x - 150;
-					player_upgrade.position.y = button_vector[0].position.y - i * 115;*/
-					player_upgrade.button_type = SHOP_OPEN + i + 1;
+					player_upgrade.button_type = MOVEMENT_SPEED + i;
 					button_vector.push_back(player_upgrade);
 				}
 				shop_triggered = true;

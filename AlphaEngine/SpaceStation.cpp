@@ -36,7 +36,7 @@ void SpaceStation::init()
 	max_capacity		= 10;
 }
 
-void SpaceStation::update(f64 frame_time, PlayerUI& player_ui)
+void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 {
 	int safe_position = 0;
 	
@@ -83,15 +83,16 @@ void SpaceStation::update(f64 frame_time, PlayerUI& player_ui)
 		
 	}
 
-
 	// ===============================
 	// Update space station instances
 	// ===============================
 
 	// If no longer placing space station
 	if (!player_ui.placing_station) {
-		if (space_station_valid_placement && !space_station_added) {
+		if (space_station_valid_placement && !space_station_added && player.credits >= player_ui.space_station_cost) {
+			// Add space station to vector
 			space_station_vector.push_back(*this);
+			player.credits -= player_ui.space_station_cost;
 			space_station_added = true;
 		}
 	}
@@ -107,7 +108,7 @@ void SpaceStation::update(f64 frame_time, PlayerUI& player_ui)
 		}
 	}
 
-	
+
 
 	for (int i = 0; i < space_station_vector.size(); ++i) {
 		SpaceStation& space_station = space_station_vector[i];
