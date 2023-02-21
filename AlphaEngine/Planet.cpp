@@ -24,7 +24,7 @@ void Planets::update(f64 frame_time)
 {
 	for (size_t i{}; i < planet_vector.size(); i++)
 	{
-		if (!planet_vector[i].wave_complete)
+		if (!planet_vector[i].wave_complete && !wave_manager.planet_adding)
 		{
 			if (planet_vector[i].shuttle_timer > planet_vector[i].shuttle_time_to_spawn)
 			{

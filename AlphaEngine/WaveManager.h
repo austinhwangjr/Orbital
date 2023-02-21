@@ -5,6 +5,7 @@
 #define INITIAL_SHUTTLE 4
 #define WAVE_INTERVAL_TIME 3
 #define MAX_DEBRIS 20
+#define WAVE_ADD_PLANET 2
 
 #include "AEEngine.h"
 #include "Player.h"
@@ -28,7 +29,6 @@ struct WaveManager
 	bool shuttle_has_collided;
 
 	int planet_count;
-	int planet_spawn_interval;
 	f64 planet_spawn_timer;
 	bool planet_adding;
 

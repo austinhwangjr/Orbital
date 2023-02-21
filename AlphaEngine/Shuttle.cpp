@@ -65,6 +65,10 @@ void Shuttles::draw(AEGfxVertexList* pMesh)
 			{
 				AEGfxSetTransparency(shuttle_vector[i].lifespan / (SHUTTLE_MAX_LIFESPAN / 2.0f));
 			}
+			else
+			{
+				AEGfxSetTransparency(1.f);
+			}
 			AEGfxSetTransform(shuttle_vector[i].transform.m);
 			// Actually drawing the mesh
 			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);

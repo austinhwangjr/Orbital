@@ -6,7 +6,7 @@ extern WaveManager wave_manager;
 void Camera::init(Player player)
 {
 	AEVec2Zero(&velocity);
-	time_to_player = 1000.f;
+	time_to_player = 300.f;
 	time_to_planet = 1000.f;
 	transition_time = 0.f;
 	position.x = player.position.x;
