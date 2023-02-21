@@ -30,6 +30,7 @@ struct WaveManager
 	int planet_count;
 	int planet_spawn_interval;
 	f64 planet_spawn_timer;
+	bool planet_adding;
 
 	void load();
 	void init();

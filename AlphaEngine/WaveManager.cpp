@@ -26,6 +26,7 @@ void WaveManager::init()
 
 	planet_count = 0;
 	planet_spawn_interval = 3;
+	planet_adding = false;
 
 	shuttle_left_planet = 0;
 	shuttle_destroyed = 0;
@@ -90,14 +91,14 @@ void WaveManager::update(f64 frame_time)
 	{
 		planet.Planets::spawn(rand() % INITIAL_SHUTTLE + 1);
 		planet_count++;
-
+		planet_adding = true;
 		std::cout << '\n' << "Wave " << wave_number << '\t' << "Added Planet." << '\t';
 		std::cout << "Planet Count: " << planet_count << '\n';
 	}
 // Add Planets at Intervals----------------------------------------------
 
 // Wave interval timer---------------------------------------------------
-	if (wave_completed)
+	if (wave_completed && !planet_adding)
 	{
 		wave_interval_timer += frame_time;
 	}
