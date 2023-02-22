@@ -19,3 +19,12 @@ struct SpaceStation
 	void free();
 	void unload();
 };
+
+struct Cooldown_Bar {
+	AEVec2	position;
+	AEMtx33 transform;
+	f32		width;
+	f32		height;
+	f32		timer;
+	f32		total_time;
+};

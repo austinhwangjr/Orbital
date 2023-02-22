@@ -24,11 +24,15 @@ extern std::vector<Planets> planet_vector;
 //Vector of Debris
 extern std::vector<std::vector<Debris>> debris_vector_all;
 
+// Variables to print
 std::string capacity_spacestation;
 extern s8		font_id;
 extern Camera camera;
 
-SpaceStation current_station;
+extern AEGfxTexture* shop_icon_tex;
+
+// Vector of cooldown bar
+std::vector<Cooldown_Bar> cooldown_vector;
 
 void SpaceStation::load()
 {
@@ -110,6 +114,15 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 		if (space_station_valid_placement && !space_station_added && player.credits >= player_ui.space_station_cost) {
 			// Add space station to vector
 			space_station_vector.push_back(*this);
+
+			Cooldown_Bar cooldown;
+			cooldown.height = 5;
+			cooldown.width = 0;
+			cooldown.position.x = this->position.x;
+			cooldown.position.y = this->position.y;
+			cooldown.timer = 0;
+			cooldown.total_time = 3;
+			cooldown_vector.push_back(cooldown);
 			player.credits -= player_ui.space_station_cost;
 			space_station_added = true;
 		}
@@ -133,12 +146,49 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 	}
 
 	
+	// =================================
+	// Process of space station (Cooldown Bar)
+	// =================================
+	for (int i = 0; i < cooldown_vector.size(); ++i) {
+		if (space_station_vector[i].current_capacity != 0) {
+			cooldown_vector[i].timer += frame_time;
+			
+
+			f32 speed = 80 / cooldown_vector[i].total_time;
+			cooldown_vector[i].width = cooldown_vector[i].timer * speed; 
+
+
+			if (cooldown_vector[i].timer > 3) {
+				space_station_vector[i].current_capacity--;
+				player.credits += 100;
+				cooldown_vector[i].timer = 0;
+			}
+		}
+		else {
+			cooldown_vector[i].width = 0;
+		}
+	}
+
+
+
+
 
 	// =======================================
 	// calculate the matrix for space station
 	// =======================================
 
 	AEMtx33 scale, rot, trans;
+
+	// For cooldown Bar
+	for (int i = 0; i < cooldown_vector.size(); ++i) {
+		Cooldown_Bar& cooldown = cooldown_vector[i];
+		// cooldown
+		AEMtx33Scale(&scale, cooldown.width, cooldown.height); 
+		AEMtx33Rot(&rot, 0);
+		AEMtx33Trans(&trans, cooldown.position.x, cooldown.position.y - 35);
+		AEMtx33Concat(&cooldown.transform, &rot, &scale);
+		AEMtx33Concat(&cooldown.transform, &trans, &cooldown.transform);
+	}
 
 	// For UI
 	if (player_ui.placing_station) {
@@ -161,7 +211,7 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 		AEMtx33Concat(&space_station.transform, &trans, &space_station.transform);
 	}
 
-
+	
 
 }
 
@@ -187,6 +237,18 @@ void SpaceStation::draw(AEGfxVertexList* pMesh, PlayerUI player_ui)
 	}
 
 
+	// For active vector
+	for (int i = 0; i < cooldown_vector.size(); ++i) {
+
+		Cooldown_Bar& cooldown = cooldown_vector[i];
+
+		AEGfxSetTintColor(1.f, 1.f, 1.f, 1.f);
+
+		AEGfxTextureSet(shop_icon_tex, 0, 0);
+		AEGfxSetTransform(cooldown.transform.m);
+		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	}
+
 	// For UI
 	if (player_ui.placing_station) {
 
@@ -211,6 +273,9 @@ void SpaceStation::draw(AEGfxVertexList* pMesh, PlayerUI player_ui)
 		AEGfxSetTransform(space_station.transform.m);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 	}
+
+
+
 }
 
 void SpaceStation::free()
