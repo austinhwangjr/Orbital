@@ -79,9 +79,9 @@ void Planets::spawn(int shuttle_randomize_amount)
 	new_planet.current_shuttle = new_planet.max_shuttle;
 	new_planet.wave_complete = false;
 
-	new_planet.max_debris = 10;
 
 	new_planet.size = PLANET_SIZE * (new_planet.max_shuttle / 2.0f);
+	new_planet.max_debris = rand() % MAX_DEBRIS;
 
 // SETTING POSITION / TRANSFORM FOR PLANETS---------------------------------------------------------------------------------------------------
 	AEMtx33Scale(&new_planet.scale, new_planet.size, new_planet.size);

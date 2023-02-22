@@ -3,6 +3,7 @@
 #include <vector>
 #include "SpaceStation.h"
 
+
 // Textures
 AEGfxTexture* player_proj_tex;
 
@@ -37,6 +38,8 @@ void PlayerProj::init()
 	speed			= 150.f;
 
 	direction		= 0.f;
+
+	is_delete = 0;
 }
 
 void PlayerProj::update(f64 frame_time, Player& player)
@@ -80,10 +83,11 @@ void PlayerProj::update(f64 frame_time, Player& player)
 			f32 radius = size / 2 + space_station_vector[j].size / 2;
 
 			if (AEVec2Distance(&player_proj_vector[i].position, &space_station_vector[j].position) <= radius) {
-				player_proj_vector.erase(player_proj_vector.begin() + i);
+				
 				player.credits += 100;
 				player.score += 100;
 				//space_station_vector[j].start_process = 1;
+				player_proj_vector[i].is_delete = 1;
 			}
 		}
 	}
@@ -94,7 +98,13 @@ void PlayerProj::update(f64 frame_time, Player& player)
 	// Update player projectile instances
 	// ===================================
 
-	
+
+	//Erase projectile upon collision
+	for (int i = 0; i < player_proj_vector.size(); i++) {
+		if (player_proj_vector[i].is_delete == 1) {
+			player_proj_vector.erase(player_proj_vector.begin() + i);
+		}
+	}
 
 	// =======================================
 	// calculate the matrix for space station
@@ -112,6 +122,9 @@ void PlayerProj::update(f64 frame_time, Player& player)
 		AEMtx33Concat(&player_proj.transform, &rot, &scale);
 		AEMtx33Concat(&player_proj.transform, &trans, &player_proj.transform);
 	}
+
+
+
 }
 
 /******************************************************************************/
