@@ -15,8 +15,10 @@ public:
  * @param pMesh A pointer to the AEGfxVertexList object to use for the button mesh
  */
  // ----------------------------------------------------------------------------
-    void RenderSprite(AEGfxTexture* buttonTexture,
-                    float centerX, float centerY, 
-                    float width, float height,
-                    AEGfxVertexList* pMesh);
+    void RenderSprite(AEGfxTexture* texture,
+                      float centerX, float centerY, 
+                      float width, float height,
+                      AEGfxVertexList* pMesh);
+
+    static void SquareMesh(AEGfxVertexList*& pMesh);
 };

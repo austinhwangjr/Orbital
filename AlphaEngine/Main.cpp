@@ -37,8 +37,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// While the current game state is not equal to the quit state
 	while (current_state != GS_QUIT)
 	{
-		// reset the system modules
-		AESysReset();
+
 
 		// If the current game state is not equal to the restart state
 		if (current_state != GS_RESTART)
@@ -89,3 +88,5 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	system_call::unload();              // Systems exit (terminate)
 }
+
+

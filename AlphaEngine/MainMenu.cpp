@@ -12,14 +12,15 @@
 #include "Graphics.h"
 
 AEGfxVertexList* pMesh1;
-AEGfxTexture* buttonTexture = nullptr;
+AEGfxTexture* startButton = nullptr;
 
 // class declearation 
 Menu_Button menuButtons;
+Rendering createMesh;
 
 void main_menu::load()
 {
-    menuButtons.load("Assets/buttonTest.png");
+    menuButtons.load("Assets/buttonTest.png", "Assets/buttonTest.png", "Assets/buttonTest.png", "Assets/buttonTest.png", "Assets/buttonTest.png");
     std::cout << "--------------------MainMenu::load completed--------------------" << std::endl;
 
     // Font for text
@@ -29,25 +30,9 @@ void main_menu::load()
 void main_menu::init()
 {
     menuButtons.init();
-   
-    // Informing the library that we're about to start adding triangles 
-    AEGfxMeshStart();
 
-    // This shape has 2 triangles that makes up a square
-    // Color parameters represent colours as ARGB
-    // UV coordinates to read from loaded textures
-    AEGfxTriAdd(
-        -0.5f, -0.5f, 0xFFFF00FF, 0.0f, 0.0f,
-        0.5f, -0.5f, 0xFFFFFF00, 1.0f, 0.0f,
-        -0.5f, 0.5f, 0xFF00FFFF, 0.0f, 1.0f);
-
-    AEGfxTriAdd(
-        0.5f, -0.5f, 0xFFFFFFFF, 1.0f, 0.0f,
-        0.5f, 0.5f, 0xFFFFFFFF, 1.0f, 1.0f,
-        -0.5f, 0.5f, 0xFFFFFFFF, 0.0f, 1.0f);
-
-    // Saving the mesh (list of triangles) in pMesh 
-    pMesh1 = AEGfxMeshEnd();
+    // Create a square mesh
+    createMesh.SquareMesh(pMesh1);
 
     // debugging logs
     AE_ASSERT_MESG(pMesh1, "Error: Failed to create pMesh1 in MainMenu.cpp!");
@@ -59,14 +44,12 @@ void main_menu::update()
 {
     //std::cout << "GameState: " << current_state << std::endl;
 
-
     menuButtons.update();
 
     if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
         next_state = GS_QUIT;
 
     //std::cout << "--------------------main_menu::update completed--------------------" << std::endl;
-    
 }
 
 void main_menu::draw()

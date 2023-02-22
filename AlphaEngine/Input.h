@@ -21,7 +21,7 @@ public:
     Input();
 
     // Member function to handle input
-    void handle();
+    //void handle();
 
     // Static function to check if a button is clicked by the user
     static bool isButtonClicked(float center_x, float center_y, float width, float height);

@@ -22,7 +22,7 @@
  * @param pMesh A pointer to the AEGfxVertexList object to use for the button mesh
  */
  // ----------------------------------------------------------------------------
-void Rendering::RenderSprite(AEGfxTexture* buttonTexture, float centerX, float centerY, float width, float height, AEGfxVertexList* pMesh)
+void Rendering::RenderSprite(AEGfxTexture* texture, float centerX, float centerY, float width, float height, AEGfxVertexList* pMesh)
 {
     // Set up the transformation matrix for the button
     AEMtx33 scale = {};
@@ -42,7 +42,33 @@ void Rendering::RenderSprite(AEGfxTexture* buttonTexture, float centerX, float c
     AEGfxSetBlendMode(AE_GFX_BM_BLEND);                     // Set the blend mode to alpha blending
     AEGfxSetTransparency(1.0f);                             // Set the transparency to fully opaque
 
-    AEGfxTextureSet(buttonTexture, 0, 0);                   // Set the texture to use for drawing
+    AEGfxTextureSet(texture, 0, 0);                   // Set the texture to use for drawing
     AEGfxSetTransform(transform.m);                         // Set the transformation matrix for the mesh
     AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);             // Draw the mesh
 }
+
+void Rendering::SquareMesh(AEGfxVertexList*& pMesh)
+{
+    // Informing the library that we're about to start adding triangles 
+    AEGfxMeshStart();
+
+    // This shape has 2 triangles that makes up a square
+    // Color parameters represent colours as ARGB
+    // UV coordinates to read from loaded textures
+    AEGfxTriAdd(
+        -0.5f, -0.5f, 0xFFFF00FF, 0.0f, 0.0f,
+        0.5f, -0.5f, 0xFFFFFF00, 1.0f, 0.0f,
+        -0.5f, 0.5f, 0xFF00FFFF, 0.0f, 1.0f);
+
+    AEGfxTriAdd(
+        0.5f, -0.5f, 0xFFFFFFFF, 1.0f, 0.0f,
+        0.5f, 0.5f, 0xFFFFFFFF, 1.0f, 1.0f,
+        -0.5f, 0.5f, 0xFFFFFFFF, 0.0f, 1.0f);
+
+    // Saving the mesh (list of triangles) in pMesh 
+    pMesh = AEGfxMeshEnd();
+
+    // debugging logs
+    AE_ASSERT_MESG(pMesh, "Error: Failed to create pMesh in createSquareMesh!");
+}
+
