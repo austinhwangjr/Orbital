@@ -191,12 +191,12 @@ void main_level::draw()
 	planet.draw(pMesh);
 	player.draw(pMesh);
 	drone.draw(pMesh, player_ui);
-	space_station.draw(pMesh, player_ui);
 	player_proj.draw(pMesh);
 	debris.draw(pMesh);
 	shuttle.draw(pMesh);
 	wave_manager.draw(pMesh);
 	player_ui.draw(pMesh, player);
+	space_station.draw(pMesh, player_ui);
 }
 
 // ----------------------------------------------------------------------------
