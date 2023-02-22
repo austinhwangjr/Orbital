@@ -2,6 +2,8 @@
 #include "SpaceStation.h"
 #include <vector>
 #include "Debris.h"
+#include <string>
+#include "Camera.h"
 
 // Textures
 extern AEGfxTexture* space_station_tex;
@@ -21,6 +23,10 @@ extern std::vector<Planets> planet_vector;
 
 //Vector of Debris
 extern std::vector<std::vector<Debris>> debris_vector_all;
+
+std::string capacity_spacestation;
+extern s8		font_id;
+extern Camera camera;
 
 void SpaceStation::load()
 {
@@ -114,6 +120,19 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 		SpaceStation& space_station = space_station_vector[i];
 	}
 
+	// ===========================================
+	// Print out current capacity of space station
+	// ===========================================
+
+	for (int i = 0; i < space_station_vector.size(); i++) {
+		AEVec2 pos;
+		AEVec2Sub(&pos, &space_station_vector[i].position, &camera.position);
+		capacity_spacestation = "Station Capacity: " + std::to_string(space_station_vector[i].current_capacity) + " / " + std::to_string(space_station_vector[i].max_capacity);
+		AEGfxPrint(font_id, const_cast<s8*>(capacity_spacestation.c_str()), 
+			 2 * (pos.x - 80) / AEGetWindowWidth(),
+			 2 * (pos.y + 25) / AEGetWindowHeight(), 0.3f, 1.f, 1.f, 1.f);
+	}
+
 	// =======================================
 	// calculate the matrix for space station
 	// =======================================
@@ -140,6 +159,9 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 		AEMtx33Concat(&space_station.transform, &rot, &scale);
 		AEMtx33Concat(&space_station.transform, &trans, &space_station.transform);
 	}
+
+
+
 }
 
 /******************************************************************************/

@@ -88,6 +88,7 @@ void PlayerProj::update(f64 frame_time, Player& player)
 				player.score += 100;
 				//space_station_vector[j].start_process = 1;
 				player_proj_vector[i].is_delete = 1;
+				space_station_vector[j].current_capacity += 1;
 			}
 		}
 	}
