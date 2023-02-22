@@ -28,6 +28,8 @@ std::string capacity_spacestation;
 extern s8		font_id;
 extern Camera camera;
 
+SpaceStation current_station;
+
 void SpaceStation::load()
 {
 
@@ -50,42 +52,52 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 	// =========================
 	// Update according to input
 	// =========================
-	
-	// if no longer placing space station
-	if (!AEInputCheckCurr(AEVK_LBUTTON)) {
-		player_ui.placing_station = false;
-	}
+	if(player.credits >= player_ui.space_station_cost){
+		// if no longer placing space station
+		if (!AEInputCheckCurr(AEVK_LBUTTON)) {
+			player_ui.placing_station = false;
+		}
 
-	// =================================
-	// Update position of space station
-	// =================================
+		// =================================
+		// Update position of space station
+		// =================================
 	
-	// if placing space station
-	if (player_ui.placing_station) {
-		// drone follow mouse pos
-		position.x = mouse_pos_world.x;
-		position.y = mouse_pos_world.y;
+		// if placing space station
+		if (player_ui.placing_station) {
+			// drone follow mouse pos
+			position.x = mouse_pos_world.x;
+			position.y = mouse_pos_world.y;
 
-		double radius = 0;
-		double radius_x;
-		double radius_y;
-		// add if condition check for collision to make it true
-		for (int i = 0; i < planet_vector.size(); i++) {
-			for (int j = 0; j < debris_vector_all[i].size(); j++) {
-				radius_x = pow((debris_vector_all[i][j].position.x - planet_vector[i].position.x), 2);
-				radius_y = pow((debris_vector_all[i][j].position.y - planet_vector[i].position.y), 2);
-				radius = sqrt((radius_x + radius_y));
+			double radius_to_debris = 0;
+			double radius_to_station = size;
+			double radius_x;
+			double radius_y;
+			// add if condition check for collision to make it true
+			for (int i = 0; i < planet_vector.size(); i++) {
+				for (int j = 0; j < debris_vector_all[i].size(); j++) {
+					radius_x = pow((debris_vector_all[i][j].position.x - planet_vector[i].position.x), 2);
+					radius_y = pow((debris_vector_all[i][j].position.y - planet_vector[i].position.y), 2);
+					radius_to_debris = sqrt((radius_x + radius_y));
+				}
+
+			}
+
+			for (int k = 0; k < space_station_vector.size(); ++k) {
+				if (AEVec2Distance(&position, &space_station_vector[k].position) >= size * 5) {
+					safe_position += 1;
+				}
+			}
+
+			if ((AEVec2Distance(&current_planet.position, &position) > radius_to_debris + 15) && safe_position == space_station_vector.size()) {
+
+				space_station_valid_placement = true;
+				space_station_added = false;
+
+			}
+			else {
+				space_station_valid_placement = false;
 			}
 		}
-		
-		if (AEVec2Distance(&current_planet.position, &position) > radius + 15) {
-			space_station_valid_placement = true;
-			space_station_added = false;
-		}
-		else {
-			space_station_valid_placement = false;
-		}
-
 		
 	}
 
@@ -120,18 +132,7 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 		SpaceStation& space_station = space_station_vector[i];
 	}
 
-	// ===========================================
-	// Print out current capacity of space station
-	// ===========================================
-
-	for (int i = 0; i < space_station_vector.size(); i++) {
-		AEVec2 pos;
-		AEVec2Sub(&pos, &space_station_vector[i].position, &camera.position);
-		capacity_spacestation = "Station Capacity: " + std::to_string(space_station_vector[i].current_capacity) + " / " + std::to_string(space_station_vector[i].max_capacity);
-		AEGfxPrint(font_id, const_cast<s8*>(capacity_spacestation.c_str()), 
-			 2 * (pos.x - 80) / AEGetWindowWidth(),
-			 2 * (pos.y + 25) / AEGetWindowHeight(), 0.3f, 1.f, 1.f, 1.f);
-	}
+	
 
 	// =======================================
 	// calculate the matrix for space station
@@ -171,6 +172,21 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 /******************************************************************************/
 void SpaceStation::draw(AEGfxVertexList* pMesh, PlayerUI player_ui)
 {
+
+	// ===========================================
+	// Print out current capacity of space station
+	// ===========================================
+
+	for (int i = 0; i < space_station_vector.size(); i++) {
+		AEVec2 pos;
+		AEVec2Sub(&pos, &space_station_vector[i].position, &camera.position);
+		capacity_spacestation = "Station Capacity: " + std::to_string(space_station_vector[i].current_capacity) + " / " + std::to_string(space_station_vector[i].max_capacity);
+		AEGfxPrint(font_id, const_cast<s8*>(capacity_spacestation.c_str()),
+			2 * (pos.x - 80) / AEGetWindowWidth(),
+			2 * (pos.y + 25) / AEGetWindowHeight(), 0.3f, 1.f, 1.f, 1.f);
+	}
+
+
 	// For UI
 	if (player_ui.placing_station) {
 
