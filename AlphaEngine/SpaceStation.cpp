@@ -123,6 +123,7 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 			cooldown.total_time = 3;
 			cooldown_vector.push_back(cooldown);
 			player.credits -= player_ui.space_station_cost;
+			player.space_station_count++;
 			space_station_added = true;
 		}
 	}

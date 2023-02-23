@@ -18,7 +18,7 @@ void Shuttles::init()
 
 }
 
-void Shuttles::update(f64 frame_time)
+void Shuttles::update(f64 frame_time, Player& player)
 {
 	for (size_t i{}; i < shuttle_vector.size(); i++)
 	{
@@ -44,6 +44,7 @@ void Shuttles::update(f64 frame_time)
 			{
 				wave_manager.shuttle_has_escaped = true;
 				wave_manager.shuttle_left_planet++;
+				player.credits += SHUTTLE_VALUE;
 				shuttle_vector[i].active = false;
 				spawn_debris(2, shuttle_vector[i].planet_id);
 			}
@@ -94,7 +95,6 @@ void Shuttles::spawn(int planet_id)
 
 	new_shuttle.lifespan = SHUTTLE_MAX_LIFESPAN;
 	new_shuttle.acceleration = SHUTTLE_MAX_ACCEL;
-	new_shuttle.value = SHUTTLE_VALUE;
 
 	new_shuttle.active = true;
 

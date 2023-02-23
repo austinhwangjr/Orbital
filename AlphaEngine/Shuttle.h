@@ -4,6 +4,7 @@
 #define SHUTTLE_MAX_ACCEL 100.f
 #define SHUTTLE_VALUE 2
 
+#include "Player.h"
 #include <vector>
 
 struct Shuttles
@@ -17,13 +18,12 @@ struct Shuttles
 	AEMtx33 transform;
 	f64 lifespan;
 	f32 acceleration;
-	int value;
 	bool active;
 	int planet_id;
 
 	void load();
 	void init();
-	void update(f64 frame_time);
+	void update(f64 frame_time, Player& player);
 	void draw(AEGfxVertexList* pMesh);
 	void free();
 	void unload();

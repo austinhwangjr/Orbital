@@ -155,6 +155,7 @@ void Drone::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 			// Add drone to vector
 			drone_vector.push_back(*this);
 			player.credits -= player_ui.drone_cost;
+			player.drone_count++;
 			drone_added = true;
 		}
 	}

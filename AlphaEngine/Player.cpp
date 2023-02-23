@@ -34,7 +34,7 @@ void Player::init()
 
 	mov_speed				= 150.f;
 	rot_speed				= 1.5f * PI;
-	speed_upgrade			= 1.0f;
+	//speed_upgrade			= 1.0f;
 
 	dist_from_planet		= 50.f;
 	shortest_distance		= 0.f;
@@ -46,9 +46,16 @@ void Player::init()
 
 	// Score-keeping
 	score					= 0;
-	credits					= 500;
+	credits					= 50'000;
 
 	can_leave_orbit			= true;
+
+	// Upgrade levels
+	mov_speed_level = 0;
+	capacity_level = 0;
+	drone_count = 0;
+	space_station_count = 0;
+	beam_level = 0;
 
 	// Tractor beam
 	beam_pos.x				= 0.f;
@@ -127,14 +134,14 @@ void Player::orbit_state(f64 frame_time)
 	// Check for input
 	// ================
 	if (AEInputCheckCurr(AEVK_A)) {
-		direction += (rot_speed / 2) * speed_upgrade * static_cast<f32>(frame_time);
+		direction += (rot_speed / 2) * static_cast<f32>(mov_speed_level + 1) / 2.f * static_cast<f32>(frame_time);
 
 		position.x = current_planet.position.x + (static_cast<f32>(current_planet.size) / 2 + dist_from_planet) * AECos(direction);
 		position.y = current_planet.position.y + (static_cast<f32>(current_planet.size) / 2 + dist_from_planet) * AESin(direction);
 	}
 
 	if (AEInputCheckCurr(AEVK_D)) {
-		direction -= (rot_speed / 2) * speed_upgrade * static_cast<f32>(frame_time);
+		direction -= (rot_speed / 2) * static_cast<f32>(mov_speed_level + 1) / 2.f * static_cast<f32>(frame_time);
 
 		position.x = current_planet.position.x + (static_cast<f32>(current_planet.size) / 2 + dist_from_planet) * AECos(direction);
 		position.y = current_planet.position.y + (static_cast<f32>(current_planet.size) / 2 + dist_from_planet) * AESin(direction);
@@ -196,7 +203,7 @@ void Player::orbit_state(f64 frame_time)
 			Debris& debris = debris_vector_all[current_planet.id][i];
 			
 			// Debris to move towards player when in contact with beam
-			if (current_capacity < max_capacity && AEVec2Distance(&beam_collision_pos, &debris.position) <= beam_width / 2) {
+			if (current_capacity < max_capacity + capacity_level && AEVec2Distance(&beam_collision_pos, &debris.position) <= beam_width / 2) {
 				debris.move_towards_player = true;
 				break;
 			}
@@ -239,7 +246,7 @@ void Player::flying_state(f64 frame_time)
 
 		// Find the velocity according to the acceleration
 		// Limit your speed over here
-		AEVec2Scale(&added, &added, mov_speed * speed_upgrade);
+		AEVec2Scale(&added, &added, mov_speed * static_cast<f32>(mov_speed_level + 1) / 2.f);
 		velocity.x = velocity.x + added.x * static_cast<f32>(frame_time);
 		velocity.y = velocity.y + added.y * static_cast<f32>(frame_time);
 		AEVec2Scale(&velocity, &velocity, 0.99f);
@@ -251,19 +258,19 @@ void Player::flying_state(f64 frame_time)
 
 		// Find the velocity according to the decceleration
 		// Limit your speed over here
-		AEVec2Scale(&added, &added, mov_speed * speed_upgrade);
+		AEVec2Scale(&added, &added, mov_speed * static_cast<f32>(mov_speed_level + 1) / 2.f);
 		velocity.x = velocity.x + added.x * static_cast<f32>(frame_time);
 		velocity.y = velocity.y + added.y * static_cast<f32>(frame_time);
 		AEVec2Scale(&velocity, &velocity, 0.99f);
 	}
 
 	if (AEInputCheckCurr(AEVK_A)) {
-		direction += rot_speed * speed_upgrade * static_cast<f32>(frame_time);
+		direction += rot_speed * static_cast<f32>(mov_speed_level + 1) / 2.f * static_cast<f32>(frame_time);
 		direction = AEWrap(direction, -PI, PI);
 	}
 
 	if (AEInputCheckCurr(AEVK_D)) {
-		direction -= rot_speed * speed_upgrade * static_cast<f32>(frame_time);
+		direction -= rot_speed * static_cast<f32>(mov_speed_level + 1) / 2.f * static_cast<f32>(frame_time);
 		direction = AEWrap(direction, -PI, PI);
 	}
 

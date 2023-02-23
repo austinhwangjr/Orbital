@@ -36,11 +36,20 @@ enum BUTTON_TYPE {
 	SHOP_OPEN,
 };
 
-struct ShopOption
+struct UpgradeLevelIndicator
 {
 	AEVec2	position;
 	AEMtx33 transform;
 	f32		width;
 	f32		height;
+};
+
+struct ShopOption
+{
+	AEVec2	position;
+	AEMtx33	transform;
+	f32		width;
+	f32		height;
 	int		button_type;
+	std::vector<UpgradeLevelIndicator> indicator_vector;
 };
