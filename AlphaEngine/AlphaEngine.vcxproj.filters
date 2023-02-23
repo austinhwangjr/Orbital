@@ -19,6 +19,9 @@
     <ClCompile Include="MainLevel.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="MainMenu.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -55,14 +58,11 @@
     <ClCompile Include="SpaceStation.cpp">
       <Filter>Source\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="MenuButtons.cpp">
-      <Filter>Source\MainMenu</Filter>
+      <Filter>Source\Buttons</Filter>
     </ClCompile>
-    <ClCompile Include="MainMenu.cpp">
-      <Filter>Source\MainMenu</Filter>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +82,9 @@
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="MainLevel.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenu.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
@@ -120,14 +123,11 @@
     <ClInclude Include="SpaceStation.h">
       <Filter>Header\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header</Filter>
-    </ClInclude>
     <ClInclude Include="MenuButtons.h">
-      <Filter>Header\MainMenu</Filter>
+      <Filter>Header\Buttons</Filter>
     </ClInclude>
-    <ClInclude Include="MainMenu.h">
-      <Filter>Header\MainMenu</Filter>
+    <ClInclude Include="Camera.h">
+      <Filter>Header\Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -143,11 +143,11 @@
     <Filter Include="Source\Objects">
       <UniqueIdentifier>{a00c6504-ffc4-4efb-86fd-8e96b2861e8a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\MainMenu">
-      <UniqueIdentifier>{8ef9e2e4-a506-4680-944b-e36790b36918}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header\MainMenu">
+    <Filter Include="Header\Buttons">
       <UniqueIdentifier>{df299efd-84ee-4612-b993-5f9f9c6f10b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Buttons">
+      <UniqueIdentifier>{8ef9e2e4-a506-4680-944b-e36790b36918}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

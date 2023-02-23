@@ -11,8 +11,6 @@ std::string str_player_capacity; std::string str_wave_complete;
 
 void WaveManager::load()
 {
-	// Font for text
-	//font_id = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
 }
 
 void WaveManager::init()
@@ -141,12 +139,22 @@ void WaveManager::draw(AEGfxVertexList *pMesh)
 	{
 		std::string timer = std::to_string(static_cast<int>(planet_vector[i].shuttle_time_to_spawn - planet_vector[i].shuttle_timer));
 		print_string = timer.c_str();
-		AEVec2 pos;
-		AEVec2Sub(&pos, &planet_vector[i].position, &camera.position);
+		AEVec2 timer_pos;
+		AEVec2Sub(&timer_pos, &planet_vector[i].position, &camera.position);
 		AEGfxPrint(font_id, const_cast<s8*>(print_string),
-			2 * (pos.x) / AEGetWindowWidth(),
-			2 * (pos.y) / AEGetWindowHeight(),
+			2 * (timer_pos.x - 25 / 2) / AEGetWindowWidth(),
+			2 * (timer_pos.y - 25 / 2) / AEGetWindowHeight(),
 			1.f, planet_vector[i].shuttle_timer * 1.5 / planet_vector[i].shuttle_time_to_spawn, 0.f, 0.f);
+
+
+		std::string dist = std::to_string(static_cast<int>(AEVec2Distance(&player.position, &planet_vector[i].position)));
+		print_string = dist.c_str();
+		AEVec2 dist_pos;
+		AEVec2Sub(&dist_pos, &planet_vector[i].position, &camera.position);
+		AEGfxPrint(font_id, const_cast<s8*>(print_string),
+			(dist_pos.x) / AEGetWindowWidth(),
+			(dist_pos.y) / AEGetWindowHeight(),
+			1.f, 1.f, 1.f, 1.f);
 	}
 
 	if (wave_interval_timer <= WAVE_INTERVAL_TIME)

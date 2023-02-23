@@ -255,7 +255,7 @@ std::vector<Debris> Debris::create_debris(f32 planet_x, f32 planet_y, double siz
 		Debris new_debris;
 
 		new_debris.id = i + 1;
-		new_debris.angle = i * 30;
+		new_debris.angle = i * (360 / static_cast<f32>(total_debris));
 		new_debris.size = 15.f;
 		//new_debris.dist_from_planet = planet_radius + space;
 		new_debris.position.x = planet_x + ((size / 2) + 20) * AECos(AEDegToRad(new_debris.angle));

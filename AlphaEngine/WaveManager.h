@@ -1,10 +1,10 @@
 #pragma once
-#define PLANET_SIZE 150.0f
 #define MAX_PLANET 10
-#define MAX_SHUTTLE 6
+#define MAX_SHUTTLE 7
 #define INITIAL_SHUTTLE 4
-#define WAVE_INTERVAL_TIME 3
 #define MAX_DEBRIS 20
+#define MIN_DEBRIS 10
+#define WAVE_INTERVAL_TIME 3
 #define WAVE_ADD_PLANET 2
 
 #include "AEEngine.h"

@@ -1,5 +1,6 @@
 #pragma once
 
+#define PLANET_SIZE 200.0f
 #define TIME_TO_SPAWN 5
 #define MIN_SHUTTLE_TIME 3
 
@@ -22,24 +23,35 @@ enum PLANET_ID
 
 struct Planets
 {
+// PLANET VARIABLES------------------
+	int					id;
+	AEVec2				position;
+	AEMtx33				scale;
+	AEMtx33				rotate;
+	AEMtx33				translate;
+	AEMtx33				transform;
+	double				size;
+	bool				wave_complete;
+// PLANET VARIABLES------------------
+
+// SHUTTLE VARIABLES-----------------
+	int					max_shuttle;
+	int					current_shuttle;
+	AEVec2				shuttle_spawn_pos;
+	f64					shuttle_timer;
+	f64					shuttle_time_to_spawn;
+// SHUTTLE VARIABLES-----------------
+
+// DEBRIS VARIABLES------------------
 	std::vector<Debris> debris_vector; //dynamic array of debris
-	int id;
-	AEVec2 position;
-	AEMtx33 scale;
-	AEMtx33 rotate;
-	AEMtx33 translate;
-	AEMtx33 transform;
-	AEVec2 shuttle_spawn_pos;
-	f64 shuttle_timer;
-	f64 shuttle_time_to_spawn;
-	double size;
-	int max_shuttle;
-	int current_shuttle;
-	int max_debris;
-	int current_debris;
-	int max_drones;
-	int current_drones;
-	bool wave_complete;
+	int					max_debris;
+	int					current_debris;
+// DEBRIS VARIABLES------------------
+
+// DRONES VARIABLES------------------
+	int					max_drones;
+	int					current_drones;
+// DRONES VARIABLES------------------
 
 	void load();
 	void init();
@@ -49,4 +61,9 @@ struct Planets
 	void unload();
 
 	void spawn(int shuttle_randomize_amount);
+	void check_spawn(Planets& new_planet);
+	f32 get_max_x();
+	f32 get_max_y();
+	f32 get_min_x();
+	f32 get_min_y();
 };

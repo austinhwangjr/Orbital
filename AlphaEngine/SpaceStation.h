@@ -1,6 +1,8 @@
 #pragma once
 #include "PlayerUI.h"
 
+#define SPACE_STATION_BUFFER 
+
 struct SpaceStation
 {
 	AEVec2			position;

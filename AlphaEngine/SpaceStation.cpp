@@ -34,6 +34,7 @@ extern AEGfxTexture* shop_icon_tex;
 // Vector of cooldown bar
 std::vector<Cooldown_Bar> cooldown_vector;
 
+
 void SpaceStation::load()
 {
 
