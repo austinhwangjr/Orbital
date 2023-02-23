@@ -96,9 +96,10 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 		for (int k = 0; k < space_station_vector.size(); ++k) {
 			if (AEVec2Distance(&position, &space_station_vector[k].position) >= size * 5) {
 				safe_position += 1;
+			}
 		}
 
-		if ((AEVec2Distance(&current_planet.position, &position) > radius_to_debris + 30) && safe_position == space_station_vector.size()) {
+		if ((AEVec2Distance(&current_planet.position, &position) > radius_to_debris + 15) && safe_position == space_station_vector.size()) {
 
 			space_station_valid_placement = true;
 			space_station_added = false;
