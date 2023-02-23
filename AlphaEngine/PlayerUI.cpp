@@ -186,12 +186,18 @@ void PlayerUI::shop_open(Player& player)
 	// ===================
 
 	for (int i = 0; i < button_vector.size(); ++i) {
+		f32 button_left		= button_vector[i].position.x - button_vector[i].width / 2;
+		f32 button_right	= button_vector[i].position.x + button_vector[i].width / 2;
+		f32 button_top		= button_vector[i].position.y + button_vector[i].height / 2;
+		f32 button_bottom	= button_vector[i].position.y - button_vector[i].height / 2;
 
-		if ((button_vector[i].position.x - button_vector[i].width < mouse_pos_world.x) &&
+		/*if ((button_vector[i].position.x - button_vector[i].width < mouse_pos_world.x) &&
 			(button_vector[i].position.x + button_vector[i].width > mouse_pos_world.x)) {
 
 			if ((button_vector[i].position.y - button_vector[i].height / 2 < mouse_pos_world.y) &&
-				(button_vector[i].position.y + button_vector[i].height / 2 > mouse_pos_world.y)) {
+				(button_vector[i].position.y + button_vector[i].height / 2 > mouse_pos_world.y)) {*/
+		if ((button_left < mouse_pos_world.x) && (button_right > mouse_pos_world.x)) {
+			if ((button_bottom < mouse_pos_world.y) && (button_top > mouse_pos_world.y)) {
 
 				if (AEInputCheckTriggered(AEVK_LBUTTON)) {
 					if (button_vector[i].button_type == SHOP_OPEN) {
@@ -222,10 +228,10 @@ void PlayerUI::shop_open(Player& player)
 						}
 					}
 					else if (button_vector[i].button_type == CREATE_DRONE || button_vector[i].button_type == SPACE_STATION) {
-						if (button_vector[i].button_type == CREATE_DRONE && !placing_drone)
+						if (button_vector[i].button_type == CREATE_DRONE && !placing_drone && player.credits >= drone_cost)
 							placing_drone = true;
 
-						else if (button_vector[i].button_type == SPACE_STATION && !placing_station)
+						else if (button_vector[i].button_type == SPACE_STATION && !placing_station && player.credits >= space_station_cost)
 							placing_station = true;
 
 						// Remove buttons from list

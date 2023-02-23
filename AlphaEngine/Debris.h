@@ -5,8 +5,7 @@ struct Debris
 {
 	int id;
 	AEVec2 position;
-	f32 scale_x;
-	f32 scale_y;
+	f32	size;
 	AEMtx33 scale;
 	AEMtx33 rotate;
 	AEMtx33 translate;
@@ -20,6 +19,7 @@ struct Debris
 	double is_collect;
 	double texture; // maybe 3-5 textures
 	bool active;
+	bool move_towards_player = false;
 	bool to_erase = false;
 
 	void load();

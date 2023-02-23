@@ -181,10 +181,28 @@ void Player::orbit_state(f64 frame_time)
 	// Check for beam-debris collision
 	// ================================
 	
+	//if (beam_active) {
+	//	// Check for collision between tractor beam and debris
+	//	for (int i = 0; i < debris_vector_all[current_planet.id].size(); ++i) {
+	//		if (current_capacity < max_capacity && AEVec2Distance(&beam_collision_pos, &debris_vector_all[current_planet.id][i].position) <= beam_width / 2) {
+	//			debris_vector_all[current_planet.id][i].to_erase = true;
+	//			break;
+	//		}
+	//	}
+	//}
 	if (beam_active) {
 		// Check for collision between tractor beam and debris
 		for (int i = 0; i < debris_vector_all[current_planet.id].size(); ++i) {
-			if (current_capacity < max_capacity && AEVec2Distance(&beam_collision_pos, &debris_vector_all[current_planet.id][i].position) <= beam_width / 2) {
+			Debris& debris = debris_vector_all[current_planet.id][i];
+			
+			// Debris to move towards player when in contact with beam
+			if (current_capacity < max_capacity && AEVec2Distance(&beam_collision_pos, &debris.position) <= beam_width / 2) {
+				debris.move_towards_player = true;
+				break;
+			}
+
+			if (AEVec2Distance(&position, &debris.position) <= (size + debris.size) / 2) {
+				// Debris to move towards player
 				debris_vector_all[current_planet.id][i].to_erase = true;
 				break;
 			}
@@ -201,6 +219,8 @@ void Player::orbit_state(f64 frame_time)
 	// Remove debris to be erased
 	// ===========================
 	for (int i = 0; i < debris_vector_all[current_planet.id].size(); ++i) {
+		
+
 		if (debris_vector_all[current_planet.id][i].to_erase) {
 			debris_vector_all[current_planet.id].erase(debris_vector_all[current_planet.id].begin() + i);
 			current_capacity++;

@@ -14,6 +14,7 @@ extern WaveManager wave_manager;
 
 std::vector<std::vector<Debris>> debris_vector_all;
 
+extern Player player;
 
 extern int planet_count;
 
@@ -40,11 +41,25 @@ void Debris::update(f64 frame_time)
 {
 	for (int j = 0; j < debris_vector_all.size(); j++) {
 		for (size_t i = 0; i < debris_vector_all[j].size(); i++) {
-			debris_vector_all[j][i].angle -= 0.125f;
+			if (debris_vector_all[j][i].move_towards_player == true) {
+				Debris& debris = debris_vector_all[j][i];
 
-			debris_vector_all[j][i].position.x = planet_vector[j].position.x + ((planet_vector[j].size/2)+20) * AECos(AEDegToRad(debris_vector_all[j][i].angle));
-			debris_vector_all[j][i].position.y = planet_vector[j].position.y + ((planet_vector[j].size/2)+20) * AESin(AEDegToRad(debris_vector_all[j][i].angle));
+				/*f32 t{};
+				t += frame_time * (AEVec2Distance(&player.position, &debris.position) / 10.f);
 
+				AEVec2Lerp(&debris.position, &debris.position, &player.position, t);*/
+
+				AEVec2 diff;
+				AEVec2Sub(&diff, &player.position, &debris.position);
+				AEVec2Normalize(&diff, &diff);
+				AEVec2Add(&debris.position, &debris.position, &diff);
+			}
+			else if (debris_vector_all[j][i].move_towards_player == false) {
+				debris_vector_all[j][i].angle -= 0.125f;
+
+				debris_vector_all[j][i].position.x = planet_vector[j].position.x + ((planet_vector[j].size / 2) + 20) * AECos(AEDegToRad(debris_vector_all[j][i].angle));
+				debris_vector_all[j][i].position.y = planet_vector[j].position.y + ((planet_vector[j].size / 2) + 20) * AESin(AEDegToRad(debris_vector_all[j][i].angle));
+			}
 		}
 	}
 
@@ -85,8 +100,8 @@ void spawn_debris_shuttle(AEVec2 position, int planet_id) {
 	new_debris.position.x = position.x;
 	new_debris.position.y = position.y;
 	new_debris.id = debris_vector_all[planet_id].size() + 1;
-	new_debris.scale_x = 15.f;
-	new_debris.scale_y = 15.f;
+	new_debris.size = 15.f;
+	new_debris.size = 15.f;
 	new_debris.turning_speed = speed;
 	new_debris.active = true;
 
@@ -127,8 +142,8 @@ void spawn_debris(int num_of_debris, int planet_id) {
 
 		//	new_debris.id = debris_vector_all[planet_id].size() + 1;
 		//	new_debris.angle = rand() * 40;
-		//	new_debris.scale_x = 15.f;
-		//	new_debris.scale_y = 15.f;
+		//	new_debris.size = 15.f;
+		//	new_debris.size = 15.f;
 		//	//new_debris.dist_from_planet = planet_radius + space;
 		//	new_debris.position.x = planet_vector[planet_id].position.x + ((planet_vector[planet_id].size / 2) + 20) * AECos(AEDegToRad(new_debris.angle));
 		//	new_debris.position.y = planet_vector[planet_id].position.y + ((planet_vector[planet_id].size / 2) + 20) * AESin(AEDegToRad(new_debris.angle));
@@ -176,8 +191,7 @@ void spawn_debris(int num_of_debris, int planet_id) {
 			if (not_collide == 1) {
 				current_count += 1;
 				new_debris.id = debris_vector_all[planet_id].size() + 1;
-				new_debris.scale_x = 15.f;
-				new_debris.scale_y = 15.f;
+				new_debris.size = 15.f;
 				new_debris.turning_speed = speed;
 				new_debris.active = true;
 
@@ -207,7 +221,7 @@ void Debris::draw(AEGfxVertexList* pMesh)
 			if (debris_vector_all[j][i].active)
 			{
 				//AEGfxSetTransparency(1.0f);
-				AEMtx33Scale(&debris_vector_all[j][i].scale, debris_vector_all[j][i].scale_x, debris_vector_all[j][i].scale_y);
+				AEMtx33Scale(&debris_vector_all[j][i].scale, debris_vector_all[j][i].size, debris_vector_all[j][i].size);
 
 				AEMtx33Rot(&debris_vector_all[j][i].rotate, AEDegToRad(debris_vector_all[j][i].angle));
 
@@ -242,8 +256,7 @@ std::vector<Debris> Debris::create_debris(f32 planet_x, f32 planet_y, double siz
 
 		new_debris.id = i + 1;
 		new_debris.angle = i * 30;
-		new_debris.scale_x = 15.f;
-		new_debris.scale_y = 15.f;
+		new_debris.size = 15.f;
 		//new_debris.dist_from_planet = planet_radius + space;
 		new_debris.position.x = planet_x + ((size / 2) + 20) * AECos(AEDegToRad(new_debris.angle));
 		new_debris.position.y = planet_y + ((size / 2) + 20) * AESin(AEDegToRad(new_debris.angle));
@@ -261,7 +274,7 @@ std::vector<Debris> Debris::create_debris(f32 planet_x, f32 planet_y, double siz
 
 	/*
 	for (int i = 0; i < total_debris; i++) {
-		AEMtx33Scale(&debris_scale, arr[i].scale_x, arr[i].scale_y);
+		AEMtx33Scale(&debris_scale, arr[i].size, arr[i].size);
 		AEMtx33Rot(&debris_rotate, arr[i].angle);
 		AEMtx33Trans(&debris_translate, arr[i].position.x, arr[i].position.y);
 		AEMtx33Concat(&debris_transform, &debris_rotate, &debris_scale);

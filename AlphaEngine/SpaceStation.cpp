@@ -56,53 +56,51 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 	// =========================
 	// Update according to input
 	// =========================
-	if(player.credits >= player_ui.space_station_cost){
-		// if no longer placing space station
-		if (!AEInputCheckCurr(AEVK_LBUTTON)) {
-			player_ui.placing_station = false;
-		}
-
-		// =================================
-		// Update position of space station
-		// =================================
 	
-		// if placing space station
-		if (player_ui.placing_station) {
-			// drone follow mouse pos
-			position.x = mouse_pos_world.x;
-			position.y = mouse_pos_world.y;
+	// if no longer placing space station
+	if (!AEInputCheckCurr(AEVK_LBUTTON)) {
+		player_ui.placing_station = false;
+	}
 
-			double radius_to_debris = 0;
-			double radius_to_station = size;
-			double radius_x;
-			double radius_y;
-			// add if condition check for collision to make it true
-			for (int i = 0; i < planet_vector.size(); i++) {
-				for (int j = 0; j < debris_vector_all[i].size(); j++) {
-					radius_x = pow((debris_vector_all[i][j].position.x - planet_vector[i].position.x), 2);
-					radius_y = pow((debris_vector_all[i][j].position.y - planet_vector[i].position.y), 2);
-					radius_to_debris = sqrt((radius_x + radius_y));
-				}
+	// =================================
+	// Update position of space station
+	// =================================
 
+	// if placing space station
+	if (player_ui.placing_station) {
+		// drone follow mouse pos
+		position.x = mouse_pos_world.x;
+		position.y = mouse_pos_world.y;
+
+		double radius_to_debris = 0;
+		double radius_to_station = size;
+		double radius_x;
+		double radius_y;
+		// add if condition check for collision to make it true
+		for (int i = 0; i < planet_vector.size(); i++) {
+			for (int j = 0; j < debris_vector_all[i].size(); j++) {
+				radius_x = pow((debris_vector_all[i][j].position.x - planet_vector[i].position.x), 2);
+				radius_y = pow((debris_vector_all[i][j].position.y - planet_vector[i].position.y), 2);
+				radius_to_debris = sqrt((radius_x + radius_y));
 			}
 
-			for (int k = 0; k < space_station_vector.size(); ++k) {
-				if (AEVec2Distance(&position, &space_station_vector[k].position) >= size * 5) {
-					safe_position += 1;
-				}
-			}
+		}
 
-			if ((AEVec2Distance(&current_planet.position, &position) > radius_to_debris + 15) && safe_position == space_station_vector.size()) {
-
-				space_station_valid_placement = true;
-				space_station_added = false;
-
-			}
-			else {
-				space_station_valid_placement = false;
+		for (int k = 0; k < space_station_vector.size(); ++k) {
+			if (AEVec2Distance(&position, &space_station_vector[k].position) >= size * 5) {
+				safe_position += 1;
 			}
 		}
-		
+
+		if ((AEVec2Distance(&current_planet.position, &position) > radius_to_debris + 15) && safe_position == space_station_vector.size()) {
+
+			space_station_valid_placement = true;
+			space_station_added = false;
+
+		}
+		else {
+			space_station_valid_placement = false;
+		}
 	}
 
 	// ===============================
