@@ -8,6 +8,7 @@ struct PlayerProj
 	f32				size;
 	f32				speed;
 	f32				direction;
+	int				is_delete;
 
 	// Transform
 	AEMtx33			transform;

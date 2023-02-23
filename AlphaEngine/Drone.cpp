@@ -54,7 +54,7 @@ void Drone::init(Player player)
 	beam_width				= size;
 }
 
-void Drone::update(f64 frame_time, Player player, PlayerUI& player_ui)
+void Drone::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 {
 	// =========================
 	// Update according to input
@@ -79,10 +79,12 @@ void Drone::update(f64 frame_time, Player player, PlayerUI& player_ui)
 		position.y = mouse_pos_world.y;
 
 		// if within planet's orbit, drone can be placed
-		if (AEVec2Distance(&current_planet.position, &position) <= (current_planet.size / 2 + dist_from_planet)) {
-			direction = atan2(position.y - current_planet.position.y, position.x - current_planet.position.x);
-			position.x = current_planet.position.x + (current_planet.size / 2 + dist_from_planet) * AECos(direction);
-			position.y = current_planet.position.y + (current_planet.size / 2 + dist_from_planet) * AESin(direction);
+		if (AEVec2Distance(&current_planet.position, &position) <= (static_cast<f32>(current_planet.size) / 2.f + dist_from_planet)) {
+			//direction = atan2(position.y - current_planet.position.y, position.x - current_planet.position.x);
+			direction = static_cast<f32>(atan2(static_cast<double>(position.y - current_planet.position.y), 
+				static_cast<double>(position.x - current_planet.position.x)));
+			position.x = current_planet.position.x + (static_cast<f32>(current_planet.size) / 2.f + dist_from_planet) * AECos(direction);
+			position.y = current_planet.position.y + (static_cast<f32>(current_planet.size) / 2.f + dist_from_planet) * AESin(direction);
 			beam_pos.x = position.x - AECos(direction) * 20;
 			beam_pos.y = position.y - AESin(direction) * 20;
 
@@ -97,9 +99,9 @@ void Drone::update(f64 frame_time, Player player, PlayerUI& player_ui)
 		Drone& drone = drone_vector[i];
 
 		drone.position.x = drone.current_planet.position.x +
-			(drone.current_planet.size / 2 + drone.dist_from_planet) * AECos(drone.direction);
+			(static_cast<f32>(drone.current_planet.size) / 2.f + drone.dist_from_planet) * AECos(drone.direction);
 		drone.position.y = drone.current_planet.position.y +
-			(drone.current_planet.size / 2 + drone.dist_from_planet) * AESin(drone.direction);
+			(static_cast<f32>(drone.current_planet.size) / 2.f + drone.dist_from_planet) * AESin(drone.direction);
 
 		drone.direction += drone.rot_speed * static_cast<f32>(frame_time);
 
@@ -149,8 +151,11 @@ void Drone::update(f64 frame_time, Player player, PlayerUI& player_ui)
 	}
 
 	else {
-		if (drone_valid_placement && !drone_added) {
+		if (drone_valid_placement && !drone_added && player.credits >= player_ui.drone_cost) {
+			// Add drone to vector
 			drone_vector.push_back(*this);
+			player.credits -= player_ui.drone_cost;
+			player.drone_count++;
 			drone_added = true;
 		}
 	}

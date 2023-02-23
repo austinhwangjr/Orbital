@@ -43,6 +43,7 @@ AEGfxVertexList* pMesh;
 // test variables
 f64 total_time{}, frame_time{};
 
+//bool pause = false;
 
 Player player;
 Planets planet;
@@ -73,10 +74,10 @@ void main_level::load()
 	shuttle.load();
 	wave_manager.load();
 	
-	starttest = AEGfxTextureLoad("Assets/start_test.png");
+	//starttest = AEGfxTextureLoad("Assets/start_test.png");
 
 	// Font for text
-	fontID = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
+	//fontID = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
 }
 
 // ----------------------------------------------------------------------------
@@ -101,9 +102,10 @@ void main_level::init()
 	debris.init();
 	wave_manager.init();
 
-	total_time = 0.0;
+	total_time = 0.0f;
 
 	// Informing the library that we're about to start adding triangles 
+
 	AEGfxMeshStart();
 
 	// This shape has 2 triangles that makes up a square
@@ -121,6 +123,9 @@ void main_level::init()
 
 	// Saving the mesh (list of triangles) in pMesh 
 	pMesh = AEGfxMeshEnd();
+
+	// debugging logs
+	AE_ASSERT_MESG(pMesh, "Error: Failed to create pMesh in MainLevel.cpp!");
 }
 
 // ----------------------------------------------------------------------------
@@ -134,17 +139,47 @@ void main_level::update()
 	// Your own update logic goes here
 	frame_time = AEFrameRateControllerGetFrameTime();
 	total_time += frame_time;
+	
+	/*if (AEInputCheckTriggered(AEVK_P)) {
+		pause = !pause;
+	}*/
 
+	/*if (!pause) {
+		planet.update(frame_time);
+		player.update(frame_time);
+		camera.update(frame_time, player);
+		drone.update(frame_time, player, player_ui);
+		space_station.update(frame_time, player, player_ui);
+		player_proj.update(frame_time, player);
+		shuttle.update(frame_time);
+		debris.update(frame_time);
+		wave_manager.update(frame_time);
+	}
+	
+	else if (pause) {
+		planet.update(frame_time / 4);
+		player.update(frame_time / 4);
+		camera.update(frame_time / 4, player);
+		drone.update(frame_time / 4, player, player_ui);
+		space_station.update(frame_time / 4, player, player_ui);
+		player_proj.update(frame_time / 4, player);
+		shuttle.update(frame_time / 4);
+		debris.update(frame_time / 4);
+		wave_manager.update(frame_time / 4);
+	}*/
+	
 	planet.update(frame_time);
 	player.update(frame_time);
 	camera.update(frame_time, player);
 	player_ui.update(player);
 	drone.update(frame_time, player, player_ui);
-	space_station.update(frame_time, player_ui);
+	space_station.update(frame_time, player, player_ui);
 	player_proj.update(frame_time, player);
-	shuttle.update(frame_time);
+	shuttle.update(frame_time, player);
 	debris.update(frame_time);
 	wave_manager.update(frame_time);
+	
+	
 
 	// Testing
 	/*
@@ -186,13 +221,13 @@ void main_level::draw()
 
 	planet.draw(pMesh);
 	player.draw(pMesh);
-	player_ui.draw(pMesh, player);
-	drone.draw(pMesh, player_ui);
-	space_station.draw(pMesh, player_ui);
 	player_proj.draw(pMesh);
 	debris.draw(pMesh);
 	shuttle.draw(pMesh);
 	wave_manager.draw(pMesh);
+	player_ui.draw(pMesh, player);
+	drone.draw(pMesh, player_ui);
+	space_station.draw(pMesh, player_ui);
 }
 
 // ----------------------------------------------------------------------------
@@ -222,9 +257,9 @@ void main_level::unload()
 {
 	planet.unload();
 	player.unload();
-	player_ui.unload();
 	drone.unload();
 	space_station.unload();
+	player_ui.unload();
 	player_proj.unload();
 	shuttle.unload();
 	debris.unload();

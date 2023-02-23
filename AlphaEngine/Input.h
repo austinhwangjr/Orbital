@@ -15,4 +15,14 @@ Technology is prohibited.
 /* End Header **************************************************************************/
 #pragma once
 
-void input_handle();
+class Input
+{
+public:
+    Input();
+
+    // Member function to handle input
+    //void handle();
+
+    // Static function to check if a button is clicked by the user
+    static bool isButtonClicked(float center_x, float center_y, float width, float height);
+};

@@ -1,6 +1,8 @@
 #include "AEEngine.h"
 #include "PlayerProj.h"
 #include <vector>
+#include "SpaceStation.h"
+
 
 // Textures
 AEGfxTexture* player_proj_tex;
@@ -12,8 +14,11 @@ AEGfxTexture* player_proj_tex;
 // Mouse coordinates
 extern AEVec2 mouse_pos_world;
 
-// Vector of space stations
+// Vector of projectile
 std::vector<PlayerProj> player_proj_vector;
+
+// Vector of spacestation
+extern std::vector<SpaceStation> space_station_vector;
 
 void PlayerProj::load()
 {
@@ -33,6 +38,8 @@ void PlayerProj::init()
 	speed			= 150.f;
 
 	direction		= 0.f;
+
+	is_delete = 0;
 }
 
 void PlayerProj::update(f64 frame_time, Player& player)
@@ -42,13 +49,15 @@ void PlayerProj::update(f64 frame_time, Player& player)
 	// =========================
 
 	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+		if (player.current_capacity != 0) {
+			position = player.position;
+			AEVec2Sub(&velocity, &mouse_pos_world, &player.position);
+			AEVec2Normalize(&velocity, &velocity);
+			AEVec2Scale(&velocity, &velocity, speed);
 
-		position = player.position;
-		AEVec2Sub(&velocity, &mouse_pos_world, &player.position);
-		AEVec2Normalize(&velocity, &velocity);
-		AEVec2Scale(&velocity, &velocity, speed);
-
-		player_proj_vector.push_back(*this);
+			player_proj_vector.push_back(*this);
+			player.current_capacity--;
+		}
 	}
 
 	// =====================================
@@ -58,8 +67,8 @@ void PlayerProj::update(f64 frame_time, Player& player)
 	for (int i = 0; i < player_proj_vector.size(); ++i) {
 		PlayerProj& player_proj = player_proj_vector[i];
 
-		player_proj.position.x += player_proj.velocity.x * frame_time;
-		player_proj.position.y += player_proj.velocity.y * frame_time;
+		player_proj.position.x += player_proj.velocity.x * static_cast<f32>(frame_time);
+		player_proj.position.y += player_proj.velocity.y * static_cast<f32>(frame_time);
 	}
 
 	// ====================
@@ -67,12 +76,37 @@ void PlayerProj::update(f64 frame_time, Player& player)
 	// ====================
 
 
+	//collision check for debris and spacestation
+	
+	for (int i = 0; i < player_proj_vector.size(); ++i) {
+		for (int j = 0; j < space_station_vector.size(); j++) {
+
+			if (space_station_vector[j].current_capacity < space_station_vector[j].max_capacity) {
+				f32 radius = size / 2 + space_station_vector[j].size / 2;
+
+				if (AEVec2Distance(&player_proj_vector[i].position, &space_station_vector[j].position) <= radius) {
+
+					player.score += 100;
+					player_proj_vector[i].is_delete = 1;
+					space_station_vector[j].current_capacity += 1;
+				}
+			}
+		}
+	}
+
+
 
 	// ===================================
 	// Update player projectile instances
 	// ===================================
 
-	
+
+	//Erase projectile upon collision
+	for (int i = 0; i < player_proj_vector.size(); i++) {
+		if (player_proj_vector[i].is_delete == 1) {
+			player_proj_vector.erase(player_proj_vector.begin() + i);
+		}
+	}
 
 	// =======================================
 	// calculate the matrix for space station
@@ -90,6 +124,9 @@ void PlayerProj::update(f64 frame_time, Player& player)
 		AEMtx33Concat(&player_proj.transform, &rot, &scale);
 		AEMtx33Concat(&player_proj.transform, &trans, &player_proj.transform);
 	}
+
+
+
 }
 
 /******************************************************************************/

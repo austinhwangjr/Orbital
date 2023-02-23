@@ -34,7 +34,7 @@ void Player::init()
 
 	mov_speed				= 150.f;
 	rot_speed				= 1.5f * PI;
-	speed_upgrade			= 1.0f;
+	//speed_upgrade			= 1.0f;
 
 	dist_from_planet		= 50.f;
 	shortest_distance		= 0.f;
@@ -44,7 +44,18 @@ void Player::init()
 	current_capacity		= 0;
 	max_capacity			= 5;
 
+	// Score-keeping
+	score					= 0;
+	credits					= 50'000;
+
 	can_leave_orbit			= true;
+
+	// Upgrade levels
+	mov_speed_level = 0;
+	capacity_level = 0;
+	drone_count = 0;
+	space_station_count = 0;
+	beam_level = 0;
 
 	// Tractor beam
 	beam_pos.x				= 0.f;
@@ -63,7 +74,7 @@ void Player::update(f64 frame_time)
 		orbit_state(frame_time);
 
 	// Player is in free-flying mode
-	else if (state == PLAYER_FLY)
+	if (state == PLAYER_FLY)
 		flying_state(frame_time);
 
 	// =========================================
@@ -123,11 +134,17 @@ void Player::orbit_state(f64 frame_time)
 	// Check for input
 	// ================
 	if (AEInputCheckCurr(AEVK_A)) {
-		direction += (rot_speed / 2) * speed_upgrade * static_cast<f32>(frame_time);
+		direction += (rot_speed / 2) * static_cast<f32>(mov_speed_level + 1) / 2.f * static_cast<f32>(frame_time);
+
+		position.x = current_planet.position.x + (static_cast<f32>(current_planet.size) / 2 + dist_from_planet) * AECos(direction);
+		position.y = current_planet.position.y + (static_cast<f32>(current_planet.size) / 2 + dist_from_planet) * AESin(direction);
 	}
 
 	if (AEInputCheckCurr(AEVK_D)) {
-		direction -= (rot_speed / 2) * speed_upgrade * static_cast<f32>(frame_time);
+		direction -= (rot_speed / 2) * static_cast<f32>(mov_speed_level + 1) / 2.f * static_cast<f32>(frame_time);
+
+		position.x = current_planet.position.x + (static_cast<f32>(current_planet.size) / 2 + dist_from_planet) * AECos(direction);
+		position.y = current_planet.position.y + (static_cast<f32>(current_planet.size) / 2 + dist_from_planet) * AESin(direction);
 	}
 
 	if (AEInputCheckPrev(AEVK_W))
@@ -136,11 +153,7 @@ void Player::orbit_state(f64 frame_time)
 		can_leave_orbit = true;
 
 	if (AEInputCheckCurr(AEVK_W) && can_leave_orbit) {
-		position.x += AECos(direction);
-		position.y += AESin(direction);
-
 		AEVec2Zero(&velocity);
-
 		state = PLAYER_FLY;
 	}
 
@@ -151,18 +164,54 @@ void Player::orbit_state(f64 frame_time)
 		beam_active = false;
 
 	// ================================
+	// Update player and beam position
+	// ================================
+
+	if (AEInputCheckCurr(AEVK_W) && can_leave_orbit) {
+		position.x += AECos(direction);
+		position.y += AESin(direction);
+	}
+	else {
+		position.x = current_planet.position.x + (static_cast<f32>(current_planet.size) / 2.f + dist_from_planet) * AECos(direction);
+		position.y = current_planet.position.y + (static_cast<f32>(current_planet.size) / 2.f + dist_from_planet) * AESin(direction);
+	}
+
+	if (beam_active) {
+		beam_pos.x = position.x - AECos(direction) * 20;
+		beam_pos.y = position.y - AESin(direction) * 20;
+
+		beam_collision_pos.x = beam_pos.x - AECos(direction) * 10;
+		beam_collision_pos.y = beam_pos.y - AESin(direction) * 10;
+	}
+
+	// ================================
 	// Check for beam-debris collision
 	// ================================
 	
+	//if (beam_active) {
+	//	// Check for collision between tractor beam and debris
+	//	for (int i = 0; i < debris_vector_all[current_planet.id].size(); ++i) {
+	//		if (current_capacity < max_capacity && AEVec2Distance(&beam_collision_pos, &debris_vector_all[current_planet.id][i].position) <= beam_width / 2) {
+	//			debris_vector_all[current_planet.id][i].to_erase = true;
+	//			break;
+	//		}
+	//	}
+	//}
 	if (beam_active) {
 		// Check for collision between tractor beam and debris
-		if (debris_vector_all[current_planet.id].size() > 0) {
-			for (int i = 0; i < debris_vector_all[current_planet.id].size(); ++i) {
-				if (current_capacity < max_capacity && AEVec2Distance(&beam_collision_pos, &debris_vector_all[current_planet.id][i].position) <= beam_width / 2) {
-					debris_vector_all[current_planet.id].erase(debris_vector_all[current_planet.id].begin() + i);
-					current_capacity++;
-					break;
-				}
+		for (int i = 0; i < debris_vector_all[current_planet.id].size(); ++i) {
+			Debris& debris = debris_vector_all[current_planet.id][i];
+			
+			// Debris to move towards player when in contact with beam
+			if (current_capacity < max_capacity + capacity_level && AEVec2Distance(&beam_collision_pos, &debris.position) <= beam_width / 2) {
+				debris.move_towards_player = true;
+				break;
+			}
+
+			if (AEVec2Distance(&position, &debris.position) <= (size + debris.size) / 2) {
+				// Debris to move towards player
+				debris_vector_all[current_planet.id][i].to_erase = true;
+				break;
 			}
 		}
 	}
@@ -173,18 +222,16 @@ void Player::orbit_state(f64 frame_time)
 
 	
 
-	// ================================
-	// Update player and beam position
-	// ================================
-	position.x = current_planet.position.x + (current_planet.size / 2 + dist_from_planet) * AECos(direction);
-	position.y = current_planet.position.y + (current_planet.size / 2 + dist_from_planet) * AESin(direction);
+	// ===========================
+	// Remove debris to be erased
+	// ===========================
+	for (int i = 0; i < debris_vector_all[current_planet.id].size(); ++i) {
+		
 
-	if (beam_active) {
-		beam_pos.x = position.x - AECos(direction) * 20;
-		beam_pos.y = position.y - AESin(direction) * 20;
-
-		beam_collision_pos.x = beam_pos.x - AECos(direction) * 10;
-		beam_collision_pos.y = beam_pos.y - AESin(direction) * 10;
+		if (debris_vector_all[current_planet.id][i].to_erase) {
+			debris_vector_all[current_planet.id].erase(debris_vector_all[current_planet.id].begin() + i);
+			current_capacity++;
+		}
 	}
 }
 
@@ -199,7 +246,7 @@ void Player::flying_state(f64 frame_time)
 
 		// Find the velocity according to the acceleration
 		// Limit your speed over here
-		AEVec2Scale(&added, &added, mov_speed * speed_upgrade);
+		AEVec2Scale(&added, &added, mov_speed * static_cast<f32>(mov_speed_level + 1) / 2.f);
 		velocity.x = velocity.x + added.x * static_cast<f32>(frame_time);
 		velocity.y = velocity.y + added.y * static_cast<f32>(frame_time);
 		AEVec2Scale(&velocity, &velocity, 0.99f);
@@ -211,24 +258,26 @@ void Player::flying_state(f64 frame_time)
 
 		// Find the velocity according to the decceleration
 		// Limit your speed over here
-		AEVec2Scale(&added, &added, mov_speed * speed_upgrade);
+		AEVec2Scale(&added, &added, mov_speed * static_cast<f32>(mov_speed_level + 1) / 2.f);
 		velocity.x = velocity.x + added.x * static_cast<f32>(frame_time);
 		velocity.y = velocity.y + added.y * static_cast<f32>(frame_time);
 		AEVec2Scale(&velocity, &velocity, 0.99f);
 	}
 
 	if (AEInputCheckCurr(AEVK_A)) {
-		direction += rot_speed * speed_upgrade * static_cast<f32>(frame_time);
+		direction += rot_speed * static_cast<f32>(mov_speed_level + 1) / 2.f * static_cast<f32>(frame_time);
 		direction = AEWrap(direction, -PI, PI);
 	}
 
 	if (AEInputCheckCurr(AEVK_D)) {
-		direction -= rot_speed * speed_upgrade * static_cast<f32>(frame_time);
+		direction -= rot_speed * static_cast<f32>(mov_speed_level + 1) / 2.f * static_cast<f32>(frame_time);
 		direction = AEWrap(direction, -PI, PI);
 	}
 
 	if (AEVec2Distance(&current_planet.position, &position) <= (current_planet.size / 2 + dist_from_planet)) {
-		direction = atan2(position.y - current_planet.position.y, position.x - current_planet.position.x);
+		//direction = atan2(position.y - current_planet.position.y, position.x - current_planet.position.x);
+		direction = static_cast<f32>(atan2(position.y - current_planet.position.y, position.x - current_planet.position.x));
+		//AEVec2Zero(&velocity);
 		state = PLAYER_ORBIT;
 	}
 

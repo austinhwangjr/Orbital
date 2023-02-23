@@ -1,4 +1,10 @@
 #pragma once
+#define MAX_MOV_SPEED_LVL		5
+#define MAX_CAPACITY_LVL		5
+#define MAX_DRONE_CNT			5
+#define MAX_SPACE_STATION_CNT	5
+#define MAX_BEAM_STRENGTH_LVL	5
+
 #include "Planet.h"
 
 enum PLAYER_STATES
@@ -16,14 +22,24 @@ struct Player
 	f32				size;
 	f32				mov_speed;
 	f32				rot_speed;
-	f32				speed_upgrade;
+	//f32				speed_upgrade;
 	Planets			current_planet;
 	f32				dist_from_planet;
 	f32				shortest_distance;
 	f32				direction;
 	int				current_capacity;
 	int				max_capacity;
+	int				score;
+	int				credits;
 	bool			can_leave_orbit;
+
+	// Upgrade levels
+	int				mov_speed_level;
+	int				capacity_level;
+	int				drone_count;
+	int				space_station_count;
+	int				beam_level;
+
 
 	// Tractor beam
 	AEVec2			beam_pos;

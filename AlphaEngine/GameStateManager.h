@@ -3,12 +3,13 @@ enum GS_STATES
 {
 	GS_SPLASHSCREEN = 0,
 	GS_MAINMENU,
+	GS_HOWTOPLAY,
+	GS_CREDITS,
+	GS_OPTIONS,
 	GS_MAINLEVEL,
-
-
 	GS_PAUSE,
-	GS_QUIT,
-	GS_RESTART
+	GS_RESTART,
+	GS_QUIT
 };
 
 extern unsigned int current_state, previous_state, next_state;

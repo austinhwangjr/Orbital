@@ -58,8 +58,11 @@
     <ClCompile Include="SpaceStation.cpp">
       <Filter>Source\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="MenuButtons.cpp">
+      <Filter>Source\Buttons</Filter>
+    </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>Source</Filter>
+      <Filter>Source\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -120,8 +123,11 @@
     <ClInclude Include="SpaceStation.h">
       <Filter>Header\Objects</Filter>
     </ClInclude>
+    <ClInclude Include="MenuButtons.h">
+      <Filter>Header\Buttons</Filter>
+    </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>Header</Filter>
+      <Filter>Header\Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -136,6 +142,12 @@
     </Filter>
     <Filter Include="Source\Objects">
       <UniqueIdentifier>{a00c6504-ffc4-4efb-86fd-8e96b2861e8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\Buttons">
+      <UniqueIdentifier>{df299efd-84ee-4612-b993-5f9f9c6f10b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Buttons">
+      <UniqueIdentifier>{8ef9e2e4-a506-4680-944b-e36790b36918}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

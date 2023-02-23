@@ -56,6 +56,14 @@ void gsm::update()
 		fpFree		= main_menu::free;
 		fpUnload	= main_menu::unload;
 		break;
+	//case GS_HOWTOPLAY:
+	//	fpLoad		= how_to_play::load;
+	//	fpInit		= how_to_play::init;
+	//	fpUpdate	= how_to_play::update;
+	//	fpDraw		= how_to_play::draw;
+	//	fpFree		= how_to_play::free;
+	//	fpUnload	= how_to_play::unload;
+	//	break;
 	case GS_MAINLEVEL:
 		fpLoad		= main_level::load;
 		fpInit		= main_level::init;
@@ -67,6 +75,8 @@ void gsm::update()
 	case GS_RESTART:
 		break;
 	case GS_QUIT:
+
+		
 		break;
 	default:
 		break;

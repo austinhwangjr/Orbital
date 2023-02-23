@@ -11,8 +11,6 @@ std::string str_player_capacity; std::string str_wave_complete;
 
 void WaveManager::load()
 {
-	// Font for text
-	//font_id = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
 }
 
 void WaveManager::init()
@@ -25,7 +23,7 @@ void WaveManager::init()
 	wave_interval_timer = 0;
 
 	planet_count = 0;
-	planet_spawn_interval = 3;
+	planet_adding = false;
 
 	shuttle_left_planet = 0;
 	shuttle_destroyed = 0;
@@ -86,18 +84,18 @@ void WaveManager::update(f64 frame_time)
 // Completion of Wave----------------------------------------------------
 
 // Add Planets at Intervals----------------------------------------------
-	if ((planet_count < MAX_PLANET) && (planet_count * planet_spawn_interval) == wave_number)
+	if ((planet_count < MAX_PLANET) && (planet_count * WAVE_ADD_PLANET) == wave_number)
 	{
 		planet.Planets::spawn(rand() % INITIAL_SHUTTLE + 1);
 		planet_count++;
-
+		planet_adding = true;
 		std::cout << '\n' << "Wave " << wave_number << '\t' << "Added Planet." << '\t';
 		std::cout << "Planet Count: " << planet_count << '\n';
 	}
 // Add Planets at Intervals----------------------------------------------
 
 // Wave interval timer---------------------------------------------------
-	if (wave_completed)
+	if (wave_completed && !planet_adding)
 	{
 		wave_interval_timer += frame_time;
 	}
@@ -141,12 +139,22 @@ void WaveManager::draw(AEGfxVertexList *pMesh)
 	{
 		std::string timer = std::to_string(static_cast<int>(planet_vector[i].shuttle_time_to_spawn - planet_vector[i].shuttle_timer));
 		print_string = timer.c_str();
-		AEVec2 pos;
-		AEVec2Sub(&pos, &planet_vector[i].position, &camera.position);
+		AEVec2 timer_pos;
+		AEVec2Sub(&timer_pos, &planet_vector[i].position, &camera.position);
 		AEGfxPrint(font_id, const_cast<s8*>(print_string),
-			2 * (pos.x) / AEGetWindowWidth(),
-			2 * (pos.y) / AEGetWindowHeight(),
+			2 * (timer_pos.x - 25 / 2) / AEGetWindowWidth(),
+			2 * (timer_pos.y - 25 / 2) / AEGetWindowHeight(),
 			1.f, planet_vector[i].shuttle_timer * 1.5 / planet_vector[i].shuttle_time_to_spawn, 0.f, 0.f);
+
+
+		std::string dist = std::to_string(static_cast<int>(AEVec2Distance(&player.position, &planet_vector[i].position)));
+		print_string = dist.c_str();
+		AEVec2 dist_pos;
+		AEVec2Sub(&dist_pos, &planet_vector[i].position, &camera.position);
+		AEGfxPrint(font_id, const_cast<s8*>(print_string),
+			(dist_pos.x) / AEGetWindowWidth(),
+			(dist_pos.y) / AEGetWindowHeight(),
+			1.f, 1.f, 1.f, 1.f);
 	}
 
 	if (wave_interval_timer <= WAVE_INTERVAL_TIME)
@@ -156,9 +164,9 @@ void WaveManager::draw(AEGfxVertexList *pMesh)
 	}
 
 	// DRAW TEXT
-	str_player_capacity = "Capacity: " + std::to_string(player.current_capacity) + " / " + std::to_string(player.max_capacity);
+	/*str_player_capacity = "Capacity: " + std::to_string(player.current_capacity) + " / " + std::to_string(player.max_capacity);
 	print_string = str_player_capacity.c_str();
-	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.5f, 0.75f, 1.f, 1.f, 1.f, 1.f);
+	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.5f, 0.75f, 1.f, 1.f, 1.f, 1.f);*/
 }
 
 void WaveManager::free()
