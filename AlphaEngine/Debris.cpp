@@ -4,6 +4,9 @@
 #include "Shuttle.h"
 #include "WaveManager.h"
 #include <cmath>
+
+
+#define SPEED_DEBRIS 10
 Debris debris;
 
 extern std::vector<Planets> planet_vector;
@@ -24,7 +27,7 @@ AEGfxTexture* debrisTex;
 f32 collision_shuttle_x;
 f32 collision_shuttle_y;
 
-double speed = 0.125f;
+
 void Debris::load()
 {
 	debrisTex = AEGfxTextureLoad("Assets/Debris.png");
@@ -35,6 +38,8 @@ void Debris::init()
 
 	//float planet_radius = 50.f;
 	//float space = 20.f;
+	
+	
 }
 
 void Debris::update(f64 frame_time)
@@ -101,8 +106,7 @@ void spawn_debris_shuttle(AEVec2 position, int planet_id) {
 	new_debris.position.y = position.y;
 	new_debris.id = debris_vector_all[planet_id].size() + 1;
 	new_debris.size = 15.f;
-	new_debris.size = 15.f;
-	new_debris.turning_speed = speed;
+	new_debris.turning_speed = SPEED_DEBRIS;
 	new_debris.active = true;
 
 	new_debris.scale = { 0 };
@@ -163,9 +167,9 @@ void spawn_debris(int num_of_debris, int planet_id) {
 		while (current_count != num_of_debris) {
 			
 			Debris new_debris;
-			new_debris.angle = rand();
-			new_debris.position.x = planet_vector[planet_id].position.x + ((planet_vector[planet_id].size / 2) + 20) * AECos(AEDegToRad(new_debris.angle));
-			new_debris.position.y = planet_vector[planet_id].position.y + ((planet_vector[planet_id].size / 2) + 20) * AESin(AEDegToRad(new_debris.angle));
+			new_debris.angle = static_cast<f32>(rand());
+			new_debris.position.x = static_cast<f32>(planet_vector[planet_id].position.x + ((planet_vector[planet_id].size / 2) + 20) * AECos(AEDegToRad(new_debris.angle)));
+			new_debris.position.y = static_cast<f32>(planet_vector[planet_id].position.y + ((planet_vector[planet_id].size / 2) + 20) * AESin(AEDegToRad(new_debris.angle)));
 
 			AEVec2 coll_debris_pos;
 			coll_debris_pos.x = new_debris.position.x;
@@ -192,7 +196,7 @@ void spawn_debris(int num_of_debris, int planet_id) {
 				current_count += 1;
 				new_debris.id = debris_vector_all[planet_id].size() + 1;
 				new_debris.size = 15.f;
-				new_debris.turning_speed = speed;
+				new_debris.turning_speed = SPEED_DEBRIS;
 				new_debris.active = true;
 
 				new_debris.scale = { 0 };
@@ -260,7 +264,7 @@ std::vector<Debris> Debris::create_debris(f32 planet_x, f32 planet_y, double siz
 		//new_debris.dist_from_planet = planet_radius + space;
 		new_debris.position.x = planet_x + ((size / 2) + 20) * AECos(AEDegToRad(new_debris.angle));
 		new_debris.position.y = planet_y + ((size / 2) + 20) * AESin(AEDegToRad(new_debris.angle));
-		new_debris.turning_speed = speed;
+		new_debris.turning_speed = SPEED_DEBRIS;
 		new_debris.active = true;
 
 		new_debris.scale = { 0 };

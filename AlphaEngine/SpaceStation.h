@@ -30,3 +30,12 @@ struct Cooldown_Bar {
 	f32		timer;
 	f32		total_time;
 };
+
+struct Coin {
+	AEVec2	position;
+	AEMtx33 transform;
+	f32		width;
+	f32		height;
+	int		is_draw;
+	f32		lifespan;
+};

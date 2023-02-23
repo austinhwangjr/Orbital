@@ -35,9 +35,15 @@ extern AEGfxTexture* shop_icon_tex;
 std::vector<Cooldown_Bar> cooldown_vector;
 
 
+//Coin Sprite
+AEGfxTexture* coin_tex;
+std::vector<Coin> coin_vector;
+
+
+
 void SpaceStation::load()
 {
-
+	coin_tex = AEGfxTextureLoad("Assets/Coin.png");
 }
 
 void SpaceStation::init()
@@ -52,7 +58,7 @@ void SpaceStation::init()
 void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 {
 	int safe_position = 0;
-	
+	double radius_to_debris = 0;
 
 	// =========================
 	// Update according to input
@@ -90,10 +96,9 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 		for (int k = 0; k < space_station_vector.size(); ++k) {
 			if (AEVec2Distance(&position, &space_station_vector[k].position) >= size * 5) {
 				safe_position += 1;
-			}
 		}
 
-		if ((AEVec2Distance(&current_planet.position, &position) > radius_to_debris + 15) && safe_position == space_station_vector.size()) {
+		if ((AEVec2Distance(&current_planet.position, &position) > radius_to_debris + 30) && safe_position == space_station_vector.size()) {
 
 			space_station_valid_placement = true;
 			space_station_added = false;
@@ -118,10 +123,19 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 			cooldown.height = 5;
 			cooldown.width = 0;
 			cooldown.position.x = this->position.x;
-			cooldown.position.y = this->position.y;
+			cooldown.position.y = this->position.y - 35;
 			cooldown.timer = 0;
 			cooldown.total_time = 3;
 			cooldown_vector.push_back(cooldown);
+
+
+			Coin coin;
+			coin.height = 50;
+			coin.width = 50;
+			coin.position.x = this->position.x;
+			coin.position.y = this->position.y + 60;
+			coin_vector.push_back(coin);
+
 			player.credits -= player_ui.space_station_cost;
 			player.space_station_count++;
 			space_station_added = true;
@@ -146,32 +160,50 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 	}
 
 	
-	// =================================
-	// Process of space station (Cooldown Bar)
-	// =================================
+	// =============================================================
+	// Process of space station (Cooldown Bar and Coin pop up logic)
+	// =============================================================
 	for (int i = 0; i < cooldown_vector.size(); ++i) {
-		if (space_station_vector[i].current_capacity != 0) {
+		if (space_station_vector[i].current_capacity > 0 || coin_vector[i].lifespan<=1.0f) {
+
+			if (space_station_vector[i].current_capacity >= 0 && coin_vector[i].lifespan == 0) {
+				cooldown_vector[i].timer = 0;
+				cooldown_vector[i].width = 0;
+			}
+			
 			cooldown_vector[i].timer += frame_time;
 			
+			coin_vector[i].lifespan = cooldown_vector[i].timer;
 
 			f32 speed = 80 / cooldown_vector[i].total_time;
-			cooldown_vector[i].width = cooldown_vector[i].timer * speed; 
+			if (space_station_vector[i].current_capacity > 0) {
+				cooldown_vector[i].width = cooldown_vector[i].timer * speed;
+			}
 
 
-			if (cooldown_vector[i].timer > 3) {
+			//After 1 second, stop drawing coin
+			if (cooldown_vector[i].timer > 1) {
+				coin_vector[i].is_draw = 0;
+			}
+
+			//After finsishing draw coin
+			if (cooldown_vector[i].timer > 3 && space_station_vector[i].current_capacity >= 0) {
 				space_station_vector[i].current_capacity--;
 				player.credits += 100;
+				coin_vector[i].is_draw = 1;
 				cooldown_vector[i].timer = 0;
-			}
+				coin_vector[i].lifespan = 0;
+			}			
 		}
 		else {
+			coin_vector[i].is_draw = 0;
 			cooldown_vector[i].width = 0;
+			cooldown_vector[i].timer = 0;
 		}
+
 	}
 
-
-
-
+	
 
 	// =======================================
 	// calculate the matrix for space station
@@ -185,9 +217,25 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 		// cooldown
 		AEMtx33Scale(&scale, cooldown.width, cooldown.height); 
 		AEMtx33Rot(&rot, 0);
-		AEMtx33Trans(&trans, cooldown.position.x, cooldown.position.y - 35);
+		AEMtx33Trans(&trans, cooldown.position.x, cooldown.position.y);
 		AEMtx33Concat(&cooldown.transform, &rot, &scale);
 		AEMtx33Concat(&cooldown.transform, &trans, &cooldown.transform);
+	}
+
+
+	// For Coin Sprite
+	
+	for (int i = 0; i < coin_vector.size(); ++i) {
+		Coin& coin = coin_vector[i];
+
+		if (coin.is_draw == 1) {
+			AEMtx33Scale(&scale, coin.width, coin.height);
+			AEMtx33Rot(&rot, 0);
+			AEMtx33Trans(&trans, coin.position.x, coin.position.y);
+			AEMtx33Concat(&coin.transform, &rot, &scale);
+			AEMtx33Concat(&coin.transform, &trans, &coin.transform);
+
+		}
 	}
 
 	// For UI
@@ -236,6 +284,25 @@ void SpaceStation::draw(AEGfxVertexList* pMesh, PlayerUI player_ui)
 			2 * (pos.y + 25) / AEGetWindowHeight(), 0.3f, 1.f, 1.f, 1.f);
 	}
 
+	// For coin vector
+	for (int i = 0; i < coin_vector.size(); ++i) {
+
+		Coin& coin = coin_vector[i];
+		if (coin.is_draw) {
+			
+			if (coin.lifespan < 1) {
+				AEGfxSetTransparency(1-coin.lifespan);
+
+				AEGfxTextureSet(coin_tex, 0, 0);
+				AEGfxSetTransform(coin.transform.m);
+				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+			}
+			else {
+				AEGfxSetTransparency(0.f);
+			}
+		}
+	}
+	AEGfxSetTransparency(1.f);
 
 	// For active vector
 	for (int i = 0; i < cooldown_vector.size(); ++i) {
@@ -285,5 +352,5 @@ void SpaceStation::free()
 
 void SpaceStation::unload()
 {
-	
+	AEGfxTextureUnload(coin_tex);
 }

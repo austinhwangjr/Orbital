@@ -257,9 +257,9 @@ void main_level::unload()
 {
 	planet.unload();
 	player.unload();
-	player_ui.unload();
 	drone.unload();
 	space_station.unload();
+	player_ui.unload();
 	player_proj.unload();
 	shuttle.unload();
 	debris.unload();
