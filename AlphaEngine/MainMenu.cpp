@@ -30,7 +30,7 @@ void main_menu::load()
 void main_menu::init()
 {
     menuButtons.init();
-
+    AEGfxSetCamPosition(0.f, 0.f);
     // Create a square mesh
     createMesh.SquareMesh(pMesh1);
 

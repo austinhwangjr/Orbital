@@ -159,7 +159,7 @@ void main_level::update()
 
 	// check if forcing the application to quit
 	if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
-		next_state = GS_QUIT;
+		next_state = GS_MAINMENU;
 		//gGameRunning = 0;
 }
 

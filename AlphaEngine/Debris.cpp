@@ -4,7 +4,6 @@
 #include "Shuttle.h"
 #include "WaveManager.h"
 #include <cmath>
-
 Debris debris;
 
 extern std::vector<Planets> planet_vector;
@@ -33,6 +32,7 @@ void Debris::load()
 
 void Debris::init()
 {
+
 	//float planet_radius = 50.f;
 	//float space = 20.f;
 }
@@ -240,7 +240,7 @@ void Debris::draw(AEGfxVertexList* pMesh)
 
 void Debris::free()
 {
-
+	debris_vector_all.clear();
 }
 
 void Debris::unload()
