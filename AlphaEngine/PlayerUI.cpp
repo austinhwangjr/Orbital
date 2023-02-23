@@ -191,11 +191,6 @@ void PlayerUI::shop_open(Player& player)
 		f32 button_top		= button_vector[i].position.y + button_vector[i].height / 2;
 		f32 button_bottom	= button_vector[i].position.y - button_vector[i].height / 2;
 
-		/*if ((button_vector[i].position.x - button_vector[i].width < mouse_pos_world.x) &&
-			(button_vector[i].position.x + button_vector[i].width > mouse_pos_world.x)) {
-
-			if ((button_vector[i].position.y - button_vector[i].height / 2 < mouse_pos_world.y) &&
-				(button_vector[i].position.y + button_vector[i].height / 2 > mouse_pos_world.y)) {*/
 		if ((button_left < mouse_pos_world.x) && (button_right > mouse_pos_world.x)) {
 			if ((button_bottom < mouse_pos_world.y) && (button_top > mouse_pos_world.y)) {
 
