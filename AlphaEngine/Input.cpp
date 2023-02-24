@@ -57,6 +57,7 @@ bool Input::isButtonClicked(float center_x, float center_y, float width, float h
         return true;
     }
     return false;
+    
 }
 
 
@@ -68,3 +69,4 @@ bool Input::isButtonClicked(float center_x, float center_y, float width, float h
 //    // Message to show input handling is successfully carried out
 //    //std::cout << "Input:Handle\n";
 //}
+
