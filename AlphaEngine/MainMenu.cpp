@@ -30,15 +30,15 @@ void main_menu::load()
 
 void main_menu::init()
 {
+    // Set the camera position to (0, 0) for the background mesh
+    AEGfxSetCamPosition(0.f, 0.f);
+
     // Create a square mesh for the buttons
     createMesh.SquareMesh(pMesh1);
     menuButtons.init();
 
     // Create a background mesh
     createMesh.BackgroundMesh(pMeshBackground);
-
-    // Set the camera position to (0, 0) for the background mesh
-    AEGfxSetCamPosition(0.f, 0.f);
 
     // debugging logs
     AE_ASSERT_MESG(pMesh1, "Error: Failed to create pMesh1 in MainMenu.cpp!");
@@ -47,7 +47,6 @@ void main_menu::init()
     std::cout << std::endl;
     std::cout << "------------------------- MainMenu Initialised -------------------------" << std::endl << std::endl;
 }
-
 
 void main_menu::update()
 {
@@ -70,7 +69,6 @@ void main_menu::draw()
     // Draw the menu buttons using pMesh1
     menuButtons.draw(pMesh1);
 }
-
 
 void main_menu::free()
 {

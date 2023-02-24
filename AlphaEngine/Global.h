@@ -19,3 +19,5 @@ extern RECT g_WindowRect;
 void Global_InitWindowSize(bool isFullScreen);
 
 void Global_UpdateWindowSize();
+
+void Global_ToggleScreen();

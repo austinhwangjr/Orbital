@@ -1,5 +1,7 @@
 #include "Global.h"										
 #include "AEEngine.h"
+#include "Systems.h"
+
 // Variables related to console display
 bool g_consoleOn = true;
 bool g_consoleOff = false;
@@ -45,4 +47,9 @@ void Global_UpdateWindowSize()
 	g_screenRight	= g_windowWidth / 2.0f;
 	g_screenTop		= g_windowHeight / -2.0f;
 	g_screenBottom	= g_windowHeight / 2.0f;
+}
+
+void Global_ToggleScreen()
+{
+	Global_ToggleWindowed();
 }

@@ -7,8 +7,6 @@
 #include <iostream>
 #include "input.h"
 #include "Graphics.h"
-void Global_ToggleWindowed();
-
 
 struct Button {
     float x;
@@ -74,6 +72,13 @@ void Menu_Button::update()
         std::cout << "GameState changed to: " << current_state << std::endl;
     }
 
+    if (AEInputCheckTriggered(AEVK_F11))
+    {
+        // If the window close button has been clicked, set the game state to quit
+        Global_ToggleScreen();
+        std::cout << "Toggling Screen " << std::endl;
+    }
+
     // Check if the window close button has been clicked
     if (AEInputCheckTriggered(AEVK_ESCAPE))
     {
@@ -82,12 +87,6 @@ void Menu_Button::update()
         std::cout << "GameState changed to: " << current_state << std::endl;
     }
 
-    if (AEInputCheckTriggered(AEVK_F11))
-    {
-        // If the window close button has been clicked, set the game state to quit
-        Global_ToggleWindowed();
-        std::cout << "Toggling Screen " << current_state << std::endl;
-    }
 }
 
 void Menu_Button::draw(AEGfxVertexList* pMesh1)

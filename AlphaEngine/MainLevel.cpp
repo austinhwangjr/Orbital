@@ -23,16 +23,18 @@ Technology is prohibited.
 #include "PlayerUI.h"
 #include "Drone.h"
 #include "SpaceStation.h"
-#include  "PlayerProj.h"
+#include "PlayerProj.h"
 #include "Shuttle.h"
 #include "Debris.h"
 #include "Camera.h"
 #include "WaveManager.h"
+#include "Global.h"
+
+
 
 int g_game_running;
 
 extern AEGfxTexture* pTex;
-AEGfxTexture* starttest;
 s8 fontID;
 
 // String to print
@@ -73,8 +75,7 @@ void main_level::load()
 	debris.load();
 	shuttle.load();
 	wave_manager.load();
-	
-	//starttest = AEGfxTextureLoad("Assets/start_test.png");
+
 
 	// Font for text
 	//fontID = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
@@ -190,7 +191,13 @@ void main_level::update()
 	if (AEInputCheckTriggered(AEVK_R))
 		next_state = GS_RESTART;
 	*/
-	
+
+	if (AEInputCheckTriggered(AEVK_F11))
+	{
+		// If the window close button has been clicked, set the game state to quit
+		Global_ToggleScreen();
+		std::cout << "Toggling Screen " << std::endl;
+	}
 
 	// check if forcing the application to quit
 	if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
