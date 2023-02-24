@@ -11,7 +11,7 @@ public:
               const char* exitButtonFilename);
     void init();
     void update();
-    void draw(AEGfxVertexList* pMesh1);
+    void draw(AEGfxVertexList* pMeshMM);
     void free();
     void unload();
 
@@ -19,6 +19,26 @@ public:
     float height;
     
 private:
+    //// Set the dimensions of each button
+    //static float buttonWidth;
+    //static float buttonHeight;
+
+    //// Define the positions for each button
+    //static float startX;
+    //static float startY;
+
+    //static float howToPlayX;
+    //static float howToPlayY;
+
+    //static float creditsX;
+    //static float creditsY;
+
+    //static float optionsX;
+    //static float optionsY;
+
+    //static float quitX;
+    //static float quitY;
+
     AEMtx33 transform;
     AEGfxTexture* startButtonTexture;
     AEGfxTexture* howToPlayButtonTexture;

@@ -1,29 +1,25 @@
 /*-------------------------------------------------- Main Menu --------------------------------------------------*/
 #include "AEEngine.h"
 #include <iostream>
-
 #include "Global.h"
 #include "GameStateManager.h"
-
 #include "MainMenu.h"
 #include "MenuButtons.h"
-
-#include "GameObjects.h"
 #include "Graphics.h"
 
-AEGfxTexture* bgTexture = nullptr;
+AEGfxTexture* TexMMBackground = nullptr;
 
-AEGfxVertexList* pMeshBackground;
-AEGfxVertexList* pMesh1;
+AEGfxVertexList* pMeshMMBackground;
+AEGfxVertexList* pMeshMM;
 
 // class declearation 
 Menu_Button menuButtons;
 Rendering createMesh;
-Rendering drawBackground;
+Rendering RenderMMBackground;
 
 void main_menu::load()
 {
-    bgTexture = AEGfxTextureLoad("Assets/Background.png");
+    TexMMBackground = AEGfxTextureLoad("Assets/Background.png");
     menuButtons.load("Assets/buttonTest.png", "Assets/buttonTest.png", "Assets/buttonTest.png", "Assets/buttonTest.png", "Assets/quitTest.png");
     //std::cout << "------------------------- MainMenu::load completed -------------------------" << std::endl << std::endl;
 }
@@ -33,16 +29,16 @@ void main_menu::init()
     // Set the camera position to (0, 0) for the background mesh
     AEGfxSetCamPosition(0.f, 0.f);
 
+    // Create a background mesh
+    createMesh.BackgroundMesh(pMeshMMBackground);
+
     // Create a square mesh for the buttons
-    createMesh.SquareMesh(pMesh1);
+    createMesh.SquareMesh(pMeshMM);
     menuButtons.init();
 
-    // Create a background mesh
-    createMesh.BackgroundMesh(pMeshBackground);
-
     // debugging logs
-    AE_ASSERT_MESG(pMesh1, "Error: Failed to create pMesh1 in MainMenu.cpp!");
-    AE_ASSERT_MESG(pMeshBackground, "Error: Failed to create pMeshBackground in MainMenu.cpp!");
+    AE_ASSERT_MESG(pMeshMM, "Error: Failed to create pMeshMM in MainMenu.cpp!");
+    AE_ASSERT_MESG(pMeshMMBackground, "Error: Failed to create pMeshMMBackground in MainMenu.cpp!");
 
     std::cout << std::endl;
     std::cout << "------------------------- MainMenu Initialised -------------------------" << std::endl << std::endl;
@@ -64,19 +60,19 @@ void main_menu::draw()
     AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
     // Draw the background mesh
-    drawBackground.RenderSprite(bgTexture, 0.f, 0.f, 800.f, 600.f, pMeshBackground);
+    RenderMMBackground.RenderSprite(TexMMBackground, 0.f, 0.f, 800.f, 450.f, pMeshMMBackground);
 
     // Draw the menu buttons using pMesh1
-    menuButtons.draw(pMesh1);
+    menuButtons.draw(pMeshMM);
 }
 
 void main_menu::free()
 {
-    AEGfxMeshFree(pMesh1);
+    AEGfxMeshFree(pMeshMM);
 }
 
 void main_menu::unload()
 {
     menuButtons.unload();
-    AEGfxTextureUnload(bgTexture); // unload the texture for the background image
+    AEGfxTextureUnload(TexMMBackground); // unload the texture for the background image
 }

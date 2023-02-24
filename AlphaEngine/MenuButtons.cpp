@@ -1,5 +1,4 @@
 #include "AEEngine.h"
-#include "GameObjects.h"
 #include "MainMenu.h"
 #include "Global.h"
 #include "GameStateManager.h"
@@ -8,7 +7,29 @@
 #include "input.h"
 #include "Graphics.h"
 
-struct Button {
+// Set the dimensions of each button
+static float buttonWidth    = 200.f;
+static float buttonHeight   = 50.f;
+
+// Define the positions for each button
+static float startX         = 0.0f;
+static float startY         = -25.f;
+
+static float howToPlayX     = 0.0f;
+static float howToPlayY     = -100.f;
+
+static float creditsX       = 0.0f;
+static float creditsY       = -175.f;
+
+static float optionsX       = 0.0f;
+static float optionsY       = -250.f;
+
+static float quitX          = 0.0f;
+static float quitY          = -325.f;
+
+// checking input area stuff
+struct Button
+{
     float x;
     float y;
     float width;
@@ -80,51 +101,30 @@ void Menu_Button::update()
     }
 
     // Check if the window close button has been clicked
-    if (AEInputCheckTriggered(AEVK_ESCAPE))
+    if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
     {
         // If the window close button has been clicked, set the game state to quit
         next_state = GS_QUIT;
         std::cout << "GameState changed to: " << current_state << std::endl;
     }
-
 }
 
-void Menu_Button::draw(AEGfxVertexList* pMesh1)
+void Menu_Button::draw(AEGfxVertexList* pMeshMM)
 {
-    // Set the dimensions of each button
-    float buttonWidth = 200.f;
-    float buttonHeight = 50.f;
-
-    // Define the positions for each button
-    float startX = 0.0f;
-    float startY = -25.f;
-
-    float howToPlayX = 0.0f;
-    float howToPlayY = -100.f;
-
-    float creditsX = 0.0f;
-    float creditsY = -175.f;
-
-    float optionsX = 0.0f;
-    float optionsY = -250.f;
-
-    float quitX = 0.0f;
-    float quitY = -325.f;
-
     // Draw the start button
-    RenderSprite(startButtonTexture, startX, startY, buttonWidth, buttonHeight, pMesh1);
+    RenderSprite(startButtonTexture, startX, startY, buttonWidth, buttonHeight, pMeshMM);
 
     // Draw the how to play button
-    RenderSprite(howToPlayButtonTexture, howToPlayX, howToPlayY, buttonWidth, buttonHeight, pMesh1);
+    RenderSprite(howToPlayButtonTexture, howToPlayX, howToPlayY, buttonWidth, buttonHeight, pMeshMM);
 
     // Draw the credits button
-    RenderSprite(creditsButtonTexture, creditsX, creditsY, buttonWidth, buttonHeight, pMesh1);
+    RenderSprite(creditsButtonTexture, creditsX, creditsY, buttonWidth, buttonHeight, pMeshMM);
 
     // Draw the options button
-    RenderSprite(optionsButtonTexture, optionsX, optionsY, buttonWidth, buttonHeight, pMesh1);
+    RenderSprite(optionsButtonTexture, optionsX, optionsY, buttonWidth, buttonHeight, pMeshMM);
 
     // Draw the quit buttona
-    RenderSprite(exitButtonTexture, quitX, quitY, buttonWidth, buttonHeight, pMesh1);
+    RenderSprite(exitButtonTexture, quitX, quitY, buttonWidth, buttonHeight, pMeshMM);
 }
 
 void Menu_Button::free()

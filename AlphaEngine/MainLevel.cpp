@@ -29,24 +29,17 @@ Technology is prohibited.
 #include "Camera.h"
 #include "WaveManager.h"
 #include "Global.h"
+#include "Graphics.h"
 
+//yy debugging and cleaning code
+AEGfxTexture* TexMLBackground = nullptr;
 
+AEGfxVertexList* pMeshMLBackground;				// Background Mesh
+AEGfxVertexList* pMeshML;						// Object square mesh
 
-int g_game_running;
-
-extern AEGfxTexture* pTex;
-s8 fontID;
-
-// String to print
-//s8* print_string;
-
-AEGfxVertexList* pMesh;
-
-// test variables
-f64 total_time{}, frame_time{};
-
-//bool pause = false;
-
+// class declearation 
+Rendering RenderMLBackground;
+Rendering createMesh1;
 Player player;
 Planets planet;
 PlayerUI player_ui;
@@ -58,6 +51,11 @@ extern Debris debris;
 Shuttles shuttle;
 extern WaveManager wave_manager;
 
+// test variables (who did this? -yy)
+f64 total_time{}, frame_time{};
+
+//bool pause = false;
+
 // ----------------------------------------------------------------------------
 // This function loads all necessary assets in Level1
 // It should be called once before the start of the level
@@ -65,6 +63,8 @@ extern WaveManager wave_manager;
 // ----------------------------------------------------------------------------
 void main_level::load()
 {
+	TexMLBackground = AEGfxTextureLoad("Assets/Background.png");
+
 	// load texture
 	planet.load();
 	player.load();
@@ -75,10 +75,6 @@ void main_level::load()
 	debris.load();
 	shuttle.load();
 	wave_manager.load();
-
-
-	// Font for text
-	//fontID = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
 }
 
 // ----------------------------------------------------------------------------
@@ -88,10 +84,13 @@ void main_level::load()
 // ----------------------------------------------------------------------------
 void main_level::init()
 {
-	// create mesh
-	// Pointer to Mesh
-	pMesh = 0;
+	// Set the camera position to (0, 0) for the background mesh
+	AEGfxSetCamPosition(0.f, 0.f);
 
+	createMesh1.BackgroundMesh(pMeshMLBackground);
+
+	createMesh1.SquareMesh(pMeshML);
+	
 	planet.init();
 	player.init();
 	camera.init(player);
@@ -102,35 +101,13 @@ void main_level::init()
 	shuttle.init();
 	debris.init();
 
+	AE_ASSERT_MESG(pMeshML, "Error: Failed to create pMeshML in MainLevel.cpp!");
+
 	std::cout << std::endl;
 	std::cout << "------------------------- Main Level Initialised -------------------------" << std::endl;
 
 	wave_manager.init();
-
 	total_time = 0.0f;
-
-	// Informing the library that we're about to start adding triangles 
-
-	AEGfxMeshStart();
-
-	// This shape has 2 triangles that makes up a square
-	// Color parameters represent colours as ARGB
-	// UV coordinates to read from loaded textures
-	AEGfxTriAdd(
-		-0.5f, -0.5f, 0xFFFF00FF, 0.0f, 0.0f,
-		0.5f, -0.5f, 0xFFFFFF00, 1.0f, 0.0f,
-		-0.5f, 0.5f, 0xFF00FFFF, 0.0f, 1.0f);
-
-	AEGfxTriAdd(
-		0.5f, -0.5f, 0xFFFFFFFF, 1.0f, 0.0f,
-		0.5f, 0.5f, 0xFFFFFFFF, 1.0f, 1.0f,
-		-0.5f, 0.5f, 0xFFFFFFFF, 0.0f, 1.0f);
-
-	// Saving the mesh (list of triangles) in pMesh 
-	pMesh = AEGfxMeshEnd();
-
-	// debugging logs
-	AE_ASSERT_MESG(pMesh, "Error: Failed to create pMesh in MainLevel.cpp!");
 }
 
 // ----------------------------------------------------------------------------
@@ -184,13 +161,10 @@ void main_level::update()
 	debris.update(frame_time);
 	wave_manager.update(frame_time);
 	
-	
-
 	// Testing
-	/*
-	if (AEInputCheckTriggered(AEVK_R))
-		next_state = GS_RESTART;
-	*/
+	//if (AEInputCheckTriggered(AEVK_R))
+	//	next_state = GS_RESTART;
+	//
 
 	if (AEInputCheckTriggered(AEVK_F11))
 	{
@@ -201,8 +175,9 @@ void main_level::update()
 
 	// check if forcing the application to quit
 	if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
+	{
 		next_state = GS_MAINMENU;
-		//gGameRunning = 0;
+	}
 }
 
 // ----------------------------------------------------------------------------
@@ -212,11 +187,10 @@ void main_level::update()
 // ----------------------------------------------------------------------------
 void main_level::draw()
 {
-	// Your own rendering logic goes here
-
-	// TEST START
 	// Set the background to black. 
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
+
+	RenderMLBackground.RenderSprite(TexMLBackground, 0.f, 0.f, 800.f, 450.f, pMeshMLBackground);		//drawbackground for Mainlevel
 
 	// Tell the engine to get ready to draw something with texture. 
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
@@ -230,15 +204,15 @@ void main_level::draw()
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxSetTransparency(1.0f);
 
-	planet.draw(pMesh);
-	player.draw(pMesh);
-	player_proj.draw(pMesh);
-	debris.draw(pMesh);
-	shuttle.draw(pMesh);
-	wave_manager.draw(pMesh);
-	player_ui.draw(pMesh, player);
-	drone.draw(pMesh, player_ui);
-	space_station.draw(pMesh, player_ui);
+	planet.draw(pMeshML);
+	player.draw(pMeshML);
+	player_proj.draw(pMeshML);
+	debris.draw(pMeshML);
+	shuttle.draw(pMeshML);
+	wave_manager.draw(pMeshML);
+	player_ui.draw(pMeshML, player);
+	drone.draw(pMeshML, player_ui);
+	space_station.draw(pMeshML, player_ui);
 }
 
 // ----------------------------------------------------------------------------
@@ -257,7 +231,7 @@ void main_level::free()
 	debris.free();
 	wave_manager.free();
 
-	AEGfxMeshFree(pMesh);
+	AEGfxMeshFree(pMeshML);
 }
 
 // ----------------------------------------------------------------------------
@@ -275,4 +249,6 @@ void main_level::unload()
 	shuttle.unload();
 	debris.unload();
 	wave_manager.unload();
+
+	AEGfxTextureUnload(TexMLBackground); // unload the texture for the background image
 }

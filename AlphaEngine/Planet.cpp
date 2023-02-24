@@ -95,6 +95,7 @@ void Planets::spawn(int shuttle_randomize_amount)
 	AEMtx33Concat(&new_planet.transform, &new_planet.rotate, &new_planet.scale);
 
 	AEMtx33Concat(&new_planet.transform, &new_planet.translate, &new_planet.transform);
+
 // SETTING POSITION / TRANSFORM FOR PLANETS---------------------------------------------------------------------------------------------------
 
 	new_planet.shuttle_timer = 0.0;
@@ -105,6 +106,7 @@ void Planets::spawn(int shuttle_randomize_amount)
 // DEBRIS STUFF-------------------------------------------------------------------------------------------------------------------------------
 	new_planet.max_debris = rand() % MAX_DEBRIS + MIN_DEBRIS;
 	new_planet.debris_vector = debris.Debris::create_debris(new_planet.position.x, new_planet.position.y, new_planet.size, new_planet.max_debris);
+
 // DEBRIS STUFF-------------------------------------------------------------------------------------------------------------------------------
 
 	planet_vector.push_back(new_planet);
