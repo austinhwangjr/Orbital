@@ -13,12 +13,13 @@ struct Debris
 	f32 angle;
 	f32 turning_angle;
 	f32 turning_speed;
-	double dist_from_planet;
+	f32 dist_from_planet;
 	double speed;
 	double is_collide;
 	double is_collect;
 	double texture; // maybe 3-5 textures
 	bool active;
+	bool orbit_around_planet = true;
 	bool move_towards_player = false;
 	bool to_erase = false;
 

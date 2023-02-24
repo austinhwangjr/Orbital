@@ -236,7 +236,7 @@ void Drone::draw(AEGfxVertexList* pMesh, PlayerUI player_ui)
 
 void Drone::free()
 {
-
+	drone_vector.clear();
 }
 
 void Drone::unload()

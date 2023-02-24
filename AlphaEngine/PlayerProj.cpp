@@ -7,20 +7,12 @@
 // Textures
 AEGfxTexture* player_proj_tex;
 
-// Variables
-//bool space_station_valid_placement = false;
-//bool space_station_added;
-
 // Mouse coordinates
 extern AEVec2 mouse_pos_world;
 
-// Vector of projectile
+// Vector of projectiles, space stations and shop buttons
 std::vector<PlayerProj> player_proj_vector;
-
-// Vector of space-station
 extern std::vector<SpaceStation> space_station_vector;
-
-// Vector of shop buttons (extern)
 extern std::vector<ShopOption> button_vector;
 
 
@@ -98,8 +90,6 @@ void PlayerProj::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 		}
 	}
 
-
-
 	// ===================================
 	// Update player projectile instances
 	// ===================================
@@ -128,9 +118,6 @@ void PlayerProj::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 		AEMtx33Concat(&player_proj.transform, &rot, &scale);
 		AEMtx33Concat(&player_proj.transform, &trans, &player_proj.transform);
 	}
-
-
-
 }
 
 /******************************************************************************/
@@ -154,7 +141,7 @@ void PlayerProj::draw(AEGfxVertexList* pMesh)
 
 void PlayerProj::free()
 {
-
+	player_proj_vector.clear();
 }
 
 void PlayerProj::unload()

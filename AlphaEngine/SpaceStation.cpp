@@ -15,13 +15,9 @@ bool space_station_added;
 // Mouse coordinates
 extern AEVec2 mouse_pos_world;
 
-// Vector of space stations
+// Vector of space stations, planets and debris
 std::vector<SpaceStation> space_station_vector;
-
-// Vector of planets
 extern std::vector<Planets> planet_vector;
-
-//Vector of Debris
 extern std::vector<std::vector<Debris>> debris_vector_all;
 
 // Variables to print
@@ -172,7 +168,7 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 				cooldown_vector[i].width = 0;
 			}
 			
-			cooldown_vector[i].timer += frame_time;
+			cooldown_vector[i].timer += static_cast<f32>(frame_time);
 			
 			coin_vector[i].lifespan = cooldown_vector[i].timer;
 
@@ -341,14 +337,13 @@ void SpaceStation::draw(AEGfxVertexList* pMesh, PlayerUI player_ui)
 		AEGfxSetTransform(space_station.transform.m);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 	}
-
-
-
 }
 
 void SpaceStation::free()
 {
-
+	space_station_vector.clear();
+	cooldown_vector.clear();
+	coin_vector.clear();
 }
 
 void SpaceStation::unload()

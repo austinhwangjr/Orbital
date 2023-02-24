@@ -43,9 +43,9 @@ struct Player
 
 	// Tractor beam
 	AEVec2			beam_pos;
-	AEVec2			beam_collision_pos;
 	f32				beam_str;
 	f32				beam_width;
+	f32				beam_height;
 
 	// Transforms
 	AEMtx33			player_transform;

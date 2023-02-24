@@ -61,10 +61,8 @@ void Player::init()
 	beam_pos.x				= 0.f;
 	beam_pos.y				= 0.f;
 
-	beam_collision_pos.x	= 0.f;
-	beam_collision_pos.y	= 0.f;
-
 	beam_width				= size;
+	beam_height				= beam_width * 3 / 2;
 }
 
 void Player::update(f64 frame_time)
@@ -91,7 +89,7 @@ void Player::update(f64 frame_time)
 	AEMtx33Concat(&player_transform, &trans, &player_transform);
 
 	// Tractor beam
-	AEMtx33Scale(&scale, size, size * 3 / 2);
+	AEMtx33Scale(&scale, beam_width, beam_height);
 	AEMtx33Rot(&rot, direction + PI / 2);
 	AEMtx33Trans(&trans, beam_pos.x, beam_pos.y);
 	AEMtx33Concat(&beam_transform, &rot, &scale);
@@ -177,35 +175,28 @@ void Player::orbit_state(f64 frame_time)
 	}
 
 	if (beam_active) {
-		beam_pos.x = position.x - AECos(direction) * 20;
-		beam_pos.y = position.y - AESin(direction) * 20;
-
-		beam_collision_pos.x = beam_pos.x - AECos(direction) * 10;
-		beam_collision_pos.y = beam_pos.y - AESin(direction) * 10;
+		beam_pos.x = position.x - AECos(direction) * (beam_height * 2 / 3);
+		beam_pos.y = position.y - AESin(direction) * (beam_height * 2 / 3);
 	}
 
 	// ================================
 	// Check for beam-debris collision
 	// ================================
 	
-	//if (beam_active) {
-	//	// Check for collision between tractor beam and debris
-	//	for (int i = 0; i < debris_vector_all[current_planet.id].size(); ++i) {
-	//		if (current_capacity < max_capacity && AEVec2Distance(&beam_collision_pos, &debris_vector_all[current_planet.id][i].position) <= beam_width / 2) {
-	//			debris_vector_all[current_planet.id][i].to_erase = true;
-	//			break;
-	//		}
-	//	}
-	//}
 	if (beam_active) {
 		// Check for collision between tractor beam and debris
 		for (int i = 0; i < debris_vector_all[current_planet.id].size(); ++i) {
 			Debris& debris = debris_vector_all[current_planet.id][i];
 			
 			// Debris to move towards player when in contact with beam
-			if (current_capacity < max_capacity + capacity_level && AEVec2Distance(&beam_collision_pos, &debris.position) <= beam_width / 2) {
+			if (current_capacity < max_capacity + capacity_level && AEVec2Distance(&beam_pos, &debris.position) <= beam_height / 2) {
 				debris.move_towards_player = true;
+				debris.orbit_around_planet = false;
 				break;
+			}
+			else {
+				if (debris.move_towards_player)
+					debris.move_towards_player = false;
 			}
 
 			if (AEVec2Distance(&position, &debris.position) <= (size + debris.size) / 2) {
@@ -213,6 +204,14 @@ void Player::orbit_state(f64 frame_time)
 				debris_vector_all[current_planet.id][i].to_erase = true;
 				break;
 			}
+		}
+	}
+	else {
+		for (int i = 0; i < debris_vector_all[current_planet.id].size(); ++i) {
+			Debris& debris = debris_vector_all[current_planet.id][i];
+
+			if (debris.move_towards_player)
+				debris.move_towards_player = false;
 		}
 	}
 
@@ -226,8 +225,6 @@ void Player::orbit_state(f64 frame_time)
 	// Remove debris to be erased
 	// ===========================
 	for (int i = 0; i < debris_vector_all[current_planet.id].size(); ++i) {
-		
-
 		if (debris_vector_all[current_planet.id][i].to_erase) {
 			debris_vector_all[current_planet.id].erase(debris_vector_all[current_planet.id].begin() + i);
 			current_capacity++;

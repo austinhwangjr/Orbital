@@ -302,7 +302,7 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player& player)
 
 void PlayerUI::free()
 {
-
+	button_vector.clear();
 }
 
 void PlayerUI::unload()
