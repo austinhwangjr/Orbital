@@ -1,12 +1,11 @@
-// ---------------------------------------------------------------------------
+// --------------------------------- MAIN GAME LOOP ------------------------------------------
 // includes
 #include "pch.h"
 #include "GameStateManager.h"
 #include "Systems.h"
 #include "Input.h"
 #include <iostream>
-// ---------------------------------------------------------------------------
-// main
+
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -34,8 +33,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// While the current game state is not equal to the quit state
 	while (current_state != GS_QUIT)
 	{
-
-
 		// If the current game state is not equal to the restart state
 		if (current_state != GS_RESTART)
 		{

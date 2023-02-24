@@ -109,10 +109,12 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.09\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="HowToPlay.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="LoseMenu.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainLevel.cpp" />
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Options.cpp" />
+    <ClCompile Include="PauseMenu.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Planet.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -135,9 +137,11 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.09\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="HowToPlay.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="LoseMenu.h" />
     <ClInclude Include="MainLevel.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Options.h" />
+    <ClInclude Include="PauseMenu.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Planet.h" />
     <ClInclude Include="Player.h" />

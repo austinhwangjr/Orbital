@@ -73,6 +73,12 @@
     <ClCompile Include="MainLevel.cpp">
       <Filter>Source\InGame</Filter>
     </ClCompile>
+    <ClCompile Include="LoseMenu.cpp">
+      <Filter>Source\InGame\InGameMenus</Filter>
+    </ClCompile>
+    <ClCompile Include="PauseMenu.cpp">
+      <Filter>Source\InGame\InGameMenus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -143,6 +149,12 @@
     </ClInclude>
     <ClInclude Include="MainLevel.h">
       <Filter>Header\InGame</Filter>
+    </ClInclude>
+    <ClInclude Include="LoseMenu.h">
+      <Filter>Header\InGame\InGameMenus</Filter>
+    </ClInclude>
+    <ClInclude Include="PauseMenu.h">
+      <Filter>Header\InGame\InGameMenus</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
