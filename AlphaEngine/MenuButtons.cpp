@@ -8,6 +8,22 @@
 #include "input.h"
 #include "Graphics.h"
 
+struct Button {
+    float x;
+    float y;
+    float width;
+    float height;
+};
+
+// Define the positions and dimensions for each button
+Button buttons[] = {
+    {0.0f, -25.0f, 200.0f, 50.0f},   // Start button
+    {0.0f, -100.0f, 200.0f, 50.0f},  // How to play button
+    {0.0f, -175.0f, 200.0f, 50.0f},  // Credits button
+    {0.0f, -250.0f, 200.0f, 50.0f},  // Options button
+    {0.0f, -325.0f, 200.0f, 50.0f}   // Quit button
+};
+
 void Menu_Button::load(const char* startButtonFilename,
                        const char* howToPlayButtonFilename,
                        const char* creditsButtonFilename,
@@ -28,31 +44,31 @@ void Menu_Button::init()
 
 void Menu_Button::update()
 {
-    // Set the dimensions of the buttons
-    float buttonWidth = 200.f;
-    float buttonHeight = 50.f;
-
     // Check if the left mouse button has been clicked
     if (AEInputCheckTriggered(AEVK_LBUTTON))
     {
-        std::cout << "Left mouse button triggered" << std::endl;
-
         // Check which button has been clicked
-        float center_x = 0.0f;
-        float center_y = -25.f;
-        int clickedButton = Input::isButtonClicked(center_x, center_y, buttonWidth, buttonHeight);
+        int clickedButton = -1;
+        for (int i = 0; i < 5; i++) {
+            if (Input::isButtonClicked(buttons[i].x, buttons[i].y, buttons[i].width, buttons[i].height)) {
+                clickedButton = i;
+                break;
+            }
+        }
 
         // Set the next game state based on the button that was clicked
         switch (clickedButton)
         {
-        case 1: next_state = GS_MAINLEVEL;  break;
-        case 2: next_state = GS_HOWTOPLAY;  break;
-        case 3: next_state = GS_CREDITS;    break;
-        case 4: next_state = GS_OPTIONS;    break;
-        case 5: next_state = GS_QUIT;       break;
+        case 0: next_state = GS_MAINLEVEL;  break;
+        case 1: next_state = GS_HOWTOPLAY;  break;
+        case 2: next_state = GS_CREDITS;    break;
+        case 3: next_state = GS_OPTIONS;    break;
+        case 4: next_state = GS_QUIT;       break;
         }
 
-        // Output the new game state
+        // debugging yy
+        std::cout << "Clicked button: " << clickedButton << std::endl;
+        std::cout << "Next game state: " << next_state << std::endl;
         std::cout << "GameState changed to: " << current_state << std::endl;
     }
 
@@ -64,8 +80,6 @@ void Menu_Button::update()
         std::cout << "GameState changed to: " << current_state << std::endl;
     }
 }
-
-
 
 void Menu_Button::draw(AEGfxVertexList* pMesh1)
 {
@@ -101,13 +115,13 @@ void Menu_Button::draw(AEGfxVertexList* pMesh1)
     // Draw the options button
     RenderSprite(optionsButtonTexture, optionsX, optionsY, buttonWidth, buttonHeight, pMesh1);
 
-    // Draw the quit button
+    // Draw the quit buttona
     RenderSprite(exitButtonTexture, quitX, quitY, buttonWidth, buttonHeight, pMesh1);
 }
 
 void Menu_Button::free()
 {
-    // empty free function
+    // empty
 }
 
 void Menu_Button::unload()

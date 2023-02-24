@@ -31,7 +31,7 @@ void system_call::init(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
 	AESysSetWindowTitle("Orbital");																	// Set the window title
 	AESysReset();																					// Reset the system modules
 
-	std::cout << "--------------------Initializing system--------------------" << std::endl;
+	std::cout << "------------------------- Initializing System -------------------------" << std::endl << std::endl;
 
 	// Fonts
 	font_id = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);

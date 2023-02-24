@@ -100,6 +100,10 @@ void main_level::init()
 	player_proj.init();
 	shuttle.init();
 	debris.init();
+
+	std::cout << std::endl;
+	std::cout << "------------------------- Main Level Initialised -------------------------" << std::endl;
+
 	wave_manager.init();
 
 	total_time = 0.0f;

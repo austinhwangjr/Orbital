@@ -21,10 +21,7 @@ Rendering createMesh;
 void main_menu::load()
 {
     menuButtons.load("Assets/buttonTest.png", "Assets/buttonTest.png", "Assets/buttonTest.png", "Assets/buttonTest.png", "Assets/buttonTest.png");
-    std::cout << "--------------------MainMenu::load completed--------------------" << std::endl;
-
-    // Font for text
-    //fontID = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
+    //std::cout << "------------------------- MainMenu::load completed -------------------------" << std::endl << std::endl;
 }
 
 void main_menu::init()
@@ -36,8 +33,8 @@ void main_menu::init()
 
     // debugging logs
     AE_ASSERT_MESG(pMesh1, "Error: Failed to create pMesh1 in MainMenu.cpp!");
-
-    std::cout << "--------------------MainMenu::init completed--------------------" << std::endl;
+    std::cout << std::endl;
+    std::cout << "------------------------- MainMenu Initialised -------------------------" << std::endl << std::endl;
 }
 
 void main_menu::update()
@@ -48,8 +45,6 @@ void main_menu::update()
 
     if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
         next_state = GS_QUIT;
-
-    //std::cout << "--------------------main_menu::update completed--------------------" << std::endl;
 }
 
 void main_menu::draw()
@@ -59,10 +54,7 @@ void main_menu::draw()
 
     // Call the draw function of the menuButtons object
     menuButtons.draw(pMesh1);
-
-    //std::cout << "--------------------main_menu::draw completed--------------------" << std::endl;
 }
-
 
 void main_menu::free()
 {
