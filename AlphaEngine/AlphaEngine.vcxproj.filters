@@ -4,47 +4,14 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="MainLevel.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="SplashScreen.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Debris.cpp">
-      <Filter>Source\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Planet.cpp">
-      <Filter>Source\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Shuttle.cpp">
-      <Filter>Source\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Source\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="WaveManager.cpp">
-      <Filter>Source\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerUI.cpp">
-      <Filter>Source\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Drone.cpp">
-      <Filter>Source\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerProj.cpp">
-      <Filter>Source\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="SpaceStation.cpp">
-      <Filter>Source\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="MenuButtons.cpp">
       <Filter>Source\MainMenu</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source\Objects</Filter>
     </ClCompile>
     <ClCompile Include="MainMenu.cpp">
       <Filter>Source\MainMenu</Filter>
@@ -73,49 +40,49 @@
     <ClCompile Include="GameStateManager.cpp">
       <Filter>Source\StateManager</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source\InGame\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Debris.cpp">
+      <Filter>Source\InGame\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Drone.cpp">
+      <Filter>Source\InGame\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Planet.cpp">
+      <Filter>Source\InGame\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source\InGame\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerProj.cpp">
+      <Filter>Source\InGame\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerUI.cpp">
+      <Filter>Source\InGame\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Shuttle.cpp">
+      <Filter>Source\InGame\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="SpaceStation.cpp">
+      <Filter>Source\InGame\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="WaveManager.cpp">
+      <Filter>Source\InGame\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="MainLevel.cpp">
+      <Filter>Source\InGame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MainLevel.h">
-      <Filter>Header</Filter>
-    </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="SplashScreen.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="Debris.h">
-      <Filter>Header\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Planet.h">
-      <Filter>Header\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Shuttle.h">
-      <Filter>Header\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Header\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="WaveManager.h">
-      <Filter>Header\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerUI.h">
-      <Filter>Header\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Drone.h">
-      <Filter>Header\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerProj.h">
-      <Filter>Header\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="SpaceStation.h">
-      <Filter>Header\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="MenuButtons.h">
       <Filter>Header\MainMenu</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header\Objects</Filter>
     </ClInclude>
     <ClInclude Include="MainMenu.h">
       <Filter>Header\MainMenu</Filter>
@@ -144,6 +111,39 @@
     <ClInclude Include="GameStateManager.h">
       <Filter>Header\StateManager</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header\InGame\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Debris.h">
+      <Filter>Header\InGame\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Drone.h">
+      <Filter>Header\InGame\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Planet.h">
+      <Filter>Header\InGame\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header\InGame\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerProj.h">
+      <Filter>Header\InGame\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerUI.h">
+      <Filter>Header\InGame\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Shuttle.h">
+      <Filter>Header\InGame\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaceStation.h">
+      <Filter>Header\InGame\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="WaveManager.h">
+      <Filter>Header\InGame\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="MainLevel.h">
+      <Filter>Header\InGame</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header">
@@ -151,12 +151,6 @@
     </Filter>
     <Filter Include="Source">
       <UniqueIdentifier>{593bc656-179a-4327-990f-29aa09234a8b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header\Objects">
-      <UniqueIdentifier>{7277a175-a374-4104-a96e-0cdbc42c1a39}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Objects">
-      <UniqueIdentifier>{a00c6504-ffc4-4efb-86fd-8e96b2861e8a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header\MainMenu">
       <UniqueIdentifier>{df299efd-84ee-4612-b993-5f9f9c6f10b7}</UniqueIdentifier>
@@ -181,6 +175,24 @@
     </Filter>
     <Filter Include="Source\StateManager">
       <UniqueIdentifier>{dd73f2bf-f70b-419a-b730-9072a850bce6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\InGame">
+      <UniqueIdentifier>{a00c6504-ffc4-4efb-86fd-8e96b2861e8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\InGame\GameObjects">
+      <UniqueIdentifier>{df8b269c-9814-43b6-9f9b-ad859d5ef957}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\InGame">
+      <UniqueIdentifier>{7277a175-a374-4104-a96e-0cdbc42c1a39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\InGame\GameObjects">
+      <UniqueIdentifier>{fefb1db3-e1d8-4b48-8026-4933e68c3ed5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\InGame\InGameMenus">
+      <UniqueIdentifier>{bbc9ddeb-ea53-4570-9a5a-6d621c0b84ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\InGame\InGameMenus">
+      <UniqueIdentifier>{617d7b4b-04a9-4eae-9aa9-1cf97caeccce}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
