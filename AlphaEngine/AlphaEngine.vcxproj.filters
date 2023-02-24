@@ -1,18 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="GameStateManager.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Global.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Input.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -23,9 +11,6 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="SplashScreen.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Systems.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Debris.cpp">
@@ -56,29 +41,41 @@
       <Filter>Source\Objects</Filter>
     </ClCompile>
     <ClCompile Include="MenuButtons.cpp">
-      <Filter>Source\Buttons</Filter>
+      <Filter>Source\MainMenu</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Source\Objects</Filter>
     </ClCompile>
     <ClCompile Include="MainMenu.cpp">
-      <Filter>Source\Buttons</Filter>
+      <Filter>Source\MainMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="HowToPlay.cpp">
+      <Filter>Source\MainMenu\Buttons</Filter>
+    </ClCompile>
+    <ClCompile Include="Credits.cpp">
+      <Filter>Source\MainMenu\Buttons</Filter>
+    </ClCompile>
+    <ClCompile Include="Options.cpp">
+      <Filter>Source\MainMenu\Buttons</Filter>
+    </ClCompile>
+    <ClCompile Include="Systems.cpp">
+      <Filter>Source\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Global.cpp">
+      <Filter>Source\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics.cpp">
+      <Filter>Source\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Source\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="GameStateManager.cpp">
+      <Filter>Source\StateManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Global.h">
-      <Filter>Header</Filter>
-    </ClInclude>
     <ClInclude Include="GameObjects.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="GameStateManager.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Input.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="MainLevel.h">
@@ -88,9 +85,6 @@
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="SplashScreen.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Systems.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="Debris.h">
@@ -121,13 +115,37 @@
       <Filter>Header\Objects</Filter>
     </ClInclude>
     <ClInclude Include="MenuButtons.h">
-      <Filter>Header\Buttons</Filter>
+      <Filter>Header\MainMenu</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header\Objects</Filter>
     </ClInclude>
     <ClInclude Include="MainMenu.h">
-      <Filter>Header\Buttons</Filter>
+      <Filter>Header\MainMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="HowToPlay.h">
+      <Filter>Header\MainMenu\Buttons</Filter>
+    </ClInclude>
+    <ClInclude Include="Credits.h">
+      <Filter>Header\MainMenu\Buttons</Filter>
+    </ClInclude>
+    <ClInclude Include="Options.h">
+      <Filter>Header\MainMenu\Buttons</Filter>
+    </ClInclude>
+    <ClInclude Include="Global.h">
+      <Filter>Header\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics.h">
+      <Filter>Header\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Header\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems.h">
+      <Filter>Header\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="GameStateManager.h">
+      <Filter>Header\StateManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -143,11 +161,29 @@
     <Filter Include="Source\Objects">
       <UniqueIdentifier>{a00c6504-ffc4-4efb-86fd-8e96b2861e8a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header\Buttons">
+    <Filter Include="Header\MainMenu">
       <UniqueIdentifier>{df299efd-84ee-4612-b993-5f9f9c6f10b7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Buttons">
+    <Filter Include="Header\MainMenu\Buttons">
+      <UniqueIdentifier>{f81e380d-19fa-4fbc-bfa9-21fc2bf3aac1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\MainMenu">
       <UniqueIdentifier>{8ef9e2e4-a506-4680-944b-e36790b36918}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\MainMenu\Buttons">
+      <UniqueIdentifier>{3eb3e563-7fa1-4d67-acce-a56e5e922585}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Utilities">
+      <UniqueIdentifier>{722a43b2-779c-4696-a90a-5a5a8fd36084}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\Utilities">
+      <UniqueIdentifier>{912200e1-c1dd-487f-a448-340feb6d945a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\StateManager">
+      <UniqueIdentifier>{542ac5cf-71d0-43ab-b617-f2e6eb6ac4b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\StateManager">
+      <UniqueIdentifier>{dd73f2bf-f70b-419a-b730-9072a850bce6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -140,5 +140,4 @@ void Menu_Button::unload()
     AEGfxTextureUnload(creditsButtonTexture);
     AEGfxTextureUnload(optionsButtonTexture);
     AEGfxTextureUnload(exitButtonTexture);
-   
 }

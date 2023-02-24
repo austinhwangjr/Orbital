@@ -13,8 +13,8 @@
 
 AEGfxTexture* bgTexture = nullptr;
 
-AEGfxVertexList* pMesh1;
 AEGfxVertexList* pMeshBackground;
+AEGfxVertexList* pMesh1;
 
 // class declearation 
 Menu_Button menuButtons;
@@ -24,7 +24,7 @@ Rendering drawBackground;
 void main_menu::load()
 {
     bgTexture = AEGfxTextureLoad("Assets/Background.png");
-    menuButtons.load("Assets/buttonTest.png", "Assets/buttonTest.png", "Assets/buttonTest.png", "Assets/buttonTest.png", "Assets/buttonTest.png");
+    menuButtons.load("Assets/buttonTest.png", "Assets/buttonTest.png", "Assets/buttonTest.png", "Assets/buttonTest.png", "Assets/quitTest.png");
     //std::cout << "------------------------- MainMenu::load completed -------------------------" << std::endl << std::endl;
 }
 
