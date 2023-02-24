@@ -1,5 +1,6 @@
 #pragma once
 #include "AEEngine.h"
+#include "MainMenu.h"
 
 class Rendering
 {
@@ -20,5 +21,7 @@ public:
                       float width, float height,
                       AEGfxVertexList* pMesh);
 
-    static void SquareMesh(AEGfxVertexList*& pMesh);
+    void SquareMesh(AEGfxVertexList*& pMesh);
+
+    void BackgroundMesh(AEGfxVertexList*& pMesh);
 };

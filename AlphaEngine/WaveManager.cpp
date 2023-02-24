@@ -34,6 +34,7 @@ void WaveManager::init()
 	planet.Planets::spawn(rand() % INITIAL_SHUTTLE + 1);
 	planet_count++;
 
+	std::cout << "----------------------------------------" << std::endl;
 	std::cout << "Wave " << wave_number << " has begun." << '\t';
 	std::cout << "Planet Count: " << planet_count << '\n';
 }
@@ -89,6 +90,7 @@ void WaveManager::update(f64 frame_time)
 		planet.Planets::spawn(rand() % INITIAL_SHUTTLE + 1);
 		planet_count++;
 		planet_adding = true;
+		//std::cout << "----------------------------------------" << std::endl;
 		std::cout << '\n' << "Wave " << wave_number << '\t' << "Added Planet." << '\t';
 		std::cout << "Planet Count: " << planet_count << '\n';
 	}
@@ -122,6 +124,7 @@ void WaveManager::update(f64 frame_time)
 		wave_number++;				// Increment wave number
 		wave_interval_timer = 0;	// Reset wave interval timer
 
+		std::cout << "----------------------------------------" << std::endl;
 		std::cout << '\n' << "Wave " << wave_number << " has begun." << '\t';
 		for (size_t i{}; i < planet_vector.size(); i++)
 		{

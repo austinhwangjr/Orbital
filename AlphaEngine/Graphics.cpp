@@ -72,3 +72,28 @@ void Rendering::SquareMesh(AEGfxVertexList*& pMesh)
     AE_ASSERT_MESG(pMesh, "Error: Failed to create pMesh in createSquareMesh!");
 }
 
+void Rendering::BackgroundMesh(AEGfxVertexList*& pMesh)
+{
+    // Informing the library that we're about to start adding triangles 
+    AEGfxMeshStart();
+
+    // This shape has 2 triangles that make up the entire screen
+    // Color parameters represent colors as ARGB
+    // UV coordinates to read from loaded textures
+    AEGfxTriAdd(
+        -1.0f, -1.0f, 0xFFFFFFFF, 0.0f, 1.0f,
+        1.0f, -1.0f, 0xFFFFFFFF, 1.0f, 1.0f,
+        -1.0f, 1.0f, 0xFFFFFFFF, 0.0f, 0.0f);
+
+    AEGfxTriAdd(
+        1.0f, -1.0f, 0xFFFFFFFF, 1.0f, 1.0f,
+        1.0f, 1.0f, 0xFFFFFFFF, 1.0f, 0.0f,
+        -1.0f, 1.0f, 0xFFFFFFFF, 0.0f, 0.0f);
+
+    // Saving the mesh (list of triangles) in pMesh 
+    pMesh = AEGfxMeshEnd();
+
+    // debugging logs
+    AE_ASSERT_MESG(pMesh, "Error: Failed to create pMesh in createBackgroundMesh!");
+}
+

@@ -6,7 +6,7 @@ enum GS_STATES
 	GS_HOWTOPLAY,
 	GS_CREDITS,
 	GS_OPTIONS,
-	GS_MAINLEVEL, //5 technically this is startbutton
+	GS_MAINLEVEL, //5 technically this is the startbutton
 	GS_PAUSE,
 	GS_RESTART,
 	GS_QUIT
