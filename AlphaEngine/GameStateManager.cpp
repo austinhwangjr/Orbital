@@ -82,3 +82,9 @@ void gsm::update()
 		break;
 	}
 }
+
+void GSM_RestartLevel()
+{
+
+	next_state = GS_RESTART;
+}

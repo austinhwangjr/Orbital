@@ -30,3 +30,5 @@ namespace gsm
 	//void free();
 	//void unload();
 }
+
+void GSM_RestartLevel();
