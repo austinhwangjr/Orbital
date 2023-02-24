@@ -51,6 +51,8 @@ void Shuttles::update(f64 frame_time, Player& player)
 			shuttle_vector[i].lifespan -= frame_time;
 		}
 	}
+
+	
 }
 
 void Shuttles::draw(AEGfxVertexList* pMesh)

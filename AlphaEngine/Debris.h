@@ -13,7 +13,6 @@ struct Debris
 	f32 angle;
 	f32 turning_angle;
 	f32 turning_speed;
-	f32 dist_from_planet;
 	double speed;
 	double is_collide;
 	double is_collect;
