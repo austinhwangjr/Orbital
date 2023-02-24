@@ -17,8 +17,12 @@ extern AEVec2 mouse_pos_world;
 // Vector of projectile
 std::vector<PlayerProj> player_proj_vector;
 
-// Vector of spacestation
+// Vector of space-station
 extern std::vector<SpaceStation> space_station_vector;
+
+// Vector of shop buttons (extern)
+extern std::vector<ShopOption> button_vector;
+
 
 void PlayerProj::load()
 {
@@ -42,13 +46,13 @@ void PlayerProj::init()
 	is_delete = 0;
 }
 
-void PlayerProj::update(f64 frame_time, Player& player)
+void PlayerProj::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 {
 	// =========================
 	// Update according to input
 	// =========================
 
-	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+	if (AEInputCheckTriggered(AEVK_LBUTTON) && !player_ui.shop_triggered && !player_ui.button_clicked(button_vector[0])) {
 		if (player.current_capacity != 0) {
 			position = player.position;
 			AEVec2Sub(&velocity, &mouse_pos_world, &player.position);

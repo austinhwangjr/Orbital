@@ -15,7 +15,7 @@ struct PlayerProj
 
 	void load();
 	void init();
-	void update(f64, Player&);
+	void update(f64, Player&, PlayerUI&);
 	void draw(AEGfxVertexList*);
 	void free();
 	void unload();

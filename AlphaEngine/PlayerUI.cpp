@@ -20,7 +20,6 @@ extern s8		font_id;
 // Variables for shop
 extern s8		font_id_shop;
 std::string		shop_option_name;
-bool			shop_triggered;
 AEMtx33			shop_background_transform;
 
 // Variables for camera
@@ -322,51 +321,41 @@ void PlayerUI::shop_open(Player& player)
 	// ===================
 
 	for (int i = 0; i < button_vector.size(); ++i) {
-		f32 button_left		= button_vector[i].position.x - button_vector[i].width / 2;
-		f32 button_right	= button_vector[i].position.x + button_vector[i].width / 2;
-		f32 button_top		= button_vector[i].position.y + button_vector[i].height / 2;
-		f32 button_bottom	= button_vector[i].position.y - button_vector[i].height / 2;
-
-		if ((button_left < mouse_pos_world.x) && (button_right > mouse_pos_world.x)) {
-			if ((button_bottom < mouse_pos_world.y) && (button_top > mouse_pos_world.y)) {
-
-				if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-					if (button_vector[i].button_type == SHOP_OPEN) {
-						// remove buttons from list
-						for (int i = 0; i < UPGRADE_COUNT; ++i) {
-							button_vector.pop_back();
-						}
-						shop_triggered = false;
-					}
-					else if (button_vector[i].button_type == MOVEMENT_SPEED) {
-						if (player.credits >= mov_speed_cost && player.mov_speed_level < MAX_MOV_SPEED_LVL) {
-							player.credits -= mov_speed_cost;
-							//player.speed_upgrade += 0.5;
-							player.mov_speed_level++;
-						}
-					}
-					else if (button_vector[i].button_type == CAPACITY) {
-						if (player.credits >= capacity_cost && player.capacity_level < MAX_CAPACITY_LVL) {
-							player.credits -= capacity_cost;
-							//player.max_capacity++;
-							player.capacity_level++;
-						}
-					}
-					else if (button_vector[i].button_type == CREATE_DRONE || button_vector[i].button_type == SPACE_STATION) {
-						if (button_vector[i].button_type == CREATE_DRONE && !placing_drone && player.credits >= drone_cost)
-							placing_drone = true;
-
-						else if (button_vector[i].button_type == SPACE_STATION && !placing_station && player.credits >= space_station_cost)
-							placing_station = true;
-
-						// Remove buttons from list
-						for (int i = 0; i < UPGRADE_COUNT; ++i)
-							button_vector.pop_back();
-
-						// Close shop
-						shop_triggered = false;
-					}
+		if (button_clicked(button_vector[i])) {
+			if (button_vector[i].button_type == SHOP_OPEN) {
+				// remove buttons from list
+				for (int i = 0; i < UPGRADE_COUNT; ++i) {
+					button_vector.pop_back();
 				}
+				shop_triggered = false;
+			}
+			else if (button_vector[i].button_type == MOVEMENT_SPEED) {
+				if (player.credits >= mov_speed_cost && player.mov_speed_level < MAX_MOV_SPEED_LVL) {
+					player.credits -= mov_speed_cost;
+					//player.speed_upgrade += 0.5;
+					player.mov_speed_level++;
+				}
+			}
+			else if (button_vector[i].button_type == CAPACITY) {
+				if (player.credits >= capacity_cost && player.capacity_level < MAX_CAPACITY_LVL) {
+					player.credits -= capacity_cost;
+					//player.max_capacity++;
+					player.capacity_level++;
+				}
+			}
+			else if (button_vector[i].button_type == CREATE_DRONE || button_vector[i].button_type == SPACE_STATION) {
+				if (button_vector[i].button_type == CREATE_DRONE && !placing_drone && player.credits >= drone_cost)
+					placing_drone = true;
+
+				else if (button_vector[i].button_type == SPACE_STATION && !placing_station && player.credits >= space_station_cost)
+					placing_station = true;
+
+				// Remove buttons from list
+				for (int i = 0; i < UPGRADE_COUNT; ++i)
+					button_vector.pop_back();
+
+				// Close shop
+				shop_triggered = false;
 			}
 		}
 	}
@@ -378,33 +367,41 @@ void PlayerUI::shop_closed()
 	// Check for input
 	// ================
 
-	f32 button_left		= button_vector[0].position.x - button_vector[0].width / 2;
-	f32 button_right	= button_vector[0].position.x + button_vector[0].width / 2;
-	f32 button_top		= button_vector[0].position.y + button_vector[0].height / 2;
-	f32 button_bottom	= button_vector[0].position.y - button_vector[0].height / 2;
+	if (button_clicked(button_vector[0])) {
+		//for (int i = 0; i < 4; ++i) {
+		for (int i = 0; i < UPGRADE_COUNT; ++i) {
+			// Populate button vector
+			ShopOption player_upgrade{};
+			player_upgrade.width = 160.f;
+			player_upgrade.height = 80.f;
+			player_upgrade.button_type = MOVEMENT_SPEED + i;
+
+			for (int j = 0; j < 5; ++j) {
+				UpgradeLevelIndicator indicator{};
+				indicator.width = 32.0f;
+				indicator.height = 16.0f;
+				player_upgrade.indicator_vector.push_back(indicator);
+			}
+
+			button_vector.push_back(player_upgrade);
+		}
+		shop_triggered = true;
+	}
+}
+
+bool PlayerUI::button_clicked(ShopOption button) 
+{
+	f32 button_left		= button.position.x - button.width / 2;
+	f32 button_right	= button.position.x + button.width / 2;
+	f32 button_top		= button.position.y + button.height / 2;
+	f32 button_bottom	= button.position.y - button.height / 2;
 
 	if ((button_left < mouse_pos_world.x) && (button_right > mouse_pos_world.x)) {
 		if ((button_bottom < mouse_pos_world.y) && (button_top > mouse_pos_world.y)) {
-			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-				//for (int i = 0; i < 4; ++i) {
-				for (int i = 0; i < UPGRADE_COUNT; ++i) {
-					// Populate button vector
-					ShopOption player_upgrade{};
-					player_upgrade.width	= 160.f;
-					player_upgrade.height	= 80.f;
-					player_upgrade.button_type = MOVEMENT_SPEED + i;
-
-					for (int j = 0; j < 5; ++j) {
-						UpgradeLevelIndicator indicator{};
-						indicator.width	= 32.0f;
-						indicator.height = 16.0f;
-						player_upgrade.indicator_vector.push_back(indicator);
-					}
-
-					button_vector.push_back(player_upgrade);
-				}
-				shop_triggered = true;
-			}
+			if (AEInputCheckTriggered(AEVK_LBUTTON))
+				return true;
 		}
 	}
+
+	return false;
 }
