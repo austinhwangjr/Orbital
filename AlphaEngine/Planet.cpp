@@ -35,7 +35,7 @@ void Planets::update(f64 frame_time)
 				shuttle.Shuttles::spawn(planet_vector[i].id);	// Spawn shuttle
 				planet_vector[i].current_shuttle--;				// Decrement current_shuttle
 				planet_vector[i].shuttle_timer = 0.0;			// Reset shuttle timer
-				planet_vector[i].shuttle_time_to_spawn = static_cast<f64>(rand() % TIME_TO_SPAWN + MIN_SHUTTLE_TIME);	// Randomize time_to_spawn
+				planet_vector[i].shuttle_time_to_spawn = static_cast<f64>(rand() % TIME_TO_SPAWN + SHUTTLE_SPAWN_TIME_MIN);	// Randomize time_to_spawn
 			}
 
 			planet_vector[i].shuttle_timer += frame_time;
@@ -98,13 +98,14 @@ void Planets::spawn(int shuttle_randomize_amount)
 
 // SETTING POSITION / TRANSFORM FOR PLANETS---------------------------------------------------------------------------------------------------
 
-	new_planet.shuttle_timer = 0.0;
-	new_planet.shuttle_time_to_spawn = static_cast<f64>(rand() % TIME_TO_SPAWN + MIN_SHUTTLE_TIME);
+	new_planet.shuttle_timer = 0.0;																											// Zero out shuttle timer on spawn
+	new_planet.shuttle_time_to_spawn = static_cast<f64>(rand() % (TIME_TO_SPAWN - SHUTTLE_SPAWN_TIME_MIN + 1) + SHUTTLE_SPAWN_TIME_MIN);	// Randomize value for timer to reach before spawning
 	new_planet.shuttle_spawn_pos.x = new_planet.position.x;
 	new_planet.shuttle_spawn_pos.y = new_planet.position.y;
 
 // DEBRIS STUFF-------------------------------------------------------------------------------------------------------------------------------
-	new_planet.max_debris = rand() % MAX_DEBRIS + MIN_DEBRIS;
+	new_planet.max_debris = rand() % (DEBRIS_MAX - DEBRIS_MIN + 1) + DEBRIS_MIN;	// Randomize debris count on planet spawn
+	new_planet.max_debris /= (shuttle_randomize_amount < 6) ? 2 : 1;				// Limiting debris count on smaller planets
 	new_planet.debris_vector = debris.Debris::create_debris(new_planet.position.x, new_planet.position.y, new_planet.size, new_planet.max_debris);
 
 // DEBRIS STUFF-------------------------------------------------------------------------------------------------------------------------------
@@ -130,7 +131,7 @@ void Planets::check_spawn(Planets& new_planet)
 		}
 		planet_check = true;
 
-		// Re-randomize new planet position if too close to another planet
+		// Re-randomize new planet position if too close to space station
 		for (size_t i{}; i < space_station_vector.size(); i++)
 		{
 			if (AEVec2Distance(&space_station_vector[i].position, &new_planet.position) < 4 * (player.dist_from_planet + new_planet.size))

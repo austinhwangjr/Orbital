@@ -244,7 +244,7 @@ bool distance_from_radius(AEVec2 planet_radius, AEVec2 position, int planet_id) 
 // =======================================
 
 void spawn_debris(int num_of_debris, int planet_id) {
-	if (debris_vector_all[planet_id].size() + num_of_debris < MAX_DEBRIS) {
+	if (debris_vector_all[planet_id].size() + num_of_debris < DEBRIS_MAX) {
 		srand(3);
 
 		int safe = 0;

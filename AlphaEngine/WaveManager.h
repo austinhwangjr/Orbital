@@ -1,11 +1,10 @@
 #pragma once
-#define MAX_PLANET 10
-#define MAX_SHUTTLE 7
-#define INITIAL_SHUTTLE 4
-#define MAX_DEBRIS 20
-#define MIN_DEBRIS 10
+#define PLANET_MAX 10
+#define SHUTTLE_MAX 10
+#define SHUTTLE_SPAWN_MAX 7
+#define SHUTTLE_SPAWN_MIN 4
 #define WAVE_INTERVAL_TIME 3
-#define WAVE_ADD_PLANET 2
+#define WAVE_ADD_PLANET 4
 
 #include "AEEngine.h"
 #include "Player.h"

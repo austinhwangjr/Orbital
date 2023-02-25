@@ -36,7 +36,7 @@ void Camera::planet_transition(f64 frame_time)
 
 	AEGfxSetCamPosition(position.x, position.y);
 
-	if (transition_time >= MAX_TRANSITION_TIME)
+	if (transition_time >= TRANSITION_TIME_MAX)
 	{
 		wave_manager.planet_adding = false;
 		transition_time = 0.f;

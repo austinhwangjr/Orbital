@@ -18,6 +18,9 @@ Technology is prohibited.
 #include "Global.h"
 #include <iostream>
 
+#define FONT_ID_SIZE 50
+#define FONT_ID_SHOP_SIZE 20
+
 // Fonts
 s8 font_id, font_id_shop;
 
@@ -34,8 +37,8 @@ void system_call::init(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
 	std::cout << "------------------------- Initializing System -------------------------" << std::endl << std::endl;
 
 	// Fonts
-	font_id = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
-	font_id_shop = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 20);
+	font_id = AEGfxCreateFont("Assets/Roboto-Regular.ttf", FONT_ID_SIZE);
+	font_id_shop = AEGfxCreateFont("Assets/Roboto-Regular.ttf", FONT_ID_SHOP_SIZE);
 }
 
 // ----------------------------------------------------------------------------
