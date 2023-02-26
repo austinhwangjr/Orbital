@@ -104,8 +104,8 @@ void Planets::spawn(int shuttle_randomize_amount)
 	new_planet.shuttle_spawn_pos.y = new_planet.position.y;
 
 // DEBRIS STUFF-------------------------------------------------------------------------------------------------------------------------------
-	new_planet.max_debris = rand() % (DEBRIS_MAX - DEBRIS_MIN) + DEBRIS_MIN;							// Randomize debris count on planet spawn
-	new_planet.max_debris /= ((shuttle_randomize_amount / 2) < (SHUTTLE_SPAWN_MAX / 2)) ? 2 : 1;		// Limiting debris count on smaller planets
+	new_planet.max_debris = rand() % (DEBRIS_MAX - DEBRIS_MIN) + DEBRIS_MIN;												// Randomize debris count on planet spawn
+	new_planet.max_debris /= ((shuttle_randomize_amount / 2) < ((SHUTTLE_SPAWN_MAX - SHUTTLE_SPAWN_MIN) / 2)) ? 2 : 1;		// Limiting debris count on smaller planets
 	new_planet.debris_vector = debris.Debris::create_debris(new_planet.position.x, new_planet.position.y, new_planet.size, new_planet.max_debris);
 
 // DEBRIS STUFF-------------------------------------------------------------------------------------------------------------------------------
