@@ -1,6 +1,6 @@
 #pragma once
 
-#define SHUTTLE_MAX_LIFESPAN 3.f
+#define SHUTTLE_MAX_LIFESPAN 4.f
 #define SHUTTLE_MAX_ACCEL 100.f
 #define SHUTTLE_VALUE 2
 

@@ -23,7 +23,7 @@ void WaveManager::init()
 	wave_interval_timer = 0;
 
 	planet_count = 0;
-	planet_adding = false;
+	planet_adding = true;
 
 	shuttle_left_planet = 0;
 	shuttle_destroyed = 0;
@@ -104,7 +104,7 @@ void WaveManager::update(f64 frame_time)
 // Wave interval timer---------------------------------------------------
 
 // Start of new wave-----------------------------------------------------
-	if (wave_completed && wave_interval_timer >= WAVE_INTERVAL_TIME)
+	if (wave_completed && wave_interval_timer >= WAVE_INTERVAL_TIME || AEInputCheckTriggered(AEVK_3))
 	{
 		for (size_t i{}; i < planet_vector.size(); i++)
 		{
@@ -210,11 +210,6 @@ void WaveManager::draw(AEGfxVertexList *pMesh)
 		print_string = str_wave_complete.c_str();
 		AEGfxPrint(font_id, const_cast<s8*>(print_string), -0.2f, 0.85f + abs((WAVE_INTERVAL_TIME - (wave_interval_timer * 2)) / WAVE_INTERVAL_TIME) * 0.2f, 1.f, 1.f, 1.f, 1.f);
 	}
-
-	// DRAW TEXT
-	/*str_player_capacity = "Capacity: " + std::to_string(player.current_capacity) + " / " + std::to_string(player.max_capacity);
-	print_string = str_player_capacity.c_str();
-	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.5f, 0.75f, 1.f, 1.f, 1.f, 1.f);*/
 }
 
 void WaveManager::free()

@@ -26,12 +26,15 @@ void Shuttles::update(f64 frame_time, Player& player)
 		{
 			AEVec2 added{};
 
+			// Shuttle accelerating
 			AEVec2Add(&added, &added, &shuttle_vector[i].direction);
 			AEVec2Scale(&added, &added, shuttle_vector[i].acceleration * frame_time);
 			AEVec2Add(&shuttle_vector[i].velocity, &added, &shuttle_vector[i].velocity);
 
+			// Limiting shuttle velocity
 			AEVec2Scale(&shuttle_vector[i].velocity, &shuttle_vector[i].velocity, 0.99f);
 
+			// Update shuttle position
 			shuttle_vector[i].position.x += shuttle_vector[i].velocity.x * frame_time;
 			shuttle_vector[i].position.y += shuttle_vector[i].velocity.y * frame_time;
 			
