@@ -55,14 +55,10 @@ void Debris::update(f64 frame_time)
 			Debris& debris = debris_vector_all[j][i];
 
 			if (debris_vector_all[j][i].move_towards_player && player.state == PLAYER_ORBIT) {
-				/*f32 t{};
-				t += frame_time * (AEVec2Distance(&player.position, &debris.position) / 10.f);
-
-				AEVec2Lerp(&debris.position, &debris.position, &player.position, t);*/
-
 				AEVec2 diff;
 				AEVec2Sub(&diff, &player.position, &debris.position);
 				AEVec2Normalize(&diff, &diff);
+				AEVec2Scale(&diff, &diff, (player.beam_level + 1) * 0.2f);
 				AEVec2Add(&debris.position, &debris.position, &diff);
 			}
 			else if (!debris_vector_all[j][i].orbit_around_planet) {
