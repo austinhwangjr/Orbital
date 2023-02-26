@@ -1,10 +1,11 @@
 #pragma once
-#define PLANET_MAX 10
-#define SHUTTLE_MAX 10
-#define SHUTTLE_SPAWN_MAX 7
-#define SHUTTLE_SPAWN_MIN 4
-#define WAVE_INTERVAL_TIME 3
-#define WAVE_ADD_PLANET 4
+#define PLANET_MAX				10		// Maximum number of planets
+#define SHUTTLE_MAX				10		// Maximum number of shuttles per planet
+#define SHUTTLE_SPAWN_MAX		8		// Maximum number of shuttles a planet can spawn with
+#define SHUTTLE_SPAWN_MIN		4		// Minimum number of shuttles a planet can spawn with
+#define SHUTTLE_INCREASE_AMOUNT 1		// Number of shuttles added after a wave
+#define WAVE_INTERVAL_TIME		3		// Down time between waves
+#define WAVE_ADD_PLANET			4		// Every nth wave planets will be added on
 
 #include "AEEngine.h"
 #include "Player.h"
@@ -15,21 +16,24 @@
 
 struct WaveManager
 {
-	int wave_number;
-	int wave_progress;
-	bool wave_completed;
-	f64 wave_interval_timer;
+// WAVE VARIABLES----------------------------
+	int		wave_number;				// Current wave number
+	int		wave_progress;				// Number of planets that have no more shuttles to escape
+	bool	wave_completed;				// Flag for when the current wave has been completed
+	f64		wave_interval_timer;		// Timer to increment towards WAVE_INTERVAL_TIME
+// WAVE VARIABLES----------------------------
 
-	int shuttle_left_planet;
-	int shuttle_increase_amount;
-	int shuttle_randomize_amount;
-	int shuttle_destroyed;
-	bool shuttle_has_escaped;
-	bool shuttle_has_collided;
+// SHUTTLE VARIABLES-------------------------
+	int		shuttle_left_planet;		// Number of shuttles successfully escaped
+	int		shuttle_destroyed;			// Number of shuttles collided with debris
+	bool	shuttle_has_escaped;		// Flag for when a shuttle has successfully escaped
+	bool	shuttle_has_collided;		// Flag for when a shuttle has collided with debris
+// SHUTTLE VARIABLES-------------------------
 
-	int planet_count;
-	f64 planet_spawn_timer;
-	bool planet_adding;
+// PLANET VARIABLES--------------------------
+	int		planet_count;				// Number of planets
+	bool	planet_adding;				// Flag for when planet adding transition is playing
+// PLANET VARIABLES--------------------------
 
 	void load();
 	void init();

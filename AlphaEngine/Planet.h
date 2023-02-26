@@ -1,58 +1,43 @@
 #pragma once
-
-#define PLANET_SIZE 200.0f
-#define TIME_TO_SPAWN 8
-#define SHUTTLE_SPAWN_TIME_MIN 4
-#define DEBRIS_MAX 20
-#define DEBRIS_MIN 10
+#define PLANET_SIZE				200.0f		// Planet base size (radius)	
+#define SHUTTLE_SPAWN_TIME_MAX	8			// Maximum time shuttles will spawn
+#define SHUTTLE_SPAWN_TIME_MIN	4			// Minimum time shuttles will spawn
+#define DEBRIS_MAX				20			// Maximum number of debris on a planet
+#define DEBRIS_MIN				10			// Minimum number of debris on a planet
+#define DRONES_MAX				5			// Maximum number of drones on a planet
 
 #include "Debris.h"
 #include <vector>
 
-enum PLANET_ID
-{
-	PLANET_0 = 0,
-	PLANET_1,
-	PLANET_2,
-	PLANET_3,
-	PLANET_4,
-	PLANET_5,
-	PLANET_6,
-	PLANET_7,
-	PLANET_8,
-	PLANET_9
-};
-
 struct Planets
 {
 // PLANET VARIABLES------------------
-	int					id;
-	AEVec2				position;
+	int					id;						//ID for current planet
 	AEMtx33				scale;
 	AEMtx33				rotate;
 	AEMtx33				translate;
 	AEMtx33				transform;
-	double				size;
-	bool				wave_complete;
+	AEVec2				position;
+	double				size;					// Radius of planet
+	bool				wave_complete;			// Flag for whether current planet has anymore shuttles to escape
 // PLANET VARIABLES------------------
 
 // SHUTTLE VARIABLES-----------------
-	int					max_shuttle;
-	int					current_shuttle;
-	AEVec2				shuttle_spawn_pos;
-	f64					shuttle_timer;
-	f64					shuttle_time_to_spawn;
+	int					max_shuttle;			// Current maximum number of shuttles for the planet
+	int					current_shuttle;		// Current number of shuttles for the planet
+	AEVec2				shuttle_spawn_pos;		// Position at which shuttles are to spawn from planet
+	f64					shuttle_timer;			// Timer to increment towards shuttle_time_to_spawn
+	f64					shuttle_time_to_spawn;	// Randomized value based on range from SHUTTLE_SPAWN_TIME_MAX & SHUTTLE_SPAWN_TIME_MIN
 // SHUTTLE VARIABLES-----------------
 
 // DEBRIS VARIABLES------------------
-	std::vector<Debris> debris_vector; //dynamic array of debris
-	int					max_debris;
-	int					current_debris;
+	std::vector<Debris> debris_vector;			// Vector for debris for current planet
+	int					max_debris;				// Current maximum number of debris for the planet
+	int					current_debris;			// Current number of debris for the planet
 // DEBRIS VARIABLES------------------
 
 // DRONES VARIABLES------------------
-	int					max_drones;
-	int					current_drones;
+	int					current_drones;			// Current nubmer of drones on the planet
 // DRONES VARIABLES------------------
 
 	void load();

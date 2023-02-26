@@ -35,7 +35,7 @@ void Planets::update(f64 frame_time)
 				shuttle.Shuttles::spawn(planet_vector[i].id);	// Spawn shuttle
 				planet_vector[i].current_shuttle--;				// Decrement current_shuttle
 				planet_vector[i].shuttle_timer = 0.0;			// Reset shuttle timer
-				planet_vector[i].shuttle_time_to_spawn = static_cast<f64>(rand() % TIME_TO_SPAWN + SHUTTLE_SPAWN_TIME_MIN);	// Randomize time_to_spawn
+				planet_vector[i].shuttle_time_to_spawn = static_cast<f64>(rand() % (SHUTTLE_SPAWN_TIME_MAX - SHUTTLE_SPAWN_TIME_MIN) + SHUTTLE_SPAWN_TIME_MIN);	// Randomize time_to_spawn
 			}
 
 			planet_vector[i].shuttle_timer += frame_time;
@@ -98,17 +98,19 @@ void Planets::spawn(int shuttle_randomize_amount)
 
 // SETTING POSITION / TRANSFORM FOR PLANETS---------------------------------------------------------------------------------------------------
 
-	new_planet.shuttle_timer = 0.0;																											// Zero out shuttle timer on spawn
-	new_planet.shuttle_time_to_spawn = static_cast<f64>(rand() % (TIME_TO_SPAWN - SHUTTLE_SPAWN_TIME_MIN + 1) + SHUTTLE_SPAWN_TIME_MIN);	// Randomize value for timer to reach before spawning
+	new_planet.shuttle_timer = 0.0;																													// Zero out shuttle timer on spawn
+	new_planet.shuttle_time_to_spawn = static_cast<f64>(rand() % (SHUTTLE_SPAWN_TIME_MAX - SHUTTLE_SPAWN_TIME_MIN + 1) + SHUTTLE_SPAWN_TIME_MIN);	// Randomize value for timer to reach before spawning
 	new_planet.shuttle_spawn_pos.x = new_planet.position.x;
 	new_planet.shuttle_spawn_pos.y = new_planet.position.y;
 
 // DEBRIS STUFF-------------------------------------------------------------------------------------------------------------------------------
-	new_planet.max_debris = rand() % (DEBRIS_MAX - DEBRIS_MIN + 1) + DEBRIS_MIN;	// Randomize debris count on planet spawn
-	new_planet.max_debris /= (shuttle_randomize_amount < 6) ? 2 : 1;				// Limiting debris count on smaller planets
+	new_planet.max_debris = rand() % (DEBRIS_MAX - DEBRIS_MIN) + DEBRIS_MIN;							// Randomize debris count on planet spawn
+	new_planet.max_debris /= ((shuttle_randomize_amount / 2) < (SHUTTLE_SPAWN_MAX / 2)) ? 2 : 1;		// Limiting debris count on smaller planets
 	new_planet.debris_vector = debris.Debris::create_debris(new_planet.position.x, new_planet.position.y, new_planet.size, new_planet.max_debris);
 
 // DEBRIS STUFF-------------------------------------------------------------------------------------------------------------------------------
+
+	new_planet.current_drones = 0;
 
 	planet_vector.push_back(new_planet);
 }
