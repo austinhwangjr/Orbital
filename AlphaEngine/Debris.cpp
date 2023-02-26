@@ -6,12 +6,13 @@
 #include <cmath>
 
 //VARIABLES
-#define SPEED_DEBRIS 10
-#define DEBRIS_SIZE 15.f;
+#define SPEED_DEBRIS 30
+#define MAX_DEBRIS_SIZE 35
+#define MIN_DEBRIS_SIZE 15
+#define SHUTTLE_SIZE 20
 
 int OUTERRIM_TO_DEBRIS = 20;
-int DISTANCE_TO_COLLISION_SHUTTLE = 12;
-int DISTANCE_TO_COLLISION_DEBRIS = 8;
+
 
 extern WaveManager wave_manager;
 extern Player player;
@@ -78,7 +79,7 @@ void Debris::update(f64 frame_time)
 			}
 
 			if (!debris_vector_all[j][i].move_towards_player && debris_vector_all[j][i].orbit_around_planet) {
-				debris.angle -= AEDegToRad(0.125f);
+				debris.angle -= AEDegToRad(0.125f) * debris.turning_speed * static_cast<f32>(frame_time);
 
 				debris.position.x = planet_vector[j].position.x + ((planet_vector[j].size / 2) + OUTERRIM_TO_DEBRIS) * AECos(debris.angle);
 				debris.position.y = planet_vector[j].position.y + ((planet_vector[j].size / 2) + OUTERRIM_TO_DEBRIS) * AESin(debris.angle);
@@ -93,7 +94,7 @@ void Debris::update(f64 frame_time)
 		
 		for (int k = 0; k < debris_vector_all[shuttle_vector[i].planet_id].size(); ++k) {
 			if (shuttle_vector[i].active) {
-				if (AEVec2Distance(&shuttle_vector[i].position, &debris_vector_all[shuttle_vector[i].planet_id][k].position) <= DISTANCE_TO_COLLISION_SHUTTLE) { // if collided
+				if (AEVec2Distance(&shuttle_vector[i].position, &debris_vector_all[shuttle_vector[i].planet_id][k].position) <= (SHUTTLE_SIZE/2 + debris_vector_all[shuttle_vector[i].planet_id][k].size/2)) { // if collided
 					wave_manager.shuttle_has_collided = true;
 					wave_manager.shuttle_left_planet++;
 					debris_vector_all[shuttle_vector[i].planet_id][k].active = false;
@@ -102,6 +103,9 @@ void Debris::update(f64 frame_time)
 					spawn_debris(3, shuttle_vector[i].planet_id);
 					break;
 				}
+			}
+			else {
+				break;
 			}
 		}
 		
@@ -180,7 +184,7 @@ std::vector<Debris> Debris::create_debris(f32 planet_x, f32 planet_y, double siz
 
 		new_debris.id = i + 1;
 		new_debris.angle = i * (2 * PI / static_cast<f32>(total_debris));
-		new_debris.size = DEBRIS_SIZE;
+		new_debris.size = static_cast<f32>(rand() % (MAX_DEBRIS_SIZE - MIN_DEBRIS_SIZE) + MIN_DEBRIS_SIZE);
 		new_debris.position.x = planet_x + ((size / 2) + 20) * AECos(AEDegToRad(new_debris.angle));
 		new_debris.position.y = planet_y + ((size / 2) + 20) * AESin(AEDegToRad(new_debris.angle));
 		new_debris.turning_speed = SPEED_DEBRIS;
@@ -197,25 +201,25 @@ std::vector<Debris> Debris::create_debris(f32 planet_x, f32 planet_y, double siz
 	return debris_vector;
 }
 
-
-void spawn_debris_shuttle(AEVec2 position, int planet_id) {
-	Debris new_debris;
-	//new_debris.angle = rand();
-	new_debris.position.x = position.x;
-	new_debris.position.y = position.y;
-	new_debris.id = debris_vector_all[planet_id].size() + 1;
-	new_debris.size = DEBRIS_SIZE;
-	new_debris.turning_speed = SPEED_DEBRIS;
-	new_debris.active = true;
-
-	new_debris.scale = { 0 };
-	new_debris.rotate = { 0 };
-	new_debris.translate = { 0 };
-	new_debris.transform = { 0 };
-
-	debris_vector_all[planet_id].push_back(new_debris);
-
-}
+//
+//void spawn_debris_shuttle(AEVec2 position, int planet_id) {
+//	Debris new_debris;
+//	//new_debris.angle = rand();
+//	new_debris.position.x = position.x;
+//	new_debris.position.y = position.y;
+//	new_debris.id = debris_vector_all[planet_id].size() + 1;
+//	new_debris.size = static_cast<f32>(rand() % (MAX_DEBRIS_SIZE - MIN_DEBRIS_SIZE) + MIN_DEBRIS_SIZE);
+//	new_debris.turning_speed = SPEED_DEBRIS;
+//	new_debris.active = true;
+//
+//	new_debris.scale = { 0 };
+//	new_debris.rotate = { 0 };
+//	new_debris.translate = { 0 };
+//	new_debris.transform = { 0 };
+//
+//	debris_vector_all[planet_id].push_back(new_debris);
+//
+//}
 
 
 bool distance_from_radius(AEVec2 planet_radius, AEVec2 position, int planet_id) { //position of shuttle
@@ -249,12 +253,13 @@ void spawn_debris(int num_of_debris, int planet_id) {
 		while (current_count != num_of_debris) {
 
 			Debris new_debris;
-			new_debris.angle = static_cast<f32>(rand());
+			new_debris.size = static_cast<f32>(rand() % (MAX_DEBRIS_SIZE - MIN_DEBRIS_SIZE) + MIN_DEBRIS_SIZE);
+			new_debris.angle = static_cast<f32>(rand() % static_cast<int>(new_debris.size));
 			new_debris.position.x = static_cast<f32>(planet_vector[planet_id].position.x + ((planet_vector[planet_id].size / 2) + OUTERRIM_TO_DEBRIS) * AECos(AEDegToRad(new_debris.angle)));
 			new_debris.position.y = static_cast<f32>(planet_vector[planet_id].position.y + ((planet_vector[planet_id].size / 2) + OUTERRIM_TO_DEBRIS) * AESin(AEDegToRad(new_debris.angle)));
 
 			for (int k = 0; k < debris_vector_all[planet_id].size(); ++k) {
-				if (AEVec2Distance(&new_debris.position, &debris_vector_all[planet_id][k].position) >= DISTANCE_TO_COLLISION_DEBRIS) { //if its colliding when it spawn with nearest debris
+				if (AEVec2Distance(&new_debris.position, &debris_vector_all[planet_id][k].position) >= (new_debris.size/2 + debris_vector_all[planet_id][k].size/2)) { //if its colliding when it spawn with nearest debris
 					safe += 1;
 				}
 
@@ -272,7 +277,6 @@ void spawn_debris(int num_of_debris, int planet_id) {
 			if (not_collide == 1) {
 				current_count += 1;
 				new_debris.id = debris_vector_all[planet_id].size() + 1;
-				new_debris.size = DEBRIS_SIZE;
 				new_debris.turning_speed = SPEED_DEBRIS;
 				new_debris.active = true;
 
