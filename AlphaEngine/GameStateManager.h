@@ -8,6 +8,7 @@ enum GS_STATES
 	GS_OPTIONS,
 	GS_MAINLEVEL, //5 technically this is the startbutton
 	GS_PAUSE,
+	GS_PAUSEMENU,
 	GS_RESTART,
 	GS_QUIT
 };
@@ -29,6 +30,16 @@ namespace gsm
 	//void draw();
 	//void free();
 	//void unload();
+}
+
+namespace pause_menu
+{
+	void load();
+	void init();
+	void update();
+	void draw();
+	void free();
+	void unload();
 }
 
 void GSM_RestartLevel();

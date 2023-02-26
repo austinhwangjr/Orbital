@@ -7,6 +7,8 @@
 #include "input.h"
 #include "Graphics.h"
 
+//extern s8 font1;
+
 // Set the dimensions of each button
 static float buttonWidth    = 200.f;
 static float buttonHeight   = 50.f;
@@ -38,11 +40,11 @@ struct Button
 
 // Define the positions and dimensions for each button
 Button buttons[] = {
-    {0.0f, -25.0f, 200.0f, 50.0f},   // Start button
-    {0.0f, -100.0f, 200.0f, 50.0f},  // How to play button
-    {0.0f, -175.0f, 200.0f, 50.0f},  // Credits button
-    {0.0f, -250.0f, 200.0f, 50.0f},  // Options button
-    {0.0f, -325.0f, 200.0f, 50.0f}   // Quit button
+    {startX, startY, buttonWidth, buttonHeight},   // Start button
+    {howToPlayX, howToPlayY, buttonWidth, buttonHeight},  // How to play button
+    {creditsX, creditsY, buttonWidth, buttonHeight},  // Credits button
+    {optionsX, optionsY, buttonWidth, buttonHeight},  // Options button
+    {quitX, -quitY, buttonWidth, buttonHeight}   // Quit button
 };
 
 void Menu_Button::load(const char* startButtonFilename,
@@ -56,6 +58,7 @@ void Menu_Button::load(const char* startButtonFilename,
     creditsButtonTexture   =    AEGfxTextureLoad(creditsButtonFilename);
     optionsButtonTexture   =    AEGfxTextureLoad(optionsButtonFilename);
     exitButtonTexture      =    AEGfxTextureLoad(exitButtonFilename);
+
 }
 
 void Menu_Button::init()
@@ -93,6 +96,8 @@ void Menu_Button::update()
         std::cout << "GameState changed to: " << current_state << std::endl;
     }
 
+
+
     if (AEInputCheckTriggered(AEVK_F11))
     {
         // If the window close button has been clicked, set the game state to quit
@@ -105,7 +110,6 @@ void Menu_Button::update()
     {
         // If the window close button has been clicked, set the game state to quit
         next_state = GS_QUIT;
-        std::cout << "GameState changed to: " << current_state << std::endl;
     }
 }
 
@@ -113,19 +117,25 @@ void Menu_Button::draw(AEGfxVertexList* pMeshMM)
 {
     // Draw the start button
     RenderSprite(startButtonTexture, startX, startY, buttonWidth, buttonHeight, pMeshMM);
+    /*RenderText("START", startX, startY, 20);*/
 
     // Draw the how to play button
     RenderSprite(howToPlayButtonTexture, howToPlayX, howToPlayY, buttonWidth, buttonHeight, pMeshMM);
+    /*RenderText("HOW TO PLAY", howToPlayX, howToPlayY, 20);*/
 
     // Draw the credits button
     RenderSprite(creditsButtonTexture, creditsX, creditsY, buttonWidth, buttonHeight, pMeshMM);
+    /*RenderText("CREDITS", creditsX, creditsY, 20);*/
 
     // Draw the options button
     RenderSprite(optionsButtonTexture, optionsX, optionsY, buttonWidth, buttonHeight, pMeshMM);
+    /*RenderText("OPTIONS", optionsX, optionsY, 20);*/
 
-    // Draw the quit buttona
+    // Draw the quit button
     RenderSprite(exitButtonTexture, quitX, quitY, buttonWidth, buttonHeight, pMeshMM);
+    /*RenderText("QUIT", quitX, quitY, 20);*/
 }
+
 
 void Menu_Button::free()
 {

@@ -22,7 +22,7 @@ Technology is prohibited.
 #define FONT_ID_SHOP_SIZE 20
 
 // Fonts
-s8 font_id, font_id_shop;
+s8 font1, font_id, font_id_shop;
 
 // ----------------------------------------------------------------------------
 // This function initializes the system.
@@ -37,8 +37,10 @@ void system_call::init(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
 	std::cout << "------------------------- Initializing System -------------------------" << std::endl << std::endl;
 
 	// Fonts
+
 	font_id = AEGfxCreateFont("Assets/Roboto-Regular.ttf", FONT_ID_SIZE);
 	font_id_shop = AEGfxCreateFont("Assets/Roboto-Regular.ttf", FONT_ID_SHOP_SIZE);
+
 }
 
 // ----------------------------------------------------------------------------

@@ -79,6 +79,9 @@
     <ClCompile Include="PauseMenu.cpp">
       <Filter>Source\InGame\InGameMenus</Filter>
     </ClCompile>
+    <ClCompile Include="PauseMenuButtons.cpp">
+      <Filter>Source\InGame\InGameMenus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -154,6 +157,9 @@
       <Filter>Header\InGame\InGameMenus</Filter>
     </ClInclude>
     <ClInclude Include="PauseMenu.h">
+      <Filter>Header\InGame\InGameMenus</Filter>
+    </ClInclude>
+    <ClInclude Include="PauseMenuButtons.h">
       <Filter>Header\InGame\InGameMenus</Filter>
     </ClInclude>
   </ItemGroup>

@@ -30,6 +30,8 @@ Technology is prohibited.
 #include "WaveManager.h"
 #include "Global.h"
 #include "Graphics.h"
+#include "PauseMenu.h"
+#include "PauseMenuButtons.h"
 
 //yy debugging and cleaning code
 AEGfxTexture* TexMLBackground = nullptr;
@@ -51,10 +53,21 @@ extern Debris debris;
 Shuttles shuttle;
 extern WaveManager wave_manager;
 
+//PauseMenu pause_menu;
+//PauseMenuButtons pause_menu_buttons;
+
 // test variables (who did this? -yy)
 f64 total_time{}, frame_time{};
 
+//bool is_paused = false;
 //bool pause = false;
+namespace main_level
+{
+	// Keep track of the previous and current game states
+	GS_STATES previous_state = GS_MAINLEVEL;
+	GS_STATES current_state = GS_MAINLEVEL;
+	bool is_paused = false;
+}
 
 // ----------------------------------------------------------------------------
 // This function loads all necessary assets in Level1
@@ -122,49 +135,48 @@ void main_level::update()
 	frame_time = AEFrameRateControllerGetFrameTime();
 	total_time += frame_time;
 	
-	/*if (AEInputCheckTriggered(AEVK_P)) {
-		pause = !pause;
-	}*/
+	if (AEInputCheckTriggered(AEVK_P))
+	{
+		if (!is_paused)
+		{
+			previous_state = current_state;
+			current_state = GS_PAUSEMENU;
+		}
+		else
+		{
+			current_state = previous_state;
+		}
 
-	/*if (!pause) {
+		is_paused = !is_paused;
+	}
+
+	if (current_state == GS_MAINLEVEL)
+	{
 		planet.update(frame_time);
 		player.update(frame_time);
+		player_proj.update(frame_time, player, player_ui);
 		camera.update(frame_time, player);
+		player_ui.update(player);
 		drone.update(frame_time, player, player_ui);
 		space_station.update(frame_time, player, player_ui);
-		player_proj.update(frame_time, player);
-		shuttle.update(frame_time);
+		shuttle.update(frame_time, player);
 		debris.update(frame_time);
 		wave_manager.update(frame_time);
 	}
-	
-	else if (pause) {
-		planet.update(frame_time / 4);
-		player.update(frame_time / 4);
-		camera.update(frame_time / 4, player);
-		drone.update(frame_time / 4, player, player_ui);
-		space_station.update(frame_time / 4, player, player_ui);
-		player_proj.update(frame_time / 4, player);
-		shuttle.update(frame_time / 4);
-		debris.update(frame_time / 4);
-		wave_manager.update(frame_time / 4);
-	}*/
-	
-	planet.update(frame_time);
-	player.update(frame_time);
-	player_proj.update(frame_time, player, player_ui);
-	camera.update(frame_time, player);
-	player_ui.update(player);
-	drone.update(frame_time, player, player_ui);
-	space_station.update(frame_time, player, player_ui);
-	shuttle.update(frame_time, player);
-	debris.update(frame_time);
-	wave_manager.update(frame_time);
+	else if (current_state == GS_PAUSEMENU && is_paused)
+	{
+		pause_menu::update();
+		pause_menu::draw();
+	}
+
+
+
 	
 	// Testing
 	//if (AEInputCheckTriggered(AEVK_R))
 	//	next_state = GS_RESTART;
 	//
+
 
 	if (AEInputCheckTriggered(AEVK_F11))
 	{
@@ -213,6 +225,11 @@ void main_level::draw()
 	player_ui.draw(pMeshML, player);
 	drone.draw(pMeshML, player_ui);
 	space_station.draw(pMeshML, player_ui);
+
+	//if (pause_menu)
+	//{
+	//	pause_menu->draw(pMeshML);
+	//}
 }
 
 // ----------------------------------------------------------------------------

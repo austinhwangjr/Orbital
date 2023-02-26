@@ -50,8 +50,7 @@ void main_menu::update()
 
     menuButtons.update();
 
-    if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
-        next_state = GS_QUIT;
+
 }
 
 void main_menu::draw()

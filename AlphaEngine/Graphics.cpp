@@ -9,6 +9,8 @@
 #include "MenuButtons.h"
 #include "Input.h"
 
+extern s8 font1;
+
 // ----------------------------------------------------------------------------
 /*
  * Draws a button with a given texture and dimensions at the specified center coordinates.
@@ -95,4 +97,27 @@ void Rendering::BackgroundMesh(AEGfxVertexList*& pMesh)
     // debugging logs
     AE_ASSERT_MESG(pMesh, "Error: Failed to create pMesh in createBackgroundMesh!");
 }
+
+//void Rendering::RenderText(const char* text, float x, float y, int fontSize)
+//{
+//    // Calculate the screen position of the text based on the button position and size
+//    float screenX = x + 200.f / 2 - (float)strlen(text) * (float)fontSize / 2;
+//    float screenY = y + 50.f / 2 - fontSize / 2;
+//
+//    // Calculate the scale factor for the text
+//    float scale = fontSize / 12.0f;
+//
+//    // Set the render mode to solid and set the font color
+//    AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+//    AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+//    AEGfxSetTransparency(1.0f);
+//    //AEGfxSetTransform(nullptr);
+//    AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+//
+//    // Render the text using AEGfxPrint
+//    AEGfxPrint(font1, (s8*)text, screenX / scale, screenY / scale, scale, 1.0f, 1.0f, 1.0f);
+//}
+
+
+
 
