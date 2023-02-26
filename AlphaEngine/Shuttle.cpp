@@ -49,7 +49,8 @@ void Shuttles::update(f64 frame_time, Player& player)
 				wave_manager.shuttle_left_planet++;
 				player.credits += SHUTTLE_VALUE;
 				shuttle_vector[i].active = false;
-				spawn_debris(2, shuttle_vector[i].planet_id);
+				//spawn_debris(2, shuttle_vector[i].planet_id);
+				spawn_debris_shuttle(shuttle_vector[i].position, shuttle_vector[i].planet_id, 3);
 			}
 			shuttle_vector[i].lifespan -= frame_time;
 		}
