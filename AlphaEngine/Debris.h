@@ -20,6 +20,7 @@ struct Debris
 	bool active;
 	bool orbit_around_planet = true;
 	bool move_towards_player = false;
+	//bool move_towards_drone = false;
 	bool to_erase = false;
 
 	void load();

@@ -33,7 +33,7 @@ void Player::init()
 	size					= 20.f;
 
 	mov_speed				= 150.f;
-	rot_speed				= 1.5f * PI;
+	rot_speed				= 0.85f * PI;
 	//speed_upgrade			= 1.0f;
 
 	dist_from_planet		= 50.f;
@@ -53,7 +53,6 @@ void Player::init()
 	// Upgrade levels
 	mov_speed_level = 0;
 	capacity_level = 0;
-	drone_count = 0;
 	space_station_count = 0;
 	beam_level = 0;
 
@@ -132,14 +131,14 @@ void Player::orbit_state(f64 frame_time)
 	// Check for input
 	// ================
 	if (AEInputCheckCurr(AEVK_A)) {
-		direction += (rot_speed / 2) * static_cast<f32>(mov_speed_level + 1) / 2.f * static_cast<f32>(frame_time);
+		direction += (rot_speed / 2) * static_cast<f32>(frame_time);
 
 		position.x = current_planet.position.x + (static_cast<f32>(current_planet.size) / 2 + dist_from_planet) * AECos(direction);
 		position.y = current_planet.position.y + (static_cast<f32>(current_planet.size) / 2 + dist_from_planet) * AESin(direction);
 	}
 
 	if (AEInputCheckCurr(AEVK_D)) {
-		direction -= (rot_speed / 2) * static_cast<f32>(mov_speed_level + 1) / 2.f * static_cast<f32>(frame_time);
+		direction -= (rot_speed / 2) * static_cast<f32>(frame_time);
 
 		position.x = current_planet.position.x + (static_cast<f32>(current_planet.size) / 2 + dist_from_planet) * AECos(direction);
 		position.y = current_planet.position.y + (static_cast<f32>(current_planet.size) / 2 + dist_from_planet) * AESin(direction);
@@ -194,14 +193,13 @@ void Player::orbit_state(f64 frame_time)
 				debris.orbit_around_planet = false;
 				break;
 			}
-			else {
-				if (debris.move_towards_player)
-					debris.move_towards_player = false;
-			}
+			else
+				debris.move_towards_player = false;
 
-			if (AEVec2Distance(&position, &debris.position) <= (size + debris.size) / 2) {
-				// Debris to move towards player
-				debris_vector_all[current_planet.id][i].to_erase = true;
+			if (current_capacity < max_capacity + capacity_level && 
+				AEVec2Distance(&position, &debris.position) <= (size + debris.size) / 2) {
+				// Debris to be destroyed when in contact with player
+				debris.to_erase = true;
 				break;
 			}
 		}
@@ -262,19 +260,17 @@ void Player::flying_state(f64 frame_time)
 	}
 
 	if (AEInputCheckCurr(AEVK_A)) {
-		direction += rot_speed * static_cast<f32>(mov_speed_level + 1) / 2.f * static_cast<f32>(frame_time);
+		direction += rot_speed * static_cast<f32>(frame_time);
 		direction = AEWrap(direction, -PI, PI);
 	}
 
 	if (AEInputCheckCurr(AEVK_D)) {
-		direction -= rot_speed * static_cast<f32>(mov_speed_level + 1) / 2.f * static_cast<f32>(frame_time);
+		direction -= rot_speed * static_cast<f32>(frame_time);
 		direction = AEWrap(direction, -PI, PI);
 	}
 
 	if (AEVec2Distance(&current_planet.position, &position) <= (current_planet.size / 2 + dist_from_planet)) {
-		//direction = atan2(position.y - current_planet.position.y, position.x - current_planet.position.x);
 		direction = static_cast<f32>(atan2(position.y - current_planet.position.y, position.x - current_planet.position.x));
-		//AEVec2Zero(&velocity);
 		state = PLAYER_ORBIT;
 	}
 

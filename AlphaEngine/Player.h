@@ -1,7 +1,6 @@
 #pragma once
 #define MAX_MOV_SPEED_LVL		5
 #define MAX_CAPACITY_LVL		5
-#define MAX_DRONE_CNT			5
 #define MAX_SPACE_STATION_CNT	5
 #define MAX_BEAM_STRENGTH_LVL	5
 
@@ -35,7 +34,6 @@ struct Player
 	// Upgrade levels
 	int				mov_speed_level;
 	int				capacity_level;
-	int				drone_count;
 	int				space_station_count;
 	int				beam_level;
 

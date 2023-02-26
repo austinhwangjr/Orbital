@@ -54,5 +54,7 @@ struct PlayerUI
 	
 	void shop_open(Player&);
 	void shop_closed();
+	void close_shop();
 	bool button_clicked(ShopOption);
+	bool click_outside_shop();
 };

@@ -17,9 +17,9 @@ struct Drone
 
 	// Drone's tractor beam
 	AEVec2			beam_pos;
-	AEVec2			beam_collision_pos;
 	f32				beam_str;
 	f32				beam_width;
+	f32				beam_height;
 
 	// Transform
 	AEMtx33			drone_transform;

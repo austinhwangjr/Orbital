@@ -32,7 +32,7 @@ extern std::vector<std::vector<Debris>> debris_vector_all;
 
 // Variables to print
 std::string capacity_spacestation;
-extern s8		font_id;
+extern s8 font_id;
 extern Camera camera;
 
 extern AEGfxTexture* shop_icon_tex;
@@ -130,6 +130,33 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 	// Update SPACE STATION, COOLDOWN AND COIN instances
 	// ==================================================
 
+	// Spawn initial space station
+	if (!initial_spawn) {
+		position.x = planet_vector[0].position.x;
+		position.y = planet_vector[0].position.y + planet_vector[0].size;
+		space_station_vector.push_back(*this);
+
+		// Add cooldown bar and coin to initial space station
+		Cooldown_Bar cooldown;
+		cooldown.height = COOLDOWN_HEIGHT;
+		cooldown.width = COOLDOWN_WIDTH;
+		cooldown.position.x = this->position.x;
+		cooldown.position.y = this->position.y - 35;
+		cooldown.timer = 0;
+		cooldown.total_time = COOLDOWN_TIME;
+		cooldown_vector.push_back(cooldown);
+
+		Coin coin;
+		coin.height = COIN_HEIGHT;
+		coin.width = COIN_WIDTH;
+		coin.position.x = this->position.x;
+		coin.position.y = this->position.y + 60;
+		coin_vector.push_back(coin);
+
+		// Set initial_spawn flag to true
+		initial_spawn = true;
+	}
+
 	// If no longer placing space station
 	if (!player_ui.placing_station) {
 		if (space_station_valid_placement && !space_station_added && player.credits >= player_ui.space_station_cost) {
@@ -159,8 +186,6 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 		}
 	}
 	else {
-
-
 		// ==================================================
 		// FINDING NEAREST PLANET BY COMPARING DISTANCES
 		// ==================================================
@@ -174,13 +199,6 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 			}
 		}
 	}
-
-
-
-	for (int i = 0; i < space_station_vector.size(); ++i) {
-		SpaceStation& space_station = space_station_vector[i];
-	}
-
 	
 	// =============================================================
 	// Process of space station (Cooldown Bar and Coin pop up logic)
@@ -201,7 +219,6 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 			if (space_station_vector[i].current_capacity > 0) {
 				cooldown_vector[i].width = cooldown_vector[i].timer * speed;
 			}
-
 
 			//After 1 second, stop drawing coin
 			if (cooldown_vector[i].timer > 1) {
@@ -224,8 +241,6 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 		}
 
 	}
-
-	
 
 	// =======================================
 	// calculate the matrix for COOLDOWN
@@ -265,7 +280,7 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 	// =======================================
 	// calculate the matrix for space station
 	// =======================================
-	// 
+	
 	// For UI
 	if (player_ui.placing_station) {
 		AEMtx33Scale(&scale, size, size);
@@ -286,9 +301,6 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 		AEMtx33Concat(&space_station.transform, &rot, &scale);
 		AEMtx33Concat(&space_station.transform, &trans, &space_station.transform);
 	}
-
-	
-
 }
 
 /******************************************************************************/
@@ -298,7 +310,6 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 /******************************************************************************/
 void SpaceStation::draw(AEGfxVertexList* pMesh, PlayerUI player_ui)
 {
-
 	// ===========================================
 	// Print out current capacity of space station
 	// ===========================================

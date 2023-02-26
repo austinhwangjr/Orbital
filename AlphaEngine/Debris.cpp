@@ -59,9 +59,12 @@ void Debris::update(f64 frame_time)
 				AEVec2 diff;
 				AEVec2Sub(&diff, &player.position, &debris.position);
 				AEVec2Normalize(&diff, &diff);
-				AEVec2Scale(&diff, &diff, (player.beam_level + 1) * 0.2f);
+				AEVec2Scale(&diff, &diff, (player.beam_level + 1) * 0.4f);
 				AEVec2Add(&debris.position, &debris.position, &diff);
 			}
+			/*else if (debris_vector_all[j][i].move_towards_drone) {
+
+			}*/
 			else if (!debris_vector_all[j][i].orbit_around_planet) {
 				// Move debris back to orbit
 				AEVec2 diff;
@@ -72,7 +75,7 @@ void Debris::update(f64 frame_time)
 				// Debris to rotate around planet when in orbit range
 				if (AEVec2Distance(&planet_vector[j].position, &debris.position) <= (planet_vector[j].size / 2.0 + OUTERRIM_TO_DEBRIS)) {
 					debris.angle = static_cast<f32>(atan2(debris.position.y - planet_vector[j].position.y, debris.position.x - planet_vector[j].position.x));
-					//AEVec2Zero(&velocity);
+
 					debris.move_towards_player = false;
 					debris.orbit_around_planet = true;
 				}
