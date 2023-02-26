@@ -1,12 +1,13 @@
 #pragma once
 #include "Player.h"
 
-enum BUTTON_TYPE {
+enum BUTTON_TYPE 
+{
 	MOVEMENT_SPEED = 0,
 	CAPACITY,
+	TRACTOR_BEAM_STRENGTH,
 	CREATE_DRONE,
 	SPACE_STATION,
-	TRACTOR_BEAM_STRENGTH,
 	UPGRADE_COUNT,
 	SHOP_OPEN,
 };
@@ -39,9 +40,9 @@ struct PlayerUI
 	// Cost of upgrades
 	const int mov_speed_cost		= 100;
 	const int capacity_cost			= 200;
+	const int beam_strength_cost	= 150;
 	const int drone_cost			= 250;
 	const int space_station_cost	= 300;
-	const int beam_strength_cost	= 150;
 
 
 	void load();

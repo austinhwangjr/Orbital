@@ -22,7 +22,6 @@ struct Player
 	f32				size;
 	f32				mov_speed;
 	f32				rot_speed;
-	//f32				speed_upgrade;
 	Planets			current_planet;
 	f32				dist_from_planet;
 	f32				shortest_distance;
