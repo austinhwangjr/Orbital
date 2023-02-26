@@ -123,7 +123,7 @@ void Planets::check_spawn(Planets& new_planet)
 		// Re-randomize new planet position if too close to another planet
 		for (int i{}; i < wave_manager.planet_count; i++)
 		{
-			if (AEVec2Distance(&planet_vector[i].position, &new_planet.position) < planet_vector[i].size + new_planet.size)
+			if (AEVec2Distance(&planet_vector[i].position, &new_planet.position) < 1.5 * (planet_vector[i].size + new_planet.size))
 			{
 				AEVec2Set(&new_planet.position,
 					static_cast<f32>(rand() % static_cast<int>(get_max_x() - get_min_x() + AEGetWindowWidth() + PLANET_SIZE) + (get_min_x() - AEGetWindowWidth() - PLANET_SIZE)),
@@ -136,7 +136,7 @@ void Planets::check_spawn(Planets& new_planet)
 		// Re-randomize new planet position if too close to space station
 		for (size_t i{}; i < space_station_vector.size(); i++)
 		{
-			if (AEVec2Distance(&space_station_vector[i].position, &new_planet.position) < player.dist_from_planet + new_planet.size)
+			if (AEVec2Distance(&space_station_vector[i].position, &new_planet.position) < 1.5 * (player.dist_from_planet + new_planet.size))
 			{
 				AEVec2Set(&new_planet.position,
 					static_cast<f32>(rand() % static_cast<int>(get_max_x() - get_min_x() + AEGetWindowWidth() + PLANET_SIZE) + (get_min_x() - AEGetWindowWidth() - PLANET_SIZE)),

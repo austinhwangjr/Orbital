@@ -138,6 +138,7 @@ void WaveManager::draw(AEGfxVertexList *pMesh)
 {
 	for (size_t i{}; i < planet_vector.size(); i++)
 	{
+		bool off_screen{ pow(AEVec2Distance(&planet_vector[i].position, &camera.position), 2) > (pow(AEGetWindowWidth() / 2, 2) + pow(AEGetWindowHeight() / 2, 2)) };
 		// Only draw shuttle related prints if wave is starting, not between intervals
 		if (wave_completed == false && !planet_adding)
 		{
@@ -181,7 +182,7 @@ void WaveManager::draw(AEGfxVertexList *pMesh)
 
 		// DISTANCE INDICATOR-------------------------------------------------------------------------------------------------------------------------------------
 		// Only draw distance indicator if the planet is off screen
-		if (pow(AEVec2Distance(&planet_vector[i].position, &camera.position), 2) > (pow(AEGetWindowWidth() / 2, 2) + pow(AEGetWindowHeight() / 2, 2)))
+		if (off_screen)
 		{
 			// Calculating distance between player and planet and assign to print_string for printing
 			std::string dist = std::to_string(static_cast<int>(AEVec2Distance(&player.position, &planet_vector[i].position)));

@@ -2,8 +2,8 @@
 #define PLANET_SIZE				200.0f		// Planet base size (radius)	
 #define SHUTTLE_SPAWN_TIME_MAX	8			// Maximum time shuttles will spawn
 #define SHUTTLE_SPAWN_TIME_MIN	4			// Minimum time shuttles will spawn
-#define DEBRIS_MAX				20			// Maximum number of debris on a planet
-#define DEBRIS_MIN				10			// Minimum number of debris on a planet
+#define DEBRIS_MAX				30			// Maximum number of debris on a planet
+#define DEBRIS_MIN				15			// Minimum number of debris on a planet
 #define DRONES_MAX				5			// Maximum number of drones on a planet
 
 #include "Debris.h"
