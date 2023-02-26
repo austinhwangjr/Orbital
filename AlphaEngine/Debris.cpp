@@ -54,7 +54,7 @@ void Debris::update(f64 frame_time)
 		for (size_t i = 0; i < debris_vector_all[j].size(); i++) {
 			Debris& debris = debris_vector_all[j][i];
 
-			if (debris_vector_all[j][i].move_towards_player) {
+			if (debris_vector_all[j][i].move_towards_player && player.state == PLAYER_ORBIT) {
 				/*f32 t{};
 				t += frame_time * (AEVec2Distance(&player.position, &debris.position) / 10.f);
 
