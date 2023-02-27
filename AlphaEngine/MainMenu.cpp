@@ -8,6 +8,7 @@
 #include "Graphics.h"
 
 AEGfxTexture* TexMMBackground = nullptr;
+AEGfxTexture* TexTitle = nullptr;
 
 AEGfxVertexList* pMeshMMBackground;
 AEGfxVertexList* pMeshMM;
@@ -20,6 +21,7 @@ Rendering RenderMMBackground;
 void main_menu::load()
 {
     TexMMBackground = AEGfxTextureLoad("Assets/Background.png");
+    TexTitle = AEGfxTextureLoad("Assets/Title.png");
     menuButtons.load("Assets/buttonTest.png", "Assets/buttonTest.png", "Assets/buttonTest.png", "Assets/buttonTest.png", "Assets/quitTest.png");
     //std::cout << "------------------------- MainMenu::load completed -------------------------" << std::endl << std::endl;
 }
@@ -60,6 +62,7 @@ void main_menu::draw()
 
     // Draw the background mesh
     RenderMMBackground.RenderSprite(TexMMBackground, 0.f, 0.f, 800.f, 450.f, pMeshMMBackground);
+    RenderMMBackground.RenderSprite(TexTitle, 0.f, 0.f, 800.f, 450.f, pMeshMMBackground);
 
     // Draw the menu buttons using pMesh1
     menuButtons.draw(pMeshMM);
@@ -74,4 +77,5 @@ void main_menu::unload()
 {
     menuButtons.unload();
     AEGfxTextureUnload(TexMMBackground); // unload the texture for the background image
+    AEGfxTextureUnload(TexTitle);
 }
