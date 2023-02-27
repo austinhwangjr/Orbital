@@ -97,7 +97,7 @@ void main_level::load()
 // ----------------------------------------------------------------------------
 void main_level::init()
 {
-	srand(5);
+	srand(69);
 
 	// Set the camera position to (0, 0) for the background mesh
 	AEGfxSetCamPosition(0.f, 0.f);

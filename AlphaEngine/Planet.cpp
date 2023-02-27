@@ -18,6 +18,8 @@ Technology is prohibited.
 #include "WaveManager.h"
 #include <cmath>
 
+#include <iostream>
+
 AEGfxTexture* planet_tex;
 std::vector<Planets> planet_vector;
 
@@ -112,10 +114,11 @@ void Planets::spawn(int shuttle_randomize_amount)
 	new_planet.direction = PI / 4;
 	AEMtx33Rot(&new_planet.rotate, direction);
 
-	// rand()%(max-min + 1) + min;
+	// rand()%(max-min) + min;
+	std::cout << (get_min_x() - AEGetWindowWidth() - new_planet.size);
 	AEVec2Set(&new_planet.position,
-		static_cast<f32>(rand() % static_cast<int>(get_max_x() - get_min_x() + AEGetWindowWidth() + PLANET_SIZE) + (get_min_x() - AEGetWindowWidth() - PLANET_SIZE)),
-		static_cast<f32>(rand() % static_cast<int>(get_max_y() - get_min_y() + AEGetWindowHeight() + PLANET_SIZE) + (get_min_y() - AEGetWindowHeight() - PLANET_SIZE)));
+		static_cast<f32>(rand() % static_cast<int>(get_max_x() - get_min_x() + AEGetWindowWidth()) + (get_min_x() - AEGetWindowWidth())),
+		static_cast<f32>(rand() % static_cast<int>(get_max_y() - get_min_y() + AEGetWindowHeight()) + (get_min_y() - AEGetWindowHeight())));
 	check_spawn(new_planet);
 
 	AEMtx33Trans(&new_planet.translate, new_planet.position.x, new_planet.position.y);
@@ -153,8 +156,8 @@ void Planets::check_spawn(Planets& new_planet)
 			if (AEVec2Distance(&planet_vector[i].position, &new_planet.position) < 1.5 * (planet_vector[i].size + new_planet.size))
 			{
 				AEVec2Set(&new_planet.position,
-					static_cast<f32>(rand() % static_cast<int>(get_max_x() - get_min_x() + AEGetWindowWidth() + PLANET_SIZE) + (get_min_x() - AEGetWindowWidth() - PLANET_SIZE)),
-					static_cast<f32>(rand() % static_cast<int>(get_max_y() - get_min_y() + AEGetWindowHeight() + PLANET_SIZE) + (get_min_y() - AEGetWindowHeight() - PLANET_SIZE)));
+					static_cast<f32>(rand() % static_cast<int>(get_max_x() - get_min_x() + AEGetWindowWidth() + new_planet.size) + (get_min_x() - AEGetWindowWidth() - new_planet.size)),
+					static_cast<f32>(rand() % static_cast<int>(get_max_y() - get_min_y() + AEGetWindowHeight() + new_planet.size) + (get_min_y() - AEGetWindowHeight() - new_planet.size)));
 				(1 == wave_manager.planet_count) ? i-- : i = 0;
 			}
 		}
@@ -166,8 +169,8 @@ void Planets::check_spawn(Planets& new_planet)
 			if (AEVec2Distance(&space_station_vector[i].position, &new_planet.position) < 1.5 * (player.dist_from_planet + new_planet.size))
 			{
 				AEVec2Set(&new_planet.position,
-					static_cast<f32>(rand() % static_cast<int>(get_max_x() - get_min_x() + AEGetWindowWidth() + PLANET_SIZE) + (get_min_x() - AEGetWindowWidth() - PLANET_SIZE)),
-					static_cast<f32>(rand() % static_cast<int>(get_max_y() - get_min_y() + AEGetWindowHeight() + PLANET_SIZE) + (get_min_y() - AEGetWindowHeight() - PLANET_SIZE)));
+					static_cast<f32>(rand() % static_cast<int>(get_max_x() - get_min_x() + AEGetWindowWidth() + new_planet.size) + (get_min_x() - AEGetWindowWidth() - new_planet.size)),
+					static_cast<f32>(rand() % static_cast<int>(get_max_y() - get_min_y() + AEGetWindowHeight() + new_planet.size) + (get_min_y() - AEGetWindowHeight() - new_planet.size)));
 				(1 == static_cast<int>(space_station_vector.size())) ? i-- : i = 0;
 
 				planet_check = false;

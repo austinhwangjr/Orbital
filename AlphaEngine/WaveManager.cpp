@@ -1,3 +1,17 @@
+/* Start Header ************************************************************************/
+/*!
+\file		WaveManager.cpp
+\author		Tan Rui An Ryan, ruianryan.t, 2200600
+\par		ruianryan.t\@digipen.edu
+\date		Feb 27, 2023
+\brief		This file contains the behaviour for the WaveManager game object
+
+Copyright (C) 2023 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents
+without the prior written consent of DigiPen Institute of
+Technology is prohibited.
+*/
+/* End Header **************************************************************************/
 #include "WaveManager.h"
 #include <iostream>
 #include <string>
@@ -152,7 +166,7 @@ void WaveManager::draw()
 			AEGfxPrint(font_id, const_cast<s8*>(print_string),
 				2 * (timer_pos.x - FONT_ID_SIZE / 4.f) / AEGetWindowWidth(),
 				2 * (timer_pos.y - FONT_ID_SIZE / 4.f) / AEGetWindowHeight(),
-				1.f, planet_vector[i].shuttle_timer * static_cast<f32>(1.5) / planet_vector[i].shuttle_time_to_spawn, 0.f, 0.f);
+				1.f, planet_vector[i].shuttle_timer * static_cast<f32>(1.5) / planet_vector[i].shuttle_time_to_spawn, 0.f, 0.f);  // Speed up red color lerp by 50%
 			// SHUTTLE TIMERS-------------------------------------------------------------------------------------------------------------------------------------
 
 			// SHUTTLE COUNT--------------------------------------------------------------------------------------------------------------------------------------
@@ -166,7 +180,7 @@ void WaveManager::draw()
 			AEVec2Sub(&shuttle_count_pos, &planet_vector[i].position, &camera.position);
 			// Set offset for drawing of text because font position is bottom left of font
 			AEVec2 shuttle_count_pos_offset;
-			AEVec2Set(&shuttle_count_pos_offset, 50, 100);
+			AEVec2Set(&shuttle_count_pos_offset, FONT_ID_SIZE, FONT_ID_SIZE * 2);
 
 			// Draw Current / Max using position calculated above
 			AEVec2Sub(&shuttle_count_pos, &shuttle_count_pos, &shuttle_count_pos_offset);
@@ -213,7 +227,7 @@ void WaveManager::draw()
 	// Place holder "Shuttles Lost" counter
 	std::string str_shuttle_lost = "Shuttles Lost: " + std::to_string(shuttle_destroyed);
 	print_string = str_shuttle_lost.c_str();
-	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.f - (str_shuttle_lost.length() * FONT_ID_SIZE / AEGetWindowWidth()), -0.65f, 1.f, 1.f, 1.f, 1.f);
+	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.f - (str_shuttle_lost.length() / 2 * static_cast<f32>(FONT_ID_SIZE) / static_cast<f32>(AEGetWindowWidth())), -0.65f, 1.f, 1.f, 1.f, 1.f);
 }
 
 void WaveManager::free()

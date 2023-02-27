@@ -1,3 +1,17 @@
+/* Start Header ************************************************************************/
+/*!
+\file		Shuttle.cpp
+\author		Tan Rui An Ryan, ruianryan.t, 2200600
+\par		ruianryan.t\@digipen.edu
+\date		Feb 27, 2023
+\brief		This file contains the behaviour for the Shuttle game object
+
+Copyright (C) 2023 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents
+without the prior written consent of DigiPen Institute of
+Technology is prohibited.
+*/
+/* End Header **************************************************************************/
 #include "AEEngine.h"
 #include "Shuttle.h"
 #include "WaveManager.h"
