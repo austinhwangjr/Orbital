@@ -2,7 +2,7 @@
 #include "AEEngine.h"
 #include "Player.h"
 
-#define TRANSITION_TIME_MAX 5.f
+#define TRANSITION_TIME_MAX 0.f
 
 struct Camera
 {

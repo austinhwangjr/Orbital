@@ -30,13 +30,13 @@ void Player::init()
 	velocity.x				= 0.f;
 	velocity.y				= 0.f;
 
-	size					= 20.f;
+	size					= 50.f;
 
 	mov_speed				= 150.f;
 	rot_speed				= 0.85f * PI;
 	//speed_upgrade			= 1.0f;
 
-	dist_from_planet		= 50.f;
+	dist_from_planet		= 75.f;					// initally value =  50.f
 	shortest_distance		= 0.f;
 
 	direction				= 0.f;
@@ -60,8 +60,8 @@ void Player::init()
 	beam_pos.x				= 0.f;
 	beam_pos.y				= 0.f;
 
-	beam_width				= size;
-	beam_height				= beam_width * 3 / 2;
+	beam_width				= size * 0.6f;				//  initally value = size
+	beam_height				= beam_width * 2.f ;	//  initally value = beam_width * 3 / 2
 }
 
 void Player::update(f64 frame_time)

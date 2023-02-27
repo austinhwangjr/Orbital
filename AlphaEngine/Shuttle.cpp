@@ -115,7 +115,7 @@ void Shuttles::spawn(int planet_id)
 
 	new_shuttle.planet_id = planet_id;
 
-	AEMtx33Scale(&new_shuttle.scale, 20.f, 20.f);
+	AEMtx33Scale(&new_shuttle.scale, 50.f, 100.f);
 	AEMtx33Rot(&new_shuttle.rotate, PI / 2 + rand_angle);
 
 	shuttle_vector.push_back(new_shuttle);
