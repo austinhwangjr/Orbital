@@ -5,6 +5,7 @@
 
 struct SpaceStation
 {
+	//--------------------Space Station--------------------
 	AEVec2			position;
 	f32				size;
 	int				current_capacity;
@@ -13,7 +14,7 @@ struct SpaceStation
 	f32				shortest_distance_spacestation;
 	bool			initial_spawn = false;
 
-	// Transform
+	//--------------------Transform--------------------
 	AEMtx33			transform;
 
 	void load();

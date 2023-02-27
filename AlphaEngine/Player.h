@@ -14,7 +14,7 @@ enum PLAYER_STATES
 
 struct Player
 {
-	// Player
+	//--------------------Player--------------------
 	PLAYER_STATES	state;
 	AEVec2			position;
 	AEVec2			velocity;
@@ -31,20 +31,19 @@ struct Player
 	int				credits;
 	bool			can_leave_orbit;
 
-	// Upgrade levels
+	//--------------------Upgrade Levels--------------------
 	int				mov_speed_level;
 	int				capacity_level;
 	int				space_station_count;
 	int				beam_level;
 
-
-	// Tractor beam
+	//--------------------Tractor Beam--------------------
 	AEVec2			beam_pos;
 	f32				beam_str;
 	f32				beam_width;
 	f32				beam_height;
 
-	// Transforms
+	//--------------------Transforms--------------------
 	AEMtx33			player_transform;
 	AEMtx33			beam_transform;
 
