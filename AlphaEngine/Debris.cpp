@@ -1,6 +1,7 @@
 #include "AEEngine.h"
 #include "Debris.h"
 #include "Planet.h"
+#include "Drone.h"
 #include "Shuttle.h"
 #include "WaveManager.h"
 #include <cmath>
@@ -28,6 +29,8 @@ extern std::vector<Planets> planet_vector;
 //SHUTTLE VECTOR
 extern std::vector<Shuttles> shuttle_vector;
 
+//DRONE VECTOR
+extern std::vector<std::vector<Drone>> drone_vector_all;
 
 //VECTOR OF ALL PLANET'S DEBRIS
 std::vector<std::vector<Debris>> debris_vector_all;
@@ -62,17 +65,23 @@ void Debris::update(f64 frame_time)
 		for (size_t i = 0; i < debris_vector_all[j].size(); i++) {
 			Debris& debris = debris_vector_all[j][i];
 
-			if (debris_vector_all[j][i].move_towards_player && player.state == PLAYER_ORBIT) {
+			if (debris.state == MOVE_TOWARDS_PLAYER && player.state == PLAYER_ORBIT) {
+				// Move debris towards player
 				AEVec2 diff;
 				AEVec2Sub(&diff, &player.position, &debris.position);
 				AEVec2Normalize(&diff, &diff);
 				AEVec2Scale(&diff, &diff, (player.beam_level + 1) * 0.4f);
 				AEVec2Add(&debris.position, &debris.position, &diff);
 			}
-			/*else if (debris_vector_all[j][i].move_towards_drone) {
-
-			}*/
-			else if (!debris_vector_all[j][i].orbit_around_planet) {
+			if (debris.state == MOVE_TOWARDS_DRONE) {
+				// Move debris towards drone
+				AEVec2 diff;
+				AEVec2Sub(&diff, &drone_vector_all[j][debris.move_towards_drone_id - 1].position, &debris.position);
+				AEVec2Normalize(&diff, &diff);
+				AEVec2Scale(&diff, &diff, 1.5f);
+				AEVec2Add(&debris.position, &debris.position, &diff);
+			}
+			if (debris.state == MOVE_TOWARDS_PLANET) {
 				// Move debris back to orbit
 				AEVec2 diff;
 				AEVec2Sub(&diff, &planet_vector[j].position, &debris.position);
@@ -82,15 +91,13 @@ void Debris::update(f64 frame_time)
 				// Debris to rotate around planet when in orbit range
 				if (AEVec2Distance(&planet_vector[j].position, &debris.position) <= (planet_vector[j].size / 2.0 + OUTERRIM_TO_DEBRIS)) {
 					debris.angle = static_cast<f32>(atan2(debris.position.y - planet_vector[j].position.y, debris.position.x - planet_vector[j].position.x));
-
-					debris.move_towards_player = false;
-					debris.orbit_around_planet = true;
+					debris.state = ORBIT_AROUND_PLANET;
 				}
 			}
 
-			else {
+			if (debris.state == ORBIT_AROUND_PLANET) {
+				// Orbit around planet
 				debris.angle -= AEDegToRad(0.125f) * debris.turning_speed * static_cast<f32>(frame_time);
-
 				debris.position.x = planet_vector[j].position.x + ((planet_vector[j].size / 2) + OUTERRIM_TO_DEBRIS) * AECos(debris.angle);
 				debris.position.y = planet_vector[j].position.y + ((planet_vector[j].size / 2) + OUTERRIM_TO_DEBRIS) * AESin(debris.angle);
 			}
@@ -120,11 +127,7 @@ void Debris::update(f64 frame_time)
 				break;
 			}
 		}
-		
 	}
-
-	
-	
 
 
 	// =======================================
@@ -254,6 +257,7 @@ std::vector<Debris> Debris::create_debris(f32 planet_x, f32 planet_y, double siz
 		new_debris.position.y = planet_y + ((size / 2) + 20) * AESin(AEDegToRad(new_debris.angle));
 		new_debris.turning_speed = SPEED_DEBRIS;
 		new_debris.active = true;
+		new_debris.state = ORBIT_AROUND_PLANET;
 
 		new_debris.scale = { 0 };
 		new_debris.rotate = { 0 };
@@ -285,8 +289,7 @@ void spawn_debris_shuttle(AEVec2 position, int planet_id, int num_of_debris) {
 		new_debris.id = debris_vector_all[planet_id].size() + 1;
 		new_debris.turning_speed = SPEED_DEBRIS;
 		new_debris.active = true;
-		new_debris.move_towards_planet = true;
-		new_debris.orbit_around_planet = false;
+		new_debris.state = ORBIT_AROUND_PLANET;
 
 		new_debris.scale = { 0 };
 		new_debris.rotate = { 0 };

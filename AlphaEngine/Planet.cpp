@@ -14,6 +14,7 @@ Technology is prohibited.
 /* End Header **************************************************************************/
 #include "AEEngine.h"
 #include "Planet.h"
+#include "Drone.h"
 #include "SpaceStation.h"
 #include "WaveManager.h"
 #include <cmath>
@@ -27,6 +28,7 @@ extern WaveManager wave_manager;
 extern Shuttles shuttle;
 extern Debris debris;
 extern std::vector<SpaceStation> space_station_vector;
+extern std::vector<std::vector<Drone>> drone_vector_all;
 
 void Planets::load()
 {
@@ -137,10 +139,15 @@ void Planets::spawn(int shuttle_randomize_amount)
 	new_planet.max_debris = rand() % (DEBRIS_MAX - DEBRIS_MIN) + DEBRIS_MIN;												// Randomize debris count on planet spawn
 	new_planet.max_debris /= ((shuttle_randomize_amount / 2) < ((SHUTTLE_SPAWN_MAX - SHUTTLE_SPAWN_MIN) / 2)) ? 2 : 1;		// Limiting debris count on smaller planets
 	new_planet.debris_vector = debris.Debris::create_debris(new_planet.position.x, new_planet.position.y, new_planet.size, new_planet.max_debris);
+	
+// DRONE STUFF-------------------------------------------------------------------------------------------------------------------------------
 
-// DEBRIS STUFF-------------------------------------------------------------------------------------------------------------------------------
-
+	// Set new planet's current drone counter to 0
 	new_planet.current_drones = 0;
+
+	// Add new drone vector to primary drone vector
+	std::vector<Drone> drone_vector;
+	drone_vector_all.push_back(drone_vector);
 
 	planet_vector.push_back(new_planet);
 }

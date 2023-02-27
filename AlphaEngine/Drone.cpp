@@ -1,10 +1,12 @@
 #include "AEEngine.h"
 #include "Drone.h"
+#include "Planet.h"
 #include <vector>
 
 // Textures
 extern AEGfxTexture* player_tex;
 extern AEGfxTexture* tractor_beam_tex;
+extern AEGfxTexture* shop_icon_tex;
 
 // Variables
 bool drone_valid_placement = false;
@@ -14,7 +16,7 @@ bool drone_added;
 extern AEVec2 mouse_pos_world;
 
 // Vectors of drones, planets and debris
-std::vector<Drone> drone_vector;
+std::vector<std::vector<Drone>> drone_vector_all;
 extern std::vector<Planets> planet_vector;
 extern std::vector<std::vector<Debris>> debris_vector_all;
 
@@ -25,7 +27,7 @@ void Drone::load()
 
 void Drone::init(Player player)
 {
-	// Drone
+	//--------------------Drone--------------------
 	position.x				= 0.f;
 	position.y				= 0.f;
 
@@ -34,7 +36,7 @@ void Drone::init(Player player)
 
 	size					= player.size;
 
-	rot_speed				= player.rot_speed / 8.f;
+	rot_speed				= player.rot_speed / 10.f;
 
 	dist_from_planet		= player.dist_from_planet;
 	shortest_distance		= 0.f;
@@ -44,7 +46,16 @@ void Drone::init(Player player)
 	current_capacity		= 0;
 	max_capacity			= 3;
 
-	// Tractor beam
+	//--------------------Cooldown Bar--------------------
+	cd_bar.position.x		= position.x;
+	cd_bar.position.y		= position.y - size;
+	cd_bar.height			= 5.f;
+	cd_bar.width			= 0.f;
+	cd_bar.max_width		= 40.f;
+	cd_bar.timer			= 0.f;
+	cd_bar.total_time		= 8.f;
+
+	//--------------------Tractor Beam--------------------
 	beam_pos.x				= 0.f;
 	beam_pos.y				= 0.f;
 
@@ -83,8 +94,8 @@ void Drone::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 					static_cast<double>(position.x - current_planet.position.x)));
 				position.x = current_planet.position.x + (static_cast<f32>(current_planet.size) / 2.f + dist_from_planet) * AECos(direction);
 				position.y = current_planet.position.y + (static_cast<f32>(current_planet.size) / 2.f + dist_from_planet) * AESin(direction);
-				beam_pos.x = position.x - AECos(direction) * 20;
-				beam_pos.y = position.y - AESin(direction) * 20;
+				beam_pos.x = position.x - AECos(direction) * ((beam_height + size) / 2);
+				beam_pos.y = position.y - AESin(direction) * ((beam_height + size) / 2);
 
 				drone_valid_placement = true;
 			}
@@ -96,50 +107,56 @@ void Drone::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 	}
 
 	// Each active drone to orbit around planet
-	for (int i = 0; i < drone_vector.size(); ++i) {
-		Drone& drone = drone_vector[i];
+	for (size_t i = 0; i < drone_vector_all.size(); ++i) {
+		for (size_t j = 0; j < drone_vector_all[i].size(); j++) {
+			Drone& drone = drone_vector_all[i][j];
 
-		drone.position.x = drone.current_planet.position.x +
-			(static_cast<f32>(drone.current_planet.size) / 2.f + drone.dist_from_planet) * AECos(drone.direction);
-		drone.position.y = drone.current_planet.position.y +
-			(static_cast<f32>(drone.current_planet.size) / 2.f + drone.dist_from_planet) * AESin(drone.direction);
+			// Set drone position
+			drone.position.x = drone.current_planet.position.x +
+				(static_cast<f32>(drone.current_planet.size) / 2.f + drone.dist_from_planet) * AECos(drone.direction);
+			drone.position.y = drone.current_planet.position.y +
+				(static_cast<f32>(drone.current_planet.size) / 2.f + drone.dist_from_planet) * AESin(drone.direction);
 
-		drone.direction += drone.rot_speed * static_cast<f32>(frame_time);
+			// Set drone direction
+			drone.direction += drone.rot_speed * static_cast<f32>(frame_time);
 
-		// Drone's tractor beam
-		drone.beam_pos.x = drone.position.x - AECos(drone.direction) * (drone.beam_height * 2 / 3);
-		drone.beam_pos.y = drone.position.y - AESin(drone.direction) * (drone.beam_height * 2 / 3);
+			// Drone's tractor beam
+			drone.beam_pos.x = drone.position.x - AECos(drone.direction) * ((drone.beam_height + drone.size) / 2);
+			drone.beam_pos.y = drone.position.y - AESin(drone.direction) * ((drone.beam_height + drone.size) / 2);
+		}
 	}
 
 	// ================================
 	// check for beam-debris collision
 	// ================================
 
-	for (int i = 0; i < drone_vector.size(); ++i) {
-		Drone& drone = drone_vector[i];
+	for (size_t i = 0; i < drone_vector_all.size(); ++i) {
+		for (size_t j = 0; j < drone_vector_all[i].size(); j++) {
+			Drone& drone = drone_vector_all[i][j];
 
-		if (debris_vector_all[drone.current_planet.id].size() > 0) {
-			for (int i = 0; i < debris_vector_all[drone.current_planet.id].size(); ++i) {
-				Debris& debris = debris_vector_all[current_planet.id][i];
-				// Debris to move towards drone when in contact with beam
-				if (drone.current_capacity < drone.max_capacity && 
-					AEVec2Distance(&drone.beam_pos, &debris.position) <= drone.beam_height / 2) {
+			if (debris_vector_all[i].size() > 0) {
+				for (int k = 0; k < debris_vector_all[i].size(); ++k) {
+					Debris& debris = debris_vector_all[i][k];
 
-					debris_vector_all[current_planet.id].erase(debris_vector_all[drone.current_planet.id].begin() + i);
-					drone.current_capacity++;
-					break;
-					//debris.move_towards_drone = true;
-					/*debris.orbit_around_planet = false;
-					break;*/
+					if (debris.active) {
+						// Debris to move towards drone when in contact with beam
+						if ((drone.current_capacity < drone.max_capacity) &&
+							AEVec2Distance(&drone.beam_pos, &debris.position) <= drone.beam_height / 2) {
+							debris.move_towards_drone_id = static_cast<int>(j + 1);
+							debris.state = MOVE_TOWARDS_DRONE;
+						}
+						else if (debris.move_towards_drone_id == 0) {
+							debris.state = MOVE_TOWARDS_PLANET;
+						}
+
+						if (debris.move_towards_drone_id > 0 && (drone.current_capacity < drone.max_capacity) &&
+							AEVec2Distance(&drone.position, &debris.position) <= (drone.size + debris.size) / 2) {
+							// Debris to be destroyed when in contact with player
+							drone_vector_all[i][j].current_capacity++;
+							debris.active = false;
+						}
+					}
 				}
-				//else
-				//	//debris.move_towards_drone = false;
-
-				//if (AEVec2Distance(&drone.position, &debris.position) <= (drone.size + debris.size) / 2) {
-				//	// Debris to be destroyed when in contact with drone
-				//	debris.to_erase = true;
-				//	break;
-				//}
 			}
 		}
 	}
@@ -163,15 +180,44 @@ void Drone::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 
 	else if (drone_valid_placement && !drone_added && player.credits >= player_ui.drone_cost) {
 		// Add drone to vector
-		for (size_t i = 0; i < planet_vector.size(); ++i) {
-			if (planet_vector[i].id == current_planet.id) {
-				planet_vector[i].current_drones++;
-				drone_vector.push_back(*this);
-				player.credits -= player_ui.drone_cost;
-				drone_added = true;
+		planet_vector[current_planet.id].current_drones++;
+		drone_vector_all[current_planet.id].push_back(*this);
+		player.credits -= player_ui.drone_cost;
+		drone_added = true;
+	}
+
+	// ===================
+	// Cooldown bar logic
+	// ===================
+
+	for (size_t i = 0; i < drone_vector_all.size(); ++i) {
+		for (size_t j = 0; j < drone_vector_all[i].size(); j++) {
+			Drone& drone = drone_vector_all[i][j];
+
+			// Drone to process debris only when it has at least 1 debris
+			if (drone.current_capacity > 0) {
+
+				drone.cd_bar.timer += static_cast<f32>(frame_time);
+
+				f32 speed = drone.cd_bar.max_width / drone.cd_bar.total_time;
+				if (drone.current_capacity > 0) {
+					drone.cd_bar.width = drone.cd_bar.timer * speed;
+				}
+
+				// After processing debris, reset timer
+				if (drone.cd_bar.timer > drone.cd_bar.total_time && drone.current_capacity >= 0) {
+					drone.current_capacity--;
+					drone.cd_bar.timer = 0;
+				}
 			}
+			else {
+				drone.cd_bar.width = 0;
+				drone.cd_bar.timer = 0;
+			}
+
+			drone.cd_bar.position.x = drone.position.x;
+			drone.cd_bar.position.y = drone.position.y + drone.size;
 		}
-		
 	}
 
 	// ========================================
@@ -190,31 +236,31 @@ void Drone::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 	}
 
 	// For active drones
-	for (int i = 0; i < drone_vector.size(); ++i) {
-		Drone& drone = drone_vector[i];
-		
-		// Drone
-		AEMtx33Scale(&scale, drone.size, drone.size);
-		AEMtx33Rot(&rot, drone.direction + PI / 2);
-		AEMtx33Trans(&trans, drone.position.x, drone.position.y);
-		AEMtx33Concat(&drone.drone_transform, &rot, &scale);
-		AEMtx33Concat(&drone.drone_transform, &trans, &drone.drone_transform);
+	//for (int i = 0; i < drone_vector.size(); ++i) {
+	for (size_t i = 0; i < drone_vector_all.size(); ++i) {
+		for (size_t j = 0; j < drone_vector_all[i].size(); j++) {
+			Drone& drone = drone_vector_all[i][j];
 
-		// Tractor beam
-		AEMtx33Scale(&scale, drone.size, drone.size * 3 / 2);
-		AEMtx33Rot(&rot, drone.direction + PI / 2);
-		AEMtx33Trans(&trans, drone.beam_pos.x, drone.beam_pos.y);
-		AEMtx33Concat(&drone.beam_transform, &rot, &scale);
-		AEMtx33Concat(&drone.beam_transform, &trans, &drone.beam_transform);
-	}
+			// Drone
+			AEMtx33Scale(&scale, drone.size, drone.size);
+			AEMtx33Rot(&rot, drone.direction + PI / 2);
+			AEMtx33Trans(&trans, drone.position.x, drone.position.y);
+			AEMtx33Concat(&drone.drone_transform, &rot, &scale);
+			AEMtx33Concat(&drone.drone_transform, &trans, &drone.drone_transform);
 
-	// ===========================
-	// Remove debris to be erased
-	// ===========================
-	for (int i = 0; i < debris_vector_all[current_planet.id].size(); ++i) {
-		if (debris_vector_all[current_planet.id][i].to_erase) {
-			debris_vector_all[current_planet.id].erase(debris_vector_all[current_planet.id].begin() + i);
-			current_capacity++;
+			// Cooldown bar
+			AEMtx33Scale(&scale, drone.cd_bar.width, drone.cd_bar.height);
+			AEMtx33Rot(&rot, 0);
+			AEMtx33Trans(&trans, drone.cd_bar.position.x, drone.cd_bar.position.y);
+			AEMtx33Concat(&drone.cd_bar.transform, &rot, &scale);
+			AEMtx33Concat(&drone.cd_bar.transform, &trans, &drone.cd_bar.transform);
+
+			// Tractor beam
+			AEMtx33Scale(&scale, drone.size, drone.size * 3 / 2);
+			AEMtx33Rot(&rot, drone.direction + PI / 2);
+			AEMtx33Trans(&trans, drone.beam_pos.x, drone.beam_pos.y);
+			AEMtx33Concat(&drone.beam_transform, &rot, &scale);
+			AEMtx33Concat(&drone.beam_transform, &trans, &drone.beam_transform);
 		}
 	}
 }
@@ -240,30 +286,47 @@ void Drone::draw(AEGfxVertexList* pMesh, PlayerUI player_ui)
 	}
 
 	// For active drones
-	for (int i = 0; i < drone_vector.size(); ++i) {
-		
-		Drone& drone = drone_vector[i];
+	//for (int i = 0; i < drone_vector.size(); ++i) {
+	for (size_t i = 0; i < drone_vector_all.size(); ++i) {
+		for (size_t j = 0; j < drone_vector_all[i].size(); j++) {
+			Drone& drone = drone_vector_all[i][j];
 
-		AEGfxSetTintColor(1.f, 1.f, 1.f, 1.f);
+			AEGfxSetTintColor(1.f, 1.f, 1.f, 1.f);
 
-		// Drone
-		AEGfxTextureSet(player_tex, 0, 0);
-		AEGfxSetTransform(drone.drone_transform.m);
-		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+			// Drone
+			AEGfxTextureSet(player_tex, 0, 0);
+			AEGfxSetTransform(drone.drone_transform.m);
+			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+			
+			// Cooldown bar
+			AEGfxTextureSet(shop_icon_tex, 0, 0);
+			AEGfxSetTransform(drone.cd_bar.transform.m);
+			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
-		// Tractor beam
-		AEGfxTextureSet(tractor_beam_tex, 0, 0);
-		AEGfxSetTransform(drone.beam_transform.m);
-		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+			// Tractor beam
+			AEGfxTextureSet(tractor_beam_tex, 0, 0);
+			AEGfxSetTransform(drone.beam_transform.m);
+			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+		}
 	}
 }
 
 void Drone::free()
 {
-	drone_vector.clear();
+	for (int i = 0; i < drone_vector_all.size(); ++i)
+		drone_vector_all[i].clear();
+	
+	drone_vector_all.clear();
 }
 
 void Drone::unload()
 {
-
+	
 }
+
+//void Drone::create_drone_vector()
+//{
+//	std::vector<Drone> drone_vector;
+//	drone_vector_all.push_back(drone_vector);
+//
+//}

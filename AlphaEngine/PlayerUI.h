@@ -48,7 +48,7 @@ struct PlayerUI
 	void load();
 	void init();
 	void update(Player&);
-	void draw(AEGfxVertexList*, Player&);
+	void draw(AEGfxVertexList*, Player);
 	void free();
 	void unload();
 	

@@ -21,7 +21,7 @@ void Player::load()
 
 void Player::init()
 {
-	// Player
+	//--------------------Player--------------------
 	state					= PLAYER_FLY;
 
 	position.x				= 100.f;
@@ -34,7 +34,6 @@ void Player::init()
 
 	mov_speed				= 150.f;
 	rot_speed				= 0.85f * PI;
-	//speed_upgrade			= 1.0f;
 
 	dist_from_planet		= 50.f;
 	shortest_distance		= 0.f;
@@ -44,19 +43,19 @@ void Player::init()
 	current_capacity		= 0;
 	max_capacity			= 5;
 
-	// Score-keeping
+	can_leave_orbit			= true;
+
+	//--------------------Score-keeping--------------------
 	score					= 0;
 	credits					= 50'000;
 
-	can_leave_orbit			= true;
-
-	// Upgrade levels
+	//--------------------Upgrade Levels--------------------
 	mov_speed_level = 0;
 	capacity_level = 0;
 	space_station_count = 0;
 	beam_level = 0;
 
-	// Tractor beam
+	//--------------------Tractor Beam--------------------
 	beam_pos.x				= 0.f;
 	beam_pos.y				= 0.f;
 
@@ -187,33 +186,44 @@ void Player::orbit_state(f64 frame_time)
 		for (int i = 0; i < debris_vector_all[current_planet.id].size(); ++i) {
 			Debris& debris = debris_vector_all[current_planet.id][i];
 			
-			// Debris to move towards player when in contact with beam
-			if ((current_capacity < max_capacity + capacity_level) && AEVec2Distance(&beam_pos, &debris.position) <= beam_height / 2) {
-				debris.move_towards_player = true;
-				debris.orbit_around_planet = false;
-			}
-			else
-				debris.move_towards_player = false;
+			if (debris.active) {
+				// Debris to move towards player when in contact with beam
+				if ((current_capacity < max_capacity + capacity_level) && 
+					AEVec2Distance(&beam_pos, &debris.position) <= beam_height / 2) {
+					debris.state = MOVE_TOWARDS_PLAYER;
+				}
+				else if (debris.move_towards_drone_id == 0)
+					debris.state = MOVE_TOWARDS_PLANET;
 
-			if ((current_capacity < max_capacity + capacity_level) && AEVec2Distance(&position, &debris.position) <= (size + debris.size) / 2)
-				// Debris to be destroyed when in contact with player
-				debris.to_erase = true;
+				if ((current_capacity < max_capacity + capacity_level) && AEVec2Distance(&position, &debris.position) <= (size + debris.size) / 2) {
+					// Debris to be destroyed when in contact with player
+					debris.to_erase = true;
+					//current_capacity++;
+					//debris.active = false;
+				}
+			}
 		}
 	}
 	else {
 		for (int i = 0; i < debris_vector_all[current_planet.id].size(); ++i) {
 			Debris& debris = debris_vector_all[current_planet.id][i];
-			debris.move_towards_player = false;
+			if (debris.state != ORBIT_AROUND_PLANET && debris.state != MOVE_TOWARDS_DRONE)
+				debris.state = MOVE_TOWARDS_PLANET;
 		}
 	}
 
-	// ===========================
-	// Remove debris to be erased
-	// ===========================
-	for (int i = 0; i < debris_vector_all[current_planet.id].size(); ++i) {
-		if (debris_vector_all[current_planet.id][i].to_erase) {
-			debris_vector_all[current_planet.id].erase(debris_vector_all[current_planet.id].begin() + i);
-			current_capacity++;
+	// ================================
+	// Erase debris
+	// ================================
+
+	for (size_t i = 0; i < debris_vector_all.size(); ++i) {
+		for (size_t j = 0; j < debris_vector_all[i].size(); j++) {
+			Debris& debris = debris_vector_all[i][j];
+
+			if (debris.to_erase) {
+				debris_vector_all[i].erase(debris_vector_all[i].begin() + j);
+				current_capacity++;
+			}
 		}
 	}
 }

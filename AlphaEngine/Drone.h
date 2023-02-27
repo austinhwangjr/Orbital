@@ -1,6 +1,16 @@
 #pragma once
 #include "PlayerUI.h"
 
+struct Drone_Bar {
+	AEVec2	position;
+	AEMtx33 transform;
+	f32		width;
+	f32		max_width;
+	f32		height;
+	f32		timer;
+	f32		total_time;
+};
+
 struct Drone
 {
 	//--------------------Drone--------------------
@@ -14,6 +24,9 @@ struct Drone
 	f32				direction;
 	int				current_capacity;
 	int				max_capacity;
+
+	//--------------------Cooldown Bar--------------------
+	Drone_Bar		cd_bar;
 
 	//--------------------Tractor Beam--------------------
 	AEVec2			beam_pos;

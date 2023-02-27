@@ -70,8 +70,8 @@ void PlayerUI::update(Player& player)
 	s32 mouse_x_screen, mouse_y_screen;
 	AEInputGetCursorPosition(&mouse_x_screen, &mouse_y_screen);
 
-	mouse_pos_world.x = cam_x + mouse_x_screen - 800;
-	mouse_pos_world.y = cam_y + 450 - mouse_y_screen;
+	mouse_pos_world.x = cam_x + mouse_x_screen - static_cast<f32>(AEGetWindowWidth() / 2);
+	mouse_pos_world.y = cam_y + static_cast<f32>(AEGetWindowHeight() / 2) - mouse_y_screen;
 
 	if (shop_triggered)
 		shop_open(player);
@@ -141,7 +141,7 @@ void PlayerUI::update(Player& player)
 	Draw Player UI
 */
 /******************************************************************************/
-void PlayerUI::draw(AEGfxVertexList* pMesh, Player& player)
+void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 {
 	AEMtx33 scale{}, rotate{}, translate{}, transform{};
 
