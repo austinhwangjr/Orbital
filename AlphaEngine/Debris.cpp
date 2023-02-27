@@ -89,28 +89,8 @@ void Debris::update(f64 frame_time)
 					debris.orbit_around_planet = true;
 				}
 			}
-			
-			
-			//When shuttle move from shuttle escape position to orbit
-			if(debris_vector_all[j][i].move_towards_planet){
 
-				// Move debris back to orbit
-				AEVec2 diff;
-				AEVec2Sub(&diff, &planet_vector[j].position, &debris.position);
-				AEVec2Normalize(&diff, &diff);
-				AEVec2Add(&debris.position, &debris.position, &diff);
-
-				// Debris to rotate around planet when in orbit range
-				if (AEVec2Distance(&planet_vector[j].position, &debris.position) <= (planet_vector[j].size / 2.0 + OUTERRIM_TO_DEBRIS)) {
-					debris.angle = static_cast<f32>(atan2(debris.position.y - planet_vector[j].position.y, debris.position.x - planet_vector[j].position.x));
-
-					debris.orbit_around_planet = true;
-					debris.move_towards_planet = false;
-				}
-
-			}
-
-			if (!debris_vector_all[j][i].move_towards_player && debris_vector_all[j][i].orbit_around_planet) {
+			else {
 				debris.angle -= AEDegToRad(0.125f) * debris.turning_speed * static_cast<f32>(frame_time);
 
 				debris.position.x = planet_vector[j].position.x + ((planet_vector[j].size / 2) + OUTERRIM_TO_DEBRIS) * AECos(debris.angle);

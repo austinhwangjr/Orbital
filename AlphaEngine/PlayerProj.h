@@ -3,6 +3,7 @@
 
 struct PlayerProj
 {
+	//--------------------Player Projectile--------------------
 	AEVec2			position;
 	AEVec2			velocity;
 	f32				size;
@@ -10,7 +11,7 @@ struct PlayerProj
 	f32				direction;
 	int				is_delete;
 
-	// Transform
+	//--------------------Transform--------------------
 	AEMtx33			transform;
 
 	void load();

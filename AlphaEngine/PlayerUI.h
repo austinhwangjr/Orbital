@@ -32,18 +32,18 @@ struct ShopOption
 
 struct PlayerUI
 {
-	bool			placing_drone;
-	bool			placing_station;
-	bool			shop_triggered;
-	AEMtx33			transform;
+	//--------------------Player UI--------------------
+	bool		placing_drone;
+	bool		placing_station;
+	bool		shop_triggered;
+	AEMtx33		transform;
 
-	// Cost of upgrades
+	//--------------------Cost of Upgrades--------------------
 	const int mov_speed_cost		= 100;
 	const int capacity_cost			= 200;
 	const int beam_strength_cost	= 150;
 	const int drone_cost			= 250;
 	const int space_station_cost	= 300;
-
 
 	void load();
 	void init();

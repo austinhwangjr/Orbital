@@ -3,7 +3,7 @@
 
 struct Drone
 {
-	// Drone
+	//--------------------Drone--------------------
 	AEVec2			position;
 	AEVec2			velocity;
 	f32				size;
@@ -15,13 +15,13 @@ struct Drone
 	int				current_capacity;
 	int				max_capacity;
 
-	// Drone's tractor beam
+	//--------------------Tractor Beam--------------------
 	AEVec2			beam_pos;
 	f32				beam_str;
 	f32				beam_width;
 	f32				beam_height;
 
-	// Transform
+	//--------------------Transform--------------------
 	AEMtx33			drone_transform;
 	AEMtx33			beam_transform;
 

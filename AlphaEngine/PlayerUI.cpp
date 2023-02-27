@@ -161,7 +161,6 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player& player)
 	
 	// Shop background
 	if (shop_triggered) {
-		// Shop background
 		AEGfxTextureSet(shop_background_tex, 0, 0);
 		AEGfxSetTransparency(0.5);
 		AEGfxSetTransform(shop_background_transform.m);
@@ -247,7 +246,7 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player& player)
 			shop_option_name = "SHOP";
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_option_name.c_str()),
 				(button_vector[i].position.x - button_vector[i].width / 2 - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button_vector[i].position.y - button_vector[i].height / 2 - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
+				(button_vector[i].position.y - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
 				1.f, 0.f, 0.f, 0.f);
 		}
 		else if (button_vector[i].button_type == MOVEMENT_SPEED) {
@@ -353,7 +352,7 @@ void PlayerUI::shop_open(Player& player)
 	// ===================
 
 	// Player clicks outside shop
-	if (click_outside_shop())
+	if (click_outside_shop() || AEInputCheckTriggered(AEVK_ESCAPE))
 		close_shop();
 
 	for (int i = 0; i < button_vector.size(); ++i) {
@@ -478,9 +477,9 @@ bool PlayerUI::click_outside_shop()
 			(mouse_pos_world.x > shop_background_right && mouse_pos_world.x < (cam_x + static_cast<f32>(AEGetWindowWidth()) / 2.f)) ||
 			(mouse_pos_world.y > (cam_y - static_cast<f32>(AEGetWindowHeight()) / 2.f) && mouse_pos_world.y < shop_background_bottom) ||
 			(mouse_pos_world.y > shop_background_top && mouse_pos_world.y < (cam_y + static_cast<f32>(AEGetWindowHeight()) / 2.f)))
-		{
+		
 			return true;
-		}
+		
 	}
 
 	return false;

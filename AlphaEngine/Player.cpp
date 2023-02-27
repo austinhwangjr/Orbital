@@ -174,8 +174,8 @@ void Player::orbit_state(f64 frame_time)
 	}
 
 	if (beam_active) {
-		beam_pos.x = position.x - AECos(direction) * (beam_height * 2 / 3);
-		beam_pos.y = position.y - AESin(direction) * (beam_height * 2 / 3);
+		beam_pos.x = position.x - AECos(direction) * ((beam_height + size) / 2);
+		beam_pos.y = position.y - AESin(direction) * ((beam_height + size) / 2);
 	}
 
 	// ================================
@@ -188,36 +188,24 @@ void Player::orbit_state(f64 frame_time)
 			Debris& debris = debris_vector_all[current_planet.id][i];
 			
 			// Debris to move towards player when in contact with beam
-			if (current_capacity < max_capacity + capacity_level && AEVec2Distance(&beam_pos, &debris.position) <= beam_height / 2) {
+			if ((current_capacity < max_capacity + capacity_level) && AEVec2Distance(&beam_pos, &debris.position) <= beam_height / 2) {
 				debris.move_towards_player = true;
 				debris.orbit_around_planet = false;
-				break;
 			}
 			else
 				debris.move_towards_player = false;
 
-			if (current_capacity < max_capacity + capacity_level && 
-				AEVec2Distance(&position, &debris.position) <= (size + debris.size) / 2) {
+			if ((current_capacity < max_capacity + capacity_level) && AEVec2Distance(&position, &debris.position) <= (size + debris.size) / 2)
 				// Debris to be destroyed when in contact with player
 				debris.to_erase = true;
-				break;
-			}
 		}
 	}
 	else {
 		for (int i = 0; i < debris_vector_all[current_planet.id].size(); ++i) {
 			Debris& debris = debris_vector_all[current_planet.id][i];
-
-			if (debris.move_towards_player)
-				debris.move_towards_player = false;
+			debris.move_towards_player = false;
 		}
 	}
-
-	// ===================================
-	// Update player and beam instances
-	// ===================================
-
-	
 
 	// ===========================
 	// Remove debris to be erased
