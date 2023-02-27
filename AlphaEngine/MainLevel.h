@@ -14,11 +14,8 @@ without the prior written consent of DigiPen Institute of
 Technology is prohibited.
 */
 /* End Header **************************************************************************/
-
-
 namespace main_level
 {
-	extern bool is_paused;
 
 	void load();
 	void init();
@@ -27,5 +24,6 @@ namespace main_level
 	void free();
 	void unload();
 
-
+	void draw_pause_menu();
 }
+extern bool is_paused;

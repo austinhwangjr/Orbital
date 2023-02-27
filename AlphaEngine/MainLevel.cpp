@@ -4,7 +4,7 @@
 \author		Hwang Jing Rui, Austin, jingruiaustin.hwang, 2200601
 \par		jingruiaustin.hwang\@digipen.edu
 \date		Jan 14, 2023
-\brief		This file contains the definition of the Load(), Initialize(), Update(), 
+\brief		This file contains the definition of the Load(), Initialize(), Update(),
 			Draw(), Free() and Unload() functions for Level 1.
 
 Copyright (C) 2023 DigiPen Institute of Technology.
@@ -53,21 +53,28 @@ extern Debris debris;
 Shuttles shuttle;
 extern WaveManager wave_manager;
 
+
 //PauseMenu pause_menu;
 //PauseMenuButtons pause_menu_buttons;
 
 // test variables (who did this? -yy)
 f64 total_time{}, frame_time{};
 
-//bool is_paused = false;
-//bool pause = false;
+bool is_paused = false;
 namespace main_level
 {
 	// Keep track of the previous and current game states
 	GS_STATES previous_state = GS_MAINLEVEL;
 	GS_STATES current_state = GS_MAINLEVEL;
-	bool is_paused = false;
+
+
+	void draw_pause_menu()
+	{
+		// render the pause menu
+		pause_menu::draw();
+	}
 }
+
 
 // ----------------------------------------------------------------------------
 // This function loads all necessary assets in Level1
@@ -77,6 +84,8 @@ namespace main_level
 void main_level::load()
 {
 	TexMLBackground = AEGfxTextureLoad("Assets/Background.png");
+
+	pause_menu::load();
 
 	// load texture
 	planet.load();
@@ -88,6 +97,8 @@ void main_level::load()
 	debris.load();
 	shuttle.load();
 	wave_manager.load();
+
+
 }
 
 // ----------------------------------------------------------------------------
@@ -103,7 +114,9 @@ void main_level::init()
 	createMesh1.BackgroundMesh(pMeshMLBackground);
 
 	createMesh1.SquareMesh(pMeshML);
-	
+
+	pause_menu::init();
+
 	planet.init();
 	player.init();
 	camera.init(player);
@@ -113,6 +126,7 @@ void main_level::init()
 	player_proj.init();
 	shuttle.init();
 	debris.init();
+
 
 	AE_ASSERT_MESG(pMeshML, "Error: Failed to create pMeshML in MainLevel.cpp!");
 
@@ -134,23 +148,22 @@ void main_level::update()
 	// Your own update logic goes here
 	frame_time = AEFrameRateControllerGetFrameTime();
 	total_time += frame_time;
-	
+
 	if (AEInputCheckTriggered(AEVK_P))
 	{
 		if (!is_paused)
 		{
 			previous_state = current_state;
-			current_state = GS_PAUSEMENU;
+			
 		}
 		else
 		{
 			current_state = previous_state;
 		}
-
 		is_paused = !is_paused;
 	}
 
-	if (current_state == GS_MAINLEVEL)
+	if (!is_paused)
 	{
 		planet.update(frame_time);
 		player.update(frame_time);
@@ -163,33 +176,29 @@ void main_level::update()
 		debris.update(frame_time);
 		wave_manager.update(frame_time);
 	}
-	else if (current_state == GS_PAUSEMENU && is_paused)
+	else if (is_paused)
 	{
 		pause_menu::update();
-		pause_menu::draw();
 	}
 
+	//Testing
+	if (AEInputCheckTriggered(AEVK_R))
+		next_state = GS_RESTART;
 
 
-	
-	// Testing
-	//if (AEInputCheckTriggered(AEVK_R))
-	//	next_state = GS_RESTART;
-	//
 
+	//if (AEInputCheckTriggered(AEVK_F11))
+	//{
+	//	// If the window close button has been clicked, set the game state to quit
+	//	Global_ToggleScreen();
+	//	std::cout << "Toggling Screen " << std::endl;
+	//}
 
-	if (AEInputCheckTriggered(AEVK_F11))
-	{
-		// If the window close button has been clicked, set the game state to quit
-		Global_ToggleScreen();
-		std::cout << "Toggling Screen " << std::endl;
-	}
-
-	// check if forcing the application to quit
-	if (AEInputCheckTriggered(AEVK_ESCAPE) && !player_ui.shop_triggered || 0 == AESysDoesWindowExist())
-	{
-		next_state = GS_MAINMENU;
-	}
+	//// check if forcing the application to quit
+	//if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
+	//{
+	//	next_state = GS_MAINMENU;
+	//}
 }
 
 // ----------------------------------------------------------------------------
@@ -199,10 +208,10 @@ void main_level::update()
 // ----------------------------------------------------------------------------
 void main_level::draw()
 {
-	// Set the background to black. 
+	// Set the background to black.
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
-	RenderMLBackground.RenderSprite(TexMLBackground, 0.f, 0.f, 800.f, 450.f, pMeshMLBackground);		//drawbackground for Mainlevel
+	//RenderMLBackground.RenderSprite(TexMLBackground, 0.f, 0.f, 800.f, 450.f, pMeshMLBackground);		//drawbackground for Mainlevel
 
 	// Tell the engine to get ready to draw something with texture. 
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
@@ -216,20 +225,22 @@ void main_level::draw()
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxSetTransparency(1.0f);
 
-	planet.draw(pMeshML);
-	player.draw(pMeshML);
-	player_proj.draw(pMeshML);
-	debris.draw(pMeshML);
-	shuttle.draw(pMeshML);
-	wave_manager.draw(pMeshML);
-	player_ui.draw(pMeshML, player);
-	drone.draw(pMeshML, player_ui);
-	space_station.draw(pMeshML, player_ui);
-
-	//if (pause_menu)
-	//{
-	//	pause_menu->draw(pMeshML);
-	//}
+	if (!is_paused)
+	{
+		planet.draw(pMeshML);
+		player.draw(pMeshML);
+		player_proj.draw(pMeshML);
+		debris.draw(pMeshML);
+		shuttle.draw(pMeshML);
+		wave_manager.draw(pMeshML);
+		player_ui.draw(pMeshML, player);
+		drone.draw(pMeshML, player_ui);
+		space_station.draw(pMeshML, player_ui);
+	}
+	else if (is_paused)
+	{
+		pause_menu::draw();
+	}
 }
 
 // ----------------------------------------------------------------------------
@@ -238,15 +249,24 @@ void main_level::draw()
 // ----------------------------------------------------------------------------
 void main_level::free()
 {
-	planet.free();
-	player.free();
-	player_ui.free();
-	drone.free();
-	space_station.free();
-	player_proj.free();
-	shuttle.free();
-	debris.free();
-	wave_manager.free();
+
+	if (!is_paused)
+	{
+		planet.free();
+		player.free();
+		player_ui.free();
+		drone.free();
+		space_station.free();
+		player_proj.free();
+		shuttle.free();
+		debris.free();
+		wave_manager.free();
+	}
+	else if (is_paused)
+	{
+		pause_menu::free();
+	}
+
 
 	AEGfxMeshFree(pMeshML);
 }
@@ -266,6 +286,7 @@ void main_level::unload()
 	shuttle.unload();
 	debris.unload();
 	wave_manager.unload();
+	pause_menu::unload();
 
 	AEGfxTextureUnload(TexMLBackground); // unload the texture for the background image
 }

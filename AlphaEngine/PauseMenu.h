@@ -1,6 +1,5 @@
 #pragma once
 
-//class PauseMenuButtons;
 
 namespace pause_menu
 {

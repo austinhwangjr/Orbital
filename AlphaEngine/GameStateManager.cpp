@@ -97,3 +97,8 @@ void GSM_RestartLevel()
 
 	next_state = GS_RESTART;
 }
+
+void gsm::changeGameState(int next_gamestate)
+{
+	next_state = next_gamestate;
+}

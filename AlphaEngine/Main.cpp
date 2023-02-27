@@ -5,6 +5,7 @@
 #include "Systems.h"
 #include "Input.h"
 #include <iostream>
+#include "MainLevel.h"
 
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -16,19 +17,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
 	// Enable run-time memory check for debug builds.
-	#if defined(DEBUG) | defined(_DEBUG)
+#if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	#endif
+#endif
 
 	system_call::init(hInstance, nCmdShow);																		// Initialize the system
 
 	// debugging log for mainmenu -yy
-	AEGfxReset();											// Reset the graphics engine before initializing the game state manager
-	
-	// Initialize the game state manager with the starting state
-	gsm::init(GS_MAINMENU);
+	/*AEGfxReset();*/											// Reset the graphics engine before initializing the game state manager
 
-	//gsm::init(GS_MAINLEVEL);																					// Initialize the Game State Manager (GSM) with Level1 as the initial game state
+	// Initialize the game state manager with the starting state
+	//gsm::init(GS_MAINMENU);
+	gsm::init(GS_MAINLEVEL);																					// Initialize the Game State Manager (GSM) with Level1 as the initial game state
+	//gsm::init(GS_PAUSEMENU);
 
 	// While the current game state is not equal to the quit state
 	while (current_state != GS_QUIT)
@@ -47,7 +48,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 		fpInit();         // Initialize current game state
 
-		// The game loop (while the next game state is equal to the current state)
+		//The game loop (while the next game state is equal to the current state)
 		while (next_state == current_state)
 		{
 			// Informing the system about the loop's start
@@ -55,8 +56,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 			// Handling Input
 			AEInputUpdate();
-
-			//input_handle();     // Update input status
 
 			fpUpdate();         // Update current game state
 
@@ -66,7 +65,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 
 		// debugging log for mainmenu -yy
-		//AEGfxReset();				// Reset graphics context
+		AEGfxReset();				// Reset graphics context
 
 		fpFree();               // Free current game state
 
@@ -82,5 +81,3 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	system_call::unload();              // Systems exit (terminate)
 }
-
-
