@@ -6,7 +6,6 @@
 #include "Input.h"
 #include <iostream>
 
-
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPWSTR    lpCmdLine,
@@ -20,19 +19,20 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	#endif
 
-	system_call::init(hInstance, nCmdShow);																		// Initialize the system
+	system_call::init(hInstance, nCmdShow);					// Initialize the system
 
 	// debugging log for mainmenu -yy
-	AEGfxReset();											// Reset the graphics engine before initializing the game state manager
 	
 	// Initialize the game state manager with the starting state
 	gsm::init(GS_MAINMENU);
 
-	//gsm::init(GS_MAINLEVEL);																					// Initialize the Game State Manager (GSM) with Level1 as the initial game state
+	//gsm::init(GS_MAINLEVEL);								// Initialize the Game State Manager (GSM) with Level1 as the initial game state
 
 	// While the current game state is not equal to the quit state
 	while (current_state != GS_QUIT)
 	{
+		AEGfxReset();											// Reset the graphics engine before initializing the game state manager
+
 		// If the current game state is not equal to the restart state
 		if (current_state != GS_RESTART)
 		{

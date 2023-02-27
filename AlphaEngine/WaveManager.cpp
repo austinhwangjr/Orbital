@@ -2,20 +2,17 @@
 #include <iostream>
 #include <string>
 
-WaveManager wave_manager;
-
 // Text
 extern s8 font_id;
 const char* print_string;
-std::string str_player_capacity; std::string str_wave_complete;
 
 void WaveManager::load()
 {
+
 }
 
 void WaveManager::init()
 {
-	srand(5);
 	std::cout << '\n' << "Wave Manager Initialized." << '\n' << '\n';
 
 	wave_completed = false;
@@ -134,7 +131,7 @@ void WaveManager::update(f64 frame_time)
 // Start of new wave-----------------------------------------------------
 }
 
-void WaveManager::draw(AEGfxVertexList *pMesh)
+void WaveManager::draw()
 {
 	for (size_t i{}; i < planet_vector.size(); i++)
 	{
@@ -153,9 +150,9 @@ void WaveManager::draw(AEGfxVertexList *pMesh)
 
 			// Draw timer at center of planet using position calculated above
 			AEGfxPrint(font_id, const_cast<s8*>(print_string),
-				2 * (timer_pos.x - 25.f / 2.f) / AEGetWindowWidth(),
-				2 * (timer_pos.y - 25.f / 2.f) / AEGetWindowHeight(),
-				1.f, planet_vector[i].shuttle_timer * 1.5 / planet_vector[i].shuttle_time_to_spawn, 0.f, 0.f);
+				2 * (timer_pos.x - FONT_ID_SIZE / 4.f) / AEGetWindowWidth(),
+				2 * (timer_pos.y - FONT_ID_SIZE / 4.f) / AEGetWindowHeight(),
+				1.f, planet_vector[i].shuttle_timer * static_cast<f32>(1.5) / planet_vector[i].shuttle_time_to_spawn, 0.f, 0.f);
 			// SHUTTLE TIMERS-------------------------------------------------------------------------------------------------------------------------------------
 
 			// SHUTTLE COUNT--------------------------------------------------------------------------------------------------------------------------------------
@@ -196,8 +193,8 @@ void WaveManager::draw(AEGfxVertexList *pMesh)
 			// Since position of AEGfxPrint is limit within -1.f to 1.f, clamp within those boundaries
 			// Subtract length of indicator string from 1.f to make up for font offset since position of font is at bottom left of font
 			AEGfxPrint(font_id, const_cast<s8*>(print_string),
-				AEClamp(dist_pos.x / AEGetWindowWidth(), -1.f, 1.f - (static_cast<f32>(230) / static_cast<f32>(AEGetWindowWidth()))),
-				AEClamp(dist_pos.y / AEGetWindowHeight(), -1.f, 1.f - (static_cast<f32>(80) / static_cast<f32>(AEGetWindowHeight()))),
+				AEClamp(dist_pos.x / AEGetWindowWidth(), -1.f, 1.f - (static_cast<f32>(4.5 * FONT_ID_SIZE) / static_cast<f32>(AEGetWindowWidth()))),
+				AEClamp(dist_pos.y / AEGetWindowHeight(), -1.f, 1.f - (static_cast<f32>(1.5 * FONT_ID_SIZE) / static_cast<f32>(AEGetWindowHeight()))),
 				1.f, 1.f, 1.f, 1.f);
 		}
 		// DISTANCE INDICATOR-------------------------------------------------------------------------------------------------------------------------------------
@@ -207,16 +204,16 @@ void WaveManager::draw(AEGfxVertexList *pMesh)
 	if (wave_interval_timer <= WAVE_INTERVAL_TIME)
 	{
 		// Place holder "Wave Complete"
-		str_wave_complete = "Wave " + std::to_string(wave_number) + " Completed";
+		std::string str_wave_complete = "Wave " + std::to_string(wave_number) + " Completed";
 		print_string = str_wave_complete.c_str();
-		AEGfxPrint(font_id, const_cast<s8*>(print_string), -0.2f, 0.85f + abs((WAVE_INTERVAL_TIME - (wave_interval_timer * 2)) / WAVE_INTERVAL_TIME) * 0.2f, 1.f, 1.f, 1.f, 1.f);
+		AEGfxPrint(font_id, const_cast<s8*>(print_string), static_cast<f32>(-0.2f), static_cast<f32>(0.85f + abs((WAVE_INTERVAL_TIME - (wave_interval_timer * 2)) / WAVE_INTERVAL_TIME) * 0.2f), 1.f, 1.f, 1.f, 1.f);
 	}
 
 
 	// Place holder "Shuttles Lost" counter
-	str_wave_complete = "Shuttles Lost: " + std::to_string(shuttle_destroyed);
-	print_string = str_wave_complete.c_str();
-	AEGfxPrint(font_id, const_cast<s8*>(print_string), -0.26f, -0.65f, 1.f, 1.f, 1.f, 1.f);
+	std::string str_shuttle_lost = "Shuttles Lost: " + std::to_string(shuttle_destroyed);
+	print_string = str_shuttle_lost.c_str();
+	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.f - (str_shuttle_lost.length() * FONT_ID_SIZE / AEGetWindowWidth()), -0.65f, 1.f, 1.f, 1.f, 1.f);
 }
 
 void WaveManager::free()

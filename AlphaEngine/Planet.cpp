@@ -1,3 +1,17 @@
+/* Start Header ************************************************************************/
+/*!
+\file		Planet.cpp
+\author		Tan Rui An Ryan, ruianryan.t, 2200600
+\par		ruianryan.t\@digipen.edu
+\date		Feb 27, 2023
+\brief		This file contains the behaviour for the Planet game object
+
+Copyright (C) 2023 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents
+without the prior written consent of DigiPen Institute of
+Technology is prohibited.
+*/
+/* End Header **************************************************************************/
 #include "AEEngine.h"
 #include "Planet.h"
 #include "SpaceStation.h"
@@ -19,7 +33,7 @@ void Planets::load()
 
 void Planets::init()
 {
-	srand(6);
+
 }
 
 void Planets::update(f64 frame_time)
@@ -35,11 +49,22 @@ void Planets::update(f64 frame_time)
 				shuttle.Shuttles::spawn(planet_vector[i].id);	// Spawn shuttle
 				planet_vector[i].current_shuttle--;				// Decrement current_shuttle
 				planet_vector[i].shuttle_timer = 0.0;			// Reset shuttle timer
-				planet_vector[i].shuttle_time_to_spawn = static_cast<f64>(rand() % (SHUTTLE_SPAWN_TIME_MAX - SHUTTLE_SPAWN_TIME_MIN) + SHUTTLE_SPAWN_TIME_MIN);	// Randomize time_to_spawn
+				planet_vector[i].shuttle_time_to_spawn = static_cast<f32>(rand() % (SHUTTLE_SPAWN_TIME_MAX - SHUTTLE_SPAWN_TIME_MIN) + SHUTTLE_SPAWN_TIME_MIN);	// Randomize time_to_spawn
 			}
-
-			planet_vector[i].shuttle_timer += frame_time;
+			
+			// Update shuttle timer
+			planet_vector[i].shuttle_timer += static_cast<f32>(frame_time);
 		}
+
+		// Rotate the planet
+		planet_vector[i].direction += PLANET_ROT_SPEED * static_cast<f32>(frame_time);
+
+		// Update the transform matrix with new direction
+		AEVec2 added;
+		AEVec2Set(&added, AECos(planet_vector[i].direction), AESin(planet_vector[i].direction));
+		AEMtx33Rot(&planet_vector[i].rotate, planet_vector[i].direction);
+		AEMtx33Concat(&planet_vector[i].transform, &planet_vector[i].rotate, &planet_vector[i].scale);
+		AEMtx33Concat(&planet_vector[i].transform, &planet_vector[i].translate, &planet_vector[i].transform);
 	}
 }
 
@@ -81,9 +106,11 @@ void Planets::spawn(int shuttle_randomize_amount)
 	new_planet.current_shuttle = new_planet.max_shuttle;
 
 // SETTING POSITION / TRANSFORM FOR PLANETS---------------------------------------------------------------------------------------------------
-	new_planet.size = PLANET_SIZE * (new_planet.max_shuttle / 2.0f);
+	new_planet.size = PLANET_SIZE * (new_planet.max_shuttle / 2.f);
 	AEMtx33Scale(&new_planet.scale, new_planet.size, new_planet.size);
-	AEMtx33Rot(&new_planet.rotate, PI / 4);
+
+	new_planet.direction = PI / 4;
+	AEMtx33Rot(&new_planet.rotate, direction);
 
 	// rand()%(max-min + 1) + min;
 	AEVec2Set(&new_planet.position,
@@ -99,7 +126,7 @@ void Planets::spawn(int shuttle_randomize_amount)
 // SETTING POSITION / TRANSFORM FOR PLANETS---------------------------------------------------------------------------------------------------
 
 	new_planet.shuttle_timer = 0.0;																													// Zero out shuttle timer on spawn
-	new_planet.shuttle_time_to_spawn = static_cast<f64>(rand() % (SHUTTLE_SPAWN_TIME_MAX - SHUTTLE_SPAWN_TIME_MIN + 1) + SHUTTLE_SPAWN_TIME_MIN);	// Randomize value for timer to reach before spawning
+	new_planet.shuttle_time_to_spawn = static_cast<f32>(rand() % (SHUTTLE_SPAWN_TIME_MAX - SHUTTLE_SPAWN_TIME_MIN + 1) + SHUTTLE_SPAWN_TIME_MIN);	// Randomize value for timer to reach before spawning
 	new_planet.shuttle_spawn_pos.x = new_planet.position.x;
 	new_planet.shuttle_spawn_pos.y = new_planet.position.y;
 
@@ -149,6 +176,7 @@ void Planets::check_spawn(Planets& new_planet)
 	}
 }
 
+// Return planet at furthest right x position
 f32 Planets::get_max_x()
 {
 	f32 max_x{};
@@ -159,6 +187,7 @@ f32 Planets::get_max_x()
 	return max_x;
 }
 
+// Return planet at furthest top y position
 f32 Planets::get_max_y()
 {
 	f32 max_y{};
@@ -169,6 +198,7 @@ f32 Planets::get_max_y()
 	return max_y;
 }
 
+// Return planet at furthest left x position
 f32 Planets::get_min_x()
 {
 	f32 min_x{};
@@ -179,6 +209,7 @@ f32 Planets::get_min_x()
 	return min_x;
 }
 
+// Return planet at furthest bottom y position
 f32 Planets::get_min_y()
 {
 	f32 min_y{};

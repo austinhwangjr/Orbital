@@ -18,7 +18,6 @@ int OUTERRIM_TO_DEBRIS = 20;
 
 extern WaveManager wave_manager;
 extern Player player;
-Debris debris;
 
 //PLANET VECTOR
 extern std::vector<Planets> planet_vector;
@@ -52,7 +51,6 @@ void Debris::init()
 
 void Debris::update(f64 frame_time)
 {
-
 	for (int j = 0; j < debris_vector_all.size(); j++) {
 		for (size_t i = 0; i < debris_vector_all[j].size(); i++) {
 			Debris& debris = debris_vector_all[j][i];
@@ -277,8 +275,6 @@ bool distance_from_radius(AEVec2 planet_radius, AEVec2 position, int planet_id) 
 
 void spawn_debris(int num_of_debris, int planet_id) {
 	if (debris_vector_all[planet_id].size() + num_of_debris < DEBRIS_MAX) {
-		srand(3);
-
 		int safe = 0;
 		int not_collide = 0;
 		int current_count = 0;
@@ -321,9 +317,6 @@ void spawn_debris(int num_of_debris, int planet_id) {
 				not_collide = 0;
 
 			}
-
 		}
-
-
 	}
 }

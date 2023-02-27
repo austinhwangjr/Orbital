@@ -42,16 +42,16 @@ AEGfxVertexList* pMeshML;						// Object square mesh
 // class declearation 
 Rendering RenderMLBackground;
 Rendering createMesh1;
-Player player;
-Planets planet;
-PlayerUI player_ui;
-Drone drone;
-SpaceStation space_station;
-PlayerProj player_proj;
-Camera camera;
-extern Debris debris;
-Shuttles shuttle;
-extern WaveManager wave_manager;
+Player player{};
+Planets planet{};
+PlayerUI player_ui{};
+Drone drone{};
+SpaceStation space_station{};
+PlayerProj player_proj{};
+Camera camera{};
+Debris debris{};
+Shuttles shuttle{};
+WaveManager wave_manager{};
 
 //PauseMenu pause_menu;
 //PauseMenuButtons pause_menu_buttons;
@@ -97,6 +97,8 @@ void main_level::load()
 // ----------------------------------------------------------------------------
 void main_level::init()
 {
+	srand(5);
+
 	// Set the camera position to (0, 0) for the background mesh
 	AEGfxSetCamPosition(0.f, 0.f);
 
@@ -169,14 +171,10 @@ void main_level::update()
 		pause_menu::draw();
 	}
 
-
-
-	
 	// Testing
 	//if (AEInputCheckTriggered(AEVK_R))
 	//	next_state = GS_RESTART;
 	//
-
 
 	if (AEInputCheckTriggered(AEVK_F11))
 	{
@@ -221,7 +219,7 @@ void main_level::draw()
 	player_proj.draw(pMeshML);
 	debris.draw(pMeshML);
 	shuttle.draw(pMeshML);
-	wave_manager.draw(pMeshML);
+	wave_manager.draw();
 	player_ui.draw(pMeshML, player);
 	drone.draw(pMeshML, player_ui);
 	space_station.draw(pMeshML, player_ui);
@@ -249,6 +247,7 @@ void main_level::free()
 	wave_manager.free();
 
 	AEGfxMeshFree(pMeshML);
+	AEGfxMeshFree(pMeshMLBackground);
 }
 
 // ----------------------------------------------------------------------------
