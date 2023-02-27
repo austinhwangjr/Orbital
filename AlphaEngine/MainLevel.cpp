@@ -209,7 +209,7 @@ void main_level::draw()
 	// Set the background to black.
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
-	//RenderMLBackground.RenderSprite(TexMLBackground, 0.f, 0.f, 800.f, 450.f, pMeshMLBackground);		//drawbackground for Mainlevel
+	RenderMLBackground.RenderSprite(TexMLBackground, 0.f, 0.f, 4800.f, 2700.f, pMeshMLBackground);		//drawbackground for Mainlevel
 
 	// Tell the engine to get ready to draw something with texture. 
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
