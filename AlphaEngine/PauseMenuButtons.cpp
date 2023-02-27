@@ -71,8 +71,8 @@ void PauseMenuButtons::update()
         switch (clickedButton)
         {
         case 0: current_state = previous_state;
-            is_paused = false;
-            break;
+                is_paused = false;
+                break;
         case 1: next_state = GS_RESTART;
                 is_paused = false;
                 break;

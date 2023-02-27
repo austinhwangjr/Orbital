@@ -12,7 +12,7 @@ struct SpaceStation
 	int				max_capacity;
 	Planets			current_planet;
 	f32				shortest_distance_spacestation;
-	bool			initial_spawn = false;
+	bool			initial_spawn;
 
 	//--------------------Transform--------------------
 	AEMtx33			transform;

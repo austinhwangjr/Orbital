@@ -56,9 +56,10 @@ void SpaceStation::init()
 {
 	position.x			= 0.f;
 	position.y			= 0.f;
-	size				= 32.0f;
+	size				= 100.0f;
 	current_capacity	= 0;
 	max_capacity		= 10;
+	initial_spawn		= false;
 }
 
 void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
@@ -320,7 +321,7 @@ void SpaceStation::draw(AEGfxVertexList* pMesh, PlayerUI player_ui)
 		capacity_spacestation = "Station Capacity: " + std::to_string(space_station_vector[i].current_capacity) + " / " + std::to_string(space_station_vector[i].max_capacity);
 		AEGfxPrint(font_id, const_cast<s8*>(capacity_spacestation.c_str()),
 			2 * (pos.x - 80) / AEGetWindowWidth(),
-			2 * (pos.y + 25) / AEGetWindowHeight(), 0.3f, 1.f, 1.f, 1.f);
+			2 * (pos.y + 50) / AEGetWindowHeight(), 0.3f, 1.f, 1.f, 1.f);
 	}
 
 	// ===========

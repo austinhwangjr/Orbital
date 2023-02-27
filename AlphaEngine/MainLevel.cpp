@@ -61,18 +61,13 @@ extern WaveManager wave_manager;
 f64 total_time{}, frame_time{};
 
 bool is_paused = false;
+
 namespace main_level
 {
 	// Keep track of the previous and current game states
 	GS_STATES previous_state = GS_MAINLEVEL;
 	GS_STATES current_state = GS_MAINLEVEL;
 
-
-	void draw_pause_menu()
-	{
-		// render the pause menu
-		pause_menu::draw();
-	}
 }
 
 
@@ -187,18 +182,18 @@ void main_level::update()
 
 
 
-	//if (AEInputCheckTriggered(AEVK_F11))
-	//{
-	//	// If the window close button has been clicked, set the game state to quit
-	//	Global_ToggleScreen();
-	//	std::cout << "Toggling Screen " << std::endl;
-	//}
+	if (AEInputCheckTriggered(AEVK_F11))
+	{
+		// If the window close button has been clicked, set the game state to quit
+		Global_ToggleScreen();
+		std::cout << "Toggling Screen " << std::endl;
+	}
 
-	//// check if forcing the application to quit
-	//if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
-	//{
-	//	next_state = GS_MAINMENU;
-	//}
+	// check if forcing the application to quit
+	if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
+	{
+		next_state = GS_MAINMENU;
+	}
 }
 
 // ----------------------------------------------------------------------------

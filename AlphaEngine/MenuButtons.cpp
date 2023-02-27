@@ -44,7 +44,7 @@ Button buttons[] = {
     {howToPlayX, howToPlayY, buttonWidth, buttonHeight},  // How to play button
     {creditsX, creditsY, buttonWidth, buttonHeight},  // Credits button
     {optionsX, optionsY, buttonWidth, buttonHeight},  // Options button
-    {quitX, -quitY, buttonWidth, buttonHeight}   // Quit button
+    {quitX, quitY, buttonWidth, buttonHeight}   // Quit button
 };
 
 void Menu_Button::load(const char* startButtonFilename,

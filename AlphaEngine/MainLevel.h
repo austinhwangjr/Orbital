@@ -23,7 +23,5 @@ namespace main_level
 	void draw();
 	void free();
 	void unload();
-
-	void draw_pause_menu();
 }
 extern bool is_paused;
