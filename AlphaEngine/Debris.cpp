@@ -12,6 +12,8 @@
 #define SHUTTLE_SIZE 20
 #define MAX_BUFFER 80
 #define MIN_BUFFER 40
+#define EXPLOSION_WIDTH 40
+#define EXPLOSION_HEIGHT 40
 
 int OUTERRIM_TO_DEBRIS = 20;
 
@@ -19,6 +21,7 @@ int OUTERRIM_TO_DEBRIS = 20;
 extern WaveManager wave_manager;
 extern Player player;
 Debris debris;
+
 
 //PLANET VECTOR
 extern std::vector<Planets> planet_vector;
@@ -40,9 +43,13 @@ static f64 elapsed_time{};
 //TEXTURE OF DEBRIS
 AEGfxTexture* debrisTex;
 
+//TEXTURE OF EXPLOSION
+AEGfxTexture* explosionTex;
+
 void Debris::load()
 {
 	debrisTex = AEGfxTextureLoad("Assets/Debris.png");
+	explosionTex = AEGfxTextureLoad("Assets/Explosion.png");
 }
 
 void Debris::init()
@@ -124,8 +131,10 @@ void Debris::update(f64 frame_time)
 					wave_manager.shuttle_left_planet++;
 					debris_vector_all[shuttle_vector[i].planet_id][k].active = false;
 					shuttle_vector[i].active = false;
-
-					spawn_debris(3, shuttle_vector[i].planet_id);
+					debris_vector_all[shuttle_vector[i].planet_id][k].explosion.is_draw = 1;
+					debris_vector_all[shuttle_vector[i].planet_id][k].explosion.position = debris_vector_all[shuttle_vector[i].planet_id][k].position;
+					//spawn_debris(3, shuttle_vector[i].planet_id);
+					spawn_debris_shuttle(shuttle_vector[i].position, shuttle_vector[i].planet_id, 4);
 					break;
 				}
 			}
@@ -137,13 +146,8 @@ void Debris::update(f64 frame_time)
 	}
 
 	
-	for (int j = 0; j < debris_vector_all.size(); j++) {
-		for (size_t i = 0; i < debris_vector_all[j].size(); i++) {
-			if (debris_vector_all[j][i].active==false) {
-				debris_vector_all[j].erase(debris_vector_all[j].begin() + i);
-			}
-		}
-	}
+	
+
 
 	// =======================================
 	// calculate the matrix for DEBRIS
@@ -165,6 +169,31 @@ void Debris::update(f64 frame_time)
 		}
 	}
 
+	// ===================================
+	// calculate the matrix for EXPLOSION
+	// ===================================
+	AEMtx33 scale, rot, trans;
+	for (int j = 0; j < debris_vector_all.size(); j++) {
+		for (size_t i = 0; i < debris_vector_all[j].size(); i++) {
+			Explosion& explosion = debris_vector_all[j][i].explosion;
+
+			if (explosion.is_draw == 1) {
+
+				if (explosion.timer <= explosion.total_time) {
+					explosion.timer += frame_time;
+					AEMtx33Scale(&scale, explosion.width, explosion.height);
+					AEMtx33Rot(&rot, 0);
+					AEMtx33Trans(&trans, explosion.position.x, explosion.position.y);
+					AEMtx33Concat(&explosion.transform, &rot, &scale);
+					AEMtx33Concat(&explosion.transform, &trans, &explosion.transform);
+				}
+				else {
+					explosion.timer = 0;
+					explosion.is_draw = 0;
+				}
+			}
+		}
+	}
 
 
 }
@@ -184,16 +213,49 @@ void Debris::draw(AEGfxVertexList* pMesh)
 			}
 		}
 	}
+
+	// ===============
+	// DRAW EXPLOSION
+	// ===============
+	for (int j = 0; j < debris_vector_all.size(); j++) {
+		for (size_t i = 0; i < debris_vector_all[j].size(); i++) {
+
+			Explosion& explosion = debris_vector_all[j][i].explosion;
+			if (explosion.is_draw) {
+
+				if (explosion.timer <= explosion.total_time) {
+					AEGfxSetTransparency(explosion.total_time - explosion.timer);
+
+					AEGfxTextureSet(explosionTex, 0, 0);
+					AEGfxSetTransform(explosion.transform.m);
+					AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+				}
+				else {
+					AEGfxSetTransparency(0.f);
+				}
+			}
+		}
+	}
+	AEGfxSetTransparency(1.f);
+
 }
 
 void Debris::free()
 {
+	for (int j = 0; j < debris_vector_all.size(); j++) {
+		for (size_t i = 0; i < debris_vector_all[j].size(); i++) {
+			if (debris_vector_all[j][i].active == false) {
+				debris_vector_all[j].erase(debris_vector_all[j].begin() + i);
+			}
+		}
+	}
 	debris_vector_all.clear();
 }
 
 void Debris::unload()
 {
 	AEGfxTextureUnload(debrisTex);
+	AEGfxTextureUnload(explosionTex);
 }
 
 
@@ -220,15 +282,20 @@ std::vector<Debris> Debris::create_debris(f32 planet_x, f32 planet_y, double siz
 		new_debris.translate = { 0 };
 		new_debris.transform = { 0 };
 
+		new_debris.explosion.height = EXPLOSION_HEIGHT;
+		new_debris.explosion.width = EXPLOSION_WIDTH;
+		new_debris.explosion.transform = { 0 };
+		new_debris.explosion.total_time = 1;
+
 		debris_vector.push_back(new_debris);
 	}
 	debris_vector_all.push_back(debris_vector);
 	return debris_vector;
 }
 
-// ============================================
-// FUNCTION TO SPAWN DEBRIS UPON SHUTTLE ESCAPE
-// ============================================
+// ==================================================
+// FUNCTION TO SPAWN DEBRIS UPON SHUTTLE ESCAPE/DEATH
+// ==================================================
 
 void spawn_debris_shuttle(AEVec2 position, int planet_id, int num_of_debris) {
 	for (int i = 0; i < num_of_debris; i++) {
@@ -247,6 +314,14 @@ void spawn_debris_shuttle(AEVec2 position, int planet_id, int num_of_debris) {
 		new_debris.rotate = { 0 };
 		new_debris.translate = { 0 };
 		new_debris.transform = { 0 };
+
+
+
+		//EXPLOSION
+		new_debris.explosion.height = EXPLOSION_HEIGHT;
+		new_debris.explosion.width = EXPLOSION_WIDTH;
+		new_debris.explosion.transform = { 0 };
+		new_debris.explosion.total_time = 1;
 
 		debris_vector_all[planet_id].push_back(new_debris);
 	}

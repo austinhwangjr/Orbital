@@ -1,6 +1,17 @@
 #pragma once
 #include <vector>
 
+
+struct Explosion {
+	AEVec2	position;
+	AEMtx33 transform;
+	f32		width;
+	f32		height;
+	f32		timer = 0;
+	f32		total_time = 1;
+	int		is_draw = 0;
+};
+
 struct Debris
 {
 	int id;
@@ -23,6 +34,7 @@ struct Debris
 	//bool move_towards_drone = false;
 	bool move_towards_planet = false;
 	bool to_erase = false;
+	Explosion explosion;
 
 	void load();
 	void init();
@@ -33,6 +45,9 @@ struct Debris
 
 	std::vector<Debris> create_debris(f32 planet_x, f32 planet_y, double size, int total_debris);
 };
+
+
+
 
 extern std::vector<Debris> debris_vector;
 void spawn_debris(int num_of_debris, int planet_id);
