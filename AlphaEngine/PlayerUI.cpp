@@ -7,6 +7,9 @@
 
 // Textures
 extern AEGfxTexture* player_tex;
+
+
+
 AEGfxTexture* shop_icon_tex;
 AEGfxTexture* space_station_tex;
 AEGfxTexture* shop_background_tex;
@@ -296,7 +299,7 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player& player)
 		}
 		else if (button_vector[i].button_type == CREATE_DRONE) {
 			AEGfxTextureSet(player_tex, 0, 0);
-			AEMtx33Scale(&scale, 20.f, 20.f);
+			AEMtx33Scale(&scale, 75.f, 75.f);
 			AEMtx33Rot(&rotate, PI);
 			AEMtx33Trans(&translate, button_vector[i].position.x, button_vector[i].position.y);
 			AEMtx33Concat(&transform, &rotate, &scale);
@@ -313,7 +316,7 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player& player)
 		}
 		else if (button_vector[i].button_type == SPACE_STATION) {
 			AEGfxTextureSet(space_station_tex, 0, 0);
-			AEMtx33Scale(&scale, 20.f, 20.f);
+			AEMtx33Scale(&scale, 75.f, 75.f);
 			AEMtx33Rot(&rotate, PI);
 			AEMtx33Trans(&translate, button_vector[i].position.x, button_vector[i].position.y);
 			AEMtx33Concat(&transform, &rotate, &scale);

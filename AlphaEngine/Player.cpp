@@ -17,6 +17,7 @@ void Player::load()
 	// Load textures
 	player_tex			= AEGfxTextureLoad("Assets/test-player.png");
 	tractor_beam_tex	= AEGfxTextureLoad("Assets/TractorBeam.png");
+
 }
 
 void Player::init()

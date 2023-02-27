@@ -85,9 +85,10 @@ void main_level::load()
 	// load texture
 	planet.load();
 	player.load();
+	space_station.load();
 	player_ui.load();
 	drone.load();
-	space_station.load();
+	
 	player_proj.load();
 	debris.load();
 	shuttle.load();
@@ -114,10 +115,11 @@ void main_level::init()
 
 	planet.init();
 	player.init();
+	space_station.init();
 	camera.init(player);
 	player_ui.init();
 	drone.init(player);
-	space_station.init();
+	
 	player_proj.init();
 	shuttle.init();
 	debris.init();
@@ -162,11 +164,12 @@ void main_level::update()
 	{
 		planet.update(frame_time);
 		player.update(frame_time);
+		space_station.update(frame_time, player, player_ui);
 		player_proj.update(frame_time, player, player_ui);
 		camera.update(frame_time, player);
 		player_ui.update(player);
 		drone.update(frame_time, player, player_ui);
-		space_station.update(frame_time, player, player_ui);
+		
 		shuttle.update(frame_time, player);
 		debris.update(frame_time);
 		wave_manager.update(frame_time);
@@ -224,13 +227,14 @@ void main_level::draw()
 	{
 		planet.draw(pMeshML);
 		player.draw(pMeshML);
+		space_station.draw(pMeshML, player_ui);
 		player_proj.draw(pMeshML);
 		debris.draw(pMeshML);
 		shuttle.draw(pMeshML);
 		wave_manager.draw(pMeshML);
 		player_ui.draw(pMeshML, player);
 		drone.draw(pMeshML, player_ui);
-		space_station.draw(pMeshML, player_ui);
+		
 	}
 	else if (is_paused)
 	{
@@ -249,9 +253,10 @@ void main_level::free()
 	{
 		planet.free();
 		player.free();
+		space_station.free();
 		player_ui.free();
 		drone.free();
-		space_station.free();
+		
 		player_proj.free();
 		shuttle.free();
 		debris.free();
@@ -274,8 +279,9 @@ void main_level::unload()
 {
 	planet.unload();
 	player.unload();
-	drone.unload();
 	space_station.unload();
+	drone.unload();
+	
 	player_ui.unload();
 	player_proj.unload();
 	shuttle.unload();

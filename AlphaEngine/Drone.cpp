@@ -20,7 +20,7 @@ extern std::vector<std::vector<Debris>> debris_vector_all;
 
 void Drone::load()
 {
-
+	
 }
 
 void Drone::init(Player player)
@@ -265,5 +265,5 @@ void Drone::free()
 
 void Drone::unload()
 {
-
+	
 }
