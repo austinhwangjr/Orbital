@@ -110,7 +110,7 @@ void main_level::init()
 
 	createMesh1.BackgroundMesh(pMeshMLBackground);
 
-	createMesh1.SquareMesh(pMeshML);
+	createMesh1.IGSquareMesh(pMeshML);
 
 	pause_menu::init();
 
@@ -227,11 +227,12 @@ void main_level::draw()
 		planet.draw(pMeshML);
 		player.draw(pMeshML);
 		space_station.draw(pMeshML, player_ui);
+		player_ui.draw(pMeshML, player);
 		player_proj.draw(pMeshML);
 		debris.draw(pMeshML);
 		shuttle.draw(pMeshML);
 		wave_manager.draw();
-		player_ui.draw(pMeshML, player);
+
 		drone.draw(pMeshML, player_ui);
 
 	if (is_paused)

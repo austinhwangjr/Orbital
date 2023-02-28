@@ -23,6 +23,8 @@ public:
 
     void SquareMesh(AEGfxVertexList*& pMesh);
 
+    void IGSquareMesh(AEGfxVertexList*& pMesh);
+
     void BackgroundMesh(AEGfxVertexList*& pMesh);
 
     void RenderText(const char* text, float x, float y, int fontSize);
