@@ -24,8 +24,8 @@ Rendering renderhtp;
 static float howToPlayBGX = 0.0f;
 static float howToPlayBGY = 0.0f;
 
-static float returnToMMX = 500.0f;
-static float returnToMMY = 0.0f;
+static float returnToMMX = 650.0f;
+static float returnToMMY = -20.0f;
 
 
 
@@ -39,7 +39,7 @@ How_To_Play::Button1 buttons1[] = {
 void How_To_Play::load()
 {
     howToPlayBGTexture = AEGfxTextureLoad("Assets/howToPlay.png");
-    returnToMMTexture = AEGfxTextureLoad("Assets/returnToMMButton.png");
+    returnToMMTexture = AEGfxTextureLoad("Assets/p_ExitMainMenuButton.png");
 }
 
 void How_To_Play::init()
