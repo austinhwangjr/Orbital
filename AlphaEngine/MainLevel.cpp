@@ -230,7 +230,7 @@ void main_level::draw()
 		player_proj.draw(pMeshML);
 		debris.draw(pMeshML);
 		shuttle.draw(pMeshML);
-		wave_manager.draw(pMeshML);
+		wave_manager.draw();
 		player_ui.draw(pMeshML, player);
 		drone.draw(pMeshML, player_ui);
 
