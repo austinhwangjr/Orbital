@@ -35,13 +35,6 @@ extern std::vector<std::vector<Drone>> drone_vector_all;
 //VECTOR OF ALL PLANET'S DEBRIS
 std::vector<std::vector<Debris>> debris_vector_all;
 
-
-//PLANET COUNT
-extern int planet_count;
-
-//ELAPSED TIME
-static f64 elapsed_time{};
-
 //TEXTURE OF DEBRIS
 AEGfxTexture* debrisTex;
 
@@ -289,7 +282,7 @@ void spawn_debris_shuttle(AEVec2 position, int planet_id, int num_of_debris) {
 		new_debris.id = debris_vector_all[planet_id].size() + 1;
 		new_debris.turning_speed = SPEED_DEBRIS;
 		new_debris.active = true;
-		new_debris.state = ORBIT_AROUND_PLANET;
+		new_debris.state = MOVE_TOWARDS_PLANET;
 
 		new_debris.scale = { 0 };
 		new_debris.rotate = { 0 };

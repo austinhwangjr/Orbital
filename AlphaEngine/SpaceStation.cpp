@@ -228,7 +228,8 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 			//After finsishing draw coin
 			if (cooldown_vector[i].timer > 3 && space_station_vector[i].current_capacity >= 0) {
 				space_station_vector[i].current_capacity--;
-				player.credits += 100;
+				player.credits += DEBRIS_VALUE;
+				player.score += DEBRIS_SCORE;
 				coin_vector[i].is_draw = 1;
 				cooldown_vector[i].timer = 0;
 				coin_vector[i].lifespan = 0;

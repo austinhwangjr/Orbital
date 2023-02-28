@@ -78,7 +78,6 @@ void PlayerProj::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 				f32 radius = size / 2 + space_station_vector[j].size / 2;
 
 				if (AEVec2Distance(&player_proj_vector[i].position, &space_station_vector[j].position) <= radius) {
-					player.score += 100;
 					player_proj_vector[i].is_delete = 1;
 					space_station_vector[j].current_capacity += 1;
 				}

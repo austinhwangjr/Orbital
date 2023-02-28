@@ -146,7 +146,7 @@ void Drone::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 							debris.state = MOVE_TOWARDS_DRONE;
 						}
 						// Not colliding with player beam or drone beam
-						else if (debris.state != MOVE_TOWARDS_PLAYER && debris.state != MOVE_TOWARDS_DRONE)
+						else if (debris.state != MOVE_TOWARDS_PLAYER && debris.state == MOVE_TOWARDS_DRONE)
 							debris.state = MOVE_TOWARDS_PLANET;
 
 						if (debris.move_towards_drone_id > 0 && (drone.current_capacity < drone.max_capacity) &&
@@ -208,6 +208,8 @@ void Drone::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 				if (drone.cd_bar.timer > drone.cd_bar.total_time && drone.current_capacity >= 0) {
 					drone.current_capacity--;
 					drone.cd_bar.timer = 0;
+					player.credits += DEBRIS_VALUE / 2;
+					player.score += DEBRIS_SCORE / 2;
 				}
 			}
 			else {

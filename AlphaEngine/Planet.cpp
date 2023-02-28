@@ -117,7 +117,6 @@ void Planets::spawn(int shuttle_randomize_amount)
 	AEMtx33Rot(&new_planet.rotate, direction);
 
 	// rand()%(max-min) + min;
-	std::cout << (get_min_x() - AEGetWindowWidth() - new_planet.size);
 	AEVec2Set(&new_planet.position,
 		static_cast<f32>(rand() % static_cast<int>(get_max_x() - get_min_x() + AEGetWindowWidth()) + (get_min_x() - AEGetWindowWidth())),
 		static_cast<f32>(rand() % static_cast<int>(get_max_y() - get_min_y() + AEGetWindowHeight()) + (get_min_y() - AEGetWindowHeight())));

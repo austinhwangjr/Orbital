@@ -47,7 +47,7 @@ void Player::init()
 
 	//--------------------Score-keeping--------------------
 	score					= 0;
-	credits					= 50'000;
+	credits					= 200;
 
 	//--------------------Upgrade Levels--------------------
 	mov_speed_level			= 0;
@@ -193,7 +193,7 @@ void Player::orbit_state(f64 frame_time)
 					debris.state = MOVE_TOWARDS_PLAYER;
 				}
 				// Beam active, but not colliding with player beam or drone beam
-				else if (debris.state != MOVE_TOWARDS_PLAYER && debris.state != MOVE_TOWARDS_DRONE)
+				else if (debris.state == MOVE_TOWARDS_PLAYER && debris.state != MOVE_TOWARDS_DRONE)
 					debris.state = MOVE_TOWARDS_PLANET;
 
 				if ((current_capacity < max_capacity + capacity_level) && AEVec2Distance(&position, &debris.position) <= (size + debris.size) / 2) {

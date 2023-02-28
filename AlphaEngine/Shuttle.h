@@ -1,7 +1,7 @@
 #pragma once
 #define SHUTTLE_MAX_LIFESPAN	5.f			// Maximum life time for a shuttle before escaping (expiring)
 #define SHUTTLE_MAX_ACCEL		100.f		// Maximum acceleration for a shuttle
-#define SHUTTLE_VALUE			2			// Credit value for a shuttle
+#define SHUTTLE_VALUE			30			// Credit value for a shuttle
 
 #include "Player.h"
 #include <vector>
