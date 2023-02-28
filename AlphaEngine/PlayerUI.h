@@ -1,6 +1,9 @@
 #pragma once
 #include "Player.h"
 
+#define DEBRIS_VALUE 10
+#define DEBRIS_SCORE 100
+
 enum BUTTON_TYPE 
 {
 	MOVEMENT_SPEED = 0,
@@ -38,17 +41,22 @@ struct PlayerUI
 	bool		shop_triggered;
 	AEMtx33		transform;
 
+	//--------------------Icons in shop--------------------
+	f32			icon_size;
+	AEMtx33		drone_icon_transform;
+	AEMtx33		space_station_icon_transform;
+
 	//--------------------Cost of Upgrades--------------------
 	const int mov_speed_cost		= 100;
 	const int capacity_cost			= 200;
 	const int beam_strength_cost	= 150;
 	const int drone_cost			= 250;
-	const int space_station_cost	= 300;
+	const int space_station_cost	= 500;
 
 	void load();
 	void init();
 	void update(Player&);
-	void draw(AEGfxVertexList*, Player&);
+	void draw(AEGfxVertexList*, Player);
 	void free();
 	void unload();
 	

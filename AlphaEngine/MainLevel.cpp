@@ -53,7 +53,6 @@ Debris debris{};
 Shuttles shuttle{};
 WaveManager wave_manager{};
 
-
 //PauseMenu pause_menu;
 //PauseMenuButtons pause_menu_buttons;
 

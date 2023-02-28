@@ -73,8 +73,6 @@ void main_menu::free()
 {
     AEGfxMeshFree(pMeshMMBackground);
     AEGfxMeshFree(pMeshMM);
-    menuButtons.free();
-
 
 }
 
