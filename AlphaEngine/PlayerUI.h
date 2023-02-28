@@ -38,6 +38,11 @@ struct PlayerUI
 	bool		shop_triggered;
 	AEMtx33		transform;
 
+	//--------------------Icons in shop--------------------
+	f32			icon_size;
+	AEMtx33		drone_icon_transform;
+	AEMtx33		space_station_icon_transform;
+
 	//--------------------Cost of Upgrades--------------------
 	const int mov_speed_cost		= 100;
 	const int capacity_cost			= 200;

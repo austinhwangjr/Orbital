@@ -155,12 +155,11 @@ void main_level::update()
 	if (current_state == GS_MAINLEVEL)
 	{
 		planet.update(frame_time);
-		
+		player.update(frame_time);
 		player_proj.update(frame_time, player, player_ui);
 		camera.update(frame_time, player);
 		player_ui.update(player);
 		drone.update(frame_time, player, player_ui);
-		player.update(frame_time);
 		space_station.update(frame_time, player, player_ui);
 		shuttle.update(frame_time, player);
 		debris.update(frame_time);

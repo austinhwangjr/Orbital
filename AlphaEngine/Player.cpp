@@ -50,10 +50,10 @@ void Player::init()
 	credits					= 50'000;
 
 	//--------------------Upgrade Levels--------------------
-	mov_speed_level = 0;
-	capacity_level = 0;
-	space_station_count = 0;
-	beam_level = 0;
+	mov_speed_level			= 0;
+	capacity_level			= 0;
+	space_station_count		= 0;
+	beam_level				= 0;
 
 	//--------------------Tractor Beam--------------------
 	beam_pos.x				= 0.f;
@@ -187,19 +187,19 @@ void Player::orbit_state(f64 frame_time)
 			Debris& debris = debris_vector_all[current_planet.id][i];
 			
 			if (debris.active) {
-				// Debris to move towards player when in contact with beam
+				// Debris to move towards player when in contact with beam	
 				if ((current_capacity < max_capacity + capacity_level) && 
 					AEVec2Distance(&beam_pos, &debris.position) <= beam_height / 2) {
 					debris.state = MOVE_TOWARDS_PLAYER;
 				}
-				else if (debris.move_towards_drone_id == 0)
+				// Beam active, but not colliding with player beam or drone beam
+				else if (debris.state != MOVE_TOWARDS_PLAYER && debris.state != MOVE_TOWARDS_DRONE)
 					debris.state = MOVE_TOWARDS_PLANET;
 
 				if ((current_capacity < max_capacity + capacity_level) && AEVec2Distance(&position, &debris.position) <= (size + debris.size) / 2) {
 					// Debris to be destroyed when in contact with player
-					debris.to_erase = true;
-					//current_capacity++;
-					//debris.active = false;
+					current_capacity++;
+					debris.active = false;
 				}
 			}
 		}
@@ -207,23 +207,9 @@ void Player::orbit_state(f64 frame_time)
 	else {
 		for (int i = 0; i < debris_vector_all[current_planet.id].size(); ++i) {
 			Debris& debris = debris_vector_all[current_planet.id][i];
-			if (debris.state != ORBIT_AROUND_PLANET && debris.state != MOVE_TOWARDS_DRONE)
+			// Beam no longer active, if debris was moving towards player, make it move towards planet
+			if (debris.state == MOVE_TOWARDS_PLAYER)
 				debris.state = MOVE_TOWARDS_PLANET;
-		}
-	}
-
-	// ================================
-	// Erase debris
-	// ================================
-
-	for (size_t i = 0; i < debris_vector_all.size(); ++i) {
-		for (size_t j = 0; j < debris_vector_all[i].size(); j++) {
-			Debris& debris = debris_vector_all[i][j];
-
-			if (debris.to_erase) {
-				debris_vector_all[i].erase(debris_vector_all[i].begin() + j);
-				current_capacity++;
-			}
 		}
 	}
 }
@@ -233,15 +219,17 @@ void Player::flying_state(f64 frame_time)
 	// ================
 	// Check for input
 	// ================
+
 	if (AEInputCheckCurr(AEVK_W)) {
 		AEVec2 added;
 		AEVec2Set(&added, AECos(direction), AESin(direction));
 
 		// Find the velocity according to the acceleration
-		// Limit your speed over here
 		AEVec2Scale(&added, &added, mov_speed * static_cast<f32>(mov_speed_level + 1) / 2.f);
 		velocity.x = velocity.x + added.x * static_cast<f32>(frame_time);
 		velocity.y = velocity.y + added.y * static_cast<f32>(frame_time);
+
+		// Limit player's speed
 		AEVec2Scale(&velocity, &velocity, 0.99f);
 	}
 
@@ -250,10 +238,11 @@ void Player::flying_state(f64 frame_time)
 		AEVec2Set(&added, -AECos(direction), -AESin(direction));
 
 		// Find the velocity according to the decceleration
-		// Limit your speed over here
 		AEVec2Scale(&added, &added, mov_speed * static_cast<f32>(mov_speed_level + 1) / 2.f);
 		velocity.x = velocity.x + added.x * static_cast<f32>(frame_time);
 		velocity.y = velocity.y + added.y * static_cast<f32>(frame_time);
+
+		// Limit player's speed
 		AEVec2Scale(&velocity, &velocity, 0.99f);
 	}
 
@@ -275,14 +264,9 @@ void Player::flying_state(f64 frame_time)
 	// =======================
 	// Update player position
 	// =======================
+
 	position.x = position.x + velocity.x * static_cast<f32>(frame_time);
-	position.y = position.y + velocity.y * static_cast<f32>(frame_time);
-
-	// ====================
-	// Check for collision
-	// ====================
-
-	
+	position.y = position.y + velocity.y * static_cast<f32>(frame_time);	
 
 	// ===================================
 	// Update active game object instances

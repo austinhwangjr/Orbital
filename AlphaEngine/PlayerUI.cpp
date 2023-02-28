@@ -36,11 +36,11 @@ std::vector<ShopOption> button_vector;
 void PlayerUI::load()
 {
 	// Load textures
-	shop_icon_tex = AEGfxTextureLoad("Assets/YellowTexture.png");
-	space_station_tex = AEGfxTextureLoad("Assets/space-station.png");
-	shop_background_tex = AEGfxTextureLoad("Assets/shop-background.png");
-	upgrade_level_hollow_tex = AEGfxTextureLoad("Assets/upgrade_level_hollow.png");
-	upgrade_level_solid_tex = AEGfxTextureLoad("Assets/upgrade_level_solid.png");
+	shop_icon_tex				= AEGfxTextureLoad("Assets/YellowTexture.png");
+	space_station_tex			= AEGfxTextureLoad("Assets/space-station.png");
+	shop_background_tex			= AEGfxTextureLoad("Assets/shop-background.png");
+	upgrade_level_hollow_tex	= AEGfxTextureLoad("Assets/upgrade_level_hollow.png");
+	upgrade_level_solid_tex		= AEGfxTextureLoad("Assets/upgrade_level_solid.png");
 }
 
 void PlayerUI::init()
@@ -62,6 +62,9 @@ void PlayerUI::init()
 	// Shop background size
 	shop_background_width = static_cast<f32>(AEGetWindowWidth()) * 0.85f;
 	shop_background_height = static_cast<f32>(AEGetWindowHeight()) * 0.85f;
+
+	// Icons in shop
+	icon_size = 20.f;
 }
 
 void PlayerUI::update(Player& player)
@@ -75,7 +78,6 @@ void PlayerUI::update(Player& player)
 
 	if (shop_triggered)
 		shop_open(player);
-
 	else
 		shop_closed();
 
@@ -91,9 +93,9 @@ void PlayerUI::update(Player& player)
 		button_vector[i].position.x = cam_x - static_cast<f32>(AEGetWindowWidth() / 2) * 0.7f;
 		button_vector[i].position.y = button_vector[0].position.y - (i - 1) * button_vector[i].height * 1.25f;
 
+		// Level indicators for upgrades
 		for (int j = 0; j < button_vector[i].indicator_vector.size(); ++j) {
 			UpgradeLevelIndicator& indicator = button_vector[i].indicator_vector[j];
-
 			indicator.position.x = button_vector[i].position.x + button_vector[i].width + (j * indicator.width);
 			indicator.position.y = button_vector[i].position.y;
 		}
@@ -114,17 +116,32 @@ void PlayerUI::update(Player& player)
 		AEMtx33Concat(&button.transform, &rot, &scale);
 		AEMtx33Concat(&button.transform, &trans, &button.transform);
 
+		// Level indicators for upgrades
 		if (i > 0) {
-			// Upgrade level
 			for (int j = 0; j < button.indicator_vector.size(); ++j) {
 				UpgradeLevelIndicator& indicator = button.indicator_vector[j];
-
 				AEMtx33Scale(&scale, indicator.width, indicator.height);
 				AEMtx33Rot(&rot, 0.f);
 				AEMtx33Trans(&trans, indicator.position.x, indicator.position.y);
 				AEMtx33Concat(&indicator.transform, &rot, &scale);
 				AEMtx33Concat(&indicator.transform, &trans, &indicator.transform);
 			}
+		}
+
+		// Shop icons (drone/space station)
+		if (button_vector[i].button_type == CREATE_DRONE) {			
+			AEMtx33Scale(&scale, icon_size, icon_size);
+			AEMtx33Rot(&rot, PI);
+			AEMtx33Trans(&trans, button.position.x, button.position.y);
+			AEMtx33Concat(&drone_icon_transform, &rot, &scale);
+			AEMtx33Concat(&drone_icon_transform, &trans, &drone_icon_transform);
+		}
+		else if (button_vector[i].button_type == SPACE_STATION) {
+			AEMtx33Scale(&scale, icon_size, icon_size);
+			AEMtx33Rot(&rot, PI);
+			AEMtx33Trans(&trans, button.position.x, button.position.y);
+			AEMtx33Concat(&space_station_icon_transform, &rot, &scale);
+			AEMtx33Concat(&space_station_icon_transform, &trans, &space_station_icon_transform);
 		}
 	}
 
@@ -143,7 +160,7 @@ void PlayerUI::update(Player& player)
 /******************************************************************************/
 void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 {
-	AEMtx33 scale{}, rotate{}, translate{}, transform{};
+	//AEMtx33 scale{}, rotate{}, translate{}, transform{};
 
 	AEGfxSetBlendColor(0.f, 0.f, 0.f, 0.f);
 
@@ -295,13 +312,9 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 				1.f, 1.f, 1.f, 1.f);
 		}
 		else if (button_vector[i].button_type == CREATE_DRONE) {
+			// Draw icon
 			AEGfxTextureSet(player_tex, 0, 0);
-			AEMtx33Scale(&scale, 20.f, 20.f);
-			AEMtx33Rot(&rotate, PI);
-			AEMtx33Trans(&translate, button_vector[i].position.x, button_vector[i].position.y);
-			AEMtx33Concat(&transform, &rotate, &scale);
-			AEMtx33Concat(&transform, &translate, &transform);
-			AEGfxSetTransform(transform.m);
+			AEGfxSetTransform(drone_icon_transform.m);
 			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
 			// Print upgrade cost
@@ -312,13 +325,9 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 				1.f, 1.f, 1.f, 1.f);
 		}
 		else if (button_vector[i].button_type == SPACE_STATION) {
+			// Draw icon
 			AEGfxTextureSet(space_station_tex, 0, 0);
-			AEMtx33Scale(&scale, 20.f, 20.f);
-			AEMtx33Rot(&rotate, PI);
-			AEMtx33Trans(&translate, button_vector[i].position.x, button_vector[i].position.y);
-			AEMtx33Concat(&transform, &rotate, &scale);
-			AEMtx33Concat(&transform, &translate, &transform);
-			AEGfxSetTransform(transform.m);
+			AEGfxSetTransform(space_station_icon_transform.m);
 			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
 			// Print upgrade cost
@@ -404,7 +413,6 @@ void PlayerUI::shop_closed()
 
 			// Max upgrade levels for each upgrade type
 			int count{};
-
 			switch (player_upgrade.button_type) {
 			case MOVEMENT_SPEED:
 				count = MAX_MOV_SPEED_LVL;

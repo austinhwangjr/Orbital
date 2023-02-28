@@ -145,9 +145,9 @@ void Drone::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 							debris.move_towards_drone_id = static_cast<int>(j + 1);
 							debris.state = MOVE_TOWARDS_DRONE;
 						}
-						else if (debris.move_towards_drone_id == 0) {
+						// Not colliding with player beam or drone beam
+						else if (debris.state != MOVE_TOWARDS_PLAYER && debris.state != MOVE_TOWARDS_DRONE)
 							debris.state = MOVE_TOWARDS_PLANET;
-						}
 
 						if (debris.move_towards_drone_id > 0 && (drone.current_capacity < drone.max_capacity) &&
 							AEVec2Distance(&drone.position, &debris.position) <= (drone.size + debris.size) / 2) {
@@ -236,7 +236,6 @@ void Drone::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 	}
 
 	// For active drones
-	//for (int i = 0; i < drone_vector.size(); ++i) {
 	for (size_t i = 0; i < drone_vector_all.size(); ++i) {
 		for (size_t j = 0; j < drone_vector_all[i].size(); j++) {
 			Drone& drone = drone_vector_all[i][j];
@@ -286,7 +285,6 @@ void Drone::draw(AEGfxVertexList* pMesh, PlayerUI player_ui)
 	}
 
 	// For active drones
-	//for (int i = 0; i < drone_vector.size(); ++i) {
 	for (size_t i = 0; i < drone_vector_all.size(); ++i) {
 		for (size_t j = 0; j < drone_vector_all[i].size(); j++) {
 			Drone& drone = drone_vector_all[i][j];
@@ -323,10 +321,3 @@ void Drone::unload()
 {
 	
 }
-
-//void Drone::create_drone_vector()
-//{
-//	std::vector<Drone> drone_vector;
-//	drone_vector_all.push_back(drone_vector);
-//
-//}
