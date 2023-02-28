@@ -70,7 +70,7 @@ void PauseMenuButtons::update()
         // Set the next game state based on the button that was clicked
         switch (clickedButton)
         {
-        case 0: current_state = previous_state;
+        case 0: current_state = GS_MAINLEVEL;
                 is_paused = false;
                 break;
         case 1: next_state = GS_RESTART;

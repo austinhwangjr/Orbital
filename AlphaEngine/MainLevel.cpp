@@ -223,8 +223,7 @@ void main_level::draw()
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxSetTransparency(1.0f);
 
-	if (!is_paused)
-	{
+
 		planet.draw(pMeshML);
 		player.draw(pMeshML);
 		space_station.draw(pMeshML, player_ui);
@@ -234,9 +233,8 @@ void main_level::draw()
 		wave_manager.draw(pMeshML);
 		player_ui.draw(pMeshML, player);
 		drone.draw(pMeshML, player_ui);
-		
-	}
-	else if (is_paused)
+
+	if (is_paused)
 	{
 		pause_menu::draw();
 	}
@@ -249,8 +247,7 @@ void main_level::draw()
 void main_level::free()
 {
 
-	if (!is_paused)
-	{
+
 		planet.free();
 		player.free();
 		space_station.free();
@@ -261,8 +258,7 @@ void main_level::free()
 		shuttle.free();
 		debris.free();
 		wave_manager.free();
-	}
-	else if (is_paused)
+if (is_paused)
 	{
 		pause_menu::free();
 	}

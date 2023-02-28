@@ -6,6 +6,7 @@
 #include "MainMenu.h"
 #include "MenuButtons.h"
 #include "Graphics.h"
+#include "HowToPlay.h"
 
 AEGfxTexture* TexMMBackground = nullptr;
 AEGfxTexture* TexTitle = nullptr;
@@ -37,7 +38,7 @@ void main_menu::init()
     // Create a square mesh for the buttons
     createMesh.SquareMesh(pMeshMM);
     menuButtons.init();
-
+    
     // debugging logs
     AE_ASSERT_MESG(pMeshMM, "Error: Failed to create pMeshMM in MainMenu.cpp!");
     AE_ASSERT_MESG(pMeshMMBackground, "Error: Failed to create pMeshMMBackground in MainMenu.cpp!");
@@ -66,16 +67,25 @@ void main_menu::draw()
 
     // Draw the menu buttons using pMesh1
     menuButtons.draw(pMeshMM);
+   
+
 }
 
 void main_menu::free()
 {
+    AEGfxMeshFree(pMeshMMBackground);
     AEGfxMeshFree(pMeshMM);
+    menuButtons.free();
+
+    
+
 }
 
 void main_menu::unload()
 {
     menuButtons.unload();
+  
+
     AEGfxTextureUnload(TexMMBackground); // unload the texture for the background image
     AEGfxTextureUnload(TexTitle);
 }
