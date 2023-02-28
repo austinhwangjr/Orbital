@@ -38,7 +38,7 @@ struct WaveManager
 	void load();
 	void init();
 	void update(f64 frame_time);
-	void draw(AEGfxVertexList *pMesh);
+	void draw();
 	void free();
 	void unload();
 

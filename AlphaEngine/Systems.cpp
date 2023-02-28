@@ -18,11 +18,8 @@ Technology is prohibited.
 #include "Global.h"
 #include <iostream>
 
-#define FONT_ID_SIZE 50
-#define FONT_ID_SHOP_SIZE 20
-
 // Fonts
-s8 font1, font_id, font_id_shop;
+s8 font_id, font_id_shop;
 
 // ----------------------------------------------------------------------------
 // This function initializes the system.

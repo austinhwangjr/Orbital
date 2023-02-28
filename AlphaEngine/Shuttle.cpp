@@ -1,3 +1,17 @@
+/* Start Header ************************************************************************/
+/*!
+\file		Shuttle.cpp
+\author		Tan Rui An Ryan, ruianryan.t, 2200600
+\par		ruianryan.t\@digipen.edu
+\date		Feb 27, 2023
+\brief		This file contains the behaviour for the Shuttle game object
+
+Copyright (C) 2023 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents
+without the prior written consent of DigiPen Institute of
+Technology is prohibited.
+*/
+/* End Header **************************************************************************/
 #include "AEEngine.h"
 #include "Shuttle.h"
 #include "WaveManager.h"
@@ -28,15 +42,15 @@ void Shuttles::update(f64 frame_time, Player& player)
 
 			// Shuttle accelerating
 			AEVec2Add(&added, &added, &shuttle_vector[i].direction);
-			AEVec2Scale(&added, &added, shuttle_vector[i].acceleration * frame_time);
+			AEVec2Scale(&added, &added, shuttle_vector[i].acceleration * static_cast<f32>(frame_time));
 			AEVec2Add(&shuttle_vector[i].velocity, &added, &shuttle_vector[i].velocity);
 
 			// Limiting shuttle velocity
 			AEVec2Scale(&shuttle_vector[i].velocity, &shuttle_vector[i].velocity, 0.99f);
 
 			// Update shuttle position
-			shuttle_vector[i].position.x += shuttle_vector[i].velocity.x * frame_time;
-			shuttle_vector[i].position.y += shuttle_vector[i].velocity.y * frame_time;
+			shuttle_vector[i].position.x += shuttle_vector[i].velocity.x * static_cast<f32>(frame_time);
+			shuttle_vector[i].position.y += shuttle_vector[i].velocity.y * static_cast<f32>(frame_time);
 			
 			AEMtx33Trans(&shuttle_vector[i].translate, shuttle_vector[i].position.x, shuttle_vector[i].position.y);
 			AEMtx33Concat(&shuttle_vector[i].transform, &shuttle_vector[i].rotate, &shuttle_vector[i].scale);
@@ -52,7 +66,7 @@ void Shuttles::update(f64 frame_time, Player& player)
 				//spawn_debris(2, shuttle_vector[i].planet_id);
 				spawn_debris_shuttle(shuttle_vector[i].position, shuttle_vector[i].planet_id, 3);
 			}
-			shuttle_vector[i].lifespan -= frame_time;
+			shuttle_vector[i].lifespan -= static_cast<f32>(frame_time);
 		}
 	}
 
@@ -95,7 +109,7 @@ void Shuttles::unload()
 	AEGfxTextureUnload(shuttle_tex);
 }
 
-void Shuttles::spawn(int planet_id)
+void Shuttles::spawn(int const& planet_id)
 {
 	Shuttles new_shuttle;
 

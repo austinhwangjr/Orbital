@@ -1,6 +1,9 @@
 #pragma once
 #include "AEEngine.h"
 
+#define FONT_ID_SIZE 50
+#define FONT_ID_SHOP_SIZE 20
+
 extern bool g_isFullScreen;
 
 extern bool g_consoleOn;

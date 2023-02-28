@@ -52,8 +52,6 @@ void main_menu::update()
     //std::cout << "GameState: " << current_state << std::endl;
 
     menuButtons.update();
-
-
 }
 
 void main_menu::draw()
@@ -77,7 +75,6 @@ void main_menu::free()
     AEGfxMeshFree(pMeshMM);
     menuButtons.free();
 
-    
 
 }
 

@@ -12,6 +12,13 @@ struct Explosion {
 	int		is_draw = 0;
 };
 
+enum MoveState {
+	ORBIT_AROUND_PLANET = 0,
+	MOVE_TOWARDS_PLANET,
+	MOVE_TOWARDS_PLAYER,
+	MOVE_TOWARDS_DRONE
+};
+
 struct Debris
 {
 	int id;
@@ -29,11 +36,9 @@ struct Debris
 	double is_collect;
 	double texture; // maybe 3-5 textures
 	bool active;
-	bool orbit_around_planet = true;
-	bool move_towards_player = false;
-	//bool move_towards_drone = false;
-	bool move_towards_planet = false;
+	MoveState state;
 	bool to_erase = false;
+	int move_towards_drone_id = 0;
 	Explosion explosion;
 
 	void load();
