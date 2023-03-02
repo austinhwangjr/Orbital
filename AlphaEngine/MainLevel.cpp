@@ -147,7 +147,7 @@ void main_level::update()
 	frame_time = AEFrameRateControllerGetFrameTime();
 	total_time += frame_time;
 
-	if (AEInputCheckTriggered(AEVK_P))
+	if (AEInputCheckTriggered(AEVK_ESCAPE))
 	{
 		if (!is_paused)
 		{
@@ -192,11 +192,11 @@ void main_level::update()
 		std::cout << "Toggling Screen " << std::endl;
 	}
 
-	// check if forcing the application to quit
-	if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
-	{
-		next_state = GS_MAINMENU;
-	}
+	//// check if forcing the application to quit
+	//if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
+	//{
+	//	next_state = GS_MAINMENU;
+	//}
 }
 
 // ----------------------------------------------------------------------------

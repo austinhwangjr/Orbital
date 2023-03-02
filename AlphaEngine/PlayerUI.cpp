@@ -133,14 +133,14 @@ void PlayerUI::update(Player& player)
 
 		// Shop icons (drone/space station)
 		if (button_vector[i].button_type == CREATE_DRONE) {			
-			AEMtx33Scale(&scale, icon_size, icon_size);
+			AEMtx33Scale(&scale, icon_size * 4, icon_size * 4);
 			AEMtx33Rot(&rot, PI);
 			AEMtx33Trans(&trans, button.position.x, button.position.y);
 			AEMtx33Concat(&drone_icon_transform, &rot, &scale);
 			AEMtx33Concat(&drone_icon_transform, &trans, &drone_icon_transform);
 		}
 		else if (button_vector[i].button_type == SPACE_STATION) {
-			AEMtx33Scale(&scale, icon_size, icon_size);
+			AEMtx33Scale(&scale, icon_size * 4, icon_size * 4);
 			AEMtx33Rot(&rot, PI);
 			AEMtx33Trans(&trans, button.position.x, button.position.y);
 			AEMtx33Concat(&space_station_icon_transform, &rot, &scale);
