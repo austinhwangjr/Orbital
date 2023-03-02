@@ -23,7 +23,7 @@ void main_menu::load()
 {
     TexMMBackground = AEGfxTextureLoad("Assets/Background.png");
     TexTitle = AEGfxTextureLoad("Assets/Title.png");
-    menuButtons.load("Assets/startButton.png", "Assets/htpButton.png", "Assets/buttonTest.png", "Assets/buttonTest.png", "Assets/quitTest.png");
+    menuButtons.load("Assets/startButton.png", "Assets/htpButton.png", "Assets/creditsButton.png", "Assets/buttonTest.png", "Assets/quitTest.png");
     //std::cout << "------------------------- MainMenu::load completed -------------------------" << std::endl << std::endl;
 }
 
