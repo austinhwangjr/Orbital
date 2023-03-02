@@ -6,43 +6,93 @@
 #include "MenuButtons.h"
 #include "Graphics.h"
 #include "Credits.h"
+#include "Input.h"
 
-AEGfxTexture* TexCreditsBackground = nullptr;
+// Set the dimensions of each button
+static float buttonWidth2 = 200.f;
+static float buttonHeight2 = 50.f;
+
+AEGfxTexture* texCreditsBackground = nullptr;
+AEGfxTexture* texReturnToMMfromCredits = nullptr;
+
 AEGfxVertexList* pMeshCreditsBackground;
+AEGfxVertexList* pMeshCredits;
 
-Rendering createMesh2;
-Rendering RenderCreditsBackground;
+Rendering createMeshCredits;
+Rendering renderCredits;
 
-void Credits::load()
+static float creditsBGX = 0.0f;
+static float creditsBGY = 0.0f;
+
+static float returnToMMfromCreditsX = 650.0f;
+static float returnToMMfromCreditsY = -20.0f;
+
+// Define the positions and dimensions for each button
+credits::Button2 buttons2[] = {
+	{returnToMMfromCreditsX, returnToMMfromCreditsY, buttonWidth2, buttonHeight2},   // Return to main menu button
+};
+
+void credits::load()
 {
-	TexCreditsBackground = AEGfxTextureLoad("Assets/Credits.png");
+	texCreditsBackground = AEGfxTextureLoad("Assets/Credits.png");
+	texReturnToMMfromCredits = AEGfxTextureLoad("Assets/returnToMMfromCredits.png");
 }
 
-void Credits::init()
+void credits::init()
 {
 
-	createMesh2.BackgroundMesh(pMeshCreditsBackground);
+	createMeshCredits.BackgroundMesh(pMeshCreditsBackground);
+	createMeshCredits.SquareMesh(pMeshCredits);
 
-	AE_ASSERT_MESG(pMeshCreditsBackground, "Error: Failed to create pMeshCreditsBackground in MainMenu.cpp!");
+	AE_ASSERT_MESG(pMeshCreditsBackground, "Error: Failed to create pMeshCreditsBackground in Credits.cpp!");
+	AE_ASSERT_MESG(pMeshCredits, "Error: Failed to create pMeshCredits in Credits.cpp!");
+
 }
 
-void Credits::update()
+void credits::update()
 {
+    // Check if the left mouse button has been clicked
+    if (AEInputCheckTriggered(AEVK_LBUTTON))
+    {
+        // Check which button has been clicked
 
+        if (Input::isButtonClicked(buttons2[0].x, buttons2[0].y, buttons2[0].width, buttons2[0].height))
+        {
+
+            next_state = GS_MAINMENU;
+        }
+    }
+
+    if (AEInputCheckTriggered(AEVK_F11))
+    {
+        // If the window close button has been clicked, set the game state to quit
+        Global_ToggleScreen();
+        std::cout << "Toggling Screen " << std::endl;
+    }
+
+    // Check if the window close button has been clicked
+    if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
+    {
+        // If the window close button has been clicked, set the game state to quit
+        next_state = GS_QUIT;
+    }
 }
 
-void Credits::draw()
+void credits::draw()
 {
-	RenderCreditsBackground.RenderSprite(TexCreditsBackground, 0.f, 0.f, 800.f, 450.f, pMeshCreditsBackground);
+	renderCredits.RenderSprite(texCreditsBackground, 0.f, 0.f, 800.f, 450.f, pMeshCreditsBackground);
+    renderCredits.RenderSprite(texReturnToMMfromCredits, returnToMMfromCreditsX, returnToMMfromCreditsY, buttonWidth2, buttonHeight2, pMeshCredits);
 
 }
-void Credits::free()
+void credits::free()
 {
 	AEGfxMeshFree(pMeshCreditsBackground);
+	AEGfxMeshFree(pMeshCredits);
 
 }
-void Credits::unload()
+void credits::unload()
 {
-	AEGfxTextureUnload(TexCreditsBackground); // unload the texture for the background image
+	AEGfxTextureUnload(texCreditsBackground); // unload the texture for the background image
+	AEGfxTextureUnload(texReturnToMMfromCredits);
 
 }

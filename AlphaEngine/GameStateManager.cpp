@@ -19,6 +19,7 @@ Technology is prohibited.
 #include "MainLevel.h"
 #include "PauseMenu.h"
 #include "HowToPlay.h"
+#include "Credits.h"
 
 unsigned int current_state, previous_state, next_state;
 
@@ -59,12 +60,20 @@ void gsm::update()
 		fpUnload	= main_menu::unload;
 		break;
 	case GS_HOWTOPLAY:
-		fpLoad		= How_To_Play::load;
-		fpInit		= How_To_Play::init;
-		fpUpdate	= How_To_Play::update;
-		fpDraw		= How_To_Play::draw;
-		fpFree		= How_To_Play::free;
-		fpUnload	= How_To_Play::unload;
+		fpLoad		= how_to_play::load;
+		fpInit		= how_to_play::init;
+		fpUpdate	= how_to_play::update;
+		fpDraw		= how_to_play::draw;
+		fpFree		= how_to_play::free;
+		fpUnload	= how_to_play::unload;
+		break;
+	case GS_CREDITS:
+		fpLoad		= credits::load;
+		fpInit		= credits::init;
+		fpUpdate	= credits::update;
+		fpDraw		= credits::draw;
+		fpFree		= credits::free;
+		fpUnload	= credits::unload;
 		break;
 	case GS_MAINLEVEL:
 		fpLoad		= main_level::load;

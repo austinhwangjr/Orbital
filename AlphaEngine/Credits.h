@@ -1,9 +1,8 @@
 #pragma once
 #include "Graphics.h"
 
-class Credits : public Rendering
+namespace credits
 {
-public:
     void load();
     void init();
     void update();
@@ -11,7 +10,12 @@ public:
     void free();
     void unload();
 
-    float width;
-    float height;
+    struct Button2
+    {
+        float x;
+        float y;
+        float width;
+        float height;
+    };
 
-};
+}

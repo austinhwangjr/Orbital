@@ -30,25 +30,25 @@ static float returnToMMY = -20.0f;
 
 
 // Define the positions and dimensions for each button
-How_To_Play::Button1 buttons1[] = {
+how_to_play::Button1 buttons1[] = {
     {returnToMMX, returnToMMY, buttonWidth1, buttonHeight1},   // Return to main menu button
 };
 
 
 
-void How_To_Play::load()
+void how_to_play::load()
 {
     howToPlayBGTexture = AEGfxTextureLoad("Assets/howToPlay.png");
     returnToMMTexture = AEGfxTextureLoad("Assets/p_ExitMainMenuButton.png");
 }
 
-void How_To_Play::init()
+void how_to_play::init()
 {
     createMeshHTP.BackgroundMesh(pMeshHTPBackground);
     createMeshHTP.SquareMesh(pMeshHTP1);
 }
 
-void How_To_Play::update()
+void how_to_play::update()
 {
     // Check if the left mouse button has been clicked
     if (AEInputCheckTriggered(AEVK_LBUTTON))
@@ -77,7 +77,7 @@ void How_To_Play::update()
     }
 }
 
-void How_To_Play::draw()
+void how_to_play::draw()
 {
     // Clear the screen
     AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
@@ -87,14 +87,14 @@ void How_To_Play::draw()
 }
 
 
-void How_To_Play::free()
+void how_to_play::free()
 {
     AEGfxMeshFree(pMeshHTPBackground);
     AEGfxMeshFree(pMeshHTP1);
 
 }
 
-void How_To_Play::unload()
+void how_to_play::unload()
 {
     // unload the texture for the start button
     AEGfxTextureUnload(howToPlayBGTexture);

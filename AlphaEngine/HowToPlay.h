@@ -1,7 +1,7 @@
 #pragma once
 #include "Graphics.h"
 
-namespace How_To_Play
+namespace how_to_play
 {
     void load();
     void init();
