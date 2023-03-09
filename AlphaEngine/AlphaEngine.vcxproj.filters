@@ -162,6 +162,9 @@
     <ClInclude Include="PauseMenuButtons.h">
       <Filter>Header\InGame\InGameMenus</Filter>
     </ClInclude>
+    <ClInclude Include="Easing.h">
+      <Filter>Header\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header">

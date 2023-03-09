@@ -174,7 +174,7 @@ void main_level::update()
 		space_station.update(frame_time, player, player_ui);
 		player_proj.update(frame_time, player, player_ui);
 		camera.update(frame_time, player);
-		player_ui.update(player);
+		player_ui.update(frame_time, player);
 		drone.update(frame_time, player, player_ui);
 		
 		shuttle.update(frame_time, player);
@@ -197,6 +197,9 @@ void main_level::update()
 		Global_ToggleScreen();
 		std::cout << "Toggling Screen " << std::endl;
 	}
+
+	if (AEInputCheckTriggered(AEVK_T))
+		next_state = GS_QUIT;
 
 	//// check if forcing the application to quit
 	//if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
@@ -254,19 +257,19 @@ void main_level::draw()
 // ----------------------------------------------------------------------------
 void main_level::free()
 {
+	planet.free();
+	player.free();
+	space_station.free();
+	player_ui.free();
+	drone.free();
 
+	player_proj.free();
+	shuttle.free();
+	debris.free();
 
-		planet.free();
-		player.free();
-		space_station.free();
-		player_ui.free();
-		drone.free();
-		
-		player_proj.free();
-		shuttle.free();
-		debris.free();
-		wave_manager.free();
-if (is_paused)
+	wave_manager.free();
+
+	if (is_paused)
 	{
 		pause.free();
 	}

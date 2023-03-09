@@ -24,6 +24,15 @@ struct Planets
 	bool				wave_complete;			// Flag for whether current planet has anymore shuttles to escape
 // PLANET VARIABLES------------------
 
+// ORBIT RANGE VARIABLES-------------
+	f32					orbit_range = 75.f;
+	AEMtx33				orbit_scale;
+	AEMtx33				orbit_rotate;
+	AEMtx33				orbit_translate;
+	AEMtx33				orbit_transform;
+
+// ORBIT RANGE VARIABLES-------------
+
 // SHUTTLE VARIABLES-----------------
 	int					max_shuttle;			// Current maximum number of shuttles for the planet
 	int					current_shuttle;		// Current number of shuttles for the planet

@@ -19,7 +19,7 @@ struct Drone
 	f32				size;
 	f32				rot_speed;
 	Planets			current_planet;
-	f32				dist_from_planet;
+	//f32				dist_from_planet;
 	f32				shortest_distance;
 	f32				direction;
 	int				current_capacity;

@@ -22,6 +22,7 @@ Technology is prohibited.
 #include <iostream>
 
 AEGfxTexture* planet_tex;
+AEGfxTexture* orbit_tex;
 std::vector<Planets> planet_vector;
 
 extern WaveManager wave_manager;
@@ -33,6 +34,7 @@ extern std::vector<std::vector<Drone>> drone_vector_all;
 void Planets::load()
 {
 	planet_tex = AEGfxTextureLoad("Assets/PlanetTexture.png");
+	orbit_tex = AEGfxTextureLoad("Assets/orbitRing.png");
 }
 
 void Planets::init()
@@ -69,17 +71,29 @@ void Planets::update(f64 frame_time)
 		AEMtx33Rot(&planet_vector[i].rotate, planet_vector[i].direction);
 		AEMtx33Concat(&planet_vector[i].transform, &planet_vector[i].rotate, &planet_vector[i].scale);
 		AEMtx33Concat(&planet_vector[i].transform, &planet_vector[i].translate, &planet_vector[i].transform);
+
+		// Update orbit range transform matrix
+		AEMtx33Scale(&planet_vector[i].orbit_scale, (planet_vector[i].size + orbit_range * 2), (planet_vector[i].size + orbit_range * 2));
+		AEMtx33Rot(&planet_vector[i].orbit_rotate, 0.f);
+		AEMtx33Trans(&planet_vector[i].orbit_translate, planet_vector[i].position.x, planet_vector[i].position.y);
+		AEMtx33Concat(&planet_vector[i].orbit_transform, &planet_vector[i].orbit_rotate, &planet_vector[i].orbit_scale);
+		AEMtx33Concat(&planet_vector[i].orbit_transform, &planet_vector[i].orbit_translate, &planet_vector[i].orbit_transform);
 	}
 }
 
 void Planets::draw(AEGfxVertexList* pMesh)
 {
-	// Set the texture to pTex 
-	AEGfxTextureSet(planet_tex, 0, 0);
-
 	for (int i{}; i < wave_manager.planet_count; i++)
 	{
+		// Set the texture to planet_tex 
+		AEGfxTextureSet(planet_tex, 0, 0);
 		AEGfxSetTransform(planet_vector[i].transform.m);
+		// Actually drawing the mesh
+		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+
+		// Set the texture to orbit_tex 
+		AEGfxTextureSet(orbit_tex, 0, 0);
+		AEGfxSetTransform(planet_vector[i].orbit_transform.m);
 		// Actually drawing the mesh
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 	}
@@ -97,6 +111,7 @@ void Planets::free()
 void Planets::unload()
 {
 	AEGfxTextureUnload(planet_tex);
+	AEGfxTextureUnload(orbit_tex);
 }
 
 void Planets::spawn(int shuttle_randomize_amount)
@@ -172,7 +187,7 @@ void Planets::check_spawn(Planets& new_planet)
 		// Re-randomize new planet position if too close to space station
 		for (size_t i{}; i < space_station_vector.size(); i++)
 		{
-			if (AEVec2Distance(&space_station_vector[i].position, &new_planet.position) < 1.5 * (player.dist_from_planet + new_planet.size))
+			if (AEVec2Distance(&space_station_vector[i].position, &new_planet.position) < 1.5 * (new_planet.orbit_range + new_planet.size))
 			{
 				AEVec2Set(&new_planet.position,
 					static_cast<f32>(rand() % static_cast<int>(get_max_x() - get_min_x() + AEGetWindowWidth() + new_planet.size) + (get_min_x() - AEGetWindowWidth() - new_planet.size)),

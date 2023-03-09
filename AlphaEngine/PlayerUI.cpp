@@ -1,15 +1,13 @@
 #include "AEEngine.h"
 #include "PlayerUI.h"
 #include "Global.h"
+#include "Easing.h"
 #include <iostream>
 #include <vector>
 #include <string>
 
 // Textures
 extern AEGfxTexture* player_tex;
-
-
-
 AEGfxTexture* shop_icon_tex;
 AEGfxTexture* space_station_tex;
 AEGfxTexture* shop_background_tex;
@@ -24,8 +22,6 @@ extern s8		font_id;
 extern s8		font_id_shop;
 std::string		shop_option_name;
 std::string		shop_upgrade_cost;
-AEMtx33			shop_background_transform;
-f32				shop_background_width, shop_background_height;
 
 // Variables for camera
 f32 cam_x, cam_y;
@@ -48,12 +44,47 @@ void PlayerUI::load()
 
 void PlayerUI::init()
 {
-	// Add shop button to vector
+	// Add buttons to vector
 	ShopOption shop_open_button{};
 	shop_open_button.width	= 70.f;
 	shop_open_button.height = 70.f;
 	shop_open_button.button_type = SHOP_OPEN;
 	button_vector.push_back(shop_open_button);
+
+	for (int i = 0; i < UPGRADE_COUNT; ++i) {
+		// Populate button vector
+		ShopOption player_upgrade{};
+		player_upgrade.width = 160.f;
+		player_upgrade.height = 80.f;
+		player_upgrade.button_type = MOVEMENT_SPEED + i;
+
+		// Max upgrade levels for each upgrade type
+		int count{};
+		switch (player_upgrade.button_type) {
+		case MOVEMENT_SPEED:
+			count = MAX_MOV_SPEED_LVL;
+			break;
+		case CAPACITY:
+			count = MAX_CAPACITY_LVL;
+			break;
+		case TRACTOR_BEAM_STRENGTH:
+			count = MAX_BEAM_STRENGTH_LVL;
+			break;
+		case SPACE_STATION:
+			count = MAX_SPACE_STATION_CNT;
+			break;
+		}
+
+		// Add indicators (upgrade levels)
+		for (int j = 0; j < count; ++j) {
+			UpgradeLevelIndicator indicator{};
+			indicator.width = 32.0f;
+			indicator.height = 16.0f;
+			player_upgrade.indicator_vector.push_back(indicator);
+		}
+
+		button_vector.push_back(player_upgrade);
+	}
 
 	// Not in placing mode initially
 	placing_drone = false;
@@ -61,39 +92,85 @@ void PlayerUI::init()
 
 	// Shop is closed initially
 	shop_triggered = false;
+	shop_transition = false;
 
-	// Shop background size
-	shop_background_width = static_cast<f32>(AEGetWindowWidth()) * 0.85f;
-	shop_background_height = static_cast<f32>(AEGetWindowHeight()) * 0.85f;
+	// Shop background
+	shop_bg_width = static_cast<f32>(AEGetWindowWidth()) * 0.85f;
+	shop_bg_height = static_cast<f32>(AEGetWindowHeight()) * 0.85f;
+
+	// Set the offset of the shop
+	//shop_offset = ((AEGfxGetWinMaxX() + shop_bg_width) / 2.f);
+	shop_offset = static_cast<f32>(AEGetWindowWidth());
 
 	// Icons in shop
 	icon_size = 20.f;
+
+	// Timer for shop transition
+	shop_trans_timer = 0.f;
+	shop_trans_duration = 1.f;
 }
 
-void PlayerUI::update(Player& player)
+void PlayerUI::update(f64 frame_time, Player& player)
 {
 	// Get mouse coordinates (world)
 	s32 mouse_x_screen, mouse_y_screen;
 	AEInputGetCursorPosition(&mouse_x_screen, &mouse_y_screen);
 
 	mouse_pos_world.x = cam_x + mouse_x_screen - static_cast<f32>(AEGetWindowWidth() / 2);
-	mouse_pos_world.y = cam_y + static_cast<f32>(AEGetWindowHeight() / 2) - mouse_y_screen;
+	mouse_pos_world.y = cam_y + static_cast<f32>(AEGetWindowHeight() / 2.f) - mouse_y_screen;
 
-	if (shop_triggered)
-		shop_open(player);
-	else
-		shop_closed();
+	if (shop_triggered) {
+		// Start transition
+		if (shop_transition) {
+			// Adjust shop offset
+			shop_trans_timer += frame_time;
+			shop_offset = EaseOutExpo(static_cast<f32>(AEGetWindowWidth()), 0, shop_trans_timer / shop_trans_duration);
 
-	// ================================
-	// Update open shop button position
-	// ================================
+			// Stop transition once duration is met
+			if (shop_trans_timer >= shop_trans_duration) {
+				shop_trans_timer = 0.f;
+				shop_transition = false;
+			}
+		}
 
+		// Transition done
+		else
+			shop_open(player);
+	}
+	else {
+		// Start transition
+		if (shop_transition) {
+			// Adjust shop offset
+			shop_trans_timer += static_cast<f32>(frame_time);
+			shop_offset = EaseInOutBack(0, static_cast<f32>(AEGetWindowWidth()), shop_trans_timer / shop_trans_duration);
+
+			// Stop transition once duration is met
+			if (shop_trans_timer >= shop_trans_duration) {
+				shop_trans_timer = 0.f;
+				shop_transition = false;
+			}
+		}
+
+		// Transition done
+		else
+			shop_closed();
+	}
+
+	// =================
+	// Update positions
+	// =================
+
+	// Shop background
+	shop_bg_position.x = cam_x + shop_offset;
+	shop_bg_position.y = cam_y;
+
+	// Button to open shop
 	AEGfxGetCamPosition(&cam_x, &cam_y);
 	button_vector[0].position.x = cam_x + static_cast<f32>(AEGetWindowWidth()) / 2.f - button_vector[0].width / 2.f;
 	button_vector[0].position.y = cam_y + static_cast<f32>(AEGetWindowHeight()) / 2.f - button_vector[0].height * 2.5f;
 
 	for (int i = 1; i < button_vector.size(); ++i) {
-		button_vector[i].position.x = cam_x - static_cast<f32>(AEGetWindowWidth() / 2) * 0.7f;
+		button_vector[i].position.x = cam_x - static_cast<f32>(AEGetWindowWidth() / 2) * 0.7f + shop_offset;
 		button_vector[i].position.y = button_vector[0].position.y - (i - 1) * button_vector[i].height * 1.25f;
 
 		// Level indicators for upgrades
@@ -149,11 +226,11 @@ void PlayerUI::update(Player& player)
 	}
 
 	// Shop background
-	AEMtx33Scale(&scale, shop_background_width, shop_background_height);
+	AEMtx33Scale(&scale, shop_bg_width, shop_bg_height);
 	AEMtx33Rot(&rot, 0.f);
-	AEMtx33Trans(&trans, cam_x, cam_y);
-	AEMtx33Concat(&shop_background_transform, &rot, &scale);
-	AEMtx33Concat(&shop_background_transform, &trans, &shop_background_transform);
+	AEMtx33Trans(&trans, shop_bg_position.x, shop_bg_position.y);
+	AEMtx33Concat(&shop_bg_transform, &rot, &scale);
+	AEMtx33Concat(&shop_bg_transform, &trans, &shop_bg_transform);
 }
 
 /******************************************************************************/
@@ -163,8 +240,6 @@ void PlayerUI::update(Player& player)
 /******************************************************************************/
 void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 {
-	//AEMtx33 scale{}, rotate{}, translate{}, transform{};
-
 	AEGfxSetBlendColor(0.f, 0.f, 0.f, 0.f);
 
 	// Print score
@@ -178,14 +253,15 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 	// Print capacity
 	capacity = "Capacity: " + std::to_string(player.current_capacity) + " / " + std::to_string(player.max_capacity + player.capacity_level);
 	AEGfxPrint(font_id, const_cast<s8*>(capacity.c_str()), -0.25f, -0.75f, 1.f, 1.f, 1.f, 1.f);
-	
+
 	// Shop background
-	if (shop_triggered) {
-		AEGfxTextureSet(shop_background_tex, 0, 0);
-		AEGfxSetTransparency(0.5);
-		AEGfxSetTransform(shop_background_transform.m);
-		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-	}
+	AEGfxTextureSet(shop_background_tex, 0, 0);
+	AEGfxSetTransparency(0.5f);
+	AEGfxSetTransform(shop_bg_transform.m);
+	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+
+	// Reset transparency
+	AEGfxSetTransparency(1.f);
 
 	// Shop buttons
 	for (int i = 0; i < button_vector.size(); ++i) {
@@ -367,34 +443,40 @@ void PlayerUI::shop_open(Player& player)
 	if (click_outside_shop() || AEInputCheckTriggered(AEVK_ESCAPE))
 		close_shop();
 
-	for (int i = 0; i < button_vector.size(); ++i) {
-		if (button_clicked(button_vector[i])) {
-			if (button_vector[i].button_type == MOVEMENT_SPEED) {
-				if (player.credits >= mov_speed_cost && player.mov_speed_level < MAX_MOV_SPEED_LVL) {
-					player.credits -= mov_speed_cost;
-					player.mov_speed_level++;
-				}
-			}
-			else if (button_vector[i].button_type == CAPACITY) {
-				if (player.credits >= capacity_cost && player.capacity_level < MAX_CAPACITY_LVL) {
-					player.credits -= capacity_cost;
-					player.capacity_level++;
-				}
-			}
-			else if (button_vector[i].button_type == TRACTOR_BEAM_STRENGTH) {
-				if (player.credits >= beam_strength_cost && player.beam_level < MAX_BEAM_STRENGTH_LVL) {
-					player.credits -= beam_strength_cost;
-					player.beam_level++;
-				}
-			}
-			else if (button_vector[i].button_type == CREATE_DRONE || button_vector[i].button_type == SPACE_STATION) {
-				if (button_vector[i].button_type == CREATE_DRONE && !placing_drone && player.credits >= drone_cost)
-					placing_drone = true;
+	else {
+		// =================
+		// Shop interaction
+		// =================
 
-				else if (button_vector[i].button_type == SPACE_STATION && !placing_station && player.credits >= space_station_cost)
-					placing_station = true;
+		for (int i = 0; i < button_vector.size(); ++i) {
+			if (button_clicked(button_vector[i])) {
+				if (button_vector[i].button_type == MOVEMENT_SPEED) {
+					if (player.credits >= mov_speed_cost && player.mov_speed_level < MAX_MOV_SPEED_LVL) {
+						player.credits -= mov_speed_cost;
+						player.mov_speed_level++;
+					}
+				}
+				else if (button_vector[i].button_type == CAPACITY) {
+					if (player.credits >= capacity_cost && player.capacity_level < MAX_CAPACITY_LVL) {
+						player.credits -= capacity_cost;
+						player.capacity_level++;
+					}
+				}
+				else if (button_vector[i].button_type == TRACTOR_BEAM_STRENGTH) {
+					if (player.credits >= beam_strength_cost && player.beam_level < MAX_BEAM_STRENGTH_LVL) {
+						player.credits -= beam_strength_cost;
+						player.beam_level++;
+					}
+				}
+				else if (button_vector[i].button_type == CREATE_DRONE || button_vector[i].button_type == SPACE_STATION) {
+					if (button_vector[i].button_type == CREATE_DRONE && !placing_drone && player.credits >= drone_cost)
+						placing_drone = true;
 
-				close_shop();
+					else if (button_vector[i].button_type == SPACE_STATION && !placing_station && player.credits >= space_station_cost)
+						placing_station = true;
+
+					close_shop();
+				}
 			}
 		}
 	}
@@ -407,53 +489,21 @@ void PlayerUI::shop_closed()
 	// ================
 
 	if (button_clicked(button_vector[0])) {
-		for (int i = 0; i < UPGRADE_COUNT; ++i) {
-			// Populate button vector
-			ShopOption player_upgrade{};
-			player_upgrade.width = 160.f;
-			player_upgrade.height = 80.f;
-			player_upgrade.button_type = MOVEMENT_SPEED + i;
-
-			// Max upgrade levels for each upgrade type
-			int count{};
-			switch (player_upgrade.button_type) {
-			case MOVEMENT_SPEED:
-				count = MAX_MOV_SPEED_LVL;
-				break;
-			case CAPACITY:
-				count = MAX_CAPACITY_LVL;
-				break;
-			case TRACTOR_BEAM_STRENGTH:
-				count = MAX_BEAM_STRENGTH_LVL;
-				break;
-			case SPACE_STATION:
-				count = MAX_SPACE_STATION_CNT;
-				break;
-			}
-
-			// Add indicators (upgrade levels)
-			for (int j = 0; j < count; ++j) {
-				UpgradeLevelIndicator indicator{};
-				indicator.width = 32.0f;
-				indicator.height = 16.0f;
-				player_upgrade.indicator_vector.push_back(indicator);
-			}
-
-			button_vector.push_back(player_upgrade);
-		}
 		shop_triggered = true;
+		shop_transition = true;
 	}
 }
 
 void PlayerUI::close_shop()
 {
 	// Remove buttons from list
-	for (int i = 0; i < UPGRADE_COUNT; ++i) {
+	/*for (int i = 0; i < UPGRADE_COUNT; ++i) {
 		button_vector.pop_back();
-	}
+	}*/
 
 	// Close shop
 	shop_triggered = false;
+	shop_transition = true;
 }
 
 bool PlayerUI::button_clicked(ShopOption button) 
@@ -477,10 +527,10 @@ bool PlayerUI::button_clicked(ShopOption button)
 bool PlayerUI::click_outside_shop()
 {
 	// Get position of each side of shop background
-	f32 shop_background_left	= cam_x - shop_background_width / 2.f;
-	f32 shop_background_right	= cam_x + shop_background_width / 2.f;
-	f32 shop_background_top		= cam_y + shop_background_height / 2.f;
-	f32 shop_background_bottom	= cam_y - shop_background_height / 2.f;
+	f32 shop_background_left	= cam_x - shop_bg_width / 2.f;
+	f32 shop_background_right	= cam_x + shop_bg_width / 2.f;
+	f32 shop_background_top		= cam_y + shop_bg_height / 2.f;
+	f32 shop_background_bottom	= cam_y - shop_bg_height / 2.f;
 
 	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
 		// Left/right/top/bottom border

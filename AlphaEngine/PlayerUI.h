@@ -39,12 +39,21 @@ struct PlayerUI
 	bool		placing_drone;
 	bool		placing_station;
 	bool		shop_triggered;
+	bool		shop_transition;
+	f32			shop_offset;
+	f32			shop_trans_timer;
+	f32			shop_trans_duration;
 	AEMtx33		transform;
 
 	//--------------------Icons in shop--------------------
 	f32			icon_size;
 	AEMtx33		drone_icon_transform;
 	AEMtx33		space_station_icon_transform;
+
+	//--------------------Shop background--------------------
+	AEVec2		shop_bg_position;
+	f32			shop_bg_width, shop_bg_height;
+	AEMtx33		shop_bg_transform;
 
 	//--------------------Cost of Upgrades--------------------
 	const int mov_speed_cost		= 100;
@@ -55,7 +64,7 @@ struct PlayerUI
 
 	void load();
 	void init();
-	void update(Player&);
+	void update(f64, Player&);
 	void draw(AEGfxVertexList*, Player);
 	void free();
 	void unload();

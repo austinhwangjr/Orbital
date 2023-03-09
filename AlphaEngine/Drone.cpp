@@ -38,7 +38,7 @@ void Drone::init(Player player)
 
 	rot_speed				= player.rot_speed / 10.f;
 
-	dist_from_planet		= player.dist_from_planet;
+	//dist_from_planet		= player.dist_from_planet;
 	shortest_distance		= 0.f;
 
 	direction				= player.direction;
@@ -88,12 +88,12 @@ void Drone::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 		position.y = mouse_pos_world.y;
 
 		// if within planet's orbit, drone can be placed
-		if (AEVec2Distance(&current_planet.position, &position) <= (static_cast<f32>(current_planet.size) / 2.f + dist_from_planet)) {
+		if (AEVec2Distance(&current_planet.position, &position) <= (static_cast<f32>(current_planet.size) / 2.f + current_planet.orbit_range)) {
 			if (current_planet.current_drones < DRONES_MAX) {
 				direction = static_cast<f32>(atan2(static_cast<double>(position.y - current_planet.position.y),
 					static_cast<double>(position.x - current_planet.position.x)));
-				position.x = current_planet.position.x + (static_cast<f32>(current_planet.size) / 2.f + dist_from_planet) * AECos(direction);
-				position.y = current_planet.position.y + (static_cast<f32>(current_planet.size) / 2.f + dist_from_planet) * AESin(direction);
+				position.x = current_planet.position.x + (static_cast<f32>(current_planet.size) / 2.f + current_planet.orbit_range) * AECos(direction);
+				position.y = current_planet.position.y + (static_cast<f32>(current_planet.size) / 2.f + current_planet.orbit_range) * AESin(direction);
 				beam_pos.x = position.x - AECos(direction) * ((beam_height + size) / 2);
 				beam_pos.y = position.y - AESin(direction) * ((beam_height + size) / 2);
 
@@ -113,9 +113,9 @@ void Drone::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 
 			// Set drone position
 			drone.position.x = drone.current_planet.position.x +
-				(static_cast<f32>(drone.current_planet.size) / 2.f + drone.dist_from_planet) * AECos(drone.direction);
+				(static_cast<f32>(drone.current_planet.size) / 2.f + drone.current_planet.orbit_range) * AECos(drone.direction);
 			drone.position.y = drone.current_planet.position.y +
-				(static_cast<f32>(drone.current_planet.size) / 2.f + drone.dist_from_planet) * AESin(drone.direction);
+				(static_cast<f32>(drone.current_planet.size) / 2.f + drone.current_planet.orbit_range) * AESin(drone.direction);
 
 			// Set drone direction
 			drone.direction += drone.rot_speed * static_cast<f32>(frame_time);

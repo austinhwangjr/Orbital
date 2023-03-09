@@ -36,7 +36,7 @@ void Player::init()
 	mov_speed				= 150.f;
 	rot_speed				= 0.85f * PI;
 
-	dist_from_planet		= 75.f;					// initally value =  50.f
+	//dist_from_planet		= 75.f;					// initally value =  50.f
 	shortest_distance		= 0.f;
 
 	direction				= 0.f;
@@ -133,15 +133,15 @@ void Player::orbit_state(f64 frame_time)
 	if (AEInputCheckCurr(AEVK_A)) {
 		direction += (rot_speed / 2) * static_cast<f32>(frame_time);
 
-		position.x = current_planet.position.x + (static_cast<f32>(current_planet.size) / 2 + dist_from_planet) * AECos(direction);
-		position.y = current_planet.position.y + (static_cast<f32>(current_planet.size) / 2 + dist_from_planet) * AESin(direction);
+		position.x = current_planet.position.x + (static_cast<f32>(current_planet.size) / 2 + current_planet.orbit_range) * AECos(direction);
+		position.y = current_planet.position.y + (static_cast<f32>(current_planet.size) / 2 + current_planet.orbit_range) * AESin(direction);
 	}
 
 	if (AEInputCheckCurr(AEVK_D)) {
 		direction -= (rot_speed / 2) * static_cast<f32>(frame_time);
 
-		position.x = current_planet.position.x + (static_cast<f32>(current_planet.size) / 2 + dist_from_planet) * AECos(direction);
-		position.y = current_planet.position.y + (static_cast<f32>(current_planet.size) / 2 + dist_from_planet) * AESin(direction);
+		position.x = current_planet.position.x + (static_cast<f32>(current_planet.size) / 2 + current_planet.orbit_range) * AECos(direction);
+		position.y = current_planet.position.y + (static_cast<f32>(current_planet.size) / 2 + current_planet.orbit_range) * AESin(direction);
 	}
 
 	if (AEInputCheckPrev(AEVK_W))
@@ -169,8 +169,8 @@ void Player::orbit_state(f64 frame_time)
 		position.y += AESin(direction);
 	}
 	else {
-		position.x = current_planet.position.x + (static_cast<f32>(current_planet.size) / 2.f + dist_from_planet) * AECos(direction);
-		position.y = current_planet.position.y + (static_cast<f32>(current_planet.size) / 2.f + dist_from_planet) * AESin(direction);
+		position.x = current_planet.position.x + (static_cast<f32>(current_planet.size) / 2.f + current_planet.orbit_range) * AECos(direction);
+		position.y = current_planet.position.y + (static_cast<f32>(current_planet.size) / 2.f + current_planet.orbit_range) * AESin(direction);
 	}
 
 	if (beam_active) {
@@ -257,7 +257,7 @@ void Player::flying_state(f64 frame_time)
 		direction = AEWrap(direction, -PI, PI);
 	}
 
-	if (AEVec2Distance(&current_planet.position, &position) <= (current_planet.size / 2 + dist_from_planet)) {
+	if (AEVec2Distance(&current_planet.position, &position) <= (current_planet.size / 2 + current_planet.orbit_range)) {
 		direction = static_cast<f32>(atan2(position.y - current_planet.position.y, position.x - current_planet.position.x));
 		state = PLAYER_ORBIT;
 	}
