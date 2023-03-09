@@ -1,6 +1,5 @@
 #include "PauseMenu.h"
 #include "Global.h"
-#include "AEEngine.h"
 #include "GameStateManager.h"
 #include "Graphics.h"
 #include "PauseMenuButtons.h"
@@ -39,9 +38,9 @@ void pause_menu::update()
     pauseButtons.update();
 }
 
-void pause_menu::draw()
+void pause_menu::draw(AEVec2 const& camPos)
 {
-    AEGfxSetCamPosition(0.f, 0.f);
+    AEGfxSetCamPosition(camPos.x, camPos.y);
     pauseButtons.draw(pMeshP);
 
     AEGfxSetBackgroundColor(0.5f, 0.0f, 0.0f);

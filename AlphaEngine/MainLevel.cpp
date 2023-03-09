@@ -35,6 +35,9 @@ Technology is prohibited.
 
 //yy debugging and cleaning code
 AEGfxTexture* TexMLBackground = nullptr;
+AEGfxTexture* TexHeadsUpDisplay = nullptr;
+
+
 
 AEGfxVertexList* pMeshMLBackground;				// Background Mesh
 AEGfxVertexList* pMeshML;						// Object square mesh
@@ -52,6 +55,7 @@ Camera camera{};
 Debris debris{};
 Shuttles shuttle{};
 WaveManager wave_manager{};
+pause_menu pause{};
 
 //PauseMenu pause_menu;
 //PauseMenuButtons pause_menu_buttons;
@@ -78,8 +82,10 @@ namespace main_level
 void main_level::load()
 {
 	TexMLBackground = AEGfxTextureLoad("Assets/Background.png");
+	TexHeadsUpDisplay = AEGfxTextureLoad("Assets/HUD.png");
 
-	pause_menu::load();
+
+	pause.load();
 
 	// load texture
 	planet.load();
@@ -112,7 +118,7 @@ void main_level::init()
 
 	createMesh1.IGSquareMesh(pMeshML);
 
-	pause_menu::init();
+	pause.init();
 
 	planet.init();
 	player.init();
@@ -177,7 +183,7 @@ void main_level::update()
 	}
 	else if (is_paused)
 	{
-		pause_menu::update();
+		pause.update();
 	}
 
 	// Testing
@@ -210,6 +216,7 @@ void main_level::draw()
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
 	RenderMLBackground.RenderSprite(TexMLBackground, 0.f, 0.f, 4800.f, 2700.f, pMeshMLBackground);		//drawbackground for Mainlevel
+	RenderMLBackground.RenderSprite(TexHeadsUpDisplay, 0.f, 0.f, 800.f, 450.f, pMeshMLBackground);		//drawbackground for Mainlevel
 
 	// Tell the engine to get ready to draw something with texture. 
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
@@ -237,7 +244,7 @@ void main_level::draw()
 
 	if (is_paused)
 	{
-		pause_menu::draw();
+		pause.draw(camera.position);
 	}
 }
 
@@ -261,7 +268,7 @@ void main_level::free()
 		wave_manager.free();
 if (is_paused)
 	{
-		pause_menu::free();
+		pause.free();
 	}
 
 
@@ -285,7 +292,9 @@ void main_level::unload()
 	shuttle.unload();
 	debris.unload();
 	wave_manager.unload();
-	pause_menu::unload();
+	pause.unload();
 
 	AEGfxTextureUnload(TexMLBackground); // unload the texture for the background image
+	AEGfxTextureUnload(TexHeadsUpDisplay); // unload the texture for the background image
+
 }

@@ -1,12 +1,13 @@
 #pragma once
 
+#include "AEEngine.h"
 
-namespace pause_menu
+struct pause_menu
 {
     void load();
     void init();
     void update();
-    void draw();
+    void draw(AEVec2 const& camPos);
     void free();
     void unload();
-}
+};

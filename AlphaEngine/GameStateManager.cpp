@@ -83,14 +83,14 @@ void gsm::update()
 		fpFree		= main_level::free;
 		fpUnload	= main_level::unload;
 		break;
-	case GS_PAUSEMENU:
-		fpLoad = pause_menu::load;
-		fpInit = pause_menu::init;
-		fpUpdate = pause_menu::update;
-		fpDraw = pause_menu::draw;
-		fpFree = pause_menu::free;
-		fpUnload = pause_menu::unload;
-		break;
+	//case GS_PAUSEMENU:
+	//	fpLoad = pause_menu::load;
+	//	fpInit = pause_menu::init;
+	//	fpUpdate = pause_menu::update;
+	//	fpDraw = pause_menu::draw;
+	//	fpFree = pause_menu::free;
+	//	fpUnload = pause_menu::unload;
+	//	break;
 	case GS_RESTART:
 		break;
 	case GS_QUIT:

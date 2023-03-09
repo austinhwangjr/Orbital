@@ -94,6 +94,8 @@ void PauseMenuButtons::update()
 
 void PauseMenuButtons::draw(AEGfxVertexList* pMeshP)
 {
+
+
     RenderSprite(resumeTexture, resumeX, resumeY, pauseMButtonWidth, pauseMButtonHeight, pMeshP);
     RenderSprite(restartTexture, restartX, restartY, pauseMButtonWidth, pauseMButtonHeight, pMeshP);
     RenderSprite(exitMainMenuTexture, exitMainMenuX, exitMainMenuY, pauseMButtonWidth, pauseMButtonHeight, pMeshP);
