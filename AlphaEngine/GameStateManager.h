@@ -18,27 +18,19 @@ typedef void(*FP)(void);
 
 extern FP fpLoad, fpInit, fpUpdate, fpDraw, fpFree, fpUnload;
 
-namespace gsm
+struct gsm
 {
 	//void load();
-	void init(int start_state);
-	void update();
+	static void init(int start_state);
+	static void update();
 	//void restart();
 	//void quit();
 	void changeGameState(int next_gamestate);
 	//void draw();
 	//void free();
 	//void unload();
-}
+};
 
-namespace pause_menu
-{
-	void load();
-	void init();
-	void update();
-	void draw();
-	void free();
-	void unload();
-}
+
 
 void GSM_RestartLevel();

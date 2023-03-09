@@ -104,7 +104,6 @@ void gsm::update()
 
 void GSM_RestartLevel()
 {
-
 	next_state = GS_RESTART;
 }
 
