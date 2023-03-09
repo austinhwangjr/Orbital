@@ -14,6 +14,9 @@ std::vector<PlayerProj> player_proj_vector;
 extern std::vector<SpaceStation> space_station_vector;
 extern std::vector<ShopOption> button_vector;
 
+extern f32 cam_x, cam_y;
+
+
 
 void PlayerProj::load()
 {
@@ -84,6 +87,23 @@ void PlayerProj::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 			}
 		}
 	}
+
+
+
+	// =======================================
+	// Delete projectile if go out of screen
+	// =======================================
+	for (int i = 0; i < player_proj_vector.size(); ++i) {
+		PlayerProj& player_proj = player_proj_vector[i];
+		if (player_proj.position.x > cam_x + AEGetWindowWidth() / 3 || player_proj.position.x < cam_x - AEGetWindowWidth() / 3) {
+			if (player_proj.position.y > cam_y + AEGetWindowHeight() / 3 || player_proj.position.y < cam_y - AEGetWindowHeight() / 3) {
+				player_proj.is_delete = 1;
+			}
+		}
+
+	}
+
+
 
 	// ===================================
 	// Update player projectile instances
