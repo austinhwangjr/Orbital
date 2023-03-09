@@ -259,11 +259,7 @@ void main_level::free()
 		shuttle.free();
 		debris.free();
 		wave_manager.free();
-if (is_paused)
-	{
 		pause_menu::free();
-	}
-
 
 	AEGfxMeshFree(pMeshML);
 	AEGfxMeshFree(pMeshMLBackground);
