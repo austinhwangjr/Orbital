@@ -12,7 +12,7 @@
 #define MIN_DEBRIS_SIZE 15
 #define SHUTTLE_SIZE 20
 #define MAX_BUFFER 80
-#define MIN_BUFFER 40
+#define MIN_BUFFER 30
 #define EXPLOSION_WIDTH 40
 #define EXPLOSION_HEIGHT 40
 
@@ -92,7 +92,7 @@ void Debris::update(f64 frame_time)
 				AEVec2Add(&debris.position, &debris.position, &diff);
 
 				// Debris to rotate around planet when in orbit range
-				if (AEVec2Distance(&planet_vector[j].position, &debris.position) <= (planet_vector[j].size / 2.0 + OUTERRIM_TO_DEBRIS)) {
+				if (AEVec2Distance(&planet_vector[j].position, &debris.position) <= (planet_vector[j].size / 2.0 + debris.distance)) {
 					debris.angle = static_cast<f32>(atan2(debris.position.y - planet_vector[j].position.y, debris.position.x - planet_vector[j].position.x));
 					debris.state = ORBIT_AROUND_PLANET;
 				}
@@ -101,8 +101,8 @@ void Debris::update(f64 frame_time)
 			if (debris.state == ORBIT_AROUND_PLANET) {
 				// Orbit around planet
 				debris.angle -= AEDegToRad(0.125f) * debris.turning_speed * static_cast<f32>(frame_time);
-				debris.position.x = planet_vector[j].position.x + ((planet_vector[j].size / 2) + OUTERRIM_TO_DEBRIS) * AECos(debris.angle);
-				debris.position.y = planet_vector[j].position.y + ((planet_vector[j].size / 2) + OUTERRIM_TO_DEBRIS) * AESin(debris.angle);
+				debris.position.x = planet_vector[j].position.x + ((planet_vector[j].size / 2) + debris.distance) * AECos(debris.angle);
+				debris.position.y = planet_vector[j].position.y + ((planet_vector[j].size / 2) + debris.distance) * AESin(debris.angle);
 			}
 		}
 	}
@@ -226,6 +226,9 @@ void Debris::draw(AEGfxVertexList* pMesh)
 
 void Debris::free()
 {
+	for (int i = 0; i < debris_vector_all.size(); i++) {
+		debris_vector_all[i].clear();
+	}
 	debris_vector_all.clear();
 }
 
@@ -254,6 +257,7 @@ std::vector<Debris> Debris::create_debris(f32 planet_x, f32 planet_y, double siz
 		new_debris.turning_speed = SPEED_DEBRIS;
 		new_debris.active = true;
 		new_debris.state = ORBIT_AROUND_PLANET;
+		new_debris.distance = OUTERRIM_TO_DEBRIS;
 
 		new_debris.scale = { 0 };
 		new_debris.rotate = { 0 };
@@ -291,7 +295,7 @@ void spawn_debris_shuttle(AEVec2 position, int planet_id, int num_of_debris) {
 		new_debris.rotate = { 0 };
 		new_debris.translate = { 0 };
 		new_debris.transform = { 0 };
-
+		new_debris.distance = OUTERRIM_TO_DEBRIS + (rand() % MIN_BUFFER);
 
 
 		//EXPLOSION

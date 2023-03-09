@@ -271,6 +271,7 @@ if (is_paused)
 		pause.free();
 	}
 
+		pause.free();
 
 	AEGfxMeshFree(pMeshML);
 	AEGfxMeshFree(pMeshMLBackground);
