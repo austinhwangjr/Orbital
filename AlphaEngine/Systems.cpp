@@ -17,6 +17,7 @@ Technology is prohibited.
 #include "Systems.h"
 #include "Global.h"
 #include <iostream>
+#include "AudioManager.h"
 
 // Fonts
 s8 font_id, font_id_shop;
@@ -46,6 +47,7 @@ void system_call::init(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
 void system_call::unload()
 {
 	// Fonts
+	AudioManager::Shutdown();
 	AEGfxDestroyFont(font_id);
 	AEGfxDestroyFont(font_id_shop);
 

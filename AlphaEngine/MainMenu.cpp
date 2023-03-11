@@ -7,6 +7,7 @@
 #include "MenuButtons.h"
 #include "Graphics.h"
 #include "HowToPlay.h"
+#include "AudioManager.h"
 
 AEGfxTexture* TexMMBackground = nullptr;
 AEGfxTexture* TexTitle = nullptr;
@@ -25,6 +26,8 @@ void main_menu::load()
     TexTitle = AEGfxTextureLoad("Assets/Title.png");
     menuButtons.load("Assets/startButton.png", "Assets/htpButton.png", "Assets/creditsButton.png", "Assets/buttonTest.png", "Assets/quitTest.png");
     //std::cout << "------------------------- MainMenu::load completed -------------------------" << std::endl << std::endl;
+
+    AudioManager::LoadSound("Assets/BGM/cinescifi.wav", true);
 }
 
 void main_menu::init()
@@ -45,6 +48,7 @@ void main_menu::init()
 
     std::cout << std::endl;
     std::cout << "------------------------- MainMenu Initialised -------------------------" << std::endl << std::endl;
+    AudioManager::PlayBGM("Assets/BGM/cinescifi.wav", 0.25f);
 }
 
 void main_menu::update()

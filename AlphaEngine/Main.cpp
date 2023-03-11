@@ -6,6 +6,7 @@
 #include "Input.h"
 #include <iostream>
 #include "MainLevel.h"
+#include "AudioManager.h"
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -24,6 +25,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	// debugging log for mainmenu -yy
 	/*AEGfxReset();*/											// Reset the graphics engine before initializing the game state manager
+
+	AudioManager::Init();
 
 	// Initialize the game state manager with the starting state
 	gsm::init(GS_MAINMENU);
@@ -80,5 +83,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		current_state = next_state;         // Set current game state to be equal to next game state
 	}
 
+	
 	system_call::unload();              // Systems exit (terminate)
+	
 }

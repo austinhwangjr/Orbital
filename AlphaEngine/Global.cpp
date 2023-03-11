@@ -2,6 +2,8 @@
 #include "AEEngine.h"
 #include "Systems.h"
 
+bool		g_isMute = false;
+
 // Variables related to console display
 bool g_consoleOn = true;
 bool g_consoleOff = false;
