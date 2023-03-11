@@ -5,155 +5,176 @@
 #include "Global.h"
 namespace AudioManager
 {
-	static FMOD::System* _system;
-	static FMOD_RESULT _result;
+    // The FMOD system and error result
+    static FMOD::System* _system;
+    static FMOD_RESULT _result;
 
-	std::map<std::string, FMOD::Sound*> _soundMap;
+    // A map of loaded sounds
+    std::map<std::string, FMOD::Sound*> _soundMap;
 
-	// For pausing and muting
-	bool isMuted;
-	float originalVolume;
-	FMOD::Channel* bgm;
+    // For pausing and muting
+    bool isMuted;
+    float originalVolume;
+    FMOD::Channel* bgm;
 
-	void Init()
-	{
-		// Create fmodsystem
-		_system = NULL;
-		ErrorCheck(FMOD::System_Create(&_system));
+    // Initializes the FMOD system
+    void Init()
+    {
+        // Create fmodsystem
+        _system = NULL;
+        ErrorCheck(FMOD::System_Create(&_system));
 
-		// Init system
-		ErrorCheck(_system->init(512, FMOD_INIT_NORMAL, nullptr));
-	}
+        // Init system
+        ErrorCheck(_system->init(512, FMOD_INIT_NORMAL, nullptr));
+    }
 
-	void Update()
-	{
-		ErrorCheck(_system->update());
-	}
+    // Updates the FMOD system
+    void Update()
+    {
+        ErrorCheck(_system->update());
+    }
 
-	void Shutdown()
-	{
-		UnLoadAllSounds();
+    // Shuts down the FMOD system and unloads all sounds
+    void Shutdown()
+    {
+        UnLoadAllSounds();
 
-		// Clean up.
-		ErrorCheck(_system->release());
-	}
+        // Clean up.
+        ErrorCheck(_system->release());
+    }
 
-	void ErrorCheck(FMOD_RESULT result)
-	{
-		AE_ASSERT(result == FMOD_OK && FMOD_ErrorString(result));
-	}
+    // Helper function to check for FMOD errors
+    void ErrorCheck(FMOD_RESULT result)
+    {
+        AE_ASSERT(result == FMOD_OK && FMOD_ErrorString(result));
+    }
 
-	void LoadSound(const std::string& path, bool loop)
-	{
-		// If we alr have it in our map, return
-		auto found = _soundMap.find(path);
-		if (found != _soundMap.end())
-			return;
+    // Loads a sound file into memory and stores it in a map
+    void LoadSound(const std::string& path, bool loop)
+    {
+        // If we already have it in our map, return
+        auto found = _soundMap.find(path);
+        if (found != _soundMap.end())
+            return;
 
-		FMOD_MODE mode = FMOD_DEFAULT;
-		mode |= loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF;
+        // Set the loop mode for the sound
+        FMOD_MODE mode = FMOD_DEFAULT;
+        mode |= loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF;
 
-		FMOD::Sound* sound = nullptr;
-		ErrorCheck(_system->createSound(path.c_str(), mode, nullptr, &sound));
+        // Load the sound into memory
+        FMOD::Sound* sound = nullptr;
+        ErrorCheck(_system->createSound(path.c_str(), mode, nullptr, &sound));
 
-		// Add to map
-		if (sound)
-			_soundMap[path] = sound;
-	}
+        // Add the sound to the map
+        if (sound)
+            _soundMap[path] = sound;
+    }
 
-	void UnLoadSound(const std::string& path)
-	{
-		// If we have it in our map, release it
-		auto found = _soundMap.find(path);
-		if (found != _soundMap.end())
-		{
-			ErrorCheck(found->second->release());
-			_soundMap.erase(found);
-		}
-	}
+    // Unloads a sound file from memory and removes it from the map
+    void UnLoadSound(const std::string& path)
+    {
+        // If we have it in our map, release it
+        auto found = _soundMap.find(path);
+        if (found != _soundMap.end())
+        {
+            ErrorCheck(found->second->release());
+            _soundMap.erase(found);
+        }
+    }
 
-	void UnLoadAllSounds()
-	{
-		// Release all sounds in the map
-		for (auto const& found : _soundMap)
-		{
-			ErrorCheck(found.second->release());
-		}
+    // Unloads all sound files from memory and clears the map
+    void UnLoadAllSounds()
+    {
+        // Release all sounds in the map
+        for (auto const& found : _soundMap)
+        {
+            ErrorCheck(found.second->release());
+        }
 
-		// Clear map
-		_soundMap.clear();
-	}
+        // Clear the map
+        _soundMap.clear();
+    }
 
-	void PlayBGM(const std::string& path, float volume)
-	{
-		// Clamp the volume of the one shot
-		if (volume < 0.0f || volume > 1.0f)
-			volume = 1.0f;
+    // Plays a background music file
+    void PlayBGM(const std::string& path, float volume)
+    {
+        // Clamp the volume of the background music
+        if (volume < 0.0f || volume > 1.0f)
+            volume = 1.0f;
 
-		originalVolume = volume;
+        // Remember the original volume for later use
+        originalVolume = volume;
 
-		// If we DONT have it in our map, add to sound
-		auto found = _soundMap.find(path);
-		if (found == _soundMap.end())
-		{
-			LoadSound(path);
-			found = _soundMap.find(path);
-		}
+        // If no sound, load the sound
+        auto found = _soundMap.find(path);
+        if (found == _soundMap.end())
+        {
+            LoadSound(path);
+            found = _soundMap.find(path);
+        }
 
-		ErrorCheck(_system->playSound(found->second, nullptr, true, &bgm));
+        // Play the sound in paused mode
+        ErrorCheck(_system->playSound(found->second, nullptr, true, &bgm));
 
-		if (g_isMute)
-			volume = 0.0f;
+        // If audio is currently muted, set volume to 0
+        if (g_isMute)
+            volume = 0.0f;
 
-		// Set volume
-		ErrorCheck(bgm->setVolume(volume));
+        // Set the volume of the background music
+        ErrorCheck(bgm->setVolume(volume));
 
-		// Unpause the track
-		ErrorCheck(bgm->setPaused(false));
-	}
+        // Unpause the sound
+        ErrorCheck(bgm->setPaused(false));
+    }
 
-	void PlayOneShot(const std::string& path, float volume)
-	{
-		// Clamp the volume of the one shot
-		if (volume < 0.0f || volume > 1.0f)
-			volume = 1.0f;
+    // Plays a one-shot sound effect
+    void PlayOneShot(const std::string& path, float volume)
+    {
+        // Clamp the volume of the one-shot sound effect
+        if (volume < 0.0f || volume > 1.0f)
+            volume = 1.0f;
 
-		// If we DONT have it in our map, add to sound
-		auto found = _soundMap.find(path);
-		if (found == _soundMap.end())
-		{
-			LoadSound(path);
-			found = _soundMap.find(path);
-		}
+        // If no sound, load the sound
+        auto found = _soundMap.find(path);
+        if (found == _soundMap.end())
+        {
+            LoadSound(path);
+            found = _soundMap.find(path);
+        }
 
-		// Play the track paused
-		FMOD::Channel* c;
-		ErrorCheck(_system->playSound(found->second, nullptr, true, &c));
+        // Play the sound in paused mode
+        FMOD::Channel* c;
+        ErrorCheck(_system->playSound(found->second, nullptr, true, &c));
 
-		if (g_isMute)
-			volume = 0.0f;
+        // If audio is currently muted, set volume to 0
+        if (g_isMute)
+            volume = 0.0f;
 
-		// Set volume
-		ErrorCheck(c->setVolume(volume));
+        // Set the volume of the one-shot sound effect
+        ErrorCheck(c->setVolume(volume));
 
-		// Unpause the track
-		ErrorCheck(c->setPaused(false));
-	}
+        // Unpause the sound
+        ErrorCheck(c->setPaused(false));
+    }
 
-	void ToggleMute(bool mute)
-	{
-		g_isMute = mute;
+    // Toggles the mute state of the audio
+    void ToggleMute(bool mute)
+    {
+        // Set the global mute state
+        g_isMute = mute;
 
-		// Set volume
-		if (bgm)
-		{
-			ErrorCheck(bgm->setVolume(g_isMute ? 0.0f : originalVolume));
-		}
+        // Set the volume of the background music to 0 if audio is muted, else set it to the original volume
+        if (bgm)
+        {
+            ErrorCheck(bgm->setVolume(g_isMute ? 0.0f : originalVolume));
+        }
+    }
 
-	}
+    // Toggles the pause state of the audio
+    void TogglePause(bool pause)
+    {
+        // Pause or unpause the background music
+        ErrorCheck(bgm->setPaused(pause));
+    }
 
-	void TogglePause(bool pause)
-	{
-		ErrorCheck(bgm->setPaused(pause));
-	}
 }
