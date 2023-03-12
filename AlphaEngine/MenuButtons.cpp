@@ -86,7 +86,7 @@ void Menu_Button::update()
         case 0: next_state = GS_MAINLEVEL;  break;
         case 1: next_state = GS_HOWTOPLAY;  break;
         case 2: next_state = GS_CREDITS;    break;
-        case 3: next_state = GS_OPTIONS;    break;
+        case 3: next_state = GS_HIGHSCORE;    break;
         case 4: next_state = GS_QUIT;       break;
         }
 

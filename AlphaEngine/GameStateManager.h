@@ -9,7 +9,8 @@ enum GS_STATES
 	GS_MAINLEVEL, //5 technically this is the startbutton
 	GS_PAUSEMENU,		//6
 	GS_RESTART,			//7
-	GS_QUIT
+	GS_QUIT,
+	GS_HIGHSCORE
 };
 
 extern unsigned int current_state, previous_state, next_state;

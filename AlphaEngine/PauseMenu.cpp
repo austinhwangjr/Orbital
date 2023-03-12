@@ -3,10 +3,10 @@
 #include "GameStateManager.h"
 #include "Graphics.h"
 #include "PauseMenuButtons.h"
-
+#include "Highscore.h"
 
 AEGfxVertexList* pMeshP;
-
+extern Player player;
 PauseMenuButtons pauseButtons;
 Rendering createMeshPauseScreen;            // meshfor pause screen essentially its sq mesh
 
@@ -30,6 +30,7 @@ void pause_menu::init()
 void pause_menu::update()
 {
     pauseButtons.update();
+    
 }
 
 void pause_menu::draw(AEVec2 const& camPos)
@@ -49,5 +50,6 @@ void pause_menu::free()
 void pause_menu::unload()
 {
     pauseButtons.unload();
+    putHighScore(player.score);
 
 }
