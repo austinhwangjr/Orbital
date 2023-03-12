@@ -86,7 +86,17 @@ void HighScore::draw() {
     s = std::to_string(top_10_highscores[5]);
     AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.55, 0.5f, 1.f, 0.41f, 0.70f);
     
-    
+    s = std::to_string(top_10_highscores[6]);
+    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.5, 0.5f, 1.f, 0.41f, 0.70f);
+
+    s = std::to_string(top_10_highscores[7]);
+    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.45, 0.5f, 1.f, 0.41f, 0.70f);
+
+    s = std::to_string(top_10_highscores[8]);
+    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.4, 0.5f, 1.f, 0.41f, 0.70f);
+
+    s = std::to_string(top_10_highscores[9]);
+    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.35, 0.5f, 1.f, 0.41f, 0.70f);
 
 
 }
