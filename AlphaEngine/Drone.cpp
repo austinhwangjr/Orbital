@@ -152,7 +152,7 @@ void Drone::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 						if (debris.move_towards_drone_id > 0 && (drone.current_capacity < drone.max_capacity) &&
 							AEVec2Distance(&drone.position, &debris.position) <= (drone.size + debris.size) / 2) {
 							// Debris to be destroyed when in contact with player
-							drone_vector_all[i][j].current_capacity++;
+							drone.current_capacity++;
 							debris.active = false;
 						}
 					}

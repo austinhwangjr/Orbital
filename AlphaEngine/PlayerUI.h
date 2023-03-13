@@ -45,6 +45,11 @@ struct PlayerUI
 	f32			shop_trans_duration;
 	AEMtx33		transform;
 
+	//--------------------Player HUD--------------------
+	AEVec2		player_hud_position;
+	f32			player_hud_width, player_hud_height;
+	AEMtx33		player_hud_transform;
+
 	//--------------------Icons in shop--------------------
 	f32			icon_size;
 	AEMtx33		drone_icon_transform;

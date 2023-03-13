@@ -85,16 +85,14 @@ void Planets::draw(AEGfxVertexList* pMesh)
 {
 	for (int i{}; i < wave_manager.planet_count; i++)
 	{
-		// Set the texture to planet_tex 
-		AEGfxTextureSet(planet_tex, 0, 0);
-		AEGfxSetTransform(planet_vector[i].transform.m);
-		// Actually drawing the mesh
-		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-
-		// Set the texture to orbit_tex 
+		// Draw orbit ring first
 		AEGfxTextureSet(orbit_tex, 0, 0);
 		AEGfxSetTransform(planet_vector[i].orbit_transform.m);
-		// Actually drawing the mesh
+		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+
+		// Draw planet sprite
+		AEGfxTextureSet(planet_tex, 0, 0);
+		AEGfxSetTransform(planet_vector[i].transform.m);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 	}
 }
