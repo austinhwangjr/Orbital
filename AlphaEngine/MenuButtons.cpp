@@ -20,14 +20,17 @@ static float startY         = -25.f;
 static float howToPlayX     = 0.0f;
 static float howToPlayY     = -100.f;
 
-static float creditsX       = 0.0f;
-static float creditsY       = -175.f;
+static float highScoreX     = 0.0f;
+static float highScoreY     = -175.f;
 
 static float optionsX       = 0.0f;
 static float optionsY       = -250.f;
 
+static float creditsX       = 0.0f;
+static float creditsY       = -325.f;
+
 static float quitX          = 0.0f;
-static float quitY          = -325.f;
+static float quitY          = -400.f;
 
 // checking input area stuff
 struct Button
@@ -42,23 +45,25 @@ struct Button
 Button buttons[] = {
     {startX, startY, buttonWidth, buttonHeight},   // Start button
     {howToPlayX, howToPlayY, buttonWidth, buttonHeight},  // How to play button
-    {creditsX, creditsY, buttonWidth, buttonHeight},  // Credits button
+    {highScoreX, highScoreY, buttonWidth, buttonHeight},    // high score button
     {optionsX, optionsY, buttonWidth, buttonHeight},  // Options button
+    {creditsX, creditsY, buttonWidth, buttonHeight},  // Credits button
     {quitX, quitY, buttonWidth, buttonHeight}   // Quit button
 };
 
 void Menu_Button::load(const char* startButtonFilename,
                        const char* howToPlayButtonFilename,
-                       const char* creditsButtonFilename,
+                       const char* highScoreButtonFilename,
                        const char* optionsButtonFilename,
+                       const char* creditsButtonFilename,
                        const char* exitButtonFilename)
 {
     startButtonTexture     =    AEGfxTextureLoad(startButtonFilename);
     howToPlayButtonTexture =    AEGfxTextureLoad(howToPlayButtonFilename);
-    creditsButtonTexture   =    AEGfxTextureLoad(creditsButtonFilename);
+    highScoreButtonTexture =    AEGfxTextureLoad(highScoreButtonFilename);
     optionsButtonTexture   =    AEGfxTextureLoad(optionsButtonFilename);
+    creditsButtonTexture   =    AEGfxTextureLoad(creditsButtonFilename);
     exitButtonTexture      =    AEGfxTextureLoad(exitButtonFilename);
-
 }
 
 void Menu_Button::init()
@@ -73,7 +78,7 @@ void Menu_Button::update()
     {
         // Check which button has been clicked
         int clickedButton = -1;
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 6; i++) {
             if (Input::isButtonClicked(buttons[i].x, buttons[i].y, buttons[i].width, buttons[i].height)) {
                 clickedButton = i;
                 break;
@@ -85,9 +90,10 @@ void Menu_Button::update()
         {
         case 0: next_state = GS_MAINLEVEL;  break;
         case 1: next_state = GS_HOWTOPLAY;  break;
-        case 2: next_state = GS_CREDITS;    break;
-        case 3: next_state = GS_HIGHSCORE;    break;
-        case 4: next_state = GS_QUIT;       break;
+        case 2: next_state = GS_HIGHSCORE;  break;
+        case 3: next_state = GS_OPTIONS;    break;
+        case 4: next_state = GS_CREDITS;    break;
+        case 5: next_state = GS_QUIT;       break;
         }
 
         // debugging yy
@@ -95,8 +101,6 @@ void Menu_Button::update()
         std::cout << "Next game state: " << next_state << std::endl;
         std::cout << "GameState changed to: " << current_state << std::endl;
     }
-
-
 
     if (AEInputCheckTriggered(AEVK_F11))
     {
@@ -123,19 +127,20 @@ void Menu_Button::draw(AEGfxVertexList* pMeshMM)
     RenderSprite(howToPlayButtonTexture, howToPlayX, howToPlayY, buttonWidth, buttonHeight, pMeshMM);
     /*RenderText("HOW TO PLAY", howToPlayX, howToPlayY, 20);*/
 
-    // Draw the credits button
-    RenderSprite(creditsButtonTexture, creditsX, creditsY, buttonWidth, buttonHeight, pMeshMM);
-    /*RenderText("CREDITS", creditsX, creditsY, 20);*/
+    RenderSprite(highScoreButtonTexture, highScoreX, highScoreY, buttonWidth, buttonHeight, pMeshMM);
 
     // Draw the options button
     RenderSprite(optionsButtonTexture, optionsX, optionsY, buttonWidth, buttonHeight, pMeshMM);
     /*RenderText("OPTIONS", optionsX, optionsY, 20);*/
 
+    // Draw the credits button
+    RenderSprite(creditsButtonTexture, creditsX, creditsY, buttonWidth, buttonHeight, pMeshMM);
+    /*RenderText("CREDITS", creditsX, creditsY, 20);*/
+
     // Draw the quit button
     RenderSprite(exitButtonTexture, quitX, quitY, buttonWidth, buttonHeight, pMeshMM);
     /*RenderText("QUIT", quitX, quitY, 20);*/
 }
-
 
 void Menu_Button::free()
 {
@@ -147,7 +152,8 @@ void Menu_Button::unload()
     // unload the texture for the start button
     AEGfxTextureUnload(startButtonTexture);
     AEGfxTextureUnload(howToPlayButtonTexture);
-    AEGfxTextureUnload(creditsButtonTexture);
+    AEGfxTextureUnload(highScoreButtonTexture);
     AEGfxTextureUnload(optionsButtonTexture);
+    AEGfxTextureUnload(creditsButtonTexture);
     AEGfxTextureUnload(exitButtonTexture);
 }

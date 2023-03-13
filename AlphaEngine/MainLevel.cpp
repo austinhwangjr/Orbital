@@ -37,8 +37,6 @@ Technology is prohibited.
 AEGfxTexture* TexMLBackground = nullptr;
 AEGfxTexture* TexHeadsUpDisplay = nullptr;
 
-
-
 AEGfxVertexList* pMeshMLBackground;				// Background Mesh
 AEGfxVertexList* pMeshML;						// Object square mesh
 
@@ -70,9 +68,7 @@ namespace main_level
 	// Keep track of the previous and current game states
 	GS_STATES previous_state = GS_MAINLEVEL;
 	GS_STATES current_state = GS_MAINLEVEL;
-
 }
-
 
 // ----------------------------------------------------------------------------
 // This function loads all necessary assets in Level1
@@ -81,9 +77,8 @@ namespace main_level
 // ----------------------------------------------------------------------------
 void main_level::load()
 {
-	TexMLBackground = AEGfxTextureLoad("Assets/Background.png");
-	TexHeadsUpDisplay = AEGfxTextureLoad("Assets/HUD.png");
-
+	TexMLBackground = AEGfxTextureLoad("Assets/MainMenu/mm_Background.png");
+	TexHeadsUpDisplay = AEGfxTextureLoad("Assets/MainLevel/ml_HeadsUpDisplay.png");
 
 	pause.load();
 
@@ -98,8 +93,6 @@ void main_level::load()
 	debris.load();
 	shuttle.load();
 	wave_manager.load();
-
-
 }
 
 // ----------------------------------------------------------------------------

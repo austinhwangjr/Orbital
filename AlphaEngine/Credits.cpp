@@ -34,19 +34,17 @@ credits::Button2 buttons2[] = {
 
 void credits::load()
 {
-	texCreditsBackground = AEGfxTextureLoad("Assets/Credits.png");
-	texReturnToMMfromCredits = AEGfxTextureLoad("Assets/returnToMMfromCredits.png");
+	texCreditsBackground = AEGfxTextureLoad("Assets/MainMenu/Credits/c_CreditsBackground.png");
+	texReturnToMMfromCredits = AEGfxTextureLoad("Assets/MainMenu/Credits/c_ExitButtonCredits.png");
 }
 
 void credits::init()
 {
-
 	createMeshCredits.BackgroundMesh(pMeshCreditsBackground);
 	createMeshCredits.SquareMesh(pMeshCredits);
 
 	AE_ASSERT_MESG(pMeshCreditsBackground, "Error: Failed to create pMeshCreditsBackground in Credits.cpp!");
 	AE_ASSERT_MESG(pMeshCredits, "Error: Failed to create pMeshCredits in Credits.cpp!");
-
 }
 
 void credits::update()

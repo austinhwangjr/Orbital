@@ -33,8 +33,8 @@ extern std::vector<std::vector<Drone>> drone_vector_all;
 
 void Planets::load()
 {
-	planet_tex = AEGfxTextureLoad("Assets/PlanetTexture.png");
-	orbit_tex = AEGfxTextureLoad("Assets/orbitRing.png");
+	planet_tex = AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture.png");
+	orbit_tex = AEGfxTextureLoad("Assets/MainLevel/ml_OrbitRing.png");
 }
 
 void Planets::init()

@@ -1,4 +1,4 @@
-#include "Highscore.h"
+#include "AEEngine.h"
 #include <fstream>
 #include <iostream>
 #include <stdio.h>
@@ -6,24 +6,63 @@
 #include <string>
 #include "Input.h"
 #include "GameStateManager.h"
-
+#include "Graphics.h"
+#include "Highscore.h"
+#include "Global.h"
 
 std::vector<int> top_10_highscores;
 extern s8 font_id;
 
+AEGfxTexture* texReturnToMMfromHighScore = nullptr;
 
+AEGfxVertexList* pMeshHighScore;
+
+Rendering renderScoreboard;
+
+static float buttonWidth3 = 200.f;
+static float buttonHeight3 = 50.f;
+
+static float returnToMMfromHighScoreX = 650.0f;
+static float returnToMMfromHighScoreY = -20.0f;
+
+// Define the positions and dimensions for each button
+HighScore::Button3 buttons3[] = {
+    {returnToMMfromHighScoreX, returnToMMfromHighScoreY, buttonWidth3, buttonHeight3},   // Return to main menu button
+};
 
 void HighScore::load() {
-    
+    texReturnToMMfromHighScore = AEGfxTextureLoad("Assets/MainMenu/HighScore/hs_ExitHighScore.png");
 }
 
 void HighScore::init() {
+    
+    renderScoreboard.SquareMesh(pMeshHighScore);
+    AE_ASSERT_MESG(pMeshHighScore, "Error: Failed to create pMeshHighScore in HighScore.cpp!");
 
 }
 
 void HighScore::update() {
+
+    // Check if the left mouse button has been clicked
+    if (AEInputCheckTriggered(AEVK_LBUTTON))
+    {
+        // Check which button has been clicked
+
+        if (Input::isButtonClicked(buttons3[0].x, buttons3[0].y, buttons3[0].width, buttons3[0].height))
+        {
+            next_state = GS_MAINMENU;
+        }
+    }
+
+    if (AEInputCheckTriggered(AEVK_F11))
+    {
+        // If the window close button has been clicked, set the game state to quit
+        Global_ToggleScreen();
+        std::cout << "Toggling Screen " << std::endl;
+    }
+
     FILE* file_highscores;
-    errno_t file_check_highscores_read = fopen_s(&file_highscores, "Assets/Highscore.txt", "r");
+    errno_t file_check_highscores_read = fopen_s(&file_highscores, "Assets/MainMenu/HighScore/Highscore.txt", "r");
     
     if (file_check_highscores_read != 0) {									// Check if file exist/open	
         std::cout << "Highscore.txt does not exist." << '\n';
@@ -61,6 +100,9 @@ void HighScore::update() {
 }
 
 void HighScore::draw() {
+    
+    renderScoreboard.RenderSprite(texReturnToMMfromHighScore, returnToMMfromHighScoreX, returnToMMfromHighScoreY, buttonWidth3, buttonHeight3, pMeshHighScore);
+
     AEGfxSetBlendMode(AE_GFX_BM_BLEND);
     AEGfxSetRenderMode(AE_GFX_RM_COLOR);
     AEGfxSetTransparency(1.f);
@@ -104,11 +146,13 @@ void HighScore::draw() {
 
 void HighScore::free() {
     top_10_highscores.clear();
+    AEGfxMeshFree(pMeshHighScore);
 }
 
 
 void HighScore::unload() {
-   
+    AEGfxTextureUnload(texReturnToMMfromHighScore);
+
 }
 
 void putHighScore(int score)

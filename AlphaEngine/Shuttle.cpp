@@ -24,7 +24,7 @@ extern WaveManager wave_manager;
 
 void Shuttles::load()
 {
-	shuttle_tex = AEGfxTextureLoad("Assets/test-shuttle.png");
+	shuttle_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Shuttle.png");
 }
 
 void Shuttles::init()

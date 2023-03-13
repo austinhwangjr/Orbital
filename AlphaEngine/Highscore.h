@@ -10,6 +10,14 @@ namespace HighScore
 	void draw();
 	void free();
 	void unload();
+
+	struct Button3
+	{
+		float x;
+		float y;
+		float width;
+		float height;
+	};
 };
 
 void putHighScore(int score);

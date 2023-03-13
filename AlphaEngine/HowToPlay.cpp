@@ -27,19 +27,15 @@ static float howToPlayBGY = 0.0f;
 static float returnToMMX = 650.0f;
 static float returnToMMY = -20.0f;
 
-
-
 // Define the positions and dimensions for each button
 how_to_play::Button1 buttons1[] = {
     {returnToMMX, returnToMMY, buttonWidth1, buttonHeight1},   // Return to main menu button
 };
 
-
-
 void how_to_play::load()
 {
-    howToPlayBGTexture = AEGfxTextureLoad("Assets/howToPlay.png");
-    returnToMMTexture = AEGfxTextureLoad("Assets/p_ExitMainMenuButton.png");
+    howToPlayBGTexture = AEGfxTextureLoad("Assets/MainMenu/HowToPlay/htp_HowToPlayBackground.png");
+    returnToMMTexture = AEGfxTextureLoad("Assets/MainMenu/HowToPlay/htp_ExitButton.png");
 }
 
 void how_to_play::init()

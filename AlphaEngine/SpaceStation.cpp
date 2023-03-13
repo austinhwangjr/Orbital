@@ -49,7 +49,7 @@ std::vector<Coin> coin_vector;
 
 void SpaceStation::load()
 {
-	coin_tex = AEGfxTextureLoad("Assets/Coin.png");
+	coin_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Coin.png");
 }
 
 void SpaceStation::init()

@@ -43,8 +43,8 @@ AEGfxTexture* explosionTex;
 
 void Debris::load()
 {
-	debrisTex = AEGfxTextureLoad("Assets/Debris.png");
-	explosionTex = AEGfxTextureLoad("Assets/Explosion.png");
+	debrisTex = AEGfxTextureLoad("Assets/MainLevel/ml_Debris.png");
+	explosionTex = AEGfxTextureLoad("Assets/MainLevel/ml_Explosion.png");
 }
 
 void Debris::init()

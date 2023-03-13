@@ -9,8 +9,8 @@
 #include "HowToPlay.h"
 #include "AudioManager.h"
 
-AEGfxTexture* TexMMBackground = nullptr;
-AEGfxTexture* TexTitle = nullptr;
+AEGfxTexture* TexMMBackground   = nullptr;
+AEGfxTexture* TexTitle          = nullptr;
 
 AEGfxVertexList* pMeshMMBackground;
 AEGfxVertexList* pMeshMM;
@@ -22,9 +22,16 @@ Rendering RenderMMBackground;
 
 void main_menu::load()
 {
-    TexMMBackground = AEGfxTextureLoad("Assets/Background.png");
-    TexTitle = AEGfxTextureLoad("Assets/Title.png");
-    menuButtons.load("Assets/startButton.png", "Assets/htpButton.png", "Assets/creditsButton.png", "Assets/buttonTest.png", "Assets/quitTest.png");
+    TexMMBackground     = AEGfxTextureLoad("Assets/MainMenu/mm_Background.png");
+    TexTitle            = AEGfxTextureLoad("Assets/MainMenu/mm_Title.png");
+
+    menuButtons.load(   "Assets/MainMenu/mm_StartButton.png",
+                        "Assets/MainMenu/mm_HowToPlayButton.png",
+                        "Assets/MainMenu/mm_HighScore.png",
+                        "Assets/MainMenu/mm_InProgressButton.png",
+                        "Assets/MainMenu/mm_CreditsButton.png",
+                        "Assets/MainMenu/mm_ExitButton.png"             );
+
     //std::cout << "------------------------- MainMenu::load completed -------------------------" << std::endl << std::endl;
 
     AudioManager::LoadSound("Assets/BGM/cinescifi.wav", true);
@@ -69,22 +76,18 @@ void main_menu::draw()
 
     // Draw the menu buttons using pMesh1
     menuButtons.draw(pMeshMM);
-   
-
 }
 
 void main_menu::free()
 {
     AEGfxMeshFree(pMeshMMBackground);
     AEGfxMeshFree(pMeshMM);
-
 }
 
 void main_menu::unload()
 {
     menuButtons.unload();
   
-
     AEGfxTextureUnload(TexMMBackground); // unload the texture for the background image
     AEGfxTextureUnload(TexTitle);
 }
