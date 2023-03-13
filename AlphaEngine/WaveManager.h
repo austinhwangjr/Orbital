@@ -16,6 +16,8 @@
 
 struct WaveManager
 {
+	f64		blinking_timer;				// Timer for blinking indicators
+
 // WAVE VARIABLES----------------------------
 	int		wave_number;				// Current wave number
 	int		wave_progress;				// Number of planets that have no more shuttles to escape
@@ -44,6 +46,7 @@ struct WaveManager
 
 	//void set_shuttle_max(std::vector<Planets> planet_vector, int max_shuttle);
 	int get_total_shuttles();
+	int get_current_shuttles();
 	bool no_more_shuttles();
 };
 
