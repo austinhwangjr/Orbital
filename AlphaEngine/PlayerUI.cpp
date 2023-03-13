@@ -13,6 +13,7 @@ AEGfxTexture* space_station_tex;
 AEGfxTexture* shop_background_tex;
 AEGfxTexture* upgrade_level_hollow_tex;
 AEGfxTexture* upgrade_level_solid_tex;
+AEGfxTexture* player_hud_tex;
 
 // Variables for general UI
 std::string		score, credits, capacity;
@@ -44,6 +45,10 @@ void PlayerUI::load()
 
 void PlayerUI::init()
 {
+	// Player UI
+	player_hud_width	= static_cast<f32>(AEGetWindowWidth());
+	player_hud_height	= static_cast<f32>(AEGetWindowHeight());
+
 	// Add buttons to vector
 	ShopOption shop_open_button{};
 	shop_open_button.width	= 70.f;
@@ -160,6 +165,10 @@ void PlayerUI::update(f64 frame_time, Player& player)
 	// Update positions
 	// =================
 
+	// Player HUD to follow camera
+	player_hud_position.x = cam_x;
+	player_hud_position.y = cam_y;
+
 	// Shop background
 	shop_bg_position.x = cam_x + shop_offset;
 	shop_bg_position.y = cam_y;
@@ -181,11 +190,25 @@ void PlayerUI::update(f64 frame_time, Player& player)
 		}
 	}
 
-	// =================================
-	// Calculate the matrix for buttons
-	// =================================
+	// =======================
+	// Calculate the matrices
+	// =======================
 
 	AEMtx33 scale, rot, trans;
+
+	// Player HUD
+	AEMtx33Scale(&scale, player_hud_width, player_hud_height);
+	AEMtx33Rot(&rot, 0.f);
+	AEMtx33Trans(&trans, player_hud_position.x, player_hud_position.y);
+	AEMtx33Concat(&player_hud_transform, &rot, &scale);
+	AEMtx33Concat(&player_hud_transform, &trans, &player_hud_transform);
+
+	// Shop background
+	AEMtx33Scale(&scale, shop_bg_width, shop_bg_height);
+	AEMtx33Rot(&rot, 0.f);
+	AEMtx33Trans(&trans, shop_bg_position.x, shop_bg_position.y);
+	AEMtx33Concat(&shop_bg_transform, &rot, &scale);
+	AEMtx33Concat(&shop_bg_transform, &trans, &shop_bg_transform);
 
 	// Shop buttons
 	for (int i = 0; i < button_vector.size(); ++i) {
@@ -224,13 +247,6 @@ void PlayerUI::update(f64 frame_time, Player& player)
 			AEMtx33Concat(&space_station_icon_transform, &trans, &space_station_icon_transform);
 		}
 	}
-
-	// Shop background
-	AEMtx33Scale(&scale, shop_bg_width, shop_bg_height);
-	AEMtx33Rot(&rot, 0.f);
-	AEMtx33Trans(&trans, shop_bg_position.x, shop_bg_position.y);
-	AEMtx33Concat(&shop_bg_transform, &rot, &scale);
-	AEMtx33Concat(&shop_bg_transform, &trans, &shop_bg_transform);
 }
 
 /******************************************************************************/
@@ -241,6 +257,11 @@ void PlayerUI::update(f64 frame_time, Player& player)
 void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 {
 	AEGfxSetBlendColor(0.f, 0.f, 0.f, 0.f);
+
+	// Player HUD
+	AEGfxTextureSet(player_hud_tex, 0, 0);
+	AEGfxSetTransform(player_hud_transform.m);
+	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
 	// Print score
 	score = "Score: " + std::to_string(player.score);
@@ -431,6 +452,7 @@ void PlayerUI::unload()
 	AEGfxTextureUnload(shop_background_tex);
 	AEGfxTextureUnload(upgrade_level_hollow_tex);
 	AEGfxTextureUnload(upgrade_level_solid_tex);
+	AEGfxTextureUnload(player_hud_tex);
 }
 
 void PlayerUI::shop_open(Player& player)

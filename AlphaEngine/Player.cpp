@@ -1,6 +1,7 @@
 #include "AEEngine.h"
 #include "Player.h"
 
+
 // Textures
 AEGfxTexture* player_tex;
 AEGfxTexture* tractor_beam_tex;
@@ -282,5 +283,12 @@ void Player::flying_state(f64 frame_time)
 			current_planet = planet_vector[i];
 			shortest_distance = AEVec2Distance(&position, &planet_vector[i].position);
 		}
+	}
+
+	// Player not in planet orbit, debris to return to planet
+	for (int i = 0; i < debris_vector_all[current_planet.id].size(); ++i) {
+		Debris& debris = debris_vector_all[current_planet.id][i];
+		if (debris.state == MOVE_TOWARDS_PLAYER)
+			debris.state = MOVE_TOWARDS_PLANET;
 	}
 }

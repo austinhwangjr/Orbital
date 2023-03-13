@@ -1,8 +1,8 @@
 #pragma once
 #define PLANET_SIZE				200.0f		// Planet base size (radius)	
 #define PLANET_ROT_SPEED		0.01f * PI	// Planet rotation speed (radians)
-#define SHUTTLE_SPAWN_TIME_MAX	8			// Maximum time shuttles will spawn
-#define SHUTTLE_SPAWN_TIME_MIN	4			// Minimum time shuttles will spawn
+#define SHUTTLE_SPAWN_TIME_MAX	12			// Maximum time shuttles will spawn
+#define SHUTTLE_SPAWN_TIME_MIN	8			// Minimum time shuttles will spawn
 #define DEBRIS_MAX				25			// Maximum number of debris on a planet
 #define DEBRIS_MIN				10			// Minimum number of debris on a planet
 #define DRONES_MAX				5			// Maximum number of drones on a planet

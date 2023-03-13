@@ -20,9 +20,12 @@ Technology is prohibited.
 extern s8 font_id;
 const char* print_string;
 
+AEGfxTexture* indicator_tex;
+AEMtx33 indicator_scale, indicator_rot, indicator_translate, indicator_transform;
+
 void WaveManager::load()
 {
-
+	indicator_tex = AEGfxTextureLoad("Assets/Explosion.png");
 }
 
 void WaveManager::init()
@@ -41,12 +44,15 @@ void WaveManager::init()
 	shuttle_has_escaped = false;
 	shuttle_has_collided = false;
 
-	planet.Planets::spawn(rand() % (SHUTTLE_SPAWN_MAX - SHUTTLE_SPAWN_MIN) + SHUTTLE_SPAWN_MIN);
+	planet.spawn(rand() % (SHUTTLE_SPAWN_MAX - SHUTTLE_SPAWN_MIN) + SHUTTLE_SPAWN_MIN);
 	planet_count++;
 
 	std::cout << "----------------------------------------" << std::endl;
 	std::cout << "Wave " << wave_number << " has begun." << '\t';
 	std::cout << "Planet Count: " << planet_count << '\n';
+
+	AEMtx33Scale(&indicator_scale, 50.f, 50.f);
+	AEMtx33Rot(&indicator_rot, 0.f);
 }
 
 void WaveManager::update(f64 frame_time)
@@ -207,9 +213,18 @@ void WaveManager::draw()
 			// Since position of AEGfxPrint is limit within -1.f to 1.f, clamp within those boundaries
 			// Subtract length of indicator string from 1.f to make up for font offset since position of font is at bottom left of font
 			AEGfxPrint(font_id, const_cast<s8*>(print_string),
-				AEClamp(dist_pos.x / AEGetWindowWidth(), -1.f, 1.f - (static_cast<f32>(4.5 * FONT_ID_SIZE) / static_cast<f32>(AEGetWindowWidth()))),
-				AEClamp(dist_pos.y / AEGetWindowHeight(), -1.f, 1.f - (static_cast<f32>(1.5 * FONT_ID_SIZE) / static_cast<f32>(AEGetWindowHeight()))),
+				AEClamp(dist_pos.x / AEGetWindowWidth(), -0.8f, 0.8f - (static_cast<f32>(4.5 * FONT_ID_SIZE) / static_cast<f32>(AEGetWindowWidth()))),
+				AEClamp(dist_pos.y / AEGetWindowHeight(), -0.8f, 0.8f - (static_cast<f32>(1.5 * FONT_ID_SIZE) / static_cast<f32>(AEGetWindowHeight()))),
 				1.f, 1.f, 1.f, 1.f);
+
+			//f32 cam_x{}, cam_y{};
+			//AEGfxGetCamPosition(&cam_x, &cam_y);
+
+			//AEMtx33Rot(&indicator_rot, 0.f);
+			//AEMtx33Trans(&indicator_translate, AEClamp(dist_pos.x / AEGetWindowWidth(), -0.8f, 0.8f - (static_cast<f32>(4.5 * FONT_ID_SIZE) / static_cast<f32>(AEGetWindowWidth()))),
+			//									AEClamp(dist_pos.y / AEGetWindowHeight(), -0.8f, 0.8f - (static_cast<f32>(1.5 * FONT_ID_SIZE) / static_cast<f32>(AEGetWindowHeight()))));
+			//AEMtx33Concat(&indicator_transform, &indicator_rot, &indicator_scale);
+			//AEMtx33Concat(&indicator_transform, &indicator_translate, &indicator_transform);
 		}
 		// DISTANCE INDICATOR-------------------------------------------------------------------------------------------------------------------------------------
 	}
@@ -228,6 +243,34 @@ void WaveManager::draw()
 	std::string str_shuttle_lost = "Shuttles Lost: " + std::to_string(shuttle_destroyed);
 	print_string = str_shuttle_lost.c_str();
 	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.f - (str_shuttle_lost.length() / 2 * static_cast<f32>(FONT_ID_SIZE) / static_cast<f32>(AEGetWindowWidth())), -0.65f, 1.f, 1.f, 1.f, 1.f);
+
+	// WAVE | SHUTTLES | PLANETS -------------------------------------------------------------------------------------------------------------------------------------
+	std::string str_count; std::string str_headers;
+
+	str_headers = "WAVE";
+	print_string = str_headers.c_str();
+	AEGfxPrint(font_id, const_cast<s8*>(print_string), -0.25f, 0.9f, 1.f, 1.f, 1.f, 1.f);
+
+	str_count = std::to_string(wave_number);
+	print_string = str_count.c_str();
+	AEGfxPrint(font_id, const_cast<s8*>(print_string), -0.25 + ((f32)str_headers.length() / 2 * static_cast<f32>(FONT_ID_SIZE) / static_cast<f32>(AEGetWindowWidth())), 0.86f, 1.f, 1.f, 1.f, 1.f);
+
+	str_headers = "SHUTTLE";
+	print_string = str_headers.c_str();
+	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.f - ((f32)str_headers.length() / 2 * static_cast<f32>(FONT_ID_SIZE) / static_cast<f32>(AEGetWindowWidth())), 0.9f, 1.f, 1.f, 1.f, 1.f);
+
+	str_count =std::to_string(get_current_shuttles());
+	print_string = str_count.c_str();
+	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.f, 0.86f, 1.f, 1.f, 1.f, 1.f);
+
+	str_headers = "PLANET";
+	print_string = str_headers.c_str();
+	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.25f - ((f32)str_headers.length() * static_cast<f32>(FONT_ID_SIZE) / static_cast<f32>(AEGetWindowWidth())), 0.9f, 1.f, 1.f, 1.f, 1.f);
+
+	str_count = std::to_string(planet_count);
+	print_string = str_count.c_str();
+	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.25f - ((f32)str_headers.length() / 2 * static_cast<f32>(FONT_ID_SIZE) / static_cast<f32>(AEGetWindowWidth())), 0.86f, 1.f, 1.f, 1.f, 1.f);
+	// WAVE | SHUTTLES | PLANETS -------------------------------------------------------------------------------------------------------------------------------------
 }
 
 void WaveManager::free()
@@ -237,7 +280,7 @@ void WaveManager::free()
 
 void WaveManager::unload()
 {
-
+	AEGfxTextureUnload(indicator_tex);
 }
 
 int WaveManager::get_total_shuttles()
@@ -246,6 +289,16 @@ int WaveManager::get_total_shuttles()
 	for (size_t i{}; i < planet_vector.size(); i++)
 	{
 		total_shuttles += planet_vector[i].max_shuttle;
+	}
+	return total_shuttles;
+}
+
+int WaveManager::get_current_shuttles()
+{
+	int total_shuttles{};
+	for (size_t i{}; i < planet_vector.size(); i++)
+	{
+		total_shuttles += planet_vector[i].current_shuttle;
 	}
 	return total_shuttles;
 }

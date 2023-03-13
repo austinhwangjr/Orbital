@@ -54,7 +54,6 @@ void Debris::init()
 
 void Debris::update(f64 frame_time)
 {
-
 	for (int j = 0; j < debris_vector_all.size(); j++) {
 		for (size_t i = 0; i < debris_vector_all[j].size(); i++) {
 			if (debris_vector_all[j][i].active == false && debris_vector_all[j][i].explosion.is_draw == 0) {
@@ -62,7 +61,6 @@ void Debris::update(f64 frame_time)
 			}
 		}
 	}
-
 
 	for (int j = 0; j < debris_vector_all.size(); j++) {
 		for (size_t i = 0; i < debris_vector_all[j].size(); i++) {
