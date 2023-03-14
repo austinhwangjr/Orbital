@@ -50,6 +50,7 @@ void Debris::load()
 void Debris::init()
 {
 	
+
 }
 
 void Debris::update(f64 frame_time)

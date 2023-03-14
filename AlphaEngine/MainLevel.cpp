@@ -77,8 +77,8 @@ namespace main_level
 // ----------------------------------------------------------------------------
 void main_level::load()
 {
-	TexMLBackground = AEGfxTextureLoad("Assets/MainMenu/mm_Background.png");
-	TexHeadsUpDisplay = AEGfxTextureLoad("Assets/MainLevel/ml_HeadsUpDisplay.png");
+	TexMLBackground = AEGfxTextureLoad("MainMenu/mm_Background.png");
+	//TexHeadsUpDisplay = AEGfxTextureLoad("Assets/MainLevel/ml_HeadsUpDisplay.png");
 
 	pause.load();
 
