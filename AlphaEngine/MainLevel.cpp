@@ -35,7 +35,6 @@ Technology is prohibited.
 
 //yy debugging and cleaning code
 AEGfxTexture* TexMLBackground = nullptr;
-AEGfxTexture* TexHeadsUpDisplay = nullptr;
 
 AEGfxVertexList* pMeshMLBackground;				// Background Mesh
 AEGfxVertexList* pMeshML;						// Object square mesh
@@ -77,9 +76,8 @@ namespace main_level
 // ----------------------------------------------------------------------------
 void main_level::load()
 {
-	TexMLBackground = AEGfxTextureLoad("MainMenu/mm_Background.png");
-	//TexHeadsUpDisplay = AEGfxTextureLoad("Assets/MainLevel/ml_HeadsUpDisplay.png");
-
+	TexMLBackground = AEGfxTextureLoad("Assets/MainLevel/ml_Background.png");
+	
 	pause.load();
 
 	// load texture
@@ -291,5 +289,4 @@ void main_level::unload()
 	pause.unload();
 
 	AEGfxTextureUnload(TexMLBackground); // unload the texture for the background image
-
 }

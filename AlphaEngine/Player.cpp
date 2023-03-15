@@ -16,8 +16,8 @@ extern std::vector<std::vector<Debris>> debris_vector_all;
 void Player::load()
 {
 	// Load textures
-	player_tex			= AEGfxTextureLoad("Assets/MainLevel/test-player.png");
-	tractor_beam_tex	= AEGfxTextureLoad("Assets/TractorBeam.png");
+	player_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_Spaceship.png");
+	tractor_beam_tex	= AEGfxTextureLoad("Assets/MainLevel/ml_TractorBeam.png");
 
 }
 

@@ -41,6 +41,7 @@ void PlayerUI::load()
 	shop_background_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_ShopBackground.png");
 	upgrade_level_hollow_tex	= AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelHollow.png");
 	upgrade_level_solid_tex		= AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelSolid.png");
+	player_hud_tex = AEGfxTextureLoad("Assets/MainLevel/ml_HeadsUpDisplay.png");
 }
 
 void PlayerUI::init()
