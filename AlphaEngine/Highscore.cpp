@@ -111,34 +111,34 @@ void HighScore::draw() {
 
     
     std::string s = std::to_string(top_10_highscores[0]);
-    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.8, 0.5f, 1.f, 0.41f, 0.70f);
+    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.6, 2.5f, 0.51f, 0.39f, 0.09f);
 
     s = std::to_string(top_10_highscores[1]);
-    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.75, 0.5f, 1.f, 0.41f, 0.70f);
+    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.45, 2.5f, 0.48f, 0.5f, 0.53f);
 
     s = std::to_string(top_10_highscores[2]);
-    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.7, 0.5f, 1.f, 0.41f, 0.70f);
+    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.3, 2.5f, 0.62f, 0.35f, 0.13f);
 
     s = std::to_string(top_10_highscores[3]);
-    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.65, 0.5f, 1.f, 0.41f, 0.70f);
+    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.15, 2.5f, 1.f, 1.f, 1.f);
 
     s = std::to_string(top_10_highscores[4]);
-    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.6, 0.5f, 1.f, 0.41f, 0.70f);
+    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0, 2.5f, 1.f, 1.f, 1.f);
 
     s = std::to_string(top_10_highscores[5]);
-    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.55, 0.5f, 1.f, 0.41f, 0.70f);
+    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, -0.15, 2.5f, 1.f, 1.f, 1.f);
     
     s = std::to_string(top_10_highscores[6]);
-    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.5, 0.5f, 1.f, 0.41f, 0.70f);
+    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, -0.3, 2.5f, 1.f, 1.f, 1.f);
 
     s = std::to_string(top_10_highscores[7]);
-    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.45, 0.5f, 1.f, 0.41f, 0.70f);
+    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, -0.45, 2.5f, 1.f, 1.f, 1.f);
 
     s = std::to_string(top_10_highscores[8]);
-    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.4, 0.5f, 1.f, 0.41f, 0.70f);
+    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, -0.6, 2.5f, 1.f, 1.f, 1.f);
 
     s = std::to_string(top_10_highscores[9]);
-    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.35, 0.5f, 1.f, 0.41f, 0.70f);
+    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, -0.75, 2.5f, 1.f, 1.f, 1.f);
 
 
 }
