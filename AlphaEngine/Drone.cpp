@@ -38,7 +38,6 @@ void Drone::init(Player player)
 
 	rot_speed				= player.rot_speed / 10.f;
 
-	//dist_from_planet		= player.dist_from_planet;
 	shortest_distance		= 0.f;
 
 	direction				= player.direction;
@@ -69,9 +68,18 @@ void Drone::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 	// Update according to input
 	// =========================
 	
-	// If no longer placing drone
-	if (!AEInputCheckCurr(AEVK_LBUTTON)) {
+	// Make flag true when left mouse button is not pressed currently
+	if (AEInputCheckPrev(AEVK_LBUTTON) && !AEInputCheckCurr(AEVK_LBUTTON))
+		player_ui.drone_placement_flag = true;
+
+	// If left mouse is triggered, place drone if valid
+	if (AEInputCheckTriggered(AEVK_LBUTTON) && player_ui.placing_drone && player_ui.drone_placement_flag) {
 		player_ui.placing_drone = false;
+	}
+
+	// Make flag false when no longer placing drone
+	if (!player_ui.placing_drone) {
+		player_ui.drone_placement_flag = false;
 	}
 
 	// =========================
@@ -286,12 +294,13 @@ void Drone::draw(AEGfxVertexList* pMesh, PlayerUI player_ui)
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 	}
 
+	// Reset tint color
+	AEGfxSetTintColor(1.f, 1.f, 1.f, 1.f);
+
 	// For active drones
 	for (size_t i = 0; i < drone_vector_all.size(); ++i) {
 		for (size_t j = 0; j < drone_vector_all[i].size(); j++) {
 			Drone& drone = drone_vector_all[i][j];
-
-			AEGfxSetTintColor(1.f, 1.f, 1.f, 1.f);
 
 			// Drone
 			AEGfxTextureSet(player_tex, 0, 0);

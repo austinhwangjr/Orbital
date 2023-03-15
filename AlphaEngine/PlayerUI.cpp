@@ -95,6 +95,8 @@ void PlayerUI::init()
 	// Not in placing mode initially
 	placing_drone = false;
 	placing_station = false;
+	drone_placement_flag = false;
+	station_placement_flag = false;
 
 	// Shop is closed initially
 	shop_triggered = false;
@@ -105,7 +107,6 @@ void PlayerUI::init()
 	shop_bg_height = static_cast<f32>(AEGetWindowHeight()) * 0.85f;
 
 	// Set the offset of the shop
-	//shop_offset = ((AEGfxGetWinMaxX() + shop_bg_width) / 2.f);
 	shop_offset = static_cast<f32>(AEGetWindowWidth());
 
 	// Icons in shop
