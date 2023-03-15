@@ -87,7 +87,8 @@ void main_menu::free()
 void main_menu::unload()
 {
     menuButtons.unload();
-  
-    AEGfxTextureUnload(TexMMBackground); // unload the texture for the background image
+
     AEGfxTextureUnload(TexTitle);
+    AEGfxTextureUnload(TexMMBackground); // unload the texture for the background image
+
 }

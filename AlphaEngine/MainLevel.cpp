@@ -286,6 +286,11 @@ void main_level::unload()
 	shuttle.unload();
 	debris.unload();
 	wave_manager.unload();
+
+	if (is_paused)
+	{
+		pause.unload();
+	}
 	pause.unload();
 
 	AEGfxTextureUnload(TexMLBackground); // unload the texture for the background image

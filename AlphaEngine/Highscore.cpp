@@ -75,7 +75,8 @@ void HighScore::update()
         std::cout << "Highscore.txt does not exist." << '\n';
         return;
     }
-    else {
+    else
+    {
         //add highscores into vector
         char highscore[60];
         while (fgets(highscore, 60, file_highscores))
@@ -85,26 +86,6 @@ void HighScore::update()
         }
     }
     fclose(file_highscores);
-     
-    //if (AEInputCheckTriggered(AEVK_LBUTTON))
-    //{
-    //    // Check which button has been clicked
-    //    int clickedButton = -1;
-    //   
-    //    if (Input::isButtonClicked(Bbutton.x, Bbutton.y, Bbutton.width, Bbutton.height)) {
-    //        clickedButton = 0;
-
-    //        // Set the next game state based on the button that was clicked
-    //        switch (clickedButton)
-    //        {
-    //            case 0: next_state = GS_MAINLEVEL;  break;
-    //        
-    //        }
-    //    }
-    //   
-    //}
-
-
 }
 
 void HighScore::draw() {
@@ -153,21 +134,21 @@ void HighScore::draw() {
 
 }
 
-
-void HighScore::free() {
+void HighScore::free()
+{
     top_10_highscores.clear();
     AEGfxMeshFree(pMeshHighScore);
 }
 
 
-void HighScore::unload() {
+void HighScore::unload()
+{
     AEGfxTextureUnload(texReturnToMMfromHighScore);
     AEGfxTextureUnload(TEX_HS_BACKGROUND);
 }
 
 void putHighScore(int score)
 {
-
     FILE* file_highscores;
     errno_t file_check_highscores_read = fopen_s(&file_highscores, "Assets/Highscore.txt", "r");
 

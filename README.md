@@ -1,3 +1,8 @@
+  ____    ___    ___    ____ ______   ___    __ 
+ / __ \  / _ \  / _ )  /  _//_  __/  / _ |  / / 
+/ /_/ / / , _/ / _  | _/ /   / /    / __ | / /__
+\____/ /_/|_| /____/ /___/  /_/    /_/ |_|/____/
+                                                
 Game Name: Orbital
 
 Team Name: TehPengNoIce
@@ -5,10 +10,10 @@ Team Name: TehPengNoIce
 Class/Section: CSD1451 Section B
 
 Team Members:
-1. Ong You Yang (youyang.o@digipen.edu)
-2. Leong Wen Bin Aceson (leong.w@digipen.edu)
-3. Hwang Jing Rui, Austin (jingruiaustin.hwang@digipen.edu)
-4. Tan Rui An Ryan (ruianryan.t@digipen.edu)
+1. Hans ONG You Yang (youyang.o@digipen.edu)
+2. LEONG Wen Bin Aceson (leong.w@digipen.edu)
+3. HWANG Jing Rui, Austin (jingruiaustin.hwang@digipen.edu)
+4. TAN Rui An Ryan (ruianryan.t@digipen.edu)
 
 
 -----------------------------CONTROLS-----------------------------
@@ -17,16 +22,16 @@ In General:
 Left-Click	- Open up shop tab on right
 
 In Free-Flying Mode:
-W 		- Forward Acceleration
-S 		- Deceleration
-A 		- Rotate Left
-D 		- Rotate Right
+W 			- Forward Acceleration
+S 			- Deceleration
+A 			- Rotate Left
+D 			- Rotate Right
 
 In Orbiting Mode:
-W 		- Leave Orbit Mode & Enter Free-Flying Mode
-S 		- N/A
-A 		- Rotate Left along Planet
-D 		- Rotate Right along Planent
+W 			- Leave Orbit Mode & Enter Free-Flying Mode
+S 			- N/A
+A 			- Rotate Left along Planet
+D 			- Rotate Right along Planent
 Spacebar 	- Activate Tractor Beam to collect Debris
 
 
