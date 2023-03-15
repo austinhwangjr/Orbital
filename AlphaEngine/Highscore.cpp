@@ -14,34 +14,41 @@ std::vector<int> top_10_highscores;
 extern s8 font_id;
 
 AEGfxTexture* texReturnToMMfromHighScore = nullptr;
+AEGfxTexture* TEX_HS_BACKGROUND = nullptr;
+
 
 AEGfxVertexList* pMeshHighScore;
+AEGfxVertexList* pMeshHighScore1;
 
 Rendering renderScoreboard;
 
 static float buttonWidth3 = 200.f;
 static float buttonHeight3 = 50.f;
 
-static float returnToMMfromHighScoreX = 650.0f;
-static float returnToMMfromHighScoreY = -20.0f;
+static float returnToMMfromHighScoreX = 0.0f;
+static float returnToMMfromHighScoreY = -400.0f;
 
 // Define the positions and dimensions for each button
 HighScore::Button3 buttons3[] = {
     {returnToMMfromHighScoreX, returnToMMfromHighScoreY, buttonWidth3, buttonHeight3},   // Return to main menu button
 };
 
-void HighScore::load() {
+void HighScore::load()
+{
     texReturnToMMfromHighScore = AEGfxTextureLoad("Assets/MainMenu/HighScore/hs_ExitHighScore.png");
+    TEX_HS_BACKGROUND = AEGfxTextureLoad("Assets/MainMenu/HighScore/hs_background.png");
 }
 
-void HighScore::init() {
-    
+void HighScore::init()
+{
     renderScoreboard.SquareMesh(pMeshHighScore);
+    renderScoreboard.BackgroundMesh(pMeshHighScore1);
     AE_ASSERT_MESG(pMeshHighScore, "Error: Failed to create pMeshHighScore in HighScore.cpp!");
 
 }
 
-void HighScore::update() {
+void HighScore::update()
+{
 
     // Check if the left mouse button has been clicked
     if (AEInputCheckTriggered(AEVK_LBUTTON))
@@ -71,7 +78,8 @@ void HighScore::update() {
     else {
         //add highscores into vector
         char highscore[60];
-        while (fgets(highscore, 60, file_highscores)) {
+        while (fgets(highscore, 60, file_highscores))
+        {
             int get_highscore = (int)atof(highscore);
             top_10_highscores.push_back(get_highscore);
         }
@@ -101,6 +109,8 @@ void HighScore::update() {
 
 void HighScore::draw() {
     
+    renderScoreboard.RenderSprite(TEX_HS_BACKGROUND, 0, 0, 800, 450, pMeshHighScore1);
+
     renderScoreboard.RenderSprite(texReturnToMMfromHighScore, returnToMMfromHighScoreX, returnToMMfromHighScoreY, buttonWidth3, buttonHeight3, pMeshHighScore);
 
     AEGfxSetBlendMode(AE_GFX_BM_BLEND);
@@ -111,34 +121,34 @@ void HighScore::draw() {
 
     
     std::string s = std::to_string(top_10_highscores[0]);
-    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.6, 2.5f, 0.51f, 0.39f, 0.09f);
+    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.7f, 2.5f, 0.51f, 0.39f, 0.09f);
 
     s = std::to_string(top_10_highscores[1]);
-    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.45, 2.5f, 0.48f, 0.5f, 0.53f);
+    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.55f, 2.5f, 0.48f, 0.5f, 0.53f);
 
     s = std::to_string(top_10_highscores[2]);
-    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.3, 2.5f, 0.62f, 0.35f, 0.13f);
+    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.40f, 2.5f, 0.62f, 0.35f, 0.13f);
 
     s = std::to_string(top_10_highscores[3]);
-    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.15, 2.5f, 1.f, 1.f, 1.f);
+    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.25f, 2.5f, 1.f, 1.f, 1.f);
 
     s = std::to_string(top_10_highscores[4]);
-    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0, 2.5f, 1.f, 1.f, 1.f);
+    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, 0.10f, 2.5f, 1.f, 1.f, 1.f);
 
     s = std::to_string(top_10_highscores[5]);
-    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, -0.15, 2.5f, 1.f, 1.f, 1.f);
+    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, -0.05f, 2.5f, 1.f, 1.f, 1.f);
     
     s = std::to_string(top_10_highscores[6]);
-    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, -0.3, 2.5f, 1.f, 1.f, 1.f);
+    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, -0.20f, 2.5f, 1.f, 1.f, 1.f);
 
     s = std::to_string(top_10_highscores[7]);
-    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, -0.45, 2.5f, 1.f, 1.f, 1.f);
+    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, -0.35f, 2.5f, 1.f, 1.f, 1.f);
 
     s = std::to_string(top_10_highscores[8]);
-    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, -0.6, 2.5f, 1.f, 1.f, 1.f);
+    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, -0.50f, 2.5f, 1.f, 1.f, 1.f);
 
     s = std::to_string(top_10_highscores[9]);
-    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, -0.75, 2.5f, 1.f, 1.f, 1.f);
+    AEGfxPrint(font_id, const_cast<s8*>(s.c_str()), -0.3f, -0.65f, 2.5f, 1.f, 1.f, 1.f);
 
 
 }
@@ -152,7 +162,7 @@ void HighScore::free() {
 
 void HighScore::unload() {
     AEGfxTextureUnload(texReturnToMMfromHighScore);
-
+    AEGfxTextureUnload(TEX_HS_BACKGROUND);
 }
 
 void putHighScore(int score)
