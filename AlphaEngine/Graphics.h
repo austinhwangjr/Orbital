@@ -21,6 +21,9 @@ public:
                       float width, float height,
                       AEGfxVertexList* pMesh);
 
+    static void RenderFadedBackground(AEGfxTexture* texture, float centerX, float centerY, float width, float height, AEGfxVertexList* pMesh, float alpha);
+
+
     static void SquareMesh(AEGfxVertexList*& pMesh);
 
     static void IGSquareMesh(AEGfxVertexList*& pMesh);

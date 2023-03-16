@@ -48,6 +48,13 @@ void Rendering::RenderSprite(AEGfxTexture* texture, float centerX, float centerY
     AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);             // Draw the mesh
 }
 
+void Rendering::RenderFadedBackground(AEGfxTexture* texture, float centerX, float centerY, float width, float height, AEGfxVertexList* pMesh, float alpha)
+{
+    AEGfxSetTintColor(1.0f, 1.0f, 1.0f, alpha); // Set the tint color to white with the specified alpha value
+    RenderSprite(texture, centerX, centerY, width, height, pMesh);
+}
+
+
 void Rendering::SquareMesh(AEGfxVertexList*& pMesh)
 {
     // Informing the library that we're about to start adding triangles 

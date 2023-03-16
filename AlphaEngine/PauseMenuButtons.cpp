@@ -41,12 +41,14 @@ Button1 buttons1[] =
 
 
 void PauseMenuButtons::load(const char* resumeButtonFilename,
-    const char* restartButtonFilename,
-    const char* exitMainMenuFilename)
+                            const char* restartButtonFilename,
+                            const char* exitMainMenuFilename,
+                            const char* fadeMenuFilename)
 {
     resumeTexture = AEGfxTextureLoad(resumeButtonFilename);
     restartTexture = AEGfxTextureLoad(restartButtonFilename);
     exitMainMenuTexture = AEGfxTextureLoad(exitMainMenuFilename);
+    fadeTex = AEGfxTextureLoad(fadeMenuFilename);
 }
 
 void PauseMenuButtons::init()
@@ -91,12 +93,28 @@ void PauseMenuButtons::update()
     }
 }
 
-
-void PauseMenuButtons::draw(AEGfxVertexList* pMeshP)
+void PauseMenuButtons::draw(AEGfxVertexList* pMeshP, const AEVec2& camPos)
 {
-    RenderSprite(resumeTexture, resumeX, resumeY, pauseMButtonWidth, pauseMButtonHeight, pMeshP);
-    RenderSprite(restartTexture, restartX, restartY, pauseMButtonWidth, pauseMButtonHeight, pMeshP);
-    RenderSprite(exitMainMenuTexture, exitMainMenuX, exitMainMenuY, pauseMButtonWidth, pauseMButtonHeight, pMeshP);
+    // Calculate the dimensions of the screen
+    float screenWidth = AEGetWindowWidth();
+    float screenHeight = AEGetWindowHeight();
+
+    float translatedCentX = camPos.x;
+    float translatedCentY = camPos.y;
+
+    float translatedResumeX = resumeX + camPos.x;
+    float translatedResumeY = resumeY + camPos.y;
+    float translatedRestartX = restartX + camPos.x;
+    float translatedRestartY = restartY + camPos.y;
+    float translatedExitMainMenuX = exitMainMenuX + camPos.x;
+    float translatedExitMainMenuY = exitMainMenuY + camPos.y;
+
+    // Render the faded background
+    RenderFadedBackground(fadeTex, translatedCentX, translatedCentY, screenWidth, screenHeight, pMeshP, 0.5f);
+
+    RenderSprite(resumeTexture, translatedResumeX, translatedResumeY, pauseMButtonWidth, pauseMButtonHeight, pMeshP);
+    RenderSprite(restartTexture, translatedRestartX, translatedRestartY, pauseMButtonWidth, pauseMButtonHeight, pMeshP);
+    RenderSprite(exitMainMenuTexture, translatedExitMainMenuX, translatedExitMainMenuY, pauseMButtonWidth, pauseMButtonHeight, pMeshP);
 }
 
 
@@ -110,4 +128,6 @@ void PauseMenuButtons::unload()
     AEGfxTextureUnload(resumeTexture);
     AEGfxTextureUnload(restartTexture);
     AEGfxTextureUnload(exitMainMenuTexture);
+    AEGfxTextureUnload(fadeTex);
+
 }

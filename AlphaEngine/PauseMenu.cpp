@@ -12,7 +12,7 @@ Rendering createMeshPauseScreen;            // meshfor pause screen essentially 
 
 void pause_menu::load()
 {
-    pauseButtons.load("Assets/PauseMenu/p_ResumeButton.png", "Assets/PauseMenu/p_RestartButton.png", "Assets/PauseMenu/p_ExitMainMenuButton.png");
+    pauseButtons.load("Assets/MainLevel/PauseMenu/p_ResumeButton.png", "Assets/MainLevel/PauseMenu/p_RestartButton.png", "Assets/MainLevel/PauseMenu/p_ExitMainMenuButton.png", "Assets/MainLevel/PauseMenu/fade.png");
 }
 
 void pause_menu::init()
@@ -32,9 +32,8 @@ void pause_menu::update()
 void pause_menu::draw(AEVec2 const& camPos)
 {
     AEGfxSetCamPosition(camPos.x, camPos.y);
-    pauseButtons.draw(pMeshP);
 
-    AEGfxSetBackgroundColor(0.5f, 0.0f, 0.0f);
+    pauseButtons.draw(pMeshP, camPos);
 }
 
 void pause_menu::free()

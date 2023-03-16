@@ -13,6 +13,10 @@
 static float buttonWidth = 200.f;
 static float buttonHeight = 50.f;
 
+// Set the dimensions of each button for the hover state
+static float hoverButtonWidth = 210.f;
+static float hoverButtonHeight = 60.f;
+
 // Define the positions for each button
 static float startX = 0.0f;
 static float startY = -25.f;
@@ -57,10 +61,6 @@ Button buttons[] = {
     {creditsX, creditsY, buttonWidth, buttonHeight},  // Credits button
     {quitX, quitY, buttonWidth, buttonHeight}   // Quit button
 };
-
-// Set the dimensions of each button for the hover state
-static float hoverButtonWidth = 250.f;
-static float hoverButtonHeight = 80.f;
 
 // Define the hover dimensions for each button
 HoverButton hoverButtons[] = {
@@ -160,15 +160,20 @@ void Menu_Button::update()
 
 }
 
-
 void Menu_Button::draw(AEGfxVertexList* pMesh)
 {
     for (int i = 0; i < 6; ++i)
     {
-        Rendering::RenderSprite(hoverStates[i] ? hoverButtonTextures[i] : normalButtonTextures[i], buttons[i].x, buttons[i].y, buttons[i].width, buttons[i].height, pMesh);
+        if (hoverStates[i])
+        {
+            Rendering::RenderSprite(hoverButtonTextures[i], buttons[i].x, buttons[i].y, hoverButtons[i].width, hoverButtons[i].height, pMesh);
+        }
+        else
+        {
+            Rendering::RenderSprite(normalButtonTextures[i], buttons[i].x, buttons[i].y, buttons[i].width, buttons[i].height, pMesh);
+        }
     }
 }
-
 
 void Menu_Button::unload()
 {
