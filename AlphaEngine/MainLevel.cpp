@@ -227,13 +227,14 @@ void main_level::draw()
 		planet.draw(pMeshML);
 		player.draw(pMeshML);
 		space_station.draw(pMeshML, player_ui);
-		player_ui.draw(pMeshML, player);
+		
 		player_proj.draw(pMeshML);
 		debris.draw(pMeshML);
 		shuttle.draw(pMeshML);
 		wave_manager.draw();
 
 		drone.draw(pMeshML, player_ui);
+		player_ui.draw(pMeshML, player);
 
 	if (is_paused)
 	{
