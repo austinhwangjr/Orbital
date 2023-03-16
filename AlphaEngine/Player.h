@@ -9,6 +9,7 @@
 enum PLAYER_STATES
 {
 	PLAYER_ORBIT = 0,
+	PLAYER_TRANSIT,
 	PLAYER_FLY
 };
 
@@ -29,6 +30,7 @@ struct Player
 	int				score;
 	int				credits;
 	bool			can_leave_orbit;
+	f32				timer;
 
 	//--------------------Upgrade Levels--------------------
 	int				mov_speed_level;
@@ -54,5 +56,6 @@ struct Player
 	void unload();
 
 	void orbit_state(f64);
+	void transit_state(f64);
 	void flying_state(f64);
 };

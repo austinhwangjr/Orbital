@@ -37,7 +37,6 @@ void Player::init()
 	mov_speed				= 150.f;
 	rot_speed				= 0.85f * PI;
 
-	//dist_from_planet		= 75.f;					// initally value =  50.f
 	shortest_distance		= 0.f;
 
 	direction				= 0.f;
@@ -46,6 +45,8 @@ void Player::init()
 	max_capacity			= 5;
 
 	can_leave_orbit			= true;
+
+	timer					= 0.f;
 
 	//--------------------Score-keeping--------------------
 	score					= 0;
@@ -61,17 +62,21 @@ void Player::init()
 	beam_pos.x				= 0.f;
 	beam_pos.y				= 0.f;
 
-	beam_width				= size * 0.6f;				//  initally value = size
-	beam_height				= beam_width * 2.f ;	//  initally value = beam_width * 3 / 2
+	beam_width				= size * 0.6f;
+	beam_height				= beam_width * 2.f;
 }
 
 void Player::update(f64 frame_time)
 {
-	// Player is in orbit mode
+	// Player is in orbit state
 	if (state == PLAYER_ORBIT)
 		orbit_state(frame_time);
 
-	// Player is in free-flying mode
+	// Player is in transit state
+	if (state == PLAYER_TRANSIT)
+		transit_state(frame_time);
+
+	// Player is in free-flying state
 	if (state == PLAYER_FLY)
 		flying_state(frame_time);
 
@@ -151,8 +156,11 @@ void Player::orbit_state(f64 frame_time)
 		can_leave_orbit = true;
 
 	if (AEInputCheckCurr(AEVK_W) && can_leave_orbit) {
+		/*AEVec2Zero(&velocity);
+		state = PLAYER_FLY;*/
+
 		AEVec2Zero(&velocity);
-		state = PLAYER_FLY;
+		state = PLAYER_TRANSIT;
 	}
 
 	// Draw tractor beam
@@ -214,6 +222,59 @@ void Player::orbit_state(f64 frame_time)
 				debris.state = MOVE_TOWARDS_PLANET;
 		}
 	}
+}
+
+void Player::transit_state(f64 frame_time)
+{
+	// ================
+	// Check for input
+	// ================
+
+	if (AEInputCheckCurr(AEVK_W)) {
+		AEVec2 added;
+		AEVec2Set(&added, AECos(direction), AESin(direction));
+
+		// Find the velocity according to the acceleration
+		AEVec2Scale(&added, &added, mov_speed / 2.f);
+		velocity.x = velocity.x + added.x * static_cast<f32>(frame_time);
+		velocity.y = velocity.y + added.y * static_cast<f32>(frame_time);
+
+		// Limit player's speed
+		AEVec2Scale(&velocity, &velocity, 0.99f);
+
+		// Add to timer. Change to flying state after 1s
+		timer += static_cast<f32>(frame_time);
+		if (timer >= 1.f) {
+			// Change state and reset timer
+			state = PLAYER_FLY;
+			timer = 0.f;
+		}
+	}
+	
+	else {
+		// Move player back to orbit
+		AEVec2 diff;
+		AEVec2Sub(&diff, &current_planet.position, &position);
+		AEVec2Normalize(&diff, &diff);
+		AEVec2Scale(&diff, &diff, mov_speed * static_cast<f32>(frame_time));
+		AEVec2Add(&position, &position, &diff);
+
+		timer -= static_cast<f32>(frame_time);
+
+		// Debris to rotate around planet when in orbit range
+		if (AEVec2Distance(&current_planet.position, &position) <= (current_planet.size / 2 + current_planet.orbit_range)) {
+			// Change state and reset timer
+			state = PLAYER_ORBIT;
+			timer = 0.f;
+		}
+	}
+
+	// =======================
+	// Update player position
+	// =======================
+
+	position.x = position.x + velocity.x * static_cast<f32>(frame_time);
+	position.y = position.y + velocity.y * static_cast<f32>(frame_time);
 }
 
 void Player::flying_state(f64 frame_time)
