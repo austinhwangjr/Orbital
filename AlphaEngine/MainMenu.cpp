@@ -9,30 +9,34 @@
 #include "HowToPlay.h"
 #include "AudioManager.h"
 
-AEGfxTexture* TexMMBackground   = nullptr;
-AEGfxTexture* TexTitle          = nullptr;
+AEGfxTexture* TexMMBackground = nullptr;
+AEGfxTexture* TexTitle = nullptr;
 
 AEGfxVertexList* pMeshMMBackground;
 AEGfxVertexList* pMeshMM;
 
-// class declearation 
+// class declaration 
 Menu_Button menuButtons;
 Rendering createMesh;
 Rendering RenderMMBackground;
 
 void main_menu::load()
 {
-    TexMMBackground     = AEGfxTextureLoad("Assets/MainMenu/mm_Background.png");
-    TexTitle            = AEGfxTextureLoad("Assets/MainMenu/mm_Title.png");
+    TexMMBackground = AEGfxTextureLoad("Assets/MainMenu/mm_Background.png");
+    TexTitle = AEGfxTextureLoad("Assets/MainMenu/mm_Title.png");
 
-    menuButtons.load(   "Assets/MainMenu/mm_StartButton.png",
-                        "Assets/MainMenu/mm_HowToPlayButton.png",
-                        "Assets/MainMenu/mm_HighScore.png",
-                        "Assets/MainMenu/mm_InProgressButton.png",
-                        "Assets/MainMenu/mm_CreditsButton.png",
-                        "Assets/MainMenu/mm_ExitButton.png"             );
-
-    //std::cout << "------------------------- MainMenu::load completed -------------------------" << std::endl << std::endl;
+    menuButtons.load("Assets/MainMenu/mm_StartButton.png",
+        "Assets/MainMenu/mm_StartButtonHover.png",
+        "Assets/MainMenu/mm_HowToPlayButton.png",
+        "Assets/MainMenu/mm_HowToPlayButtonHover.png",
+        "Assets/MainMenu/mm_HighScore.png",
+        "Assets/MainMenu/mm_HighScoreHover.png",
+        "Assets/MainMenu/mm_InProgressButton.png",
+        "Assets/MainMenu/mm_InProgressButtonHover.png",
+        "Assets/MainMenu/mm_CreditsButton.png",
+        "Assets/MainMenu/mm_CreditsButtonHover.png",
+        "Assets/MainMenu/mm_ExitButton.png",
+        "Assets/MainMenu/mm_ExitButtonHover.png");
 
     AudioManager::LoadSound("Assets/BGM/cinescifi.wav", true);
 }
@@ -48,7 +52,7 @@ void main_menu::init()
     // Create a square mesh for the buttons
     createMesh.SquareMesh(pMeshMM);
     menuButtons.init();
-    
+
     // debugging logs
     AE_ASSERT_MESG(pMeshMM, "Error: Failed to create pMeshMM in MainMenu.cpp!");
     AE_ASSERT_MESG(pMeshMMBackground, "Error: Failed to create pMeshMMBackground in MainMenu.cpp!");
@@ -90,5 +94,4 @@ void main_menu::unload()
 
     AEGfxTextureUnload(TexTitle);
     AEGfxTextureUnload(TexMMBackground); // unload the texture for the background image
-
 }
