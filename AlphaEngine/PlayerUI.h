@@ -40,6 +40,8 @@ struct PlayerUI
 	bool		placing_station;
 	bool		shop_triggered;
 	bool		shop_transition;
+	bool		drone_placement_flag;
+	bool		station_placement_flag;
 	f32			shop_offset;
 	f32			shop_trans_timer;
 	f32			shop_trans_duration;

@@ -71,9 +71,18 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 	// Update according to input
 	// =========================
 	
-	// if no longer placing space station
-	if (!AEInputCheckCurr(AEVK_LBUTTON)) {
+	// Make flag true when left mouse button is not pressed currently
+	if (AEInputCheckPrev(AEVK_LBUTTON) && !AEInputCheckCurr(AEVK_LBUTTON))
+		player_ui.station_placement_flag = true;
+
+	// If left mouse is triggered, place drone if valid
+	if (AEInputCheckTriggered(AEVK_LBUTTON) && player_ui.placing_station && player_ui.station_placement_flag) {
 		player_ui.placing_station = false;
+	}
+
+	// Make flag false when no longer placing drone
+	if (!player_ui.placing_station) {
+		player_ui.station_placement_flag = false;
 	}
 
 	// =================================
@@ -117,10 +126,10 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 		// COLLISION CHECK BETWEEN NEAREST PLANET
 		// ======================================
 		if ((AEVec2Distance(&current_planet.position, &position) > radius_to_debris + BUFFER_SAFE_DISTANCE) && safe_position == space_station_vector.size()) {
-
-			space_station_valid_placement = true;
-			space_station_added = false;
-
+			if (player.space_station_count < MAX_SPACE_STATION_CNT) {
+				space_station_valid_placement = true;
+				space_station_added = false;
+			}
 		}
 		else {
 			space_station_valid_placement = false;
@@ -377,12 +386,13 @@ void SpaceStation::draw(AEGfxVertexList* pMesh, PlayerUI player_ui)
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 	}
 
+	// Reset tint color
+	AEGfxSetTintColor(1.f, 1.f, 1.f, 1.f);
+
 	// For active space stations
 	for (int i = 0; i < space_station_vector.size(); ++i) {
 
 		SpaceStation& space_station = space_station_vector[i];
-
-		AEGfxSetTintColor(1.f, 1.f, 1.f, 1.f);
 
 		AEGfxTextureSet(space_station_tex, 0, 0);
 		AEGfxSetTransform(space_station.transform.m);
