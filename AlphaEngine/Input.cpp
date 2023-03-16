@@ -12,8 +12,7 @@ int mouseY = 0;
 
 // Constructor
 Input::Input()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 /*
@@ -38,9 +37,6 @@ bool Input::isButtonClicked(float center_x, float center_y, float width, float h
     float screen_x = mouseX - (float)windowWidth / 2.0f;
     float screen_y = (float)windowHeight / 2.0f - mouseY;
 
-  /*  float screen_x = (mouseX / (float)windowWidth) * 2.0f - 1.0f;
-    float screen_y = (mouseY / (float)windowHeight) * -2.0f + 1.0f;*/
-
     // Calculate the minimum and maximum x and y coordinates of the button
     float x_min = center_x - width / 2.0f;
     float x_max = center_x + width / 2.0f;
@@ -57,8 +53,33 @@ bool Input::isButtonClicked(float center_x, float center_y, float width, float h
         return true;
     }
     return false;
-    
 }
+
+bool Input::isMouseHover(float center_x, float center_y, float width, float height, float hoverWidth, float hoverHeight) {
+    // Get the current mouse position
+    AEInputGetCursorPosition(&mouseX, &mouseY);
+
+    // Get the window width and height
+    int windowWidth = AEGetWindowWidth();
+    int windowHeight = AEGetWindowHeight();
+
+    // Convert the mouse coordinates to normalized device coordinates
+    float screen_x = mouseX - (float)windowWidth / 2.0f;
+    float screen_y = (float)windowHeight / 2.0f - mouseY;
+
+    // Calculate the minimum and maximum x and y coordinates of the button
+    float x_min = center_x - width / 2.0f;
+    float x_max = center_x + width / 2.0f;
+    float y_min = center_y - height / 2.0f;
+    float y_max = center_y + height / 2.0f;
+
+    // Check if the mouse coordinates are within the bounds of the button
+    if (screen_x >= x_min && screen_x <= x_max && screen_y >= y_min && screen_y <= y_max) {
+        return true;
+    }
+    return false;
+}
+
 
 
 //// ----------------------------------------------------------------------------

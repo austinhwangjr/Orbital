@@ -36,12 +36,12 @@ std::vector<ShopOption> button_vector;
 void PlayerUI::load()
 {
 	// Load textures
-	shop_icon_tex				= AEGfxTextureLoad("Assets/YellowTexture.png");
-	space_station_tex			= AEGfxTextureLoad("Assets/space-station.png");
-	shop_background_tex			= AEGfxTextureLoad("Assets/shop-background.png");
-	upgrade_level_hollow_tex	= AEGfxTextureLoad("Assets/upgrade_level_hollow.png");
-	upgrade_level_solid_tex		= AEGfxTextureLoad("Assets/upgrade_level_solid.png");
-	player_hud_tex				= AEGfxTextureLoad("Assets/HUD.png");
+	shop_icon_tex				= AEGfxTextureLoad("Assets/MainLevel/ml_YellowButtonBackground.png");
+	space_station_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_SpaceStation.png");
+	shop_background_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_ShopBackground.png");
+	upgrade_level_hollow_tex	= AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelHollow.png");
+	upgrade_level_solid_tex		= AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelSolid.png");
+	player_hud_tex				= AEGfxTextureLoad("Assets/MainLevel/ml_HeadsUpDisplay.png");
 }
 
 void PlayerUI::init()

@@ -67,9 +67,7 @@ namespace main_level
 	// Keep track of the previous and current game states
 	GS_STATES previous_state = GS_MAINLEVEL;
 	GS_STATES current_state = GS_MAINLEVEL;
-
 }
-
 
 // ----------------------------------------------------------------------------
 // This function loads all necessary assets in Level1
@@ -78,8 +76,8 @@ namespace main_level
 // ----------------------------------------------------------------------------
 void main_level::load()
 {
-	TexMLBackground = AEGfxTextureLoad("Assets/Background.png");
-
+	TexMLBackground = AEGfxTextureLoad("Assets/MainLevel/ml_Background.png");
+	
 	pause.load();
 
 	// load texture
@@ -93,8 +91,6 @@ void main_level::load()
 	debris.load();
 	shuttle.load();
 	wave_manager.load();
-
-
 }
 
 // ----------------------------------------------------------------------------
@@ -231,13 +227,14 @@ void main_level::draw()
 		planet.draw(pMeshML);
 		player.draw(pMeshML);
 		space_station.draw(pMeshML, player_ui);
-		player_ui.draw(pMeshML, player);
+		
 		player_proj.draw(pMeshML);
 		debris.draw(pMeshML);
 		shuttle.draw(pMeshML);
 		wave_manager.draw();
 
 		drone.draw(pMeshML, player_ui);
+		player_ui.draw(pMeshML, player);
 
 	if (is_paused)
 	{
@@ -263,12 +260,7 @@ void main_level::free()
 
 	wave_manager.free();
 
-	if (is_paused)
-	{
-		pause.free();
-	}
-
-		pause.free();
+	pause.free();
 
 	AEGfxMeshFree(pMeshML);
 	AEGfxMeshFree(pMeshMLBackground);
@@ -290,8 +282,9 @@ void main_level::unload()
 	shuttle.unload();
 	debris.unload();
 	wave_manager.unload();
+
 	pause.unload();
+	
 
 	AEGfxTextureUnload(TexMLBackground); // unload the texture for the background image
-
 }

@@ -20,6 +20,7 @@ Technology is prohibited.
 #include "PauseMenu.h"
 #include "HowToPlay.h"
 #include "Credits.h"
+#include "Highscore.h"
 
 unsigned int current_state, previous_state, next_state;
 
@@ -83,14 +84,15 @@ void gsm::update()
 		fpFree		= main_level::free;
 		fpUnload	= main_level::unload;
 		break;
-	//case GS_PAUSEMENU:
-	//	fpLoad = pause_menu::load;
-	//	fpInit = pause_menu::init;
-	//	fpUpdate = pause_menu::update;
-	//	fpDraw = pause_menu::draw;
-	//	fpFree = pause_menu::free;
-	//	fpUnload = pause_menu::unload;
-	//	break;
+	case GS_HIGHSCORE:
+		fpLoad		=	HighScore::load;
+		fpInit		=	HighScore::init;
+		fpUpdate	=	HighScore::update;
+		fpDraw		=	HighScore::draw;
+		fpFree		=	HighScore::free;
+		fpUnload	=	HighScore::unload;
+
+
 	case GS_RESTART:
 		break;
 	case GS_QUIT:

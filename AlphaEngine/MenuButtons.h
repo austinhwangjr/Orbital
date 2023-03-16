@@ -1,48 +1,34 @@
 #pragma once
+#include "AEEngine.h"
+#include "Input.h"
 #include "Graphics.h"
 
-class Menu_Button : public Rendering
+class Menu_Button
 {
 public:
     void load(const char* startButtonFilename,
-              const char* howToPlayButtonFilename,
-              const char* creditsButtonFilename,
-              const char* optionsButtonFilename,
-              const char* exitButtonFilename);
+        const char* startButtonHoverFilename,
+        const char* howToPlayButtonFilename,
+        const char* howToPlayButtonHoverFilename,
+        const char* highScoreButtonFilename,
+        const char* highScoreButtonHoverFilename,
+        const char* optionsButtonFilename,
+        const char* optionsButtonHoverFilename,
+        const char* creditsButtonFilename,
+        const char* creditsButtonHoverFilename,
+        const char* exitButtonFilename,
+        const char* exitButtonHoverFilename);
+
     void init();
     void update();
-    void draw(AEGfxVertexList* pMeshMM);
-    void free();
+    void draw(AEGfxVertexList* pMesh);
     void unload();
 
-    float width;
-    float height;
-    
 private:
-    //// Set the dimensions of each button
-    //static float buttonWidth;
-    //static float buttonHeight;
+    AEGfxTexture* normalButtonTextures[6];
+    AEGfxTexture* hoverButtonTextures[6];
+    bool hoverStates[6];
+    Input input;
+    Rendering rendering;
 
-    //// Define the positions for each button
-    //static float startX;
-    //static float startY;
-
-    //static float howToPlayX;
-    //static float howToPlayY;
-
-    //static float creditsX;
-    //static float creditsY;
-
-    //static float optionsX;
-    //static float optionsY;
-
-    //static float quitX;
-    //static float quitY;
-
-    AEMtx33 transform;
-    AEGfxTexture* startButtonTexture;
-    AEGfxTexture* howToPlayButtonTexture;
-    AEGfxTexture* creditsButtonTexture;
-    AEGfxTexture* optionsButtonTexture;
-    AEGfxTexture* exitButtonTexture;
 };

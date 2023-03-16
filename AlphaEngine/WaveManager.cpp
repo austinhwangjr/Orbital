@@ -25,7 +25,7 @@ AEMtx33 indicator_scale, indicator_rot, indicator_translate, indicator_transform
 
 void WaveManager::load()
 {
-	indicator_tex = AEGfxTextureLoad("Assets/Explosion.png");
+	indicator_tex = AEGfxTextureLoad("Assets/MainLevel/ml_explosion.png");
 }
 
 void WaveManager::init()

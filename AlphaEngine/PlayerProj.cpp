@@ -20,7 +20,7 @@ extern f32 cam_x, cam_y;
 
 void PlayerProj::load()
 {
-	player_proj_tex = AEGfxTextureLoad("Assets/Debris.png");
+	player_proj_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Debris.png");
 }
 
 void PlayerProj::init()
