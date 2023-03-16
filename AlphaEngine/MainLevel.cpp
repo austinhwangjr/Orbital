@@ -259,12 +259,7 @@ void main_level::free()
 
 	wave_manager.free();
 
-	if (is_paused)
-	{
-		pause.free();
-	}
-
-		pause.free();
+	pause.free();
 
 	AEGfxMeshFree(pMeshML);
 	AEGfxMeshFree(pMeshMLBackground);
@@ -287,11 +282,8 @@ void main_level::unload()
 	debris.unload();
 	wave_manager.unload();
 
-	if (is_paused)
-	{
-		pause.unload();
-	}
 	pause.unload();
+	
 
 	AEGfxTextureUnload(TexMLBackground); // unload the texture for the background image
 }

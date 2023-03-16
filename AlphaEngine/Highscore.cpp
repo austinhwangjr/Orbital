@@ -138,6 +138,7 @@ void HighScore::free()
 {
     top_10_highscores.clear();
     AEGfxMeshFree(pMeshHighScore);
+    AEGfxMeshFree(pMeshHighScore1);
 }
 
 
@@ -150,7 +151,7 @@ void HighScore::unload()
 void putHighScore(int score)
 {
     FILE* file_highscores;
-    errno_t file_check_highscores_read = fopen_s(&file_highscores, "Assets/Highscore.txt", "r");
+    errno_t file_check_highscores_read = fopen_s(&file_highscores, "Assets/MainMenu/HighScore/Highscore.txt", "r");
 
     if (file_check_highscores_read != 0) {									// Check if file exist/open	
         std::cout << "Highscore.txt does not exist." << '\n';
@@ -180,7 +181,7 @@ void putHighScore(int score)
 
         std::sort(top_10_highscores.begin(), top_10_highscores.end(), std::greater<int>());
 
-        const char* filename = "Highscore.txt";
+        const char* filename = "Assets/MainMenu/HighScore/Highscore.txt";
         FILE* file_highscores;
         errno_t file_check_highscores_update = fopen_s(&file_highscores, filename, "w");
 

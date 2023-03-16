@@ -23,7 +23,7 @@ Rendering RenderMMBackground;
 void main_menu::load()
 {
     TexMMBackground = AEGfxTextureLoad("Assets/MainMenu/mm_Background.png");
-    TexTitle = AEGfxTextureLoad("Assets/MainMenu/mm_Title.png");
+    TexTitle =  AEGfxTextureLoad("Assets/MainMenu/mm_Title.png");
 
     menuButtons.load("Assets/MainMenu/mm_StartButton.png",
         "Assets/MainMenu/mm_StartButtonHover.png",

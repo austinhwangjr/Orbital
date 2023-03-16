@@ -84,6 +84,7 @@
     </ClCompile>
     <ClCompile Include="AudioManager.cpp">
       <Filter>Source\Utilities</Filter>
+    </ClCompile>
     <ClCompile Include="Highscore.cpp">
       <Filter>Source\InGame\InGameMenus</Filter>
     </ClCompile>
@@ -172,6 +173,7 @@
     </ClInclude>
     <ClInclude Include="AudioManager.h">
       <Filter>Header\Utilities</Filter>
+    </ClInclude>
     <ClInclude Include="Highscore.h">
       <Filter>Header\InGame\InGameMenus</Filter>
     </ClInclude>
