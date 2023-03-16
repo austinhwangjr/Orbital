@@ -73,34 +73,35 @@ HoverButton hoverButtons[] = {
 };
 
 
-void Menu_Button::load(const char* startButtonFilename,
-    const char* startButtonHoverFilename,
-    const char* howToPlayButtonFilename,
-    const char* howToPlayButtonHoverFilename,
-    const char* highScoreButtonFilename,
-    const char* highScoreButtonHoverFilename,
-    const char* optionsButtonFilename,
-    const char* optionsButtonHoverFilename,
-    const char* creditsButtonFilename,
-    const char* creditsButtonHoverFilename,
-    const char* exitButtonFilename,
-    const char* exitButtonHoverFilename)
+void Menu_Button::load( const char* startButtonFilename,
+                        const char* howToPlayButtonFilename,
+                        const char* highScoreButtonFilename,
+                        const char* optionsButtonFilename,
+                        const char* creditsButtonFilename,
+                        const char* exitButtonFilename,
+
+                        const char* startButtonHoverFilename,
+                        const char* howToPlayButtonHoverFilename,
+                        const char* highScoreButtonHoverFilename,
+                        const char* optionsButtonHoverFilename,
+                        const char* creditsButtonHoverFilename,
+                        const char* exitButtonHoverFilename         )
 {
     // Load the normal textures for each button
-    normalButtonTextures[0] = AEGfxTextureLoad(startButtonFilename);
-    normalButtonTextures[1] = AEGfxTextureLoad(howToPlayButtonFilename);
-    normalButtonTextures[2] = AEGfxTextureLoad(highScoreButtonFilename);
-    normalButtonTextures[3] = AEGfxTextureLoad(optionsButtonFilename);
-    normalButtonTextures[4] = AEGfxTextureLoad(creditsButtonFilename);
-    normalButtonTextures[5] = AEGfxTextureLoad(exitButtonFilename);
+    normalButtonTextures[0]     = AEGfxTextureLoad(startButtonFilename);
+    normalButtonTextures[1]     = AEGfxTextureLoad(howToPlayButtonFilename);
+    normalButtonTextures[2]     = AEGfxTextureLoad(highScoreButtonFilename);
+    normalButtonTextures[3]     = AEGfxTextureLoad(optionsButtonFilename);
+    normalButtonTextures[4]     = AEGfxTextureLoad(creditsButtonFilename);
+    normalButtonTextures[5]     = AEGfxTextureLoad(exitButtonFilename);
 
     // Load the hover textures for each button
-    hoverButtonTextures[0] = AEGfxTextureLoad(startButtonHoverFilename);
-    hoverButtonTextures[1] = AEGfxTextureLoad(howToPlayButtonHoverFilename);
-    hoverButtonTextures[2] = AEGfxTextureLoad(highScoreButtonHoverFilename);
-    hoverButtonTextures[3] = AEGfxTextureLoad(optionsButtonHoverFilename);
-    hoverButtonTextures[4] = AEGfxTextureLoad(creditsButtonHoverFilename);
-    hoverButtonTextures[5] = AEGfxTextureLoad(exitButtonHoverFilename);
+    hoverButtonTextures[0]      = AEGfxTextureLoad(startButtonHoverFilename);
+    hoverButtonTextures[1]      = AEGfxTextureLoad(howToPlayButtonHoverFilename);
+    hoverButtonTextures[2]      = AEGfxTextureLoad(highScoreButtonHoverFilename);
+    hoverButtonTextures[3]      = AEGfxTextureLoad(optionsButtonHoverFilename);
+    hoverButtonTextures[4]      = AEGfxTextureLoad(creditsButtonHoverFilename);
+    hoverButtonTextures[5]      = AEGfxTextureLoad(exitButtonHoverFilename);
 }
 
 void Menu_Button::init()

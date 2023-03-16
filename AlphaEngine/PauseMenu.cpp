@@ -12,7 +12,10 @@ Rendering createMeshPauseScreen;            // meshfor pause screen essentially 
 
 void pause_menu::load()
 {
-    pauseButtons.load("Assets/MainLevel/PauseMenu/p_ResumeButton.png", "Assets/MainLevel/PauseMenu/p_RestartButton.png", "Assets/MainLevel/PauseMenu/p_ExitMainMenuButton.png", "Assets/MainLevel/PauseMenu/fade.png");
+    pauseButtons.load("Assets/MainLevel/PauseMenu/p_ResumeButton.png",
+                        "Assets/MainLevel/PauseMenu/p_RestartButton.png",
+        "Assets/MainLevel/PauseMenu/p_ExitMainMenuButton.png",
+        "Assets/MainLevel/PauseMenu/fade.png");
 }
 
 void pause_menu::init()
