@@ -61,7 +61,6 @@ pause_menu pause{};
 f64 total_time{}, frame_time{};
 
 bool is_paused = false;
-bool is_shop_open = false;
 
 float backgroundWidth = 7680.f;
 float backgroundHeight = 4320.f;
@@ -161,14 +160,7 @@ void main_level::update()
 		is_paused = !is_paused;
 	}
 
-	if (is_shop_open)
-	{
-		is_paused = true;
-	}
-	else
-	{
-		is_paused = false;
-	}
+
 
 	if (!is_paused)
 	{
@@ -250,9 +242,9 @@ void main_level::draw()
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxSetTransparency(1.0f);
 
-
-		planet.draw(pMeshML);
 		player.draw(pMeshML);
+		planet.draw(pMeshML);
+
 		space_station.draw(pMeshML, player_ui);
 		
 		player_proj.draw(pMeshML);

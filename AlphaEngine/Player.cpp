@@ -1,10 +1,12 @@
 #include "AEEngine.h"
 #include "Player.h"
-
+#include "Easing.h"
 
 // Textures
 AEGfxTexture* player_tex;
 AEGfxTexture* tractor_beam_tex;
+AEGfxTexture* orbit_halo_tex;
+
 
 // Variables
 bool beam_active = false;
@@ -18,6 +20,9 @@ void Player::load()
 	// Load textures
 	player_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_Spaceship.png");
 	tractor_beam_tex	= AEGfxTextureLoad("Assets/MainLevel/ml_TractorBeam.png");
+	orbit_halo_tex = AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
+
+
 
 }
 
@@ -64,6 +69,10 @@ void Player::init()
 
 	beam_width				= size * 0.6f;
 	beam_height				= beam_width * 2.f;
+
+	//--------------------Planet Halo--------------------
+	halo_scale_lerp			= 0.0f;
+
 }
 
 void Player::update(f64 frame_time)
@@ -99,6 +108,19 @@ void Player::update(f64 frame_time)
 	AEMtx33Trans(&trans, beam_pos.x, beam_pos.y);
 	AEMtx33Concat(&beam_transform, &rot, &scale);
 	AEMtx33Concat(&beam_transform, &trans, &beam_transform);
+
+	if (state == PLAYER_ORBIT) {
+
+		// Update the Lerp value for the halo scale
+		halo_scale_lerp = Lerp(halo_scale_lerp, 1.0f, 0.10f);
+
+		// Use the Lerp value to scale the halo
+		AEMtx33Scale(&scale, (current_planet.size + 50.0f) * halo_scale_lerp, (current_planet.size + 50.0f) * halo_scale_lerp);
+		AEMtx33Trans(&trans, current_planet.position.x, current_planet.position.y); // Add an offset to the position
+		AEMtx33Concat(&orbit_halo_transform, &rot, &scale);
+		AEMtx33Concat(&orbit_halo_transform, &trans, &orbit_halo_transform);
+
+	}
 }
 
 /******************************************************************************/
@@ -118,6 +140,13 @@ void Player::draw(AEGfxVertexList* pMesh)
 		AEGfxSetTransform(beam_transform.m);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 	}
+
+	if (state == PLAYER_ORBIT)
+	{
+		AEGfxTextureSet(orbit_halo_tex, 0, 0);
+		AEGfxSetTransform(orbit_halo_transform.m);
+		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	}
 }
 
 void Player::free()
@@ -129,6 +158,8 @@ void Player::unload()
 {
 	AEGfxTextureUnload(player_tex);
 	AEGfxTextureUnload(tractor_beam_tex);
+	AEGfxTextureUnload(orbit_halo_tex);
+
 }
 
 void Player::orbit_state(f64 frame_time)

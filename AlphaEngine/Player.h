@@ -31,6 +31,8 @@ struct Player
 	int				credits;
 	bool			can_leave_orbit;
 	f32				timer;
+	AEMtx33 orbit_halo_transform;
+
 
 	//--------------------Upgrade Levels--------------------
 	int				mov_speed_level;
@@ -43,6 +45,9 @@ struct Player
 	f32				beam_str;
 	f32				beam_width;
 	f32				beam_height;
+
+	//--------------------Planet Halo--------------------
+	f32 halo_scale_lerp;
 
 	//--------------------Transforms--------------------
 	AEMtx33			player_transform;
