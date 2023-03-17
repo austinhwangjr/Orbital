@@ -63,6 +63,10 @@ f64 total_time{}, frame_time{};
 bool is_paused = false;
 bool is_shop_open = false;
 
+float backgroundWidth = 7680.f;
+float backgroundHeight = 4320.f;
+
+
 namespace main_level
 {
 	// Keep track of the previous and current game states
@@ -217,7 +221,22 @@ void main_level::draw()
 	// Set the background to black.
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
-	RenderMLBackground.RenderSprite(TexMLBackground, 0.f, 0.f, 4800.f, 2700.f, pMeshMLBackground);		//drawbackground for Mainlevel
+	// Get camera position
+	float camX = camera.position.x;
+	float camY = camera.position.y;
+
+	// Calculate the starting point for drawing the background based on the camera position
+	float startX = std::floor(camX / backgroundWidth) * backgroundWidth;
+	float startY = std::floor(camY / backgroundHeight) * backgroundHeight;
+
+	// Draw the tiled background
+	for (float x = startX - backgroundWidth; x < startX + g_windowWidth + backgroundWidth; x += backgroundWidth)
+	{
+		for (float y = startY - backgroundHeight; y < startY + g_windowHeight + backgroundHeight; y += backgroundHeight)
+		{
+			RenderMLBackground.RenderSprite(TexMLBackground, x, y, 4800.f, 2700.f, pMeshMLBackground);
+		}
+	}
 
 	// Tell the engine to get ready to draw something with texture. 
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
