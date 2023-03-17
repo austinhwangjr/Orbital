@@ -21,6 +21,12 @@ Technology is prohibited.
 #include "HowToPlay.h"
 #include "Credits.h"
 #include "Highscore.h"
+#include "Options.h"
+#include <functional>
+#include <iostream>
+
+using FP = std::function<void()>;
+
 
 unsigned int current_state, previous_state, next_state;
 
@@ -91,6 +97,16 @@ void gsm::update()
 		fpDraw		=	HighScore::draw;
 		fpFree		=	HighScore::free;
 		fpUnload	=	HighScore::unload;
+		break;
+	case GS_OPTIONS:
+		fpLoad = Options::load;
+		fpInit = Options::init;
+		fpUpdate = std::bind(Options::update, &Options::volume, &Options::muted);
+		fpDraw = Options::draw;
+		fpFree = Options::free;
+		fpUnload = Options::unload;
+		break;
+
 
 
 	case GS_RESTART:

@@ -13,7 +13,6 @@ namespace AudioManager
     std::map<std::string, FMOD::Sound*> _soundMap;
 
     // For pausing and muting
-    bool isMuted;
     float originalVolume;
     FMOD::Channel* bgm;
 
@@ -176,5 +175,21 @@ namespace AudioManager
         // Pause or unpause the background music
         ErrorCheck(bgm->setPaused(pause));
     }
+
+    void setVolume(float volume)
+    {
+        if (volume < 0.0f)
+            volume = 0.0f;
+        if (volume > 1.0f)
+            volume = 1.0f;
+
+        originalVolume = volume;
+
+        if (bgm)
+        {
+            ErrorCheck(bgm->setVolume(g_isMute ? 0.0f : originalVolume));
+        }
+    }
+
 
 }

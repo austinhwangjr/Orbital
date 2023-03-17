@@ -14,18 +14,22 @@ Technology is prohibited.
 */
 /* End Header **************************************************************************/
 #pragma once
+extern int mouseX;
+extern int mouseY;
 
 class Input
 {
 public:
     Input();
 
-    // Member function to handle input
-    //void handle();
+
 
     // Static function to check if a button is clicked by the user
     static bool isButtonClicked(float center_x, float center_y, float width, float height);
 
     // Static function to check if the mouse is hovering over a button
     static bool isMouseHover(float center_x, float center_y, float width, float height, float hoverWidth, float hoverHeight);
+
+    // Member function to handle input
+//void handle();
 };

@@ -1,4 +1,6 @@
 #pragma once
+#include <functional>
+
 enum GS_STATES
 {
 	GS_SPLASHSCREEN = 0,
@@ -15,7 +17,7 @@ enum GS_STATES
 
 extern unsigned int current_state, previous_state, next_state;
 
-typedef void(*FP)(void);
+using FP = std::function<void()>;
 
 extern FP fpLoad, fpInit, fpUpdate, fpDraw, fpFree, fpUnload;
 
@@ -31,7 +33,5 @@ struct gsm
 	//void free();
 	//void unload();
 };
-
-
 
 void GSM_RestartLevel();

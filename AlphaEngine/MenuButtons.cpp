@@ -139,7 +139,7 @@ void Menu_Button::update()
                 next_state = GS_HIGHSCORE;
                 break;
             case 3: // Options button
-                // Implement options logic here
+                next_state = GS_OPTIONS;
                 break;
             case 4: // Credits button
                 next_state = GS_CREDITS;
