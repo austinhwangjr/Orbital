@@ -6,6 +6,8 @@
 #include <iostream>
 #include "input.h"
 #include "Graphics.h"
+#include "Easing.h"
+
 
 //extern s8 font1;
 
@@ -72,6 +74,9 @@ HoverButton hoverButtons[] = {
     {hoverButtonWidth, hoverButtonHeight}  // Quit button
 };
 
+Button currentButtonSizes[6];
+
+
 
 void Menu_Button::load( const char* startButtonFilename,
                         const char* howToPlayButtonFilename,
@@ -109,8 +114,11 @@ void Menu_Button::init()
     for (int i = 0; i < 6; ++i)
     {
         hoverStates[i] = false;
+        currentButtonSizes[i].width = buttons[i].width;
+        currentButtonSizes[i].height = buttons[i].height;
     }
 }
+
 
 void Menu_Button::update()
 {
@@ -159,7 +167,26 @@ void Menu_Button::update()
         next_state = GS_QUIT;
     }
 
+    float easingSpeed = 0.1f; // Adjust this value to control the speed of the transition
+
+    for (int i = 0; i < 6; ++i)
+    {
+        hoverStates[i] = Input::isMouseHover(buttons[i].x, buttons[i].y, buttons[i].width, buttons[i].height, hoverButtons[i].width, hoverButtons[i].height);
+
+        if (hoverStates[i])
+        {
+            currentButtonSizes[i].width = Lerp(currentButtonSizes[i].width, hoverButtons[i].width, easingSpeed);
+            currentButtonSizes[i].height = Lerp(currentButtonSizes[i].height, hoverButtons[i].height, easingSpeed);
+        }
+        else
+        {
+            currentButtonSizes[i].width = Lerp(currentButtonSizes[i].width, buttons[i].width, easingSpeed);
+            currentButtonSizes[i].height = Lerp(currentButtonSizes[i].height, buttons[i].height, easingSpeed);
+        }
+    }
+
 }
+
 
 void Menu_Button::draw(AEGfxVertexList* pMesh)
 {
@@ -175,6 +202,7 @@ void Menu_Button::draw(AEGfxVertexList* pMesh)
         }
     }
 }
+
 
 void Menu_Button::unload()
 {

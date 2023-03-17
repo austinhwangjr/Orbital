@@ -26,3 +26,8 @@ static float EaseInOutBack(float start, float end, float value)
 	s *= (1.525f);
 	return end * 0.5f * ((value)*value * (((s)+1) * value + s) + 2) + start;
 }
+
+static float Lerp(float a, float b, float t)
+{
+	return a + (b - a) * t;
+}

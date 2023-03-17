@@ -61,6 +61,7 @@ pause_menu pause{};
 f64 total_time{}, frame_time{};
 
 bool is_paused = false;
+bool is_shop_open = false;
 
 namespace main_level
 {
@@ -140,7 +141,6 @@ void main_level::init()
 
 void main_level::update()
 {
-	// Your own update logic goes here
 	frame_time = AEFrameRateControllerGetFrameTime();
 	total_time += frame_time;
 
@@ -149,13 +149,21 @@ void main_level::update()
 		if (!is_paused)
 		{
 			previous_state = current_state;
-			
 		}
 		else
 		{
 			current_state = previous_state;
 		}
 		is_paused = !is_paused;
+	}
+
+	if (is_shop_open)
+	{
+		is_paused = true;
+	}
+	else
+	{
+		is_paused = false;
 	}
 
 	if (!is_paused)
@@ -167,7 +175,7 @@ void main_level::update()
 		camera.update(frame_time, player);
 		player_ui.update(frame_time, player);
 		drone.update(frame_time, player, player_ui);
-		
+
 		shuttle.update(frame_time, player);
 		debris.update(frame_time);
 		wave_manager.update(frame_time);
@@ -285,6 +293,5 @@ void main_level::unload()
 
 	pause.unload();
 	
-
 	AEGfxTextureUnload(TexMLBackground); // unload the texture for the background image
 }
