@@ -1,7 +1,9 @@
-  ____    ___    ___    ____ ______   ___    __ 
- / __ \  / _ \  / _ )  /  _//_  __/  / _ |  / / 
-/ /_/ / / , _/ / _  | _/ /   / /    / __ | / /__
-\____/ /_/|_| /____/ /___/  /_/    /_/ |_|/____/
+   ____  _____  ____ _____ _______       _      
+  / __ \|  __ \|  _ \_   _|__   __|/\   | |     
+ | |  | | |__) | |_) || |    | |  /  \  | |     
+ | |  | |  _  /|  _ < | |    | | / /\ \ | |     
+ | |__| | | \ \| |_) || |_   | |/ ____ \| |____ 
+  \____/|_|  \_\____/_____|  |_/_/    \_\______|
                                                 
 Game Name: Orbital
 
@@ -10,10 +12,10 @@ Team Name: TehPengNoIce
 Class/Section: CSD1451 Section B
 
 Team Members:
-1. Hans ONG You Yang (youyang.o@digipen.edu)
-2. LEONG Wen Bin Aceson (leong.w@digipen.edu)
-3. HWANG Jing Rui, Austin (jingruiaustin.hwang@digipen.edu)
-4. TAN Rui An Ryan (ruianryan.t@digipen.edu)
+1. TAN Rui An Ryan (ruianryan.t@digipen.edu)
+2. Hans ONG You Yang (youyang.o@digipen.edu)
+3. LEONG Wen Bin Aceson (leong.w@digipen.edu)
+4. HWANG Jing Rui, Austin (jingruiaustin.hwang@digipen.edu)
 
 
 -----------------------------CONTROLS-----------------------------
