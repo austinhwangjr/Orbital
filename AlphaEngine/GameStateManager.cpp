@@ -21,7 +21,6 @@ Technology is prohibited.
 #include "HowToPlay.h"
 #include "Credits.h"
 #include "Highscore.h"
-#include "LoseMenu.h"
 #include "Options.h"
 #include <functional>
 #include <iostream>
@@ -107,14 +106,6 @@ void gsm::update()
 		fpFree = Options::free;
 		fpUnload = Options::unload;
 		break;
-	//case GS_LOSEMENU:
-	//	fpLoad = lose_menu::load;
-	//	fpInit = lose_menu::init;
-	//	fpUpdate = lose_menu::update;
-	//	fpDraw = lose_menu::draw;
-	//	fpFree = lose_menu::free;
-	//	fpUnload = lose_menu::unload;
-	//	break;
 
 
 

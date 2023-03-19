@@ -35,9 +35,7 @@ struct WaveManager
 // PLANET VARIABLES--------------------------
 	int		planet_count;				// Number of planets
 	bool	planet_adding;				// Flag for when planet adding transition is playing
-
 // PLANET VARIABLES--------------------------
-	bool	gameLost;				// Flag for when the game is lost
 
 	void load();
 	void init();
@@ -50,8 +48,6 @@ struct WaveManager
 	int get_total_shuttles();
 	int get_current_shuttles();
 	bool no_more_shuttles();
-
-	void checkLoseCondition();
 };
 
 extern Player player;

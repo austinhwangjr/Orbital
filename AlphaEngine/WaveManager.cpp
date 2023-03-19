@@ -12,10 +12,7 @@ without the prior written consent of DigiPen Institute of
 Technology is prohibited.
 */
 /* End Header **************************************************************************/
-#include "AEEngine.h"
 #include "WaveManager.h"
-#include "LoseMenu.h"
-#include "GameStateManager.h"
 #include <iostream>
 #include <string>
 
@@ -29,13 +26,10 @@ AEMtx33 indicator_scale, indicator_rot, indicator_translate, indicator_transform
 void WaveManager::load()
 {
 	indicator_tex = AEGfxTextureLoad("Assets/MainLevel/ml_explosion.png");
-	lose_menu::load();
 }
 
 void WaveManager::init()
 {
-	lose_menu::init();
-
 	std::cout << '\n' << "Wave Manager Initialized." << '\n' << '\n';
 
 	wave_completed = false;
@@ -50,8 +44,6 @@ void WaveManager::init()
 	shuttle_has_escaped = false;
 	shuttle_has_collided = false;
 
-	gameLost = false;
-
 	planet.spawn(rand() % (SHUTTLE_SPAWN_MAX - SHUTTLE_SPAWN_MIN) + SHUTTLE_SPAWN_MIN);
 	planet_count++;
 
@@ -65,13 +57,12 @@ void WaveManager::init()
 
 void WaveManager::update(f64 frame_time)
 {
-	lose_menu::update();
 // Lose Condition--------------------------------------------------------
-	if (gameLost)
+	if (shuttle_destroyed == get_total_shuttles() / 4)
 	{
-		return;
+		//next_state = lose;
 	}
-	checkLoseCondition();
+// Lost Condition--------------------------------------------------------
 
 // Track shuttles left---------------------------------------------------
 	if (shuttle_has_escaped)
@@ -162,11 +153,6 @@ void WaveManager::update(f64 frame_time)
 
 void WaveManager::draw()
 {
-	if (gameLost == true)
-	{
-		lose_menu::draw(camera.position);
-	}
-
 	for (size_t i{}; i < planet_vector.size(); i++)
 	{
 		bool off_screen{ pow(AEVec2Distance(&planet_vector[i].position, &camera.position), 2) > (pow(AEGetWindowWidth() / 2, 2) + pow(AEGetWindowHeight() / 2, 2)) };
@@ -289,15 +275,12 @@ void WaveManager::draw()
 
 void WaveManager::free()
 {
-	lose_menu::free();
 
 }
 
 void WaveManager::unload()
 {
 	AEGfxTextureUnload(indicator_tex);
-	lose_menu::unload();
-
 }
 
 int WaveManager::get_total_shuttles()
@@ -328,15 +311,4 @@ bool WaveManager::no_more_shuttles()
 		check = (shuttle_vector[i].active) ? false : true;
 	}
 	return check;
-}
-
-void WaveManager::checkLoseCondition()
-{
-	if (shuttle_destroyed == 1)
-	{
-		gameLost = true;
-		lose_menu::update();
-
-
-	}
 }

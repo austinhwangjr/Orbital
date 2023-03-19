@@ -4,23 +4,15 @@
 enum GS_STATES
 {
 	GS_SPLASHSCREEN = 0,
-
-	// Main Menu
-	GS_MAINMENU,
+	GS_MAINMENU,		//1
 	GS_HOWTOPLAY,
-	GS_HIGHSCORE,
-	GS_OPTIONS,
 	GS_CREDITS,
-
-	// Main Level
-	GS_MAINLEVEL, 
-	GS_PAUSEMENU,		
-	GS_LOSEMENU,
-	GS_RESTART,
-
-	// Global
-	GS_QUIT
-
+	GS_OPTIONS,
+	GS_MAINLEVEL, //5 technically this is the startbutton
+	GS_PAUSEMENU,		//6
+	GS_RESTART,			//7
+	GS_QUIT,
+	GS_HIGHSCORE
 };
 
 extern unsigned int current_state, previous_state, next_state;
