@@ -180,15 +180,41 @@ void PlayerUI::update(f64 frame_time, Player& player)
 	button_vector[0].position.x = cam_x + static_cast<f32>(AEGetWindowWidth()) / 2.f - button_vector[0].width / 2.f;
 	button_vector[0].position.y = cam_y + static_cast<f32>(AEGetWindowHeight()) / 2.f - button_vector[0].height * 2.5f;
 
-	for (int i = 1; i < button_vector.size(); ++i) {
-		button_vector[i].position.x = cam_x - static_cast<f32>(AEGetWindowWidth() / 2) * 0.7f + shop_offset;
-		button_vector[i].position.y = button_vector[0].position.y - (i - 1) * button_vector[i].height * 1.25f;
+	// Movement speed, capacity and beam strength buttons on the left half
+	for (int i = 1; i < 4; ++i) {
+		button_vector[i].position.x = cam_x - 
+									static_cast<f32>(AEGetWindowWidth() / 2) * 0.7f + 
+									(i - 1) * button_vector[i].width * 1.25f + 
+									shop_offset;
+		button_vector[i].position.y = button_vector[0].position.y - button_vector[i].height * 4.f;
 
 		// Level indicators for upgrades
 		for (int j = 0; j < button_vector[i].indicator_vector.size(); ++j) {
 			UpgradeLevelIndicator& indicator = button_vector[i].indicator_vector[j];
-			indicator.position.x = button_vector[i].position.x + button_vector[i].width + (j * indicator.width);
-			indicator.position.y = button_vector[i].position.y;
+			/*indicator.position.x = button_vector[i].position.x + button_vector[i].width + (j * indicator.width);
+			indicator.position.y = button_vector[i].position.y;*/
+			indicator.position.x = button_vector[i].position.x - button_vector[i].width / 2.f + (j * indicator.width);
+			indicator.position.y = button_vector[i].position.y - button_vector[i].height;
+		}
+	}
+
+	// Drone and space station buttons on the left half
+	for (int i = 4; i < 6; ++i) {
+		/*button_vector[i].position.x = cam_x -
+			static_cast<f32>(AEGetWindowWidth() / 2) * 0.7f +
+			(i - 1) * button_vector[i].width * 1.25f +
+			shop_offset;*/
+		button_vector[i].position.x = cam_x + shop_bg_width / 4.f + shop_offset;
+		//button_vector[i].position.y = button_vector[0].position.y - button_vector[i].height * 4.f;
+		button_vector[i].position.y = button_vector[0].position.y - (i - 4) * button_vector[i].height * 4.f;
+
+		// Level indicators for upgrades
+		for (int j = 0; j < button_vector[i].indicator_vector.size(); ++j) {
+			UpgradeLevelIndicator& indicator = button_vector[i].indicator_vector[j];
+			/*indicator.position.x = button_vector[i].position.x + button_vector[i].width + (j * indicator.width);
+			indicator.position.y = button_vector[i].position.y;*/
+			indicator.position.x = button_vector[i].position.x - button_vector[i].width / 2.f + (j * indicator.width);
+			indicator.position.y = button_vector[i].position.y - button_vector[i].height;
 		}
 	}
 
@@ -379,9 +405,9 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 			// Print upgrade cost
 			shop_upgrade_cost = "Cost: " + std::to_string(mov_speed_cost);
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_upgrade_cost.c_str()),
-				(button_vector[i].position.x - cam_x + 3 * button_vector[i].width) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button_vector[i].position.y - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
-				1.f, 1.f, 1.f, 1.f);
+				(button_vector[i].position.x - button_vector[i].width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
+				(button_vector[i].position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
+				1.f, 0.f, 0.f, 0.f);
 		}
 		else if (button_vector[i].button_type == CAPACITY) {
 			// Print upgrade name
@@ -394,9 +420,9 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 			// Print upgrade cost
 			shop_upgrade_cost = "Cost: " + std::to_string(capacity_cost);
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_upgrade_cost.c_str()),
-				(button_vector[i].position.x - cam_x + 3 * button_vector[i].width) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button_vector[i].position.y - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
-				1.f, 1.f, 1.f, 1.f);
+				(button_vector[i].position.x - button_vector[i].width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
+				(button_vector[i].position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
+				1.f, 0.f, 0.f, 0.f);
 		}
 		else if (button_vector[i].button_type == TRACTOR_BEAM_STRENGTH) {
 			// Print upgrade name
@@ -409,9 +435,9 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 			// Print upgrade cost
 			shop_upgrade_cost = "Cost: " + std::to_string(beam_strength_cost);
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_upgrade_cost.c_str()),
-				(button_vector[i].position.x - cam_x + 3 * button_vector[i].width) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button_vector[i].position.y - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
-				1.f, 1.f, 1.f, 1.f);
+				(button_vector[i].position.x - button_vector[i].width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
+				(button_vector[i].position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
+				1.f, 0.f, 0.f, 0.f);
 		}
 		else if (button_vector[i].button_type == CREATE_DRONE) {
 			// Draw icon
@@ -422,9 +448,9 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 			// Print upgrade cost
 			shop_upgrade_cost = "Cost: " + std::to_string(drone_cost);
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_upgrade_cost.c_str()),
-				(button_vector[i].position.x - cam_x + 3 * button_vector[i].width) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button_vector[i].position.y - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
-				1.f, 1.f, 1.f, 1.f);
+				(button_vector[i].position.x - button_vector[i].width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
+				(button_vector[i].position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
+				1.f, 0.f, 0.f, 0.f);
 		}
 		else if (button_vector[i].button_type == SPACE_STATION) {
 			// Draw icon
@@ -435,9 +461,9 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 			// Print upgrade cost
 			shop_upgrade_cost = "Cost: " + std::to_string(space_station_cost);
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_upgrade_cost.c_str()),
-				(button_vector[i].position.x - cam_x + 3 * button_vector[i].width) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button_vector[i].position.y - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
-				1.f, 1.f, 1.f, 1.f);
+				(button_vector[i].position.x - button_vector[i].width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
+				(button_vector[i].position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
+				1.f, 0.f, 0.f, 0.f);
 		}
 	}
 }
@@ -520,11 +546,6 @@ void PlayerUI::shop_closed()
 
 void PlayerUI::close_shop()
 {
-	// Remove buttons from list
-	/*for (int i = 0; i < UPGRADE_COUNT; ++i) {
-		button_vector.pop_back();
-	}*/
-
 	// Close shop
 	shop_triggered = false;
 	shop_transition = true;
