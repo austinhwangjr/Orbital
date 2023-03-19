@@ -3,6 +3,7 @@
 #include "fmod_errors.h"
 #include <map>
 #include "Global.h"
+
 namespace AudioManager
 {
     // The FMOD system and error result
