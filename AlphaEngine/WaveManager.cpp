@@ -35,7 +35,7 @@ std::vector<WaveManager::Arrow>	arrow_vector;
 void WaveManager::load()
 {
 	indicator_tex = AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture.png");
-	outline_tex = AEGfxTextureLoad("Assets/MainLevel/ml_explosion.png");
+	outline_tex = AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture.png");
 	arrow_tex = AEGfxTextureLoad("Assets/MainLevel/ml_arrow.png");
 	lose_menu::load();
 }
@@ -71,7 +71,7 @@ void WaveManager::init()
 
 void WaveManager::update(f64 frame_time)
 {
-// Lose Condition--------------------------------------------------------
+	// Lose Condition--------------------------------------------------------
 	if (gameLost)
 	{
 		lose_menu::update();
@@ -162,25 +162,18 @@ void WaveManager::update(f64 frame_time)
 		AEMtx33Concat(&outline_vector[i].transform, &outline_vector[i].rotate, &outline_vector[i].scale);
 		AEMtx33Concat(&outline_vector[i].transform, &outline_vector[i].translate, &outline_vector[i].transform);
 
-		/*
-		arrow_vector[i].direction = static_cast<f32>(atan2(static_cast<double>(arrow_vector[i].position.y - outline_vector[i].position.y),
-															static_cast<double>(arrow_vector[i].position.x - outline_vector[i].position.x)));
-		AEVec2Set(&arrow_vector[i].position, outline_vector[i].position.x + (outline_vector[i].size / 2) * AECos(arrow_vector[i].direction),
-											outline_vector[i].position.y + (outline_vector[i].size / 2) * AESin(arrow_vector[i].direction));
-		arrow_vector[i].position.x = outline_vector[i].position.x + (outline_vector[i].size / 2) * AECos(arrow_vector[i].direction);
-		arrow_vector[i].position.y = outline_vector[i].position.y + (outline_vector[i].size / 2) * AESin(arrow_vector[i].direction);
-		*/
 
-		AEVec2Sub(&arrow_vector[i].position, &camera.position, &planet_vector[i].position);
-		arrow_vector[i].direction = static_cast<f32>(atan2(static_cast<double>(arrow_vector[i].position.y - planet_vector[i].position.y),
-															static_cast<double>(arrow_vector[i].position.x - planet_vector[i].position.x)));
+		arrow_vector[i].direction = static_cast<f32>(atan2(static_cast<double>(arrow_vector[i].position.y - planet_vector[i].position.y - planet_vector[i].size),
+															static_cast<double>(arrow_vector[i].position.x - planet_vector[i].position.x - planet_vector[i].size)));
+		arrow_vector[i].direction = AEWrap(arrow_vector[i].direction, -PI, PI);
 		AEMtx33Rot(&arrow_vector[i].rotate, arrow_vector[i].direction);
+		AEVec2Sub(&arrow_vector[i].position, &camera.position, &planet_vector[i].position);
 		AEMtx33Trans(&arrow_vector[i].translate, AEClamp(arrow_vector[i].position.x * -0.5 + cam_x,
-															-(AEGetWindowWidth() / 2) * 0.83f + cam_x,
-															 (AEGetWindowWidth() / 2) * 0.83f + cam_x),
+															-((AEGetWindowWidth() - outline_vector[i].size) / 2) * 0.8f + cam_x,
+															 ((AEGetWindowWidth() - outline_vector[i].size) / 2) * 0.8f + cam_x),
 												 AEClamp(arrow_vector[i].position.y * -0.5 + cam_y,
-															-(AEGetWindowHeight() / 2) * 0.88f + cam_y,
-															 (AEGetWindowHeight() / 2) * 0.795f + cam_y));
+															-(AEGetWindowHeight() / 2) * 0.8f + cam_y,
+															 (AEGetWindowHeight() / 2) * 0.715f + cam_y));
 		AEMtx33Concat(&arrow_vector[i].transform, &arrow_vector[i].rotate, &arrow_vector[i].scale);
 		AEMtx33Concat(&arrow_vector[i].transform, &arrow_vector[i].translate, &arrow_vector[i].transform);
 	}
@@ -361,7 +354,6 @@ void WaveManager::draw(AEGfxVertexList* pMesh)
 void WaveManager::free()
 {
 	lose_menu::free();
-
 }
 
 void WaveManager::unload()
