@@ -332,7 +332,7 @@ bool WaveManager::no_more_shuttles()
 
 void WaveManager::checkLoseCondition()
 {
-	if (shuttle_destroyed == 1)
+	if (shuttle_destroyed == 5)
 	{
 		gameLost = true;
 		lose_menu::update();
