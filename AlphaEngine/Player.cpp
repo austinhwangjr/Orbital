@@ -114,12 +114,13 @@ void Player::update(f64 frame_time)
 		// Update the Lerp value for the halo scale
 		halo_scale_lerp = Lerp(halo_scale_lerp, 1.0f, 0.10f);
 
+		f32 val{ current_planet.size + 50.f };
+
 		// Use the Lerp value to scale the halo
-		AEMtx33Scale(&scale, (current_planet.size + 50.0f) * halo_scale_lerp, (current_planet.size + 50.0f) * halo_scale_lerp);
+		AEMtx33Scale(&scale, val * halo_scale_lerp, val * halo_scale_lerp);
 		AEMtx33Trans(&trans, current_planet.position.x, current_planet.position.y); // Add an offset to the position
 		AEMtx33Concat(&orbit_halo_transform, &rot, &scale);
 		AEMtx33Concat(&orbit_halo_transform, &trans, &orbit_halo_transform);
-
 	}
 }
 
@@ -365,6 +366,11 @@ void Player::flying_state(f64 frame_time)
 	// ===================================
 	// Update active game object instances
 	// ===================================
+
+	/* if (0 <= Halo_Timer)
+	{
+		Halo_Timer -= frame_time;
+	}*/
 
 	// Determine planet closest to player
 	current_planet = planet_vector[0];

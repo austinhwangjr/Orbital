@@ -446,13 +446,11 @@ void WaveManager::add_indicator()
 
 	arrow_vector.push_back(new_arrow);
 }
-}
 
 void WaveManager::checkLoseCondition()
 {
 	if (shuttle_destroyed == 5)
 	{
 		gameLost = true;
-
 	}
 }
