@@ -353,6 +353,9 @@ void WaveManager::draw(AEGfxVertexList* pMesh)
 
 void WaveManager::free()
 {
+	indicator_vector.clear();
+	outline_vector.clear();
+	arrow_vector.clear();
 	lose_menu::free();
 }
 

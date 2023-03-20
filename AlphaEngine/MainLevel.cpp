@@ -39,7 +39,7 @@ AEGfxTexture* TexMLBackground = nullptr;
 AEGfxVertexList* pMeshMLBackground;				// Background Mesh
 AEGfxVertexList* pMeshML;						// Object square mesh
 
-// class declearation 
+// class declaration 
 Rendering RenderMLBackground;
 Rendering createMesh1;
 Player player{};
