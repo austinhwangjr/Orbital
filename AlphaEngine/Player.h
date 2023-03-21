@@ -31,7 +31,7 @@ struct Player
 	int				credits;
 	bool			can_leave_orbit;
 	f32				timer;
-	AEMtx33 orbit_halo_transform;
+	AEMtx33			orbit_halo_transform;
 
 
 	//--------------------Upgrade Levels--------------------

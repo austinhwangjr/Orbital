@@ -14,6 +14,10 @@ AEGfxTexture* shop_background_tex;
 AEGfxTexture* upgrade_level_hollow_tex;
 AEGfxTexture* upgrade_level_solid_tex;
 AEGfxTexture* player_hud_tex;
+AEGfxTexture* speed_hover_tex;
+AEGfxTexture* capacity_hover_tex;
+AEGfxTexture* strength_hover_tex;
+AEGfxTexture* mov_speed_button_tex;
 
 // Variables for general UI
 std::string		score, credits, capacity;
@@ -42,6 +46,14 @@ void PlayerUI::load()
 	upgrade_level_hollow_tex	= AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelHollow.png");
 	upgrade_level_solid_tex		= AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelSolid.png");
 	player_hud_tex				= AEGfxTextureLoad("Assets/MainLevel/ml_HeadsUpDisplay.png");
+
+	// Upgrade preview textures
+	speed_hover_tex				= AEGfxTextureLoad("Assets/MainLevel/ml_MovSpeedUpgradePreview.png");
+	capacity_hover_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_CapacityUpgradePreview.png");
+	strength_hover_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_BeamStrengthUpgradePreview.png");
+
+	// Shop button textures
+	mov_speed_button_tex		= AEGfxTextureLoad("Assets/MainLevel/ml_MovSpeedUpgradeButton.png");
 }
 
 void PlayerUI::init()
@@ -93,28 +105,32 @@ void PlayerUI::init()
 	}
 
 	// Not in placing mode initially
-	placing_drone = false;
-	placing_station = false;
-	drone_placement_flag = false;
-	station_placement_flag = false;
+	placing_drone			= false;
+	placing_station			= false;
+	drone_placement_flag	= false;
+	station_placement_flag	= false;
 
 	// Shop is closed initially
-	shop_triggered = false;
-	shop_transition = false;
+	shop_triggered			= false;
+	shop_transition			= false;
+	upgrade_preview_display = false;
 
 	// Shop background
-	shop_bg_width = static_cast<f32>(AEGetWindowWidth()) * 0.85f;
-	shop_bg_height = static_cast<f32>(AEGetWindowHeight()) * 0.85f;
+	shop_bg_width			= static_cast<f32>(AEGetWindowWidth()) * 0.85f;
+	shop_bg_height			= static_cast<f32>(AEGetWindowHeight()) * 0.85f;
 
 	// Set the offset of the shop
-	shop_offset = static_cast<f32>(AEGetWindowWidth());
+	shop_offset				= static_cast<f32>(AEGetWindowWidth());
 
 	// Icons in shop
-	icon_size = 20.f;
+	icon_size				= 20.f;
+
+	// Set the size of the upgrade preview
+	upgrade_preview_size	= 400.f;
 
 	// Timer for shop transition
-	shop_trans_timer = 0.f;
-	shop_trans_duration = 1.f;
+	shop_trans_timer		= 0.f;
+	shop_trans_duration		= 1.f;
 }
 
 void PlayerUI::update(f64 frame_time, Player& player)
@@ -180,41 +196,36 @@ void PlayerUI::update(f64 frame_time, Player& player)
 	button_vector[0].position.x = cam_x + static_cast<f32>(AEGetWindowWidth()) / 2.f - button_vector[0].width / 2.f;
 	button_vector[0].position.y = cam_y + static_cast<f32>(AEGetWindowHeight()) / 2.f - button_vector[0].height * 2.5f;
 
+	// Upgrade preview on left half of shop
+	upgrade_preview_position.x = cam_x - shop_bg_width / 4.f + shop_offset;
+	upgrade_preview_position.y = cam_y + shop_bg_width / 8.f;
+
 	// Movement speed, capacity and beam strength buttons on the left half
 	for (int i = 1; i < 4; ++i) {
-		button_vector[i].position.x = cam_x - 
-									static_cast<f32>(AEGetWindowWidth() / 2) * 0.7f + 
-									(i - 1) * button_vector[i].width * 1.25f + 
-									shop_offset;
-		button_vector[i].position.y = button_vector[0].position.y - button_vector[i].height * 4.f;
+		ShopOption& button = button_vector[i];
+		button.position.x = cam_x - shop_bg_width / 4.f - button.width * 1.3f * (2 - i) + shop_offset;
+		//button.position.y = button_vector[0].position.y - button.height * 4.f;
+		button.position.y = cam_y - shop_bg_height / 8.f;
 
 		// Level indicators for upgrades
-		for (int j = 0; j < button_vector[i].indicator_vector.size(); ++j) {
-			UpgradeLevelIndicator& indicator = button_vector[i].indicator_vector[j];
-			/*indicator.position.x = button_vector[i].position.x + button_vector[i].width + (j * indicator.width);
-			indicator.position.y = button_vector[i].position.y;*/
-			indicator.position.x = button_vector[i].position.x - button_vector[i].width / 2.f + (j * indicator.width);
-			indicator.position.y = button_vector[i].position.y - button_vector[i].height;
+		for (int j = 0; j < button.indicator_vector.size(); ++j) {
+			UpgradeLevelIndicator& indicator = button.indicator_vector[j];
+			indicator.position.x = button.position.x - indicator.width * (2 - j);
+			indicator.position.y = button.position.y - button.height;
 		}
 	}
 
-	// Drone and space station buttons on the left half
+	// Drone and space station buttons on the right half
 	for (int i = 4; i < 6; ++i) {
-		/*button_vector[i].position.x = cam_x -
-			static_cast<f32>(AEGetWindowWidth() / 2) * 0.7f +
-			(i - 1) * button_vector[i].width * 1.25f +
-			shop_offset;*/
-		button_vector[i].position.x = cam_x + shop_bg_width / 4.f + shop_offset;
-		//button_vector[i].position.y = button_vector[0].position.y - button_vector[i].height * 4.f;
-		button_vector[i].position.y = button_vector[0].position.y - (i - 4) * button_vector[i].height * 4.f;
+		ShopOption& button = button_vector[i];
+		button.position.x = cam_x + shop_bg_width / 4.f + shop_offset;
+		button.position.y = button_vector[0].position.y - (i - 4) * button.height * 4.f;
 
 		// Level indicators for upgrades
-		for (int j = 0; j < button_vector[i].indicator_vector.size(); ++j) {
-			UpgradeLevelIndicator& indicator = button_vector[i].indicator_vector[j];
-			/*indicator.position.x = button_vector[i].position.x + button_vector[i].width + (j * indicator.width);
-			indicator.position.y = button_vector[i].position.y;*/
-			indicator.position.x = button_vector[i].position.x - button_vector[i].width / 2.f + (j * indicator.width);
-			indicator.position.y = button_vector[i].position.y - button_vector[i].height;
+		for (int j = 0; j < button.indicator_vector.size(); ++j) {
+			UpgradeLevelIndicator& indicator = button.indicator_vector[j];
+			indicator.position.x = button.position.x - button.width / 2.f + (j * indicator.width);
+			indicator.position.y = button.position.y - button.height;
 		}
 	}
 
@@ -238,11 +249,18 @@ void PlayerUI::update(f64 frame_time, Player& player)
 	AEMtx33Concat(&shop_bg_transform, &rot, &scale);
 	AEMtx33Concat(&shop_bg_transform, &trans, &shop_bg_transform);
 
+	// Upgrade preview
+	AEMtx33Scale(&scale, upgrade_preview_size, upgrade_preview_size);
+	AEMtx33Rot(&rot, PI);
+	AEMtx33Trans(&trans, upgrade_preview_position.x, upgrade_preview_position.y);
+	AEMtx33Concat(&upgrade_preview_transform, &rot, &scale);
+	AEMtx33Concat(&upgrade_preview_transform, &trans, &upgrade_preview_transform);
+
 	// Shop buttons
 	for (int i = 0; i < button_vector.size(); ++i) {
 		ShopOption& button = button_vector[i];
 		AEMtx33Scale(&scale, button.width, button.height);
-		AEMtx33Rot(&rot, 0.f);
+		AEMtx33Rot(&rot, PI);
 		AEMtx33Trans(&trans, button.position.x, button.position.y);
 		AEMtx33Concat(&button.transform, &rot, &scale);
 		AEMtx33Concat(&button.transform, &trans, &button.transform);
@@ -252,7 +270,7 @@ void PlayerUI::update(f64 frame_time, Player& player)
 			for (int j = 0; j < button.indicator_vector.size(); ++j) {
 				UpgradeLevelIndicator& indicator = button.indicator_vector[j];
 				AEMtx33Scale(&scale, indicator.width, indicator.height);
-				AEMtx33Rot(&rot, 0.f);
+				AEMtx33Rot(&rot, PI);
 				AEMtx33Trans(&trans, indicator.position.x, indicator.position.y);
 				AEMtx33Concat(&indicator.transform, &rot, &scale);
 				AEMtx33Concat(&indicator.transform, &trans, &indicator.transform);
@@ -312,17 +330,52 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 	// Reset transparency
 	AEGfxSetTransparency(1.f);
 
+	// Upgrade preview
+	for (int i = 0; i < button_vector.size(); ++i) {
+		ShopOption& button = button_vector[i];
+		if (hover_over_button(button)) {
+			if (button.button_type == MOVEMENT_SPEED) {
+				AEGfxTextureSet(speed_hover_tex, 0, 0);
+				upgrade_preview_display = true;
+				break;
+			}
+
+			else if (button.button_type == CAPACITY) {
+				AEGfxTextureSet(capacity_hover_tex, 0, 0);
+				upgrade_preview_display = true;
+				break;
+			}
+
+			else if (button.button_type == TRACTOR_BEAM_STRENGTH) {
+				AEGfxTextureSet(strength_hover_tex, 0, 0);
+				upgrade_preview_display = true;
+				break;
+			}
+			
+		}
+		else
+			AEGfxTextureSet(player_tex, 0, 0);
+	}
+	
+	AEGfxSetTransform(upgrade_preview_transform.m);
+	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+
 	// Shop buttons
 	for (int i = 0; i < button_vector.size(); ++i) {
-		AEGfxTextureSet(shop_icon_tex, 0, 0);
+		//AEGfxTextureSet(shop_icon_tex, 0, 0);
+
 		ShopOption& button = button_vector[i];
-		AEGfxSetTransform(button.transform.m);
-		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+		/*AEGfxSetTransform(button.transform.m);
+		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);*/
 
 		// Upgrade Level Indicator
 		if (i > 0) {
 			switch (button.button_type) {
 				case MOVEMENT_SPEED:
+					AEGfxTextureSet(mov_speed_button_tex, 0, 0);
+					AEGfxSetTransform(button.transform.m);
+					AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+
 					for (int j = 0; j < player.mov_speed_level; ++j) {
 						AEGfxTextureSet(upgrade_level_solid_tex, 0, 0);
 						UpgradeLevelIndicator& indicator = button.indicator_vector[j];
@@ -387,59 +440,61 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 
 	// Shop buttons (text/icons)
 	for (int i = 0; i < button_vector.size(); ++i) {
-		if (button_vector[i].button_type == SHOP_OPEN) {
+		ShopOption& button = button_vector[i];
+
+		if (button.button_type == SHOP_OPEN) {
 			shop_option_name = "SHOP";
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_option_name.c_str()),
-				(button_vector[i].position.x - button_vector[i].width / 2 - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button_vector[i].position.y - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
+				(button.position.x - button.width / 2 - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
+				(button.position.y - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
 				1.f, 0.f, 0.f, 0.f);
 		}
-		else if (button_vector[i].button_type == MOVEMENT_SPEED) {
+		else if (button.button_type == MOVEMENT_SPEED) {
 			// Print upgrade name
 			shop_option_name = "Movement Speed";
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_option_name.c_str()),
-				(button_vector[i].position.x - button_vector[i].width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button_vector[i].position.y - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
+				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
+				(button.position.y - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
 				1.f, 0.f, 0.f, 0.f);
 		
 			// Print upgrade cost
 			shop_upgrade_cost = "Cost: " + std::to_string(mov_speed_cost);
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_upgrade_cost.c_str()),
-				(button_vector[i].position.x - button_vector[i].width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button_vector[i].position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
+				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
+				(button.position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
 				1.f, 0.f, 0.f, 0.f);
 		}
-		else if (button_vector[i].button_type == CAPACITY) {
+		else if (button.button_type == CAPACITY) {
 			// Print upgrade name
 			shop_option_name = "Increase Capacity";
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_option_name.c_str()),
-				(button_vector[i].position.x - button_vector[i].width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button_vector[i].position.y - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
+				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
+				(button.position.y - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
 				1.f, 0.f, 0.f, 0.f);
 		
 			// Print upgrade cost
 			shop_upgrade_cost = "Cost: " + std::to_string(capacity_cost);
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_upgrade_cost.c_str()),
-				(button_vector[i].position.x - button_vector[i].width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button_vector[i].position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
+				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
+				(button.position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
 				1.f, 0.f, 0.f, 0.f);
 		}
-		else if (button_vector[i].button_type == TRACTOR_BEAM_STRENGTH) {
+		else if (button.button_type == TRACTOR_BEAM_STRENGTH) {
 			// Print upgrade name
 			shop_option_name = "Beam Strength";
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_option_name.c_str()),
-				(button_vector[i].position.x - button_vector[i].width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button_vector[i].position.y - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
+				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
+				(button.position.y - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
 				1.f, 0.f, 0.f, 0.f);
 		
 			// Print upgrade cost
 			shop_upgrade_cost = "Cost: " + std::to_string(beam_strength_cost);
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_upgrade_cost.c_str()),
-				(button_vector[i].position.x - button_vector[i].width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button_vector[i].position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
+				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
+				(button.position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
 				1.f, 0.f, 0.f, 0.f);
 		}
-		else if (button_vector[i].button_type == CREATE_DRONE) {
+		else if (button.button_type == CREATE_DRONE) {
 			// Draw icon
 			AEGfxTextureSet(player_tex, 0, 0);
 			AEGfxSetTransform(drone_icon_transform.m);
@@ -448,11 +503,11 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 			// Print upgrade cost
 			shop_upgrade_cost = "Cost: " + std::to_string(drone_cost);
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_upgrade_cost.c_str()),
-				(button_vector[i].position.x - button_vector[i].width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button_vector[i].position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
+				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
+				(button.position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
 				1.f, 0.f, 0.f, 0.f);
 		}
-		else if (button_vector[i].button_type == SPACE_STATION) {
+		else if (button.button_type == SPACE_STATION) {
 			// Draw icon
 			AEGfxTextureSet(space_station_tex, 0, 0);
 			AEGfxSetTransform(space_station_icon_transform.m);
@@ -461,8 +516,8 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 			// Print upgrade cost
 			shop_upgrade_cost = "Cost: " + std::to_string(space_station_cost);
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_upgrade_cost.c_str()),
-				(button_vector[i].position.x - button_vector[i].width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button_vector[i].position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
+				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
+				(button.position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
 				1.f, 0.f, 0.f, 0.f);
 		}
 	}
@@ -481,6 +536,10 @@ void PlayerUI::unload()
 	AEGfxTextureUnload(upgrade_level_hollow_tex);
 	AEGfxTextureUnload(upgrade_level_solid_tex);
 	AEGfxTextureUnload(player_hud_tex);
+	AEGfxTextureUnload(speed_hover_tex);
+	AEGfxTextureUnload(capacity_hover_tex);
+	AEGfxTextureUnload(strength_hover_tex);
+	AEGfxTextureUnload(mov_speed_button_tex);
 }
 
 void PlayerUI::shop_open(Player& player)
@@ -499,30 +558,32 @@ void PlayerUI::shop_open(Player& player)
 		// =================
 
 		for (int i = 0; i < button_vector.size(); ++i) {
-			if (button_clicked(button_vector[i])) {
-				if (button_vector[i].button_type == MOVEMENT_SPEED) {
+			ShopOption& button = button_vector[i];
+
+			if (button_clicked(button)) {
+				if (button.button_type == MOVEMENT_SPEED) {
 					if (player.credits >= mov_speed_cost && player.mov_speed_level < MAX_MOV_SPEED_LVL) {
 						player.credits -= mov_speed_cost;
 						player.mov_speed_level++;
 					}
 				}
-				else if (button_vector[i].button_type == CAPACITY) {
+				else if (button.button_type == CAPACITY) {
 					if (player.credits >= capacity_cost && player.capacity_level < MAX_CAPACITY_LVL) {
 						player.credits -= capacity_cost;
 						player.capacity_level++;
 					}
 				}
-				else if (button_vector[i].button_type == TRACTOR_BEAM_STRENGTH) {
+				else if (button.button_type == TRACTOR_BEAM_STRENGTH) {
 					if (player.credits >= beam_strength_cost && player.beam_level < MAX_BEAM_STRENGTH_LVL) {
 						player.credits -= beam_strength_cost;
 						player.beam_level++;
 					}
 				}
-				else if (button_vector[i].button_type == CREATE_DRONE || button_vector[i].button_type == SPACE_STATION) {
-					if (button_vector[i].button_type == CREATE_DRONE && !placing_drone && player.credits >= drone_cost)
+				else if (button.button_type == CREATE_DRONE || button.button_type == SPACE_STATION) {
+					if (button.button_type == CREATE_DRONE && !placing_drone && player.credits >= drone_cost)
 						placing_drone = true;
 
-					else if (button_vector[i].button_type == SPACE_STATION && !placing_station && player.credits >= space_station_cost)
+					else if (button.button_type == SPACE_STATION && !placing_station && player.credits >= space_station_cost)
 						placing_station = true;
 
 					close_shop();
@@ -559,10 +620,11 @@ bool PlayerUI::button_clicked(ShopOption button)
 	f32 button_top		= button.position.y + button.height / 2.f;
 	f32 button_bottom	= button.position.y - button.height / 2.f;
 
-	if ((button_left < mouse_pos_world.x) && (button_right > mouse_pos_world.x)) {
-		if ((button_bottom < mouse_pos_world.y) && (button_top > mouse_pos_world.y)) {
-			if (AEInputCheckTriggered(AEVK_LBUTTON))
+	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+		if ((button_left < mouse_pos_world.x) && (button_right > mouse_pos_world.x)) {
+			if ((button_bottom < mouse_pos_world.y) && (button_top > mouse_pos_world.y)) {
 				return true;
+			}
 		}
 	}
 
@@ -583,9 +645,25 @@ bool PlayerUI::click_outside_shop()
 			(mouse_pos_world.x > shop_background_right && mouse_pos_world.x < (cam_x + static_cast<f32>(AEGetWindowWidth()) / 2.f)) ||
 			(mouse_pos_world.y > (cam_y - static_cast<f32>(AEGetWindowHeight()) / 2.f) && mouse_pos_world.y < shop_background_bottom) ||
 			(mouse_pos_world.y > shop_background_top && mouse_pos_world.y < (cam_y + static_cast<f32>(AEGetWindowHeight()) / 2.f)))
-		
+
 			return true;
-		
+	}
+
+	return false;
+}
+
+bool PlayerUI::hover_over_button(ShopOption button)
+{
+	// Get position of each side of button
+	f32 button_left = button.position.x - button.width / 2.f;
+	f32 button_right = button.position.x + button.width / 2.f;
+	f32 button_top = button.position.y + button.height / 2.f;
+	f32 button_bottom = button.position.y - button.height / 2.f;
+
+	if ((button_left < mouse_pos_world.x) && (button_right > mouse_pos_world.x)) {
+		if ((button_bottom < mouse_pos_world.y) && (button_top > mouse_pos_world.y)) {
+			return true;
+		}
 	}
 
 	return false;

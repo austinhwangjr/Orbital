@@ -57,6 +57,11 @@ struct PlayerUI
 	AEMtx33		drone_icon_transform;
 	AEMtx33		space_station_icon_transform;
 
+	AEVec2		upgrade_preview_position;
+	f32			upgrade_preview_size;
+	AEMtx33		upgrade_preview_transform;
+	bool		upgrade_preview_display;
+
 	//--------------------Shop background--------------------
 	AEVec2		shop_bg_position;
 	f32			shop_bg_width, shop_bg_height;
@@ -81,4 +86,5 @@ struct PlayerUI
 	void close_shop();
 	bool button_clicked(ShopOption);
 	bool click_outside_shop();
+	bool hover_over_button(ShopOption);
 };

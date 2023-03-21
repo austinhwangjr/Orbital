@@ -18,12 +18,9 @@ extern std::vector<std::vector<Debris>> debris_vector_all;
 void Player::load()
 {
 	// Load textures
-	player_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_Spaceship.png");
+	player_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_Spaceship2.png");
 	tractor_beam_tex	= AEGfxTextureLoad("Assets/MainLevel/ml_TractorBeam.png");
-	orbit_halo_tex = AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
-
-
-
+	orbit_halo_tex		= AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
 }
 
 void Player::init()
@@ -110,7 +107,6 @@ void Player::update(f64 frame_time)
 	AEMtx33Concat(&beam_transform, &trans, &beam_transform);
 
 	if (state == PLAYER_ORBIT) {
-
 		// Update the Lerp value for the halo scale
 		halo_scale_lerp = Lerp(halo_scale_lerp, 1.0f, 0.10f);
 
@@ -142,8 +138,7 @@ void Player::draw(AEGfxVertexList* pMesh)
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 	}
 
-	if (state == PLAYER_ORBIT)
-	{
+	if (state == PLAYER_ORBIT) {
 		AEGfxTextureSet(orbit_halo_tex, 0, 0);
 		AEGfxSetTransform(orbit_halo_transform.m);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
@@ -160,7 +155,6 @@ void Player::unload()
 	AEGfxTextureUnload(player_tex);
 	AEGfxTextureUnload(tractor_beam_tex);
 	AEGfxTextureUnload(orbit_halo_tex);
-
 }
 
 void Player::orbit_state(f64 frame_time)
