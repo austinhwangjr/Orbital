@@ -58,7 +58,7 @@ pause_menu pause{};
 //PauseMenuButtons pause_menu_buttons;
 
 // test variables (who did this? -yy)
-f64 total_time{}, frame_time{};
+f64 frame_time{};
 
 bool is_paused = false;
 
@@ -133,7 +133,6 @@ void main_level::init()
 	std::cout << "------------------------- Main Level Initialised -------------------------" << std::endl;
 
 	wave_manager.init();
-	total_time = 0.0f;
 }
 
 // ----------------------------------------------------------------------------
@@ -145,7 +144,6 @@ void main_level::init()
 void main_level::update()
 {
 	frame_time = AEFrameRateControllerGetFrameTime();
-	total_time += frame_time;
 
 	if (AEInputCheckTriggered(AEVK_ESCAPE))
 	{

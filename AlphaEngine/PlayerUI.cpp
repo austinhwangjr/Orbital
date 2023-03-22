@@ -695,6 +695,7 @@ void PlayerUI::unload()
 	AEGfxTextureUnload(shop_close_tex);
 	AEGfxTextureUnload(space_station_tex);
 	AEGfxTextureUnload(shop_background_tex);
+	AEGfxTextureUnload(tutorial_open_tex);
 	AEGfxTextureUnload(tutorial_background_tex);
 	AEGfxTextureUnload(upgrade_level_hollow_tex);
 	AEGfxTextureUnload(upgrade_level_solid_tex);
