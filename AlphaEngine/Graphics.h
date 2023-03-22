@@ -21,6 +21,9 @@ public:
                       float width, float height,
                       AEGfxVertexList* pMesh);
 
+    static void RenderSpriteWithRotations(AEGfxTexture* texture, float centerX, float centerY, float width, float height, AEGfxVertexList* pMesh, float rotation, float r, float g, float b, float a);
+
+
     static void RenderFadedBackground(AEGfxTexture* texture, float centerX, float centerY, float width, float height, AEGfxVertexList* pMesh, float alpha);
 
 

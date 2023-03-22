@@ -38,7 +38,8 @@ void main_menu::load()
                         "Assets/MainMenu/mm_HighScoreHover.png",
                         "Assets/MainMenu/mm_OptionsButtonHover.png",
                         "Assets/MainMenu/mm_CreditsButtonHover.png",
-                        "Assets/MainMenu/mm_ExitButtonHover.png"        );
+                        "Assets/MainMenu/mm_ExitButtonHover.png",
+                        "Assets/MainMenu/squareTexture.png");
 
     AudioManager::LoadSound("Assets/BGM/cinescifi.wav", true);
 }
