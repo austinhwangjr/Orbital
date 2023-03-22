@@ -13,6 +13,7 @@ AEGfxTexture* shop_open_tex;
 AEGfxTexture* shop_close_tex;
 AEGfxTexture* space_station_tex;
 AEGfxTexture* shop_background_tex;
+AEGfxTexture* tutorial_open_tex;
 AEGfxTexture* tutorial_background_tex;
 AEGfxTexture* upgrade_level_hollow_tex;
 AEGfxTexture* upgrade_level_solid_tex;
@@ -54,6 +55,7 @@ void PlayerUI::load()
 	shop_close_tex				= AEGfxTextureLoad("Assets/MainLevel/ml_ShopCloseButton.png");
 	space_station_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_SpaceStation.png");
 	shop_background_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_ShopBackground.png");
+	tutorial_open_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_TutorialBackground.png");
 	tutorial_background_tex		= AEGfxTextureLoad("Assets/MainLevel/ml_TutorialBackground.png");
 	upgrade_level_hollow_tex	= AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelHollow.png");
 	upgrade_level_solid_tex		= AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelSolid.png");
@@ -257,6 +259,7 @@ void PlayerUI::update(f64 frame_time, Player& player)
 	// Update positions
 	// =================
 
+	AEGfxGetCamPosition(&cam_x, &cam_y);
 	// Player HUD to follow camera
 	player_hud_position.x = cam_x;
 	player_hud_position.y = cam_y;
@@ -271,7 +274,6 @@ void PlayerUI::update(f64 frame_time, Player& player)
 	tutorial_bg_position.y = cam_y + static_cast<f32>(AEGetWindowHeight()) / 2.f - button_vector[6].height * 3.f;
 
 	// Button to open shop
-	AEGfxGetCamPosition(&cam_x, &cam_y);
 	button_vector[0].position.x = cam_x + static_cast<f32>(AEGetWindowWidth()) / 2.f - button_vector[0].width / 2.f;
 	button_vector[0].position.y = cam_y + static_cast<f32>(AEGetWindowHeight()) / 2.f - button_vector[0].height * 2.5f;
 
@@ -547,6 +549,12 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 						AEGfxSetTransform(indicator.transform.m);
 						AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 					}
+					break;
+
+				case TUTORIAL_OPEN:
+					AEGfxTextureSet(tutorial_open_tex, 0, 0);
+					AEGfxSetTransform(button.transform.m);
+					AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 					break;
 			}
 		}
@@ -833,7 +841,7 @@ void PlayerUI::tutorial_open()
 	// ===================
 
 	// Player clicks outside tutorial
-	if (click_outside_tutorial() || AEInputCheckTriggered(AEVK_ESCAPE))
+	if (button_clicked(button_vector[6]) || AEInputCheckTriggered(AEVK_ESCAPE))
 		close_tutorial();
 }
 
@@ -854,26 +862,4 @@ void PlayerUI::close_tutorial()
 	// Close tutorial
 	tutorial_triggered = false;
 	tutorial_transition = true;
-}
-
-bool PlayerUI::click_outside_tutorial()
-{
-	// Get position of each side of tutorial background
-	f32 tutorial_background_left = tutorial_bg_position.x - tutorial_bg_width / 2.f;
-	f32 tutorial_background_right = tutorial_bg_position.x + tutorial_bg_width / 2.f;
-	f32 tutorial_background_top = tutorial_bg_position.y + tutorial_bg_height / 2.f;
-	f32 tutorial_background_bottom = tutorial_bg_position.y - tutorial_bg_height / 2.f;
-
-	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-		// Left/right/top/bottom border
-		if ((mouse_pos_world.x > (tutorial_bg_position.x - static_cast<f32>(AEGetWindowWidth()) / 2.f) && mouse_pos_world.x < tutorial_background_left) ||
-			(mouse_pos_world.x > tutorial_background_right && mouse_pos_world.x < (tutorial_bg_position.x + static_cast<f32>(AEGetWindowWidth()) / 2.f)) ||
-			(mouse_pos_world.y > (tutorial_bg_position.y - static_cast<f32>(AEGetWindowHeight()) / 2.f) && mouse_pos_world.y < tutorial_background_bottom) ||
-			(mouse_pos_world.y > tutorial_background_top && mouse_pos_world.y < (tutorial_bg_position.y + static_cast<f32>(AEGetWindowHeight()) / 2.f)))
-
-			return true;
-
-	}
-
-	return false;
 }

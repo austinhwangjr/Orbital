@@ -102,5 +102,4 @@ struct PlayerUI
 	void tutorial_open();
 	void tutorial_closed();
 	void close_tutorial();
-	bool click_outside_tutorial();
 };
