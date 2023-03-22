@@ -67,8 +67,6 @@ struct HoverButton
     float height;
 };
 
-
-
 // Define the positions and dimensions for each button
 Button buttons[] = {
     {startX, startY, buttonWidth, buttonHeight},   // Start button
@@ -132,7 +130,7 @@ void Menu_Button::init()
     for (int i = 0; i < 6; ++i)
     {
         hoverStates[i] = false;
-        currentXPositions[i] = buttons[i].x; // Initialize current X position
+        currentXPositions[i] = buttons[i].x; 
         currentButtonSizes[i].width = buttons[i].width;
         currentButtonSizes[i].height = buttons[i].height;
         squareRotations[i] = 0.0f;
@@ -194,7 +192,7 @@ void Menu_Button::update()
         next_state = GS_QUIT;
     }
 
-    float easingSpeed = 0.15f; // Adjust this value to control the speed of the transition
+    float easingSpeed = 0.15f; // Adjust this value to control the speed of the transition i know not suppose to be here.
     float rotationSpeed = 0.25f; // Adjust this value to control the speed of the rotation
 
     for (int i = 0; i < 6; ++i)
