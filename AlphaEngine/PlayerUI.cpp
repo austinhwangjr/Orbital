@@ -9,15 +9,23 @@
 // Textures
 extern AEGfxTexture* player_tex;
 AEGfxTexture* shop_icon_tex;
+AEGfxTexture* shop_open_tex;
+AEGfxTexture* shop_close_tex;
 AEGfxTexture* space_station_tex;
 AEGfxTexture* shop_background_tex;
 AEGfxTexture* upgrade_level_hollow_tex;
 AEGfxTexture* upgrade_level_solid_tex;
 AEGfxTexture* player_hud_tex;
+
+// Upgrade preview textures
 AEGfxTexture* speed_hover_tex;
 AEGfxTexture* capacity_hover_tex;
 AEGfxTexture* strength_hover_tex;
+
+// Shop button textures
 AEGfxTexture* mov_speed_button_tex;
+AEGfxTexture* capacity_button_tex;
+AEGfxTexture* strength_button_tex;
 
 // Variables for general UI
 std::string		score, credits, capacity;
@@ -41,6 +49,8 @@ void PlayerUI::load()
 {
 	// Load textures
 	shop_icon_tex				= AEGfxTextureLoad("Assets/MainLevel/ml_YellowButtonBackground.png");
+	shop_open_tex				= AEGfxTextureLoad("Assets/MainLevel/ml_ShopOpenButton.png");
+	shop_close_tex				= AEGfxTextureLoad("Assets/MainLevel/ml_ShopCloseButton.png");
 	space_station_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_SpaceStation.png");
 	shop_background_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_ShopBackground.png");
 	upgrade_level_hollow_tex	= AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelHollow.png");
@@ -54,6 +64,8 @@ void PlayerUI::load()
 
 	// Shop button textures
 	mov_speed_button_tex		= AEGfxTextureLoad("Assets/MainLevel/ml_MovSpeedUpgradeButton.png");
+	capacity_button_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_CapacityUpgradeButton.png");
+	strength_button_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_BeamStrengthUpgradeButton.png");
 }
 
 void PlayerUI::init()
@@ -224,7 +236,7 @@ void PlayerUI::update(f64 frame_time, Player& player)
 		// Level indicators for upgrades
 		for (int j = 0; j < button.indicator_vector.size(); ++j) {
 			UpgradeLevelIndicator& indicator = button.indicator_vector[j];
-			indicator.position.x = button.position.x - button.width / 2.f + (j * indicator.width);
+			indicator.position.x = button.position.x - indicator.width * (2 - j);
 			indicator.position.y = button.position.y - button.height;
 		}
 	}
@@ -362,13 +374,19 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 
 	// Shop buttons
 	for (int i = 0; i < button_vector.size(); ++i) {
-		//AEGfxTextureSet(shop_icon_tex, 0, 0);
-
 		ShopOption& button = button_vector[i];
-		/*AEGfxSetTransform(button.transform.m);
-		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);*/
 
-		// Upgrade Level Indicator
+		if (i == 0) {
+			if (shop_triggered)
+				AEGfxTextureSet(shop_close_tex, 0, 0);
+			else
+				AEGfxTextureSet(shop_open_tex, 0, 0);
+
+			AEGfxSetTransform(button.transform.m);
+			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+		}
+
+		// Shop upgrades
 		if (i > 0) {
 			switch (button.button_type) {
 				case MOVEMENT_SPEED:
@@ -391,6 +409,10 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 					break;
 
 				case CAPACITY:
+					AEGfxTextureSet(capacity_button_tex, 0, 0);
+					AEGfxSetTransform(button.transform.m);
+					AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+
 					for (int j = 0; j < player.capacity_level; ++j) {
 						AEGfxTextureSet(upgrade_level_solid_tex, 0, 0);
 						UpgradeLevelIndicator& indicator = button.indicator_vector[j];
@@ -406,6 +428,10 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 					break;
 
 				case TRACTOR_BEAM_STRENGTH:
+					AEGfxTextureSet(strength_button_tex, 0, 0);
+					AEGfxSetTransform(button.transform.m);
+					AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+
 					for (int j = 0; j < player.beam_level; ++j) {
 						AEGfxTextureSet(upgrade_level_solid_tex, 0, 0);
 						UpgradeLevelIndicator& indicator = button.indicator_vector[j];
@@ -421,6 +447,10 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 					break;
 
 				case SPACE_STATION:
+					AEGfxTextureSet(mov_speed_button_tex, 0, 0);
+					AEGfxSetTransform(button.transform.m);
+					AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+
 					for (int j = 0; j < player.space_station_count; ++j) {
 						AEGfxTextureSet(upgrade_level_solid_tex, 0, 0);
 						UpgradeLevelIndicator& indicator = button.indicator_vector[j];
@@ -443,56 +473,56 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 		ShopOption& button = button_vector[i];
 
 		if (button.button_type == SHOP_OPEN) {
-			shop_option_name = "SHOP";
+			/*shop_option_name = "SHOP";
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_option_name.c_str()),
 				(button.position.x - button.width / 2 - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
 				(button.position.y - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
-				1.f, 0.f, 0.f, 0.f);
+				1.f, 0.f, 0.f, 0.f);*/
 		}
 		else if (button.button_type == MOVEMENT_SPEED) {
 			// Print upgrade name
 			shop_option_name = "Movement Speed";
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_option_name.c_str()),
 				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button.position.y - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
+				(button.position.y - button.height / 2.f - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
 				1.f, 0.f, 0.f, 0.f);
 		
 			// Print upgrade cost
-			shop_upgrade_cost = "Cost: " + std::to_string(mov_speed_cost);
+			/*shop_upgrade_cost = "Cost: " + std::to_string(mov_speed_cost);
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_upgrade_cost.c_str()),
 				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
 				(button.position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
-				1.f, 0.f, 0.f, 0.f);
+				1.f, 0.f, 0.f, 0.f);*/
 		}
 		else if (button.button_type == CAPACITY) {
 			// Print upgrade name
 			shop_option_name = "Increase Capacity";
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_option_name.c_str()),
 				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button.position.y - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
+				(button.position.y - button.height / 2.f - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
 				1.f, 0.f, 0.f, 0.f);
 		
 			// Print upgrade cost
-			shop_upgrade_cost = "Cost: " + std::to_string(capacity_cost);
+			/*shop_upgrade_cost = "Cost: " + std::to_string(capacity_cost);
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_upgrade_cost.c_str()),
 				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
 				(button.position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
-				1.f, 0.f, 0.f, 0.f);
+				1.f, 0.f, 0.f, 0.f);*/
 		}
 		else if (button.button_type == TRACTOR_BEAM_STRENGTH) {
 			// Print upgrade name
 			shop_option_name = "Beam Strength";
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_option_name.c_str()),
 				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button.position.y - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
+				(button.position.y - button.height / 2.f - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
 				1.f, 0.f, 0.f, 0.f);
 		
 			// Print upgrade cost
-			shop_upgrade_cost = "Cost: " + std::to_string(beam_strength_cost);
+			/*shop_upgrade_cost = "Cost: " + std::to_string(beam_strength_cost);
 			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_upgrade_cost.c_str()),
 				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
 				(button.position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
-				1.f, 0.f, 0.f, 0.f);
+				1.f, 0.f, 0.f, 0.f);*/
 		}
 		else if (button.button_type == CREATE_DRONE) {
 			// Draw icon
@@ -531,6 +561,8 @@ void PlayerUI::free()
 void PlayerUI::unload()
 {
 	AEGfxTextureUnload(shop_icon_tex);
+	AEGfxTextureUnload(shop_open_tex);
+	AEGfxTextureUnload(shop_close_tex);
 	AEGfxTextureUnload(space_station_tex);
 	AEGfxTextureUnload(shop_background_tex);
 	AEGfxTextureUnload(upgrade_level_hollow_tex);
@@ -540,6 +572,8 @@ void PlayerUI::unload()
 	AEGfxTextureUnload(capacity_hover_tex);
 	AEGfxTextureUnload(strength_hover_tex);
 	AEGfxTextureUnload(mov_speed_button_tex);
+	AEGfxTextureUnload(capacity_button_tex);
+	AEGfxTextureUnload(strength_button_tex);
 }
 
 void PlayerUI::shop_open(Player& player)
