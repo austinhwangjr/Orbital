@@ -109,7 +109,7 @@ void Shuttles::unload()
 	AEGfxTextureUnload(shuttle_tex);
 }
 
-void Shuttles::spawn(int const& planet_id)
+void Shuttles::spawn(int const& planet_id, f32 const& rand_angle)
 {
 	Shuttles new_shuttle;
 
@@ -123,9 +123,8 @@ void Shuttles::spawn(int const& planet_id)
 	new_shuttle.position.x = planet_vector[planet_id].shuttle_spawn_pos.x;
 	new_shuttle.position.y = planet_vector[planet_id].shuttle_spawn_pos.y;
 
-	f32 rand_angle = AERandFloat() * (2 * PI);
-	new_shuttle.direction.x = cos(rand_angle);
-	new_shuttle.direction.y = sin(rand_angle);
+	new_shuttle.direction.x = AECos(rand_angle);
+	new_shuttle.direction.y = AESin(rand_angle);
 
 	new_shuttle.planet_id = planet_id;
 

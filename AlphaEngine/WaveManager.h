@@ -24,7 +24,6 @@ struct WaveManager
 		AEMtx33				transform;
 		AEVec2				position;
 		f32					size;
-		f64					blinking_timer;				// Timer for blinking indicators
 	};
 
 	struct Outline
@@ -46,6 +45,9 @@ struct WaveManager
 		AEVec2				position;
 		f32					direction;
 		f32					size;
+		f64					blinking_timer;		// Timer for blinking indicators
+		float				blinker;			// Alpha value for arrow to simulate flashing effect
+		f64					urgency;			// Timer for speed of arrow indicator flashing
 	};
 
 // WAVE VARIABLES----------------------------
@@ -55,6 +57,7 @@ struct WaveManager
 	f64		wave_interval_timer;		// Timer to increment towards WAVE_INTERVAL_TIME
 // WAVE VARIABLES----------------------------
 
+
 // SHUTTLE VARIABLES-------------------------
 	int		shuttle_left_planet;		// Number of shuttles successfully escaped
 	int		shuttle_destroyed;			// Number of shuttles collided with debris
@@ -62,12 +65,16 @@ struct WaveManager
 	bool	shuttle_has_collided;		// Flag for when a shuttle has collided with debris
 // SHUTTLE VARIABLES-------------------------
 
+
 // PLANET VARIABLES--------------------------
 	int		planet_count;				// Number of planets
 	bool	planet_adding;				// Flag for when planet adding transition is playing
-
 // PLANET VARIABLES--------------------------
-	bool	gameLost;				// Flag for when the game is lost
+
+
+// OTHER VARIABLES---------------------------
+	bool	gameLost;					// Flag for when the game is lost
+// OTHER VARIABLES---------------------------
 
 	void load();
 	void init();

@@ -27,5 +27,5 @@ struct Shuttles
 	void free();
 	void unload();
 	
-	void spawn(int const& planet_id);
+	void spawn(int const& planet_id, f32 const& rand_angle);
 };

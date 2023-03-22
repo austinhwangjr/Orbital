@@ -26,19 +26,16 @@ extern s8 font_id;
 const char* print_string;
 
 AEGfxTexture* indicator_tex;
-AEGfxTexture* outline_tex;
 AEGfxTexture* arrow_tex;
 AEGfxTexture* lineTexture;
 
 
 std::vector<WaveManager::Indicator> indicator_vector;
-std::vector<WaveManager::Outline> outline_vector;
 std::vector<WaveManager::Arrow>	arrow_vector;
 
 void WaveManager::load()
 {
 	indicator_tex = AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture.png");
-	outline_tex = AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture.png");
 	arrow_tex = AEGfxTextureLoad("Assets/MainLevel/ml_arrow.png");
 	lineTexture = AEGfxTextureLoad("Assets/MainLevel/line.png");
 
@@ -67,6 +64,7 @@ void WaveManager::init()
 	gameLost = false;
 
 	planet.spawn(rand() % (SHUTTLE_SPAWN_MAX - SHUTTLE_SPAWN_MIN) + SHUTTLE_SPAWN_MIN);
+	planet.add_runway(planet_vector[0].position);
 	planet_count++;
 
 	std::cout << "----------------------------------------" << std::endl;
@@ -121,7 +119,8 @@ void WaveManager::update(f64 frame_time)
 	// Add Planets at Intervals----------------------------------------------
 	if ((planet_count < PLANET_MAX) && (planet_count * WAVE_ADD_PLANET) == wave_number)
 	{
-		planet.Planets::spawn(rand() % (SHUTTLE_SPAWN_MAX - SHUTTLE_SPAWN_MIN) + SHUTTLE_SPAWN_MIN);
+		planet.spawn(rand() % (SHUTTLE_SPAWN_MAX - SHUTTLE_SPAWN_MIN) + SHUTTLE_SPAWN_MIN);
+		planet.add_runway(planet_vector[planet_count].position);
 		planet_count++;
 		planet_adding = true;
 
@@ -139,50 +138,59 @@ void WaveManager::update(f64 frame_time)
 	}
 	// Wave interval timer---------------------------------------------------
 
-	// Update position of off-screen indicator-------------------------------
+	// Update logic for off-screen indicator-------------------------------
 	for (size_t i{}; i < indicator_vector.size(); i++)
 	{
 		f32 cam_x{}, cam_y{};
 		AEGfxGetCamPosition(&cam_x, &cam_y);
 
-
+		// Update position of Planet image in the distance indicator
+		// Clamp the image to the screen
 		AEVec2Sub(&indicator_vector[i].position, &planet_vector[i].position, &camera.position);
 		AEMtx33Trans(&indicator_vector[i].translate, AEClamp(indicator_vector[i].position.x * 0.5 + cam_x,
 																-((AEGetWindowWidth() - indicator_vector[i].size) / 2) * 0.8f + cam_x,
 																 ((AEGetWindowWidth() - indicator_vector[i].size) / 2) * 0.8f + cam_x),
 													 AEClamp(indicator_vector[i].position.y * 0.5 + cam_y,
 																-(AEGetWindowHeight() / 2) * 0.8f + cam_y,
-																 (AEGetWindowHeight() / 2) * 0.715f + cam_y));
+																 (AEGetWindowHeight() / 2) * 0.7f + cam_y));
 		AEMtx33Concat(&indicator_vector[i].transform, &indicator_vector[i].rotate, &indicator_vector[i].scale);
 		AEMtx33Concat(&indicator_vector[i].transform, &indicator_vector[i].translate, &indicator_vector[i].transform);
 
-
-		AEVec2Sub(&outline_vector[i].position, &planet_vector[i].position, &camera.position);
-		AEMtx33Trans(&outline_vector[i].translate, AEClamp(outline_vector[i].position.x * 0.5 + cam_x,
-																-((AEGetWindowWidth() - outline_vector[i].size) / 2) * 0.8f + cam_x,
-																 ((AEGetWindowWidth() - outline_vector[i].size) / 2) * 0.8f + cam_x),
-												   AEClamp(outline_vector[i].position.y * 0.5 + cam_y,
-																-(AEGetWindowHeight() / 2) * 0.8f + cam_y,
-																 (AEGetWindowHeight() / 2) * 0.715f + cam_y));
-		AEMtx33Concat(&outline_vector[i].transform, &outline_vector[i].rotate, &outline_vector[i].scale);
-		AEMtx33Concat(&outline_vector[i].transform, &outline_vector[i].translate, &outline_vector[i].transform);
-
-
+		// Update the position and rotation of the arrow image ontop of the Planet in the distance indicator
+		// Arrow to turn towards the direction of a planet at all times
+		// Clamp the image to the screen
 		arrow_vector[i].direction = static_cast<f32>(atan2(static_cast<double>(arrow_vector[i].position.y - planet_vector[i].position.y - planet_vector[i].size),
 															static_cast<double>(arrow_vector[i].position.x - planet_vector[i].position.x - planet_vector[i].size)));
-		arrow_vector[i].direction = AEWrap(arrow_vector[i].direction, -PI, PI);
-		AEMtx33Rot(&arrow_vector[i].rotate, arrow_vector[i].direction);
+		arrow_vector[i].direction = AEWrap(arrow_vector[i].direction, -PI, PI); // Wraps the direction between -PI and PI
+		AEMtx33Rot(&arrow_vector[i].rotate, arrow_vector[i].direction);			// Update the rotation accordingly
 		AEVec2Sub(&arrow_vector[i].position, &camera.position, &planet_vector[i].position);
 		AEMtx33Trans(&arrow_vector[i].translate, AEClamp(arrow_vector[i].position.x * -0.5 + cam_x,
-															-((AEGetWindowWidth() - outline_vector[i].size) / 2) * 0.8f + cam_x,
-															 ((AEGetWindowWidth() - outline_vector[i].size) / 2) * 0.8f + cam_x),
+															-((AEGetWindowWidth() - indicator_vector[i].size) / 2) * 0.8f + cam_x,
+															 ((AEGetWindowWidth() - indicator_vector[i].size) / 2) * 0.8f + cam_x),
 												 AEClamp(arrow_vector[i].position.y * -0.5 + cam_y,
 															-(AEGetWindowHeight() / 2) * 0.8f + cam_y,
-															 (AEGetWindowHeight() / 2) * 0.715f + cam_y));
+															 (AEGetWindowHeight() / 2) * 0.7f + cam_y));
 		AEMtx33Concat(&arrow_vector[i].transform, &arrow_vector[i].rotate, &arrow_vector[i].scale);
 		AEMtx33Concat(&arrow_vector[i].transform, &arrow_vector[i].translate, &arrow_vector[i].transform);
+
+		arrow_vector[i].urgency = static_cast<f64>(planet_vector[i].shuttle_timer / planet_vector[i].shuttle_time_to_spawn);
+		
+		if (arrow_vector[i].blinking_timer >= (1 - arrow_vector[i].urgency))
+		{
+			arrow_vector[i].blinker = 1 - arrow_vector[i].blinker;
+			arrow_vector[i].blinking_timer = 0;
+		}
+
+		if (arrow_vector[i].urgency > 0.5 && arrow_vector[i].urgency < 0.9)
+		{
+			arrow_vector[i].blinking_timer += frame_time;
+		}
+		else
+		{
+			arrow_vector[i].blinker = 1;
+		}
 	}
-	// Update position of off-screen indicator-------------------------------
+	// Update logic for off-screen indicator-------------------------------
 
 	// Start of new wave-----------------------------------------------------
 	if (wave_completed && wave_interval_timer >= WAVE_INTERVAL_TIME || AEInputCheckTriggered(AEVK_3))
@@ -284,8 +292,12 @@ void WaveManager::draw(AEGfxVertexList* pMesh)
 			// Since position of AEGfxPrint is limit within -1.f to 1.f, clamp within those boundaries
 			// Subtract length of indicator string from 1.f to make up for font offset since position of font is at bottom left of font
 			AEGfxPrint(font_id, const_cast<s8*>(print_string),
-				AEClamp((dist_pos.x - (static_cast<f32>(dist.length() / 2 * FONT_ID_SIZE))) / AEGetWindowWidth(), -0.8f, 0.8f - (static_cast<f32>(dist.length() * FONT_ID_SIZE) / static_cast<f32>(AEGetWindowWidth()))),
-				AEClamp((dist_pos.y + 50) / AEGetWindowHeight(), -0.75f, 0.8f - (static_cast<f32>(1.5 * FONT_ID_SIZE) / static_cast<f32>(AEGetWindowHeight()))),
+				AEClamp((dist_pos.x - (static_cast<f32>(dist.length() / 2 * FONT_ID_SIZE))) / static_cast<f32>(AEGetWindowWidth()),
+					-0.8f,
+					 0.8f - (static_cast<f32>(dist.length() * FONT_ID_SIZE) / static_cast<f32>(AEGetWindowWidth()))),
+				AEClamp((dist_pos.y + (indicator_vector[i].size + FONT_ID_SIZE / 2)) / AEGetWindowHeight(),
+					-0.715f,
+					 0.8f - (static_cast<f32>(FONT_ID_SIZE) / static_cast<f32>(AEGetWindowHeight()))),
 				1.f, 1.f, 1.f, 1.f);
 		}
 		// DISTANCE INDICATOR-------------------------------------------------------------------------------------------------------------------------------------
@@ -296,19 +308,20 @@ void WaveManager::draw(AEGfxVertexList* pMesh)
 		bool off_screen{ pow(AEVec2Distance(&planet_vector[i].position, &camera.position), 2) > (pow(AEGetWindowWidth() / 2, 2) + pow(AEGetWindowHeight() / 2, 2)) };
 		if (off_screen)
 		{
+			// Render planet image for distance indicator
 			AEGfxTextureSet(indicator_tex, 0, 0);
 			AEGfxSetTransform(indicator_vector[i].transform.m);
 			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
-
-			AEGfxTextureSet(outline_tex, 0, 0);
-			AEGfxSetTransform(outline_vector[i].transform.m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-
-
+			// Render arrow image for distance indicator
 			AEGfxTextureSet(arrow_tex, 0, 0);
 			AEGfxSetTransform(arrow_vector[i].transform.m);
+			// Flash arrow image to indicate shuttle leaving planet
+			AEGfxSetTintColor(1.f, 1.f - arrow_vector[i].urgency, 1.f - arrow_vector[i].urgency, arrow_vector[i].blinker);
 			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+
+			// Reset tint for other game objects
+			AEGfxSetTintColor(1.f, 1.f, 1.f, 1.f);
 		}
 	}
 
@@ -385,7 +398,6 @@ void WaveManager::draw(AEGfxVertexList* pMesh)
 void WaveManager::free()
 {
 	indicator_vector.clear();
-	outline_vector.clear();
 	arrow_vector.clear();
 	lose_menu::free();
 }
@@ -393,7 +405,6 @@ void WaveManager::free()
 void WaveManager::unload()
 {
 	AEGfxTextureUnload(indicator_tex);
-	AEGfxTextureUnload(outline_tex);
 	AEGfxTextureUnload(arrow_tex);
 	AEGfxTextureUnload(lineTexture);
 
@@ -435,8 +446,7 @@ void WaveManager::add_indicator()
 {
 	WaveManager::Indicator new_indicator;
 
-	new_indicator.size = 50.f;
-	new_indicator.blinking_timer = 0.f;
+	new_indicator.size = 60.f;
 	AEVec2Set(&new_indicator.position, 0.f, 0.f);
 
 	AEMtx33Scale(&new_indicator.scale, new_indicator.size, new_indicator.size);
@@ -447,21 +457,11 @@ void WaveManager::add_indicator()
 
 	indicator_vector.push_back(new_indicator);
 
-	WaveManager::Outline new_outline;
-
-	new_outline.size = 60.f;
-	AEVec2Set(&new_outline.position, 0.f, 0.f);
-
-	AEMtx33Scale(&new_outline.scale, new_outline.size, new_outline.size);
-	AEMtx33Rot(&new_outline.rotate, 0.f);
-	AEMtx33Trans(&new_outline.translate, 0.f, 0.f);
-	AEMtx33Concat(&new_outline.transform, &new_outline.rotate, &new_outline.scale);
-	AEMtx33Concat(&new_outline.transform, &new_outline.translate, &new_outline.transform);
-
-	outline_vector.push_back(new_outline);
-
 	WaveManager::Arrow new_arrow;
 
+	new_arrow.blinker = 1.f;
+	new_arrow.blinking_timer = 0.f;
+	new_arrow.urgency = 0.f;
 	new_arrow.size = 25.f;
 	new_arrow.direction = 0.f;
 	AEVec2Set(&new_arrow.position, 0.f, 0.f);
