@@ -29,3 +29,5 @@ struct Shuttles
 	
 	void spawn(int const& planet_id);
 };
+
+void MMspawn_shuttle();

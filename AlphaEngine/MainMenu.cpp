@@ -11,7 +11,9 @@
 #include "Player.h"
 #include "Planet.h"
 #include "Debris.h"
+#include "Shuttle.h"
 
+#define MM_SHUTTLE_SIZE 20
 AEGfxTexture* TexMMBackground = nullptr;
 AEGfxTexture* TexTitle = nullptr;
 
@@ -25,12 +27,15 @@ AEGfxVertexList* pMeshObj;
 Player MMplayer;
 Planets MMplanet;
 Debris MMdebris;
+std::vector<Shuttles> MMshuttle_vector;
 
 AEGfxTexture* MMtexplayer;
 AEGfxTexture* MMtexplanet;
 AEGfxTexture* MMorbit_tex;
 AEGfxTexture* MMtexdebris;
 AEGfxTexture* MMtexbeam;
+AEGfxTexture* MMshuttle_tex;
+AEGfxTexture* MMexplosion_tex;
 
 f64 MMframe_time{}, MMtotal_time{};
 
@@ -64,6 +69,8 @@ void main_menu::load()
     MMorbit_tex = AEGfxTextureLoad("Assets/MainLevel/ml_OrbitRing.png");
     MMtexdebris = AEGfxTextureLoad("Assets/MainLevel/ml_Debris.png");
     MMtexbeam = AEGfxTextureLoad("Assets/MainLevel/ml_TractorBeam.png");
+    MMshuttle_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Shuttle.png");
+    MMexplosion_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Explosion.png");
 }
 
 void main_menu::init()
@@ -96,6 +103,8 @@ void main_menu::init()
     MMplanet.position.x = -AEGetWindowWidth() / 2;
     MMplanet.position.y = -AEGetWindowHeight() / 2;
     MMplanet.size = 1200;
+    MMplanet.shuttle_timer = 0.0;																													// Zero out shuttle timer on spawn
+    MMplanet.shuttle_time_to_spawn = static_cast<f32>(rand() % (SHUTTLE_SPAWN_TIME_MAX - SHUTTLE_SPAWN_TIME_MIN + 1) + SHUTTLE_SPAWN_TIME_MIN);	// Randomize value for timer to reach before spawning
 }
 
 void main_menu::update()
@@ -104,9 +113,6 @@ void main_menu::update()
 
     MMframe_time = AEFrameRateControllerGetFrameTime();
     MMtotal_time += MMframe_time;
-
-
-
 
     //PLAYER MOVEMENT
     
@@ -255,6 +261,18 @@ void main_menu::update()
 
     MMplayer.position.x = AEWrap(MMplayer.position.x, AEGfxGetWinMinX(), AEGfxGetWinMaxX());
     MMplayer.position.y = AEWrap(MMplayer.position.y, AEGfxGetWinMinY(), AEGfxGetWinMaxY());
+
+
+
+    if (MMplanet.shuttle_timer >= MMplanet.shuttle_time_to_spawn)
+    {
+        MMspawn_shuttle();
+        MMplanet.shuttle_timer = 0.0;			// Reset shuttle timer
+        MMplanet.shuttle_time_to_spawn = static_cast<f32>(rand() % (SHUTTLE_SPAWN_TIME_MAX - SHUTTLE_SPAWN_TIME_MIN) + SHUTTLE_SPAWN_TIME_MIN);	// Randomize time_to_spawn
+    }
+
+    // Update shuttle timer
+    MMplanet.shuttle_timer += static_cast<f32>(MMframe_time);
    
     MMplanet.direction += PLANET_ROT_SPEED * static_cast<f32>(MMframe_time);
 
@@ -345,6 +363,46 @@ void main_menu::update()
         }
     }
 
+    //Collision Check with shuttle and debris
+    for (size_t i{}; i < MMshuttle_vector.size(); i++) {
+        for (int k = 0; k < MMplanet.debris_vector.size(); ++k) {
+            if (MMshuttle_vector[i].active) {
+                if (AEVec2Distance(&MMshuttle_vector[i].position, &MMplanet.debris_vector[k].position) <= (MM_SHUTTLE_SIZE / 2 + MMplanet.debris_vector[k].size / 2)) { // if collided
+                    MMplanet.debris_vector[k].active = false;
+                    MMshuttle_vector[i].active = false;
+                    MMplanet.debris_vector[k].explosion.is_draw = 1;
+                    MMplanet.debris_vector[k].explosion.position = MMplanet.debris_vector[k].position;
+                    
+                    break;
+                }
+            }
+            else {
+                break;
+            }
+        }
+    }
+
+    for (size_t i = 0; i < MMplanet.debris_vector.size(); i++) {
+        Explosion& explosion = MMplanet.debris_vector[i].explosion;
+
+        if (explosion.is_draw == 1) {
+
+            if (explosion.timer <= explosion.total_time) {
+                explosion.timer += MMframe_time;
+                AEMtx33Scale(&scale, explosion.width, explosion.height);
+                AEMtx33Rot(&rot, 0);
+                AEMtx33Trans(&trans, explosion.position.x, explosion.position.y);
+                AEMtx33Concat(&explosion.transform, &rot, &scale);
+                AEMtx33Concat(&explosion.transform, &trans, &explosion.transform);
+            }
+            else {
+                explosion.timer = 0;
+                explosion.is_draw = 0;
+            }
+        }
+    }
+
+
     // =======================================
     // calculate the matrix for DEBRIS
     // =======================================
@@ -364,6 +422,40 @@ void main_menu::update()
         }
     }
     
+
+
+    for (size_t i{}; i < MMshuttle_vector.size(); i++)
+    {
+        if (MMshuttle_vector[i].active)
+        {
+            AEVec2 added{};
+
+            // Shuttle accelerating
+            AEVec2Add(&added, &added, &MMshuttle_vector[i].direction);
+            AEVec2Scale(&added, &added, MMshuttle_vector[i].acceleration * static_cast<f32>(MMframe_time));
+            AEVec2Add(&MMshuttle_vector[i].velocity, &added, &MMshuttle_vector[i].velocity);
+
+            // Limiting shuttle velocity
+            AEVec2Scale(&MMshuttle_vector[i].velocity, &MMshuttle_vector[i].velocity, 0.99f);
+
+            // Update shuttle position
+            MMshuttle_vector[i].position.x += MMshuttle_vector[i].velocity.x * static_cast<f32>(MMframe_time);
+            MMshuttle_vector[i].position.y += MMshuttle_vector[i].velocity.y * static_cast<f32>(MMframe_time);
+
+            AEMtx33Trans(&MMshuttle_vector[i].translate, MMshuttle_vector[i].position.x, MMshuttle_vector[i].position.y);
+            AEMtx33Concat(&MMshuttle_vector[i].transform, &MMshuttle_vector[i].rotate, &MMshuttle_vector[i].scale);
+            AEMtx33Concat(&MMshuttle_vector[i].transform, &MMshuttle_vector[i].translate, &MMshuttle_vector[i].transform);
+
+            // If shuttle escapes
+            if (MMshuttle_vector[i].lifespan <= 0)
+            {
+                MMshuttle_vector[i].active = false;
+                MMspawn_debris_shuttle(MMshuttle_vector[i].position, 3);
+            }
+            MMshuttle_vector[i].lifespan -= static_cast<f32>(MMframe_time);
+        }
+    }
+
    
     menuButtons.update();
 }
@@ -411,6 +503,46 @@ void main_menu::draw()
         }
     }
 
+    //Draw Explosion
+    for (size_t i = 0; i < MMplanet.debris_vector.size(); i++) {
+
+        Explosion& explosion = MMplanet.debris_vector[i].explosion;
+        if (explosion.is_draw) {
+
+            if (explosion.timer <= explosion.total_time) {
+                AEGfxSetTransparency(explosion.total_time - explosion.timer);
+
+                AEGfxTextureSet(MMexplosion_tex, 0, 0);
+                AEGfxSetTransform(explosion.transform.m);
+                AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
+            }
+            else {
+                AEGfxSetTransparency(0.f);
+            }
+        }
+    }
+
+
+    for (size_t i{}; i < MMshuttle_vector.size(); i++)
+    {
+        AEGfxTextureSet(MMshuttle_tex, 0, 0);
+        if (MMshuttle_vector[i].active)
+        {
+            if (MMshuttle_vector[i].lifespan <= SHUTTLE_MAX_LIFESPAN / 2.f)
+            {
+                AEGfxSetTransparency(MMshuttle_vector[i].lifespan / (SHUTTLE_MAX_LIFESPAN / 2.0f));
+            }
+            else
+            {
+                AEGfxSetTransparency(1.f);
+            }
+            AEGfxSetTransform(MMshuttle_vector[i].transform.m);
+            // Actually drawing the mesh
+            AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
+        }
+    }
+
+    AEGfxSetTransparency(1.0f);
   
     // Draw the menu buttons using pMesh1
     menuButtons.draw(pMeshMM);
@@ -433,8 +565,32 @@ void main_menu::unload()
     AEGfxTextureUnload(MMtexdebris);
     AEGfxTextureUnload(MMtexbeam);
     AEGfxTextureUnload(TexTitle);
+    AEGfxTextureUnload(MMshuttle_tex);
+    AEGfxTextureUnload(MMexplosion_tex);
     AEGfxTextureUnload(TexMMBackground); // unload the texture for the background image
 }
 
 
+void MMspawn_shuttle()
+{
+    Shuttles new_shuttle;
 
+    new_shuttle.lifespan = SHUTTLE_MAX_LIFESPAN;
+    new_shuttle.acceleration = SHUTTLE_MAX_ACCEL;
+
+    new_shuttle.active = true;
+
+    AEVec2Zero(&new_shuttle.velocity);
+
+    new_shuttle.position.x = MMplanet.position.x + 250;
+    new_shuttle.position.y = MMplanet.position.y + 250;
+
+    f32 rand_angle = 45;
+    new_shuttle.direction.x = cos(rand_angle);
+    new_shuttle.direction.y = sin(rand_angle);
+
+    AEMtx33Scale(&new_shuttle.scale, 50.f, 100.f);
+    AEMtx33Rot(&new_shuttle.rotate, PI / 2 + rand_angle);
+
+    MMshuttle_vector.push_back(new_shuttle);
+}
