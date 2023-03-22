@@ -377,3 +377,35 @@ void spawn_debris(int num_of_debris, int planet_id) {
 		}
 	}
 }
+
+std::vector<Debris> MM_create_debris(f32 planet_x, f32 planet_y, double size, int total_debris) {
+	std::vector<Debris> debris_vector;
+	for (int i = 0; i < total_debris; i++)
+	{
+		Debris new_debris;
+
+		new_debris.id = i + 1;
+		new_debris.angle = i * (2 * PI / static_cast<f32>(total_debris));
+		new_debris.size = static_cast<f32>(rand() % (MAX_DEBRIS_SIZE - MIN_DEBRIS_SIZE) + MIN_DEBRIS_SIZE);
+		new_debris.position.x = planet_x + ((size / 2) + 20) * AECos(AEDegToRad(new_debris.angle));
+		new_debris.position.y = planet_y + ((size / 2) + 20) * AESin(AEDegToRad(new_debris.angle));
+		new_debris.turning_speed = SPEED_DEBRIS;
+		new_debris.active = true;
+		new_debris.state = ORBIT_AROUND_PLANET;
+		new_debris.distance = OUTERRIM_TO_DEBRIS;
+
+		new_debris.scale = { 0 };
+		new_debris.rotate = { 0 };
+		new_debris.translate = { 0 };
+		new_debris.transform = { 0 };
+
+		new_debris.explosion.height = EXPLOSION_HEIGHT;
+		new_debris.explosion.width = EXPLOSION_WIDTH;
+		new_debris.explosion.transform = { 0 };
+		new_debris.explosion.total_time = 1;
+
+		debris_vector.push_back(new_debris);
+	}
+
+	return debris_vector;
+}

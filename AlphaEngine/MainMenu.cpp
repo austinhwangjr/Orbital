@@ -10,21 +10,27 @@
 #include "AudioManager.h"
 #include "Player.h"
 #include "Planet.h"
+#include "Debris.h"
 
 AEGfxTexture* TexMMBackground = nullptr;
 AEGfxTexture* TexTitle = nullptr;
 
 int flag=0;
+// Variables
+bool MMbeam_active = false;
 AEGfxVertexList* pMeshMMBackground;
 AEGfxVertexList* pMeshMM;
 AEGfxVertexList* pMeshObj;
 
 Player MMplayer;
 Planets MMplanet;
+Debris MMdebris;
 
 AEGfxTexture* MMtexplayer;
 AEGfxTexture* MMtexplanet;
 AEGfxTexture* MMorbit_tex;
+AEGfxTexture* MMtexdebris;
+AEGfxTexture* MMtexbeam;
 
 f64 MMframe_time{}, MMtotal_time{};
 
@@ -56,6 +62,8 @@ void main_menu::load()
     MMtexplayer = AEGfxTextureLoad("Assets/MainLevel/ml_Spaceship.png");
     MMtexplanet = AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture.png");
     MMorbit_tex = AEGfxTextureLoad("Assets/MainLevel/ml_OrbitRing.png");
+    MMtexdebris = AEGfxTextureLoad("Assets/MainLevel/ml_Debris.png");
+    MMtexbeam = AEGfxTextureLoad("Assets/MainLevel/ml_TractorBeam.png");
 }
 
 void main_menu::init()
@@ -79,6 +87,15 @@ void main_menu::init()
     std::cout << "------------------------- MainMenu Initialised -------------------------" << std::endl << std::endl;
     AudioManager::PlayBGM("Assets/BGM/cinescifi.wav", 0.25f);
     MMplayer.init();
+
+    //DEBRIS
+    MMplanet.max_debris = rand() % (DEBRIS_MAX - DEBRIS_MIN) + DEBRIS_MIN;												// Randomize debris count on planet spawn
+    MMplanet.debris_vector = MM_create_debris(MMplanet.position.x, MMplanet.position.y, MMplanet.size, MMplanet.max_debris);
+
+
+    MMplanet.position.x = -AEGetWindowWidth() / 2;
+    MMplanet.position.y = -AEGetWindowHeight() / 2;
+    MMplanet.size = 1200;
 }
 
 void main_menu::update()
@@ -89,6 +106,10 @@ void main_menu::update()
     MMtotal_time += MMframe_time;
 
 
+
+
+    //PLAYER MOVEMENT
+    
     // Player is in free-flying mode
     if (MMplayer.state == PLAYER_FLY) {
         flag = 0;
@@ -97,7 +118,7 @@ void main_menu::update()
             AEVec2Set(&added, AECos(MMplayer.direction), AESin(MMplayer.direction));
 
             // Find the velocity according to the acceleration
-            AEVec2Scale(&added, &added, MMplayer.mov_speed * static_cast<f32>(MMplayer.mov_speed_level + 1) / 2.f);
+            AEVec2Scale(&added, &added, MMplayer.mov_speed * static_cast<f32>(MMplayer.mov_speed_level + 3) / 2.f);
             MMplayer.velocity.x = MMplayer.velocity.x + added.x * static_cast<f32>(MMframe_time);
             MMplayer.velocity.y = MMplayer.velocity.y + added.y * static_cast<f32>(MMframe_time);
 
@@ -145,14 +166,14 @@ void main_menu::update()
         // ================
         // Check for input
         // ================
-        if (AEInputCheckCurr(AEVK_A) ) {
+        if (AEInputCheckCurr(AEVK_A) && MMplayer.position.x >= AEGfxGetWinMinX() + MMplayer.size) {
             MMplayer.direction += (MMplayer.rot_speed / 2) * static_cast<f32>(MMframe_time);
 
             MMplayer.position.x = MMplanet.position.x + (static_cast<f32>(MMplanet.size) / 2 + MMplanet.orbit_range) * AECos(MMplayer.direction);
             MMplayer.position.y = MMplanet.position.y + (static_cast<f32>(MMplanet.size) / 2 + MMplanet.orbit_range) * AESin(MMplayer.direction);
         }
 
-        if (AEInputCheckCurr(AEVK_D) ) {
+        if (AEInputCheckCurr(AEVK_D) && MMplayer.position.y >= AEGfxGetWinMinY() + MMplayer.size) {
             MMplayer.direction -= (MMplayer.rot_speed / 2) * static_cast<f32>(MMframe_time);
 
             MMplayer.position.x = MMplanet.position.x + (static_cast<f32>(MMplanet.size) / 2 + MMplanet.orbit_range) * AECos(MMplayer.direction);
@@ -169,14 +190,71 @@ void main_menu::update()
             MMplayer.state = PLAYER_FLY;
         }
 
-        MMplayer.position.x=AEWrap(MMplayer.position.x, AEGfxGetWinMinX() , AEGfxGetWinMaxX());
-        MMplayer.position.y=AEWrap(MMplayer.position.y, AEGfxGetWinMinY() , AEGfxGetWinMaxY() );
+
+        // Draw tractor beam
+        if (AEInputCheckCurr(AEVK_SPACE))
+            MMbeam_active = true;
+        else
+            MMbeam_active = false;
+
+    // ================================
+    // Update player and beam position
+    // ================================
+
+        if (AEInputCheckCurr(AEVK_W) && MMplayer.can_leave_orbit) {
+            MMplayer.position.x += AECos(MMplayer.direction);
+            MMplayer.position.y += AESin(MMplayer.direction);
+        }
+        else {
+            MMplayer.position.x = MMplanet.position.x + (static_cast<f32>(MMplanet.size) / 2.f + MMplanet.orbit_range) * AECos(MMplayer.direction);
+            MMplayer.position.y = MMplanet.position.y + (static_cast<f32>(MMplanet.size) / 2.f + MMplanet.orbit_range) * AESin(MMplayer.direction);
+        }
+
+        if (MMbeam_active) {
+            MMplayer.beam_pos.x = MMplayer.position.x - AECos(MMplayer.direction) * ((MMplayer.beam_height + MMplayer.size) / 2);
+            MMplayer.beam_pos.y = MMplayer.position.y - AESin(MMplayer.direction) * ((MMplayer.beam_height + MMplayer.size) / 2);
+        }
+
+        // ================================
+        // Check for beam-debris collision
+        // ================================
+
+        if (MMbeam_active) {
+            // Check for collision between tractor beam and debris
+            for (int i = 0; i < MMplanet.debris_vector.size(); ++i) {
+                Debris& debris = MMplanet.debris_vector[i];
+
+                if (debris.active) {
+                    // Debris to move towards player when in contact with beam	
+                    if (
+                        AEVec2Distance(&MMplayer.beam_pos, &debris.position) <= MMplayer.beam_height / 2) {
+                        debris.state = MOVE_TOWARDS_PLAYER;
+                    }
+                    // Beam active, but not colliding with player beam or drone beam
+                    else if (debris.state == MOVE_TOWARDS_PLAYER && debris.state != MOVE_TOWARDS_DRONE)
+                        debris.state = MOVE_TOWARDS_PLANET;
+
+                    if (AEVec2Distance(&MMplayer.position, &debris.position) <= (MMplayer.size + debris.size) / 2) {
+                        // Debris to be destroyed when in contact with player
+                        MMplayer.current_capacity++;
+                        debris.active = false;
+                    }
+                }
+            }
+        }
+        else {
+            for (int i = 0; i < MMplanet.debris_vector.size(); ++i) {
+                Debris& debris = MMplanet.debris_vector[i];
+                // Beam no longer active, if debris was moving towards player, make it move towards planet
+                if (debris.state == MOVE_TOWARDS_PLAYER)
+                    debris.state = MOVE_TOWARDS_PLANET;
+            }
+        }
+
     }
 
-
-    MMplanet.position.x =  -AEGetWindowWidth() / 2;
-    MMplanet.position.y = - AEGetWindowHeight() / 2;
-    MMplanet.size = 1200;
+    MMplayer.position.x = AEWrap(MMplayer.position.x, AEGfxGetWinMinX(), AEGfxGetWinMaxX());
+    MMplayer.position.y = AEWrap(MMplayer.position.y, AEGfxGetWinMinY(), AEGfxGetWinMaxY());
    
     MMplanet.direction += PLANET_ROT_SPEED * static_cast<f32>(MMframe_time);
 
@@ -218,6 +296,74 @@ void main_menu::update()
     AEMtx33Concat(&MMplayer.player_transform, &rot, &scale);
     AEMtx33Concat(&MMplayer.player_transform, &trans, &MMplayer.player_transform);
 
+    // Tractor beam
+    AEMtx33Scale(&scale, MMplayer.beam_width, MMplayer.beam_height);
+    AEMtx33Rot(&rot, MMplayer.direction + PI / 2);
+    AEMtx33Trans(&trans, MMplayer.beam_pos.x, MMplayer.beam_pos.y);
+    AEMtx33Concat(&MMplayer.beam_transform, &rot, &scale);
+    AEMtx33Concat(&MMplayer.beam_transform, &trans, &MMplayer.beam_transform);
+
+    
+
+    for (size_t i = 0; i < MMplanet.debris_vector.size(); i++) {
+        if (MMplanet.debris_vector[i].active == false && MMplanet.debris_vector[i].explosion.is_draw == 0) {
+            MMplanet.debris_vector.erase(MMplanet.debris_vector.begin() + i);
+        }
+    }
+
+    for (size_t i = 0; i < MMplanet.debris_vector.size(); i++) {
+        Debris& debris = MMplanet.debris_vector[i];
+
+        if (debris.state == MOVE_TOWARDS_PLAYER && MMplayer.state == PLAYER_ORBIT) {
+            // Move debris towards player
+            AEVec2 diff;
+            AEVec2Sub(&diff, &MMplayer.position, &debris.position);
+            AEVec2Normalize(&diff, &diff);
+            AEVec2Scale(&diff, &diff, (MMplayer.beam_level + 1) * 0.4f);
+            AEVec2Add(&debris.position, &debris.position, &diff);
+        }
+       
+        if (debris.state == MOVE_TOWARDS_PLANET) {
+            // Move debris back to orbit
+            AEVec2 diff;
+            AEVec2Sub(&diff, &MMplanet.position, &debris.position);
+            AEVec2Normalize(&diff, &diff);
+            AEVec2Add(&debris.position, &debris.position, &diff);
+
+            // Debris to rotate around planet when in orbit range
+            if (AEVec2Distance(&MMplanet.position, &debris.position) <= (MMplanet.size / 2.0 + debris.distance)) {
+                debris.angle = static_cast<f32>(atan2(debris.position.y - MMplanet.position.y, debris.position.x - MMplanet.position.x));
+                debris.state = ORBIT_AROUND_PLANET;
+            }
+        }
+
+        if (debris.state == ORBIT_AROUND_PLANET) {
+            // Orbit around planet
+            debris.angle -= AEDegToRad(0.125f) * debris.turning_speed * static_cast<f32>(MMframe_time);
+            debris.position.x = MMplanet.position.x + ((MMplanet.size / 2) + debris.distance) * AECos(debris.angle);
+            debris.position.y = MMplanet.position.y + ((MMplanet.size / 2) + debris.distance) * AESin(debris.angle);
+        }
+    }
+
+    // =======================================
+    // calculate the matrix for DEBRIS
+    // =======================================
+    
+    for (size_t i = 0; i < MMplanet.debris_vector.size(); i++) {
+        if (MMplanet.debris_vector[i].active)
+        {
+            AEMtx33Scale(&MMplanet.debris_vector[i].scale, MMplanet.debris_vector[i].size, MMplanet.debris_vector[i].size);
+
+            AEMtx33Rot(&MMplanet.debris_vector[i].rotate, AEDegToRad(MMplanet.debris_vector[i].angle));
+
+            AEMtx33Trans(&MMplanet.debris_vector[i].translate, MMplanet.debris_vector[i].position.x, MMplanet.debris_vector[i].position.y);
+
+            AEMtx33Concat(&MMplanet.debris_vector[i].transform, &MMplanet.debris_vector[i].rotate, &MMplanet.debris_vector[i].scale);
+            AEMtx33Concat(&MMplanet.debris_vector[i].transform, &MMplanet.debris_vector[i].translate, &MMplanet.debris_vector[i].transform);
+
+        }
+    }
+    
    
     menuButtons.update();
 }
@@ -241,17 +387,38 @@ void main_menu::draw()
     AEGfxSetTransform(MMplanet.transform.m);
     AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
 
-
+    //Draw Player sprite
     AEGfxTextureSet(MMtexplayer, 0, 0);
     AEGfxSetTransform(MMplayer.player_transform.m);
     AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
 
+    //Draw beam sprite
+ // tractor beam
+    if (AEInputCheckCurr(AEVK_SPACE) && MMplayer.state == PLAYER_ORBIT) {
+        AEGfxTextureSet(MMtexbeam, 0, 0);
+        AEGfxSetTransform(MMplayer.beam_transform.m);
+        AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
+    }
+
+
+    //Draw debris sprite
+    for (size_t i = 0; i < MMplanet.debris_vector.size(); i++) {
+        if (MMplanet.debris_vector[i].active)
+        {
+            AEGfxTextureSet(MMtexdebris, 0, 0);
+            AEGfxSetTransform(MMplanet.debris_vector[i].transform.m);
+            AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
+        }
+    }
+
+  
     // Draw the menu buttons using pMesh1
     menuButtons.draw(pMeshMM);
 }
 
 void main_menu::free()
 {
+    MMplanet.debris_vector.clear();
     AEGfxMeshFree(pMeshMMBackground);
     AEGfxMeshFree(pMeshMM);
     AEGfxMeshFree(pMeshObj);
@@ -263,6 +430,11 @@ void main_menu::unload()
     AEGfxTextureUnload(MMtexplayer);
     AEGfxTextureUnload(MMtexplanet);
     AEGfxTextureUnload(MMorbit_tex);
+    AEGfxTextureUnload(MMtexdebris);
+    AEGfxTextureUnload(MMtexbeam);
     AEGfxTextureUnload(TexTitle);
     AEGfxTextureUnload(TexMMBackground); // unload the texture for the background image
 }
+
+
+
