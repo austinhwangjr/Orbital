@@ -16,6 +16,7 @@ Technology is prohibited.
 #include "WaveManager.h"
 #include "LoseMenu.h"
 #include "GameStateManager.h"
+#include "Easing.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -27,6 +28,8 @@ const char* print_string;
 AEGfxTexture* indicator_tex;
 AEGfxTexture* outline_tex;
 AEGfxTexture* arrow_tex;
+AEGfxTexture* lineTexture;
+
 
 std::vector<WaveManager::Indicator> indicator_vector;
 std::vector<WaveManager::Outline> outline_vector;
@@ -37,6 +40,8 @@ void WaveManager::load()
 	indicator_tex = AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture.png");
 	outline_tex = AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture.png");
 	arrow_tex = AEGfxTextureLoad("Assets/MainLevel/ml_arrow.png");
+	lineTexture = AEGfxTextureLoad("Assets/MainLevel/line.png");
+
 	lose_menu::load();
 }
 
@@ -308,13 +313,39 @@ void WaveManager::draw(AEGfxVertexList* pMesh)
 	}
 
 	// Wave Complete font
-	if (wave_interval_timer <= WAVE_INTERVAL_TIME)
+	if (wave_completed && wave_interval_timer <= WAVE_INTERVAL_TIME)
 	{
 		// Place holder "Wave Complete"
 		std::string str_wave_complete = "Wave " + std::to_string(wave_number) + " Completed";
 		print_string = str_wave_complete.c_str();
-		AEGfxPrint(font_id, const_cast<s8*>(print_string), static_cast<f32>(-0.2f), static_cast<f32>(0.85f + abs((WAVE_INTERVAL_TIME - (wave_interval_timer * 2)) / WAVE_INTERVAL_TIME) * 0.2f), 1.f, 1.f, 1.f, 1.f);
+
+		// Calculate alpha value for fade-in and fade-out effect using EaseInOutBack easing function
+		float progress = wave_interval_timer / WAVE_INTERVAL_TIME;
+		float easedProgress = EaseInOutBack(0, 1, progress);
+		float alpha;
+
+		if (progress < 0.5f)
+		{
+			alpha = easedProgress * 2;
+		}
+		else
+		{
+			alpha = 1.0f - (easedProgress - 0.5f) * 2;
+		}
+
+		// Calculate the position at the center of the screen
+		float centerX = -static_cast<f32>(str_wave_complete.length()) / 2 * static_cast<f32>(FONT_ID_SIZE) / static_cast<f32>(AEGetWindowWidth());
+		float centerY = 0.0f;
+
+		// Render text with fade-in and fade-out effect
+		AEGfxPrint(font_id, const_cast<s8*>(print_string), centerX, centerY, 1.f, 1.f, 1.f, alpha);
 	}
+
+
+
+
+
+
 
 
 	// Place holder "Shuttles Lost" counter
@@ -364,6 +395,8 @@ void WaveManager::unload()
 	AEGfxTextureUnload(indicator_tex);
 	AEGfxTextureUnload(outline_tex);
 	AEGfxTextureUnload(arrow_tex);
+	AEGfxTextureUnload(lineTexture);
+
 	lose_menu::unload();
 
 }

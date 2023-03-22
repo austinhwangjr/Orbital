@@ -7,7 +7,8 @@ AEGfxTexture* player_tex;
 AEGfxTexture* tractor_beam_tex;
 AEGfxTexture* orbit_halo_tex;
 
-
+float animationDuration = 1.0f; // Duration of the animation in seconds
+float elapsedTime = 0.0f; // Elapsed time for the animation
 // Variables
 bool beam_active = false;
 
@@ -74,6 +75,8 @@ void Player::init()
 
 void Player::update(f64 frame_time)
 {
+	elapsedTime += AEFrameRateControllerGetFrameTime();
+
 	// Player is in orbit state
 	if (state == PLAYER_ORBIT)
 		orbit_state(frame_time);
@@ -106,18 +109,44 @@ void Player::update(f64 frame_time)
 	AEMtx33Concat(&beam_transform, &rot, &scale);
 	AEMtx33Concat(&beam_transform, &trans, &beam_transform);
 
-	if (state == PLAYER_ORBIT) {
+static bool isOrbitingPlanet = false; // flag for is orbiting.. pretty sure suppose to be init, but placeholder! :(
+
+	if (state == PLAYER_ORBIT)
+	{
+		// Check if the spaceship just started orbiting a planet
+		if (!isOrbitingPlanet)
+		{
+		halo_scale_lerp = 0; // Reset the Lerp value for halo scale
+		isOrbitingPlanet = true; 
+		}
+
+		// Calculate progress based on the elapsed time and animation duration
+		float progress = elapsedTime / animationDuration;
+		if (progress > 1.0f)
+		{
+			progress = 1.0f; // Clamp progress to 1.0f to prevent overshooting
+		}
+
+		// Use the EaseInOutBack easing function for smooth interpolation
+		float easedProgress = EaseInOutBack(0, 1, progress);
+
 		// Update the Lerp value for the halo scale
-		halo_scale_lerp = Lerp(halo_scale_lerp, 1.0f, 0.10f);
+		halo_scale_lerp += (1.0f - halo_scale_lerp) * 0.1f;
 
 		f32 val{ current_planet.size + 50.f };
 
 		// Use the Lerp value to scale the halo
 		AEMtx33Scale(&scale, val * halo_scale_lerp, val * halo_scale_lerp);
-		AEMtx33Trans(&trans, current_planet.position.x, current_planet.position.y); // Add an offset to the position
+		AEMtx33Trans(&trans, current_planet.position.x, current_planet.position.y);
 		AEMtx33Concat(&orbit_halo_transform, &rot, &scale);
 		AEMtx33Concat(&orbit_halo_transform, &trans, &orbit_halo_transform);
 	}
+	else
+	{
+		// The spaceship is not orbiting a planet, so set the flag to false
+		isOrbitingPlanet = false;
+	}
+
 }
 
 /******************************************************************************/
