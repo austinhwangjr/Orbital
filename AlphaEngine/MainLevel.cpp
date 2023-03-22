@@ -39,7 +39,7 @@ AEGfxTexture* TexMLBackground = nullptr;
 AEGfxVertexList* pMeshMLBackground;				// Background Mesh
 AEGfxVertexList* pMeshML;						// Object square mesh
 
-// class declearation 
+// class declaration 
 Rendering RenderMLBackground;
 Rendering createMesh1;
 Player player{};
@@ -61,6 +61,10 @@ pause_menu pause{};
 f64 total_time{}, frame_time{};
 
 bool is_paused = false;
+
+float backgroundWidth = 7680.f;
+float backgroundHeight = 4320.f;
+
 
 namespace main_level
 {
@@ -140,7 +144,6 @@ void main_level::init()
 
 void main_level::update()
 {
-	// Your own update logic goes here
 	frame_time = AEFrameRateControllerGetFrameTime();
 	total_time += frame_time;
 
@@ -149,7 +152,6 @@ void main_level::update()
 		if (!is_paused)
 		{
 			previous_state = current_state;
-			
 		}
 		else
 		{
@@ -157,6 +159,8 @@ void main_level::update()
 		}
 		is_paused = !is_paused;
 	}
+
+
 
 	if (!is_paused)
 	{
@@ -167,7 +171,7 @@ void main_level::update()
 		camera.update(frame_time, player);
 		player_ui.update(frame_time, player);
 		drone.update(frame_time, player, player_ui);
-		
+
 		shuttle.update(frame_time, player);
 		debris.update(frame_time);
 		wave_manager.update(frame_time);
@@ -209,7 +213,22 @@ void main_level::draw()
 	// Set the background to black.
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
-	RenderMLBackground.RenderSprite(TexMLBackground, 0.f, 0.f, 4800.f, 2700.f, pMeshMLBackground);		//drawbackground for Mainlevel
+	// Get camera position
+	float camX = camera.position.x;
+	float camY = camera.position.y;
+
+	// Calculate the starting point for drawing the background based on the camera position
+	float startX = std::floor(camX / backgroundWidth) * backgroundWidth;
+	float startY = std::floor(camY / backgroundHeight) * backgroundHeight;
+
+	// Draw the tiled background
+	for (float x = startX - backgroundWidth; x < startX + g_windowWidth + backgroundWidth; x += backgroundWidth)
+	{
+		for (float y = startY - backgroundHeight; y < startY + g_windowHeight + backgroundHeight; y += backgroundHeight)
+		{
+			RenderMLBackground.RenderSprite(TexMLBackground, x, y, 4800.f, 2700.f, pMeshMLBackground);
+		}
+	}
 
 	// Tell the engine to get ready to draw something with texture. 
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
@@ -223,15 +242,15 @@ void main_level::draw()
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxSetTransparency(1.0f);
 
-
-		planet.draw(pMeshML);
 		player.draw(pMeshML);
+		planet.draw(pMeshML);
+
 		space_station.draw(pMeshML, player_ui);
 		
 		player_proj.draw(pMeshML);
 		debris.draw(pMeshML);
 		shuttle.draw(pMeshML);
-		wave_manager.draw();
+		wave_manager.draw(pMeshML);
 
 		drone.draw(pMeshML, player_ui);
 		player_ui.draw(pMeshML, player);
@@ -285,6 +304,5 @@ void main_level::unload()
 
 	pause.unload();
 	
-
 	AEGfxTextureUnload(TexMLBackground); // unload the texture for the background image
 }

@@ -9,6 +9,7 @@
 enum PLAYER_STATES
 {
 	PLAYER_ORBIT = 0,
+	PLAYER_TRANSIT,
 	PLAYER_FLY
 };
 
@@ -29,6 +30,9 @@ struct Player
 	int				score;
 	int				credits;
 	bool			can_leave_orbit;
+	f32				timer;
+	AEMtx33			orbit_halo_transform;
+
 
 	//--------------------Upgrade Levels--------------------
 	int				mov_speed_level;
@@ -42,6 +46,9 @@ struct Player
 	f32				beam_width;
 	f32				beam_height;
 
+	//--------------------Planet Halo--------------------
+	f32 halo_scale_lerp;
+
 	//--------------------Transforms--------------------
 	AEMtx33			player_transform;
 	AEMtx33			beam_transform;
@@ -54,5 +61,6 @@ struct Player
 	void unload();
 
 	void orbit_state(f64);
+	void transit_state(f64);
 	void flying_state(f64);
 };

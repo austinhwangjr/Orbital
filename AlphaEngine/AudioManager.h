@@ -17,4 +17,7 @@ namespace AudioManager
     void PlayOneShot(const std::string& path, float volume = 1.0f);
     void ToggleMute(bool mute);
     void TogglePause(bool pause);
+
+    void setVolume(float volume);
+
 }

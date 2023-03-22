@@ -16,7 +16,37 @@
 
 struct WaveManager
 {
-	f64		blinking_timer;				// Timer for blinking indicators
+	struct Indicator
+	{
+		AEMtx33				scale;
+		AEMtx33				rotate;
+		AEMtx33				translate;
+		AEMtx33				transform;
+		AEVec2				position;
+		f32					size;
+		f64					blinking_timer;				// Timer for blinking indicators
+	};
+
+	struct Outline
+	{
+		AEMtx33				scale;
+		AEMtx33				rotate;
+		AEMtx33				translate;
+		AEMtx33				transform;
+		AEVec2				position;
+		f32					size;
+	};
+
+	struct Arrow
+	{
+		AEMtx33				scale;
+		AEMtx33				rotate;
+		AEMtx33				translate;
+		AEMtx33				transform;
+		AEVec2				position;
+		f32					direction;
+		f32					size;
+	};
 
 // WAVE VARIABLES----------------------------
 	int		wave_number;				// Current wave number
@@ -35,12 +65,14 @@ struct WaveManager
 // PLANET VARIABLES--------------------------
 	int		planet_count;				// Number of planets
 	bool	planet_adding;				// Flag for when planet adding transition is playing
+
 // PLANET VARIABLES--------------------------
+	bool	gameLost;				// Flag for when the game is lost
 
 	void load();
 	void init();
 	void update(f64 frame_time);
-	void draw();
+	void draw(AEGfxVertexList* pMesh);
 	void free();
 	void unload();
 
@@ -48,6 +80,9 @@ struct WaveManager
 	int get_total_shuttles();
 	int get_current_shuttles();
 	bool no_more_shuttles();
+
+	void checkLoseCondition();
+	void add_indicator();
 };
 
 extern Player player;

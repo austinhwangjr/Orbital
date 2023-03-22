@@ -49,19 +49,21 @@ void main_menu::load()
     TexMMBackground = AEGfxTextureLoad("Assets/MainMenu/mm_Background.png");
     TexTitle =  AEGfxTextureLoad("Assets/MainMenu/mm_Title.png");
 
-    menuButtons.load("Assets/MainMenu/mm_StartButton.png",
-        "Assets/MainMenu/mm_StartButtonHover.png",
-        "Assets/MainMenu/mm_HowToPlayButton.png",
-        "Assets/MainMenu/mm_HowToPlayButtonHover.png",
-        "Assets/MainMenu/mm_HighScore.png",
-        "Assets/MainMenu/mm_HighScoreHover.png",
-        "Assets/MainMenu/mm_InProgressButton.png",
-        "Assets/MainMenu/mm_InProgressButtonHover.png",
-        "Assets/MainMenu/mm_CreditsButton.png",
-        "Assets/MainMenu/mm_CreditsButtonHover.png",
-        "Assets/MainMenu/mm_ExitButton.png",
-        "Assets/MainMenu/mm_ExitButtonHover.png");
-    
+    menuButtons.load(   "Assets/MainMenu/mm_StartButton.png",
+                        "Assets/MainMenu/mm_HowToPlayButton.png",
+                        "Assets/MainMenu/mm_HighScore.png",
+                        "Assets/MainMenu/mm_OptionsButton.png",
+                        "Assets/MainMenu/mm_CreditsButton.png",
+                        "Assets/MainMenu/mm_ExitButton.png",
+
+
+                        "Assets/MainMenu/mm_StartButtonHover.png",
+                        "Assets/MainMenu/mm_HowToPlayButtonHover.png",
+                        "Assets/MainMenu/mm_HighScoreHover.png",
+                        "Assets/MainMenu/mm_OptionsButtonHover.png",
+                        "Assets/MainMenu/mm_CreditsButtonHover.png",
+                        "Assets/MainMenu/mm_ExitButtonHover.png"        );
+
     AudioManager::LoadSound("Assets/BGM/cinescifi.wav", true);
 
     MMtexplayer = AEGfxTextureLoad("Assets/MainLevel/ml_Spaceship.png");

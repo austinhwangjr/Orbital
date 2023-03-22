@@ -1,21 +1,31 @@
 #pragma once
+#include <functional>
+
 enum GS_STATES
 {
 	GS_SPLASHSCREEN = 0,
-	GS_MAINMENU,		//1
+
+	// Main Menu
+	GS_MAINMENU,
 	GS_HOWTOPLAY,
-	GS_CREDITS,
+	GS_HIGHSCORE,
 	GS_OPTIONS,
-	GS_MAINLEVEL, //5 technically this is the startbutton
-	GS_PAUSEMENU,		//6
-	GS_RESTART,			//7
-	GS_QUIT,
-	GS_HIGHSCORE
+	GS_CREDITS,
+
+	// Main Level
+	GS_MAINLEVEL, 
+	GS_PAUSEMENU,		
+	GS_LOSEMENU,
+	GS_RESTART,
+
+	// Global
+	GS_QUIT
+
 };
 
 extern unsigned int current_state, previous_state, next_state;
 
-typedef void(*FP)(void);
+using FP = std::function<void()>;
 
 extern FP fpLoad, fpInit, fpUpdate, fpDraw, fpFree, fpUnload;
 
@@ -31,7 +41,5 @@ struct gsm
 	//void free();
 	//void unload();
 };
-
-
 
 void GSM_RestartLevel();

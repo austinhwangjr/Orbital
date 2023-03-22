@@ -1,0 +1,171 @@
+#include "Options.h"
+#include "Input.h"
+#include "Graphics.h"
+#include "AudioManager.h"
+#include "Global.h"
+#include "Easing.h"
+#include <iostream>
+
+AEGfxTexture* o_RoundedRectangle_ACTIVE = nullptr;
+AEGfxTexture* o_RoundedRectangle_NOT_ACTIVE = nullptr;
+
+AEGfxTexture* o_MuteSliderThumb_ACTIVE = nullptr;
+AEGfxTexture* o_MuteSliderThumb_NOT_ACTIVE = nullptr;
+
+AEGfxTexture* o_VolumeSlider = nullptr;
+AEGfxTexture* o_VolumeSliderThumb = nullptr;
+
+AEGfxVertexList* optionsMesh;
+
+Rendering optionsMenu;
+
+namespace Options
+{
+    float volume = 0.5f;
+    bool muted = false;
+    bool muteHoverState = false;
+    bool draggingSlider = false;
+
+    // mute button
+    float muteButtonX = 0.0f;
+    float muteButtonY = 100.0f;
+    float muteButtonWidth = 300.0f;
+    float muteButtonHeight = 150.0f;
+
+    float muteSliderThumbX = 0.0f;
+    float muteSliderThumbY = 100.0f;
+    float muteSliderThumbWidth = 295.0f;
+    float muteSliderThumbHeight = 145.0f;
+
+    // volume slider
+    float sliderX = 0.0f;
+    float sliderY = -100.0f;
+    float sliderWidth = 110.0f;
+    float sliderHeight = 5.0f;
+
+    // volume slider thumb
+    float sliderThumbX = sliderX;
+    float sliderThumbY = sliderY;
+    float sliderThumbWidth = 20.0f;
+    float sliderThumbHeight = 20.0f;
+}
+
+
+void Options::load()
+{
+    o_RoundedRectangle_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/Options/o_RoundedRectangle_ACTIVE.png");
+    o_RoundedRectangle_NOT_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/Options/o_RoundedRectangle_NOT_ACTIVE.png");
+
+    o_MuteSliderThumb_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/Options/o_MuteSliderThumb_ACTIVE.png");
+    o_MuteSliderThumb_NOT_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/Options/o_MuteSliderThumb_NOT_ACTIVE.png");
+
+    o_VolumeSlider              = AEGfxTextureLoad("Assets/MainMenu/Options/o_Slider.png");
+    o_VolumeSliderThumb         = AEGfxTextureLoad("Assets/MainMenu/Options/o_SliderThumb.png");
+}
+
+void Options::init()
+{
+    optionsMenu.SquareMesh(optionsMesh);
+
+}
+
+void Options::update(float* volume, bool* muted)
+{
+    static float animationProgress = 0.0f;
+    static bool lastMuteState = false;
+
+    if (*muted != lastMuteState) {
+        animationProgress = 0.0f;
+        lastMuteState = *muted;
+    }
+
+    if (animationProgress < 1.0f) {
+        animationProgress += 0.03f;
+        muteSliderThumbX = *muted ? EaseOutExpo(muteButtonX, muteButtonX + muteButtonWidth * 0.5f, animationProgress)
+            : EaseOutExpo(muteButtonX + muteButtonWidth * 0.5f, muteButtonX, animationProgress);
+    }
+
+
+    if (Input::isButtonClicked(muteButtonX, muteButtonY, muteButtonWidth, muteButtonHeight))
+    {
+        if (AEInputCheckTriggered(AEVK_LBUTTON))
+        {
+            *muted = !*muted;
+            AudioManager::ToggleMute(*muted);
+        }
+    }
+
+    if (Input::isButtonClicked(sliderThumbX, sliderThumbY, sliderThumbWidth, sliderThumbHeight))
+    {
+        if (AEInputCheckCurr(AEVK_LBUTTON))
+        {
+            draggingSlider = true;
+        }
+    }
+
+    if (draggingSlider)
+    {
+        sliderThumbX = mouseX - AEGetWindowWidth() / 2.0f - 10;
+        if (sliderThumbX < sliderX - 50) 
+        {
+            sliderThumbX = sliderX - 50; 
+        }
+        if (sliderThumbX > sliderX + 50) 
+        {
+            sliderThumbX = sliderX + 50; 
+        }
+        *volume = (sliderThumbX - (sliderX - 50)) / 100; 
+        AudioManager::setVolume(*volume);
+    }
+
+    if (AEInputCheckReleased(AEVK_LBUTTON))
+    {
+        draggingSlider = false;
+    }
+
+    if (AEInputCheckTriggered(AEVK_F11))
+    {
+        // If the window close button has been clicked, set the game state to quit
+        Global_ToggleScreen();
+        std::cout << "Toggling Screen " << std::endl;
+    }
+}
+
+void Options::draw()
+{
+    AEGfxSetBackgroundColor(0.5f, 0.0f, 0.0f);
+
+    Rendering::RenderSprite(o_VolumeSlider, sliderX, sliderY, sliderWidth, sliderHeight, optionsMesh);
+    Rendering::RenderSprite(o_VolumeSliderThumb, sliderThumbX, sliderThumbY, sliderThumbWidth, sliderThumbHeight, optionsMesh);
+
+    // Render the stationary rounded rectangle
+    if (muted) {
+        Rendering::RenderSprite(o_RoundedRectangle_ACTIVE, muteButtonX, muteButtonY, muteButtonWidth, muteButtonHeight, optionsMesh);
+    }
+    else {
+        Rendering::RenderSprite(o_RoundedRectangle_NOT_ACTIVE, muteButtonX, muteButtonY, muteButtonWidth, muteButtonHeight, optionsMesh);
+    }
+
+    // Render the muteSliderThumb
+    Rendering::RenderSprite(o_MuteSliderThumb_NOT_ACTIVE, muteSliderThumbX, muteSliderThumbY, muteSliderThumbWidth, muteSliderThumbHeight, optionsMesh);
+}
+
+
+void Options::free()
+{
+    AEGfxMeshFree(optionsMesh);
+}
+
+void Options::unload()
+{
+    AEGfxTextureUnload(o_RoundedRectangle_ACTIVE);
+    AEGfxTextureUnload(o_RoundedRectangle_NOT_ACTIVE);
+
+    AEGfxTextureUnload(o_MuteSliderThumb_ACTIVE);
+    AEGfxTextureUnload(o_MuteSliderThumb_NOT_ACTIVE);
+
+    AEGfxTextureUnload(o_VolumeSlider);
+    AEGfxTextureUnload(o_VolumeSliderThumb);
+}
+
+

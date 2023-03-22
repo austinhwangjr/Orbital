@@ -6,6 +6,8 @@
 #include <iostream>
 #include "input.h"
 #include "Graphics.h"
+#include "Easing.h"
+
 
 //extern s8 font1;
 
@@ -72,35 +74,39 @@ HoverButton hoverButtons[] = {
     {hoverButtonWidth, hoverButtonHeight}  // Quit button
 };
 
+Button currentButtonSizes[6];
 
-void Menu_Button::load(const char* startButtonFilename,
-    const char* startButtonHoverFilename,
-    const char* howToPlayButtonFilename,
-    const char* howToPlayButtonHoverFilename,
-    const char* highScoreButtonFilename,
-    const char* highScoreButtonHoverFilename,
-    const char* optionsButtonFilename,
-    const char* optionsButtonHoverFilename,
-    const char* creditsButtonFilename,
-    const char* creditsButtonHoverFilename,
-    const char* exitButtonFilename,
-    const char* exitButtonHoverFilename)
+
+
+void Menu_Button::load( const char* startButtonFilename,
+                        const char* howToPlayButtonFilename,
+                        const char* highScoreButtonFilename,
+                        const char* optionsButtonFilename,
+                        const char* creditsButtonFilename,
+                        const char* exitButtonFilename,
+
+                        const char* startButtonHoverFilename,
+                        const char* howToPlayButtonHoverFilename,
+                        const char* highScoreButtonHoverFilename,
+                        const char* optionsButtonHoverFilename,
+                        const char* creditsButtonHoverFilename,
+                        const char* exitButtonHoverFilename         )
 {
     // Load the normal textures for each button
-    normalButtonTextures[0] = AEGfxTextureLoad(startButtonFilename);
-    normalButtonTextures[1] = AEGfxTextureLoad(howToPlayButtonFilename);
-    normalButtonTextures[2] = AEGfxTextureLoad(highScoreButtonFilename);
-    normalButtonTextures[3] = AEGfxTextureLoad(optionsButtonFilename);
-    normalButtonTextures[4] = AEGfxTextureLoad(creditsButtonFilename);
-    normalButtonTextures[5] = AEGfxTextureLoad(exitButtonFilename);
+    normalButtonTextures[0]     = AEGfxTextureLoad(startButtonFilename);
+    normalButtonTextures[1]     = AEGfxTextureLoad(howToPlayButtonFilename);
+    normalButtonTextures[2]     = AEGfxTextureLoad(highScoreButtonFilename);
+    normalButtonTextures[3]     = AEGfxTextureLoad(optionsButtonFilename);
+    normalButtonTextures[4]     = AEGfxTextureLoad(creditsButtonFilename);
+    normalButtonTextures[5]     = AEGfxTextureLoad(exitButtonFilename);
 
     // Load the hover textures for each button
-    hoverButtonTextures[0] = AEGfxTextureLoad(startButtonHoverFilename);
-    hoverButtonTextures[1] = AEGfxTextureLoad(howToPlayButtonHoverFilename);
-    hoverButtonTextures[2] = AEGfxTextureLoad(highScoreButtonHoverFilename);
-    hoverButtonTextures[3] = AEGfxTextureLoad(optionsButtonHoverFilename);
-    hoverButtonTextures[4] = AEGfxTextureLoad(creditsButtonHoverFilename);
-    hoverButtonTextures[5] = AEGfxTextureLoad(exitButtonHoverFilename);
+    hoverButtonTextures[0]      = AEGfxTextureLoad(startButtonHoverFilename);
+    hoverButtonTextures[1]      = AEGfxTextureLoad(howToPlayButtonHoverFilename);
+    hoverButtonTextures[2]      = AEGfxTextureLoad(highScoreButtonHoverFilename);
+    hoverButtonTextures[3]      = AEGfxTextureLoad(optionsButtonHoverFilename);
+    hoverButtonTextures[4]      = AEGfxTextureLoad(creditsButtonHoverFilename);
+    hoverButtonTextures[5]      = AEGfxTextureLoad(exitButtonHoverFilename);
 }
 
 void Menu_Button::init()
@@ -108,8 +114,11 @@ void Menu_Button::init()
     for (int i = 0; i < 6; ++i)
     {
         hoverStates[i] = false;
+        currentButtonSizes[i].width = buttons[i].width;
+        currentButtonSizes[i].height = buttons[i].height;
     }
 }
+
 
 void Menu_Button::update()
 {
@@ -130,7 +139,7 @@ void Menu_Button::update()
                 next_state = GS_HIGHSCORE;
                 break;
             case 3: // Options button
-                // Implement options logic here
+                next_state = GS_OPTIONS;
                 break;
             case 4: // Credits button
                 next_state = GS_CREDITS;
@@ -158,7 +167,26 @@ void Menu_Button::update()
         next_state = GS_QUIT;
     }
 
+    float easingSpeed = 0.1f; // Adjust this value to control the speed of the transition
+
+    for (int i = 0; i < 6; ++i)
+    {
+        hoverStates[i] = Input::isMouseHover(buttons[i].x, buttons[i].y, buttons[i].width, buttons[i].height, hoverButtons[i].width, hoverButtons[i].height);
+
+        if (hoverStates[i])
+        {
+            currentButtonSizes[i].width = Lerp(currentButtonSizes[i].width, hoverButtons[i].width, easingSpeed);
+            currentButtonSizes[i].height = Lerp(currentButtonSizes[i].height, hoverButtons[i].height, easingSpeed);
+        }
+        else
+        {
+            currentButtonSizes[i].width = Lerp(currentButtonSizes[i].width, buttons[i].width, easingSpeed);
+            currentButtonSizes[i].height = Lerp(currentButtonSizes[i].height, buttons[i].height, easingSpeed);
+        }
+    }
+
 }
+
 
 void Menu_Button::draw(AEGfxVertexList* pMesh)
 {
@@ -174,6 +202,7 @@ void Menu_Button::draw(AEGfxVertexList* pMesh)
         }
     }
 }
+
 
 void Menu_Button::unload()
 {
