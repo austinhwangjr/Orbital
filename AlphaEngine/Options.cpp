@@ -22,15 +22,16 @@ AEGfxVertexList* optionsMesh;
 
 Rendering optionsMenu;
 
-static float returnToMMX11 = -400.0f;
-static float returnToMMY11 = 0.0f;
+static float returnToMMX11 = 0.0f;
+static float returnToMMY11 = -400.0f;
 
 // Set the dimensions of each button
 static float buttonWidth11 = 200.f;
 static float buttonHeight11 = 50.f;
 
 // Define the positions and dimensions for each button
-Options::Button11 buttons11[] = {
+Options::Button11 buttons11[] =
+{
     {returnToMMX11, returnToMMY11, buttonWidth11, buttonHeight11},   // Return to main menu button
 };
 
