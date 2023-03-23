@@ -36,8 +36,6 @@ extern s8		font_id;
 
 // Variables for shop
 extern s8		font_id_shop;
-std::string		shop_option_name;
-std::string		shop_upgrade_cost;
 
 // Variables for camera
 f32 cam_x, cam_y;
@@ -187,7 +185,7 @@ void PlayerUI::update(f64 frame_time, Player& player)
 		// Start transition
 		if (shop_transition) {
 			// Adjust shop offset
-			shop_trans_timer += frame_time;
+			shop_trans_timer += static_cast<f32>(frame_time);
 			shop_offset = EaseOutExpo(static_cast<f32>(AEGetWindowWidth()), 0, shop_trans_timer / shop_trans_duration);
 
 			// Stop transition once duration is met
@@ -225,7 +223,7 @@ void PlayerUI::update(f64 frame_time, Player& player)
 		// Start transition
 		if (tutorial_transition) {
 			// Adjust shop offset
-			tutorial_trans_timer += frame_time;
+			tutorial_trans_timer += static_cast<f32>(frame_time);
 			tutorial_offset = EaseOutExpo(-tutorial_bg_width, 0, tutorial_trans_timer / tutorial_trans_duration);
 
 			// Stop transition once duration is met
@@ -272,17 +270,16 @@ void PlayerUI::update(f64 frame_time, Player& player)
 	shop_bg_position.y = cam_y;
 
 	// Tutorial background
-	//tutorial_bg_position.x = cam_x - static_cast<f32>(AEGetWindowWidth()) / 2.f - button_vector[6].width / 2.f - tutorial_offset;
 	tutorial_bg_position.x = cam_x - static_cast<f32>(AEGetWindowWidth()) / 2.f + tutorial_bg_width / 2 + tutorial_offset;
-	tutorial_bg_position.y = cam_y + static_cast<f32>(AEGetWindowHeight()) / 2.f - button_vector[6].height * 3.f;
+	tutorial_bg_position.y = cam_y + static_cast<f32>(AEGetWindowHeight()) / 2.f - button_vector[TUTORIAL_OPEN].height * 3.f;
 
 	// Button to open shop
-	button_vector[0].position.x = cam_x + static_cast<f32>(AEGetWindowWidth()) / 2.f - button_vector[0].width / 2.f;
-	button_vector[0].position.y = cam_y + static_cast<f32>(AEGetWindowHeight()) / 2.f - button_vector[0].height * 2.5f;
+	button_vector[SHOP_OPEN].position.x = cam_x + static_cast<f32>(AEGetWindowWidth()) / 2.f - button_vector[SHOP_OPEN].width / 2.f;
+	button_vector[SHOP_OPEN].position.y = cam_y + static_cast<f32>(AEGetWindowHeight()) / 2.f - button_vector[SHOP_OPEN].height * 2.5f;
 
 	// Button to open tutorial
-	button_vector[6].position.x = cam_x - static_cast<f32>(AEGetWindowWidth()) / 2.f + button_vector[6].width / 2 + tutorial_bg_width + tutorial_offset;
-	button_vector[6].position.y = cam_y + static_cast<f32>(AEGetWindowHeight()) / 2.f - button_vector[6].height * 2.5f;
+	button_vector[TUTORIAL_OPEN].position.x = cam_x - (static_cast<f32>(AEGetWindowWidth()) - button_vector[TUTORIAL_OPEN].width) / 2.f + tutorial_bg_width + tutorial_offset;
+	button_vector[TUTORIAL_OPEN].position.y = cam_y + static_cast<f32>(AEGetWindowHeight()) / 2.f - button_vector[TUTORIAL_OPEN].height * 2.5f;
 
 	// Upgrade preview on left half of shop
 	upgrade_preview_position.x = cam_x - shop_bg_width / 4.f + shop_offset;
@@ -419,8 +416,8 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 
 	// Capacity to fade to red when close to max capacity
 	AEGfxPrint(font_id, const_cast<s8*>(capacity.c_str()),
-		(capacity_pos.x - (0.5 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2),
-		(capacity_pos.y + (0.5 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2),
+		static_cast<f32>((capacity_pos.x - (0.5 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2)),
+		static_cast<f32>((capacity_pos.y + (0.5 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2)),
 		0.8f, 1.f, static_cast<f32>((player.max_capacity + player.capacity_level - player.current_capacity)) / static_cast<f32>((player.max_capacity + player.capacity_level)),
 				   static_cast<f32>((player.max_capacity + player.capacity_level - player.current_capacity)) / static_cast<f32>((player.max_capacity + player.capacity_level)));
 
@@ -572,60 +569,39 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 	}
 
 	// Shop buttons (text/icons)
+	std::string	shop_text;
+	shop_text = "PLAYER UPGRADES";
+	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), -0.61f + shop_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.7f, 3.f, 0.f, 0.f, 0.f);
+
+	shop_text = "PLACEABLES";
+	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), 0.28f + shop_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.7f, 3.f, 0.f, 0.f, 0.f);
+
 	for (int i = 0; i < button_vector.size(); ++i) {
 		ShopOption& button = button_vector[i];
 
-		if (button.button_type == SHOP_OPEN) {
-			/*shop_option_name = "SHOP";
-			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_option_name.c_str()),
-				(button.position.x - button.width / 2 - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button.position.y - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
-				1.f, 0.f, 0.f, 0.f);*/
-		}
-		else if (button.button_type == MOVEMENT_SPEED) {
+		if (button.button_type == MOVEMENT_SPEED) {
 			// Print upgrade name
-			shop_option_name = "Movement Speed";
-			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_option_name.c_str()),
+			shop_text = "Movement Speed";
+			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()),
 				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
 				(button.position.y - button.height / 2.f - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
-				1.f, 0.f, 0.f, 0.f);
-		
-			// Print upgrade cost
-			/*shop_upgrade_cost = "Cost: " + std::to_string(mov_speed_cost);
-			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_upgrade_cost.c_str()),
-				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button.position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
-				1.f, 0.f, 0.f, 0.f);*/
+				1.f, 1.f, 1.f, 1.f);
 		}
 		else if (button.button_type == CAPACITY) {
 			// Print upgrade name
-			shop_option_name = "Increase Capacity";
-			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_option_name.c_str()),
+			shop_text = "Increase Capacity";
+			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()),
 				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
 				(button.position.y - button.height / 2.f - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
-				1.f, 0.f, 0.f, 0.f);
-		
-			// Print upgrade cost
-			/*shop_upgrade_cost = "Cost: " + std::to_string(capacity_cost);
-			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_upgrade_cost.c_str()),
-				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button.position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
-				1.f, 0.f, 0.f, 0.f);*/
+				1.f, 1.f, 1.f, 1.f);
 		}
 		else if (button.button_type == TRACTOR_BEAM_STRENGTH) {
 			// Print upgrade name
-			shop_option_name = "Beam Strength";
-			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_option_name.c_str()),
+			shop_text = "Beam Strength";
+			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()),
 				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
 				(button.position.y - button.height / 2.f - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
-				1.f, 0.f, 0.f, 0.f);
-		
-			// Print upgrade cost
-			/*shop_upgrade_cost = "Cost: " + std::to_string(beam_strength_cost);
-			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_upgrade_cost.c_str()),
-				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button.position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
-				1.f, 0.f, 0.f, 0.f);*/
+				1.f, 1.f, 1.f, 1.f);
 		}
 		else if (button.button_type == CREATE_DRONE) {
 			// Draw icon
@@ -634,11 +610,11 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
 			// Print upgrade cost
-			shop_upgrade_cost = "Cost: " + std::to_string(drone_cost);
-			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_upgrade_cost.c_str()),
+			shop_text = "Cost: " + std::to_string(drone_cost);
+			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()),
 				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
 				(button.position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
-				1.f, 0.f, 0.f, 0.f);
+				1.f, 1.f, 1.f, 1.f);
 		}
 		else if (button.button_type == SPACE_STATION) {
 			// Draw icon
@@ -647,11 +623,11 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
 			// Print upgrade cost
-			shop_upgrade_cost = "Cost: " + std::to_string(space_station_cost);
-			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_upgrade_cost.c_str()),
+			shop_text = "Cost: " + std::to_string(space_station_cost);
+			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()),
 				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
 				(button.position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
-				1.f, 0.f, 0.f, 0.f);
+				1.f, 1.f, 1.f, 1.f);
 		}
 	}
 	
@@ -659,28 +635,28 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 	std::string tutorial;
 
 	tutorial = "Controls";
-	AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.75f, 1.5f, 1.f, 1.f, 1.f);
+	AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.75f, 1.5f, 1.f, 1.f, 1.f);
 
 	if (PLAYER_FLY == player.state)
 	{
 		// Controls Tutorial text
 		tutorial = "W          Accelerate";
-		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.65f, 1.f, 1.f, 1.f, 1.f);
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.65f, 1.f, 1.f, 1.f, 1.f);
 
 		tutorial = "S           Decelerate";
-		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.6f, 1.f, 1.f, 1.f, 1.f);
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.6f, 1.f, 1.f, 1.f, 1.f);
 
 		tutorial = "A           Rotate Left";
-		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.55f, 1.f, 1.f, 1.f, 1.f);
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.55f, 1.f, 1.f, 1.f, 1.f);
 
 		tutorial = "D           Rotate Right";
-		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.5f, 1.f, 1.f, 1.f, 1.f);
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.5f, 1.f, 1.f, 1.f, 1.f);
 
 		tutorial = "LMB      Release Debris";
-		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.42f, 1.f, 1.f, 1.f, 1.f);
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.42f, 1.f, 1.f, 1.f, 1.f);
 
 		// Guide player to planet
-		if (1 == wave_manager.wave_number && !wave_manager.planet_adding && !wave_manager.wave_completed)
+		if (1 == wave_manager.wave_number && !wave_manager.planet_adding && !wave_manager.wave_completed && player.current_capacity != player.max_capacity + player.capacity_level)
 		{
 			tutorial = "W A S D";
 			AEVec2 tutorial_pos;
@@ -696,6 +672,35 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 			AEVec2Sub(&tutorial_pos, &player.position, &camera.position);
 
 			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+				static_cast<f32>((tutorial_pos.x - (3 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2)),
+				static_cast<f32>((tutorial_pos.y + (1.5 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2)),
+				1.2f, 1.f, 1.f, 1.f);
+		}
+	}
+	else if (PLAYER_TRANSIT == player.state) {
+		tutorial = "W          Hold to Leave";
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.65f, 1.f, 1.f, 1.f, 1.f);
+
+		tutorial = "Leaving Planet...";
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.55f, 1.f, 1.f, 1.f, 1.f);
+
+		// Show "Leaving Planet" message above player
+		if (1 == wave_manager.wave_number && !wave_manager.planet_adding && !wave_manager.wave_completed && player.current_capacity != player.max_capacity + player.capacity_level)
+		{
+			tutorial = "Hold W";
+			AEVec2 tutorial_pos;
+			AEVec2Sub(&tutorial_pos, &player.position, &camera.position);
+
+			// Draw timer at center of planet using position calculated above
+			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+				(tutorial_pos.x - FONT_ID_SIZE) / (AEGetWindowWidth() / 2),
+				(tutorial_pos.y + (3 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2),
+				1.f, 1.f, 1.f, 1.f);
+
+			tutorial = "Leaving Planet...";
+			AEVec2Sub(&tutorial_pos, &player.position, &camera.position);
+
+			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
 				(tutorial_pos.x - (3 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2),
 				(tutorial_pos.y + (1.5 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2),
 				1.2f, 1.f, 1.f, 1.f);
@@ -704,23 +709,23 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 	else
 	{
 		// Controls Tutorial text
-		std::string tutorial = "W          Leave Planet";
-		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.65f, 1.f, 1.f, 1.f, 1.f);
+		tutorial = "W          Hold to Leave";
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.65f, 1.f, 1.f, 1.f, 1.f);
 
 		tutorial = "A           Rotate Left";
-		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.6f, 1.f, 1.f, 1.f, 1.f);
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.6f, 1.f, 1.f, 1.f, 1.f);
 
 		tutorial = "D           Rotate Right";
-		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.55f, 1.f, 1.f, 1.f, 1.f);
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.55f, 1.f, 1.f, 1.f, 1.f);
 
 		tutorial = "Space   Collect Debris";
-		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.48f, 1.f, 1.f, 1.f, 1.f);
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.48f, 1.f, 1.f, 1.f, 1.f);
 
 		tutorial = "LMB      Release Debris";
-		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.43f, 1.f, 1.f, 1.f, 1.f);
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.43f, 1.f, 1.f, 1.f, 1.f);
 
 		// Tell player what to do
-		if (1 == wave_manager.wave_number && !wave_manager.planet_adding && !wave_manager.wave_completed)
+		if (1 == wave_manager.wave_number && !wave_manager.planet_adding && !wave_manager.wave_completed && player.current_capacity != player.max_capacity + player.capacity_level)
 		{
 			tutorial = "Spacebar";
 			AEVec2 tutorial_pos;
@@ -728,8 +733,8 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 
 			// Draw timer at center of planet using position calculated above
 			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
-				(tutorial_pos.x - (1.5 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2),
-				(tutorial_pos.y + (3 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2),
+				static_cast<f32>((tutorial_pos.x - (1.5 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2)),
+				static_cast<f32>((tutorial_pos.y + (3 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2)),
 				1.f, 1.f, 1.f, 1.f);
 
 			tutorial = "Collect Debris!";
@@ -737,11 +742,13 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 
 			// Draw timer at center of planet using position calculated above
 			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
-				(tutorial_pos.x - (3 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2),
-				(tutorial_pos.y + (1.5 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2),
+				static_cast<f32>((tutorial_pos.x - (3 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2)),
+				static_cast<f32>((tutorial_pos.y + (1.5 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2)),
 				1.2f, 1.f, 1.f, 1.f);
 		}
 	}
+
+	// Text for first wave
 	if (1 == wave_manager.wave_number)
 	{
 		// Shop Tutorial between waves
@@ -753,9 +760,33 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 
 			// Draw timer at center of planet using position calculated above
 			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
-				(tutorial_pos.x - (2.5 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2),
-				(tutorial_pos.y + FONT_ID_SIZE) / (AEGetWindowHeight() / 2),
+				static_cast<f32>((tutorial_pos.x - (2.5 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2)),
+				static_cast<f32>((tutorial_pos.y + FONT_ID_SIZE) / (AEGetWindowHeight() / 2)),
 				1.f, 1.f, 1.f, 1.f);
+		}
+
+
+		// Shop Tutorial between waves
+		if (player.current_capacity == player.max_capacity + player.capacity_level)
+		{
+			tutorial = "LMB";
+			AEVec2 tutorial_pos;
+			AEVec2Sub(&tutorial_pos, &player.position, &camera.position);
+
+			// Draw timer at center of planet using position calculated above
+			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+				(tutorial_pos.x - FONT_ID_SIZE) / (AEGetWindowWidth() / 2),
+				(tutorial_pos.y + (3 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2),
+				1.f, 1.f, 1.f, 1.f);
+
+			tutorial = "Unload Debris!";
+			AEVec2Sub(&tutorial_pos, &player.position, &camera.position);
+
+			// Draw timer at center of planet using position calculated above
+			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+				(tutorial_pos.x - (3 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2),
+				(tutorial_pos.y + (1.5 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2),
+				1.2f, 1.f, 1.f, 1.f);
 		}
 
 		// Space Station Tutorial
@@ -766,8 +797,8 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 			AEVec2Sub(&tutorial_pos, &space_station_vector[0].position, &camera.position);
 
 			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
-				(tutorial_pos.x - (4 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2),
-				(tutorial_pos.y - (2.5 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2),
+				static_cast<f32>((tutorial_pos.x - (4 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2)),
+				static_cast<f32>((tutorial_pos.y - (2.5 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2)),
 				1.f, 1.f, 1.f, 1.f);
 		}
 
@@ -780,8 +811,8 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 
 			// Draw timer at center of planet using position calculated above
 			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
-				2 * (tutorial_pos.x - FONT_ID_SIZE * 5.2) / AEGetWindowWidth(),
-				2 * (tutorial_pos.y + FONT_ID_SIZE * 3.5) / AEGetWindowHeight(),
+				static_cast < f32>(2 * (tutorial_pos.x - FONT_ID_SIZE * 5.2) / AEGetWindowWidth()),
+				static_cast < f32>(2 * (tutorial_pos.y + FONT_ID_SIZE * 3.5) / AEGetWindowHeight()),
 				1.5f, 1.f, 1.f, 1.f);
 
 			tutorial = "Do not let them crash!";
@@ -789,8 +820,8 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 
 			// Draw timer at center of planet using position calculated above
 			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
-				2 * (tutorial_pos.x - FONT_ID_SIZE * 4.5) / AEGetWindowWidth(),
-				2 * (tutorial_pos.y + FONT_ID_SIZE * 2) / AEGetWindowHeight(),
+				static_cast < f32>(2 * (tutorial_pos.x - FONT_ID_SIZE * 4.5) / AEGetWindowWidth()),
+				static_cast < f32>(2 * (tutorial_pos.y + FONT_ID_SIZE * 2) / AEGetWindowHeight()),
 				1.5f, 1.f, 1.f, 1.f);
 		}
 	}
