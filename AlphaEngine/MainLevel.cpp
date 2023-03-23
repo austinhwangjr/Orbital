@@ -240,18 +240,18 @@ void main_level::draw()
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxSetTransparency(1.0f);
 
-		player.draw(pMeshML);
-		planet.draw(pMeshML);
+	player.draw(pMeshML);
+	planet.draw(pMeshML);
 
-		space_station.draw(pMeshML, player_ui);
+	space_station.draw(pMeshML, player_ui);
 		
-		player_proj.draw(pMeshML);
-		debris.draw(pMeshML);
-		shuttle.draw(pMeshML);
-		wave_manager.draw(pMeshML);
+	player_proj.draw(pMeshML);
+	debris.draw(pMeshML);
+	shuttle.draw(pMeshML);
+	wave_manager.draw(pMeshML);
 
-		drone.draw(pMeshML, player_ui);
-		player_ui.draw(pMeshML, player);
+	drone.draw(pMeshML, player_ui);
+	player_ui.draw(pMeshML, player, wave_manager);
 
 	if (is_paused)
 	{

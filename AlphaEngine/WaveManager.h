@@ -4,7 +4,7 @@
 #define SHUTTLE_SPAWN_MAX		8		// Maximum number of shuttles a planet can spawn with
 #define SHUTTLE_SPAWN_MIN		4		// Minimum number of shuttles a planet can spawn with
 #define SHUTTLE_INCREASE_AMOUNT 1		// Number of shuttles added after a wave
-#define WAVE_INTERVAL_TIME		3		// Down time between waves
+#define WAVE_INTERVAL_TIME		8		// Down time between waves
 #define WAVE_ADD_PLANET			4		// Every nth wave planets will be added on
 
 #include "AEEngine.h"
@@ -85,7 +85,7 @@ struct WaveManager
 
 	//void set_shuttle_max(std::vector<Planets> planet_vector, int max_shuttle);
 	int get_total_shuttles();
-	int get_current_shuttles();
+	int get_current_shuttles() const;
 	bool no_more_shuttles();
 
 	void checkLoseCondition();

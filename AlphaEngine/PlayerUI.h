@@ -1,5 +1,6 @@
 #pragma once
 #include "Player.h"
+#include "WaveManager.h"
 
 #define DEBRIS_VALUE 10
 #define DEBRIS_SCORE 100
@@ -88,7 +89,7 @@ struct PlayerUI
 	void load();
 	void init();
 	void update(f64, Player&);
-	void draw(AEGfxVertexList*, Player);
+	void draw(AEGfxVertexList*, Player, WaveManager const&);
 	void free();
 	void unload();
 	

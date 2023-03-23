@@ -328,10 +328,10 @@ void SpaceStation::draw(AEGfxVertexList* pMesh, PlayerUI player_ui)
 	for (int i = 0; i < space_station_vector.size(); i++) {
 		AEVec2 pos;
 		AEVec2Sub(&pos, &space_station_vector[i].position, &camera.position);
-		capacity_spacestation = "Station Capacity: " + std::to_string(space_station_vector[i].current_capacity) + " / " + std::to_string(space_station_vector[i].max_capacity);
+		capacity_spacestation = std::to_string(space_station_vector[i].current_capacity) + " / " + std::to_string(space_station_vector[i].max_capacity);
 		AEGfxPrint(font_id, const_cast<s8*>(capacity_spacestation.c_str()),
-			2 * (pos.x - 80) / AEGetWindowWidth(),
-			2 * (pos.y + 50) / AEGetWindowHeight(), 0.3f, 1.f, 1.f, 1.f);
+			2 * (pos.x - FONT_ID_SIZE) / AEGetWindowWidth(),
+			2 * (pos.y + (3 * FONT_ID_SIZE)) / AEGetWindowHeight(), 1.f, 1.f, 1.f, 1.f);
 	}
 
 	// ===========
