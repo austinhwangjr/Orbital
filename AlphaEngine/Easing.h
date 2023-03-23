@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 #define NATURAL_LOG_OF_2    0.693147181f
-#define PI                3.14159265358979323846f
+
 
 
 static float EaseOutExpo(float start, float end, float value)
