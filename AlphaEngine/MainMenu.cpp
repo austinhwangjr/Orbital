@@ -422,7 +422,7 @@ void main_menu::update()
         // Update the Lerp value for the halo scale
         MMplayer.halo_scale_lerp += (1.0f - MMplayer.halo_scale_lerp) * 0.5f;
 
-        f32 val{ MMplanet.size + 50.f };
+        f32 val{ MMplanet.size + 100.f };
 
         // Use the Lerp value to scale the halo
         AEMtx33Scale(&scale, val * MMplayer.halo_scale_lerp, val * MMplayer.halo_scale_lerp);
