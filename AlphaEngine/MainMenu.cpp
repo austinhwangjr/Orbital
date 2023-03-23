@@ -107,8 +107,8 @@ void main_menu::init()
     MMplanet.debris_vector = MM_create_debris(MMplanet.position.x, MMplanet.position.y, MMplanet.size, MMplanet.max_debris);
 
 
-    MMplanet.position.x = AEGetWindowWidth() / 2;
-    MMplanet.position.y = -AEGetWindowHeight() / 2;
+    MMplanet.position.x = static_cast<f32>(AEGetWindowWidth() / 2);
+    MMplanet.position.y = static_cast<f32>( - AEGetWindowHeight() / 2);
     MMplanet.size = 1200;
     MMplanet.shuttle_timer = 0.0;																													// Zero out shuttle timer on spawn
     MMplanet.shuttle_time_to_spawn = static_cast<f32>(rand() % (SHUTTLE_SPAWN_TIME_MAX - SHUTTLE_SPAWN_TIME_MIN + 1) + SHUTTLE_SPAWN_TIME_MIN);	// Randomize value for timer to reach before spawning
@@ -410,7 +410,7 @@ void main_menu::update()
         }
 
         // Calculate progress based on the elapsed time and animation duration
-        float progress = MMframe_time / MManimationDuration;
+        float progress = static_cast<float>(MMframe_time / MManimationDuration);
         if (progress > 1.0f)
         {
             progress = 1.0f; // Clamp progress to 1.0f to prevent overshooting
@@ -468,7 +468,7 @@ void main_menu::update()
         if (explosion.is_draw == 1) {
 
             if (explosion.timer <= explosion.total_time) {
-                explosion.timer += MMframe_time;
+                explosion.timer += static_cast<f32>(MMframe_time);
                 AEMtx33Scale(&scale, explosion.width, explosion.height);
                 AEMtx33Rot(&rot, 0);
                 AEMtx33Trans(&trans, explosion.position.x, explosion.position.y);

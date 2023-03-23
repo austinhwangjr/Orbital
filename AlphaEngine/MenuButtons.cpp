@@ -205,7 +205,7 @@ void Menu_Button::update()
             squareRotations[i] -= rotationSpeed;
             if (squareRotations[i] < -M_PI / 2.0f)
             {
-                (squareRotations[i] = -M_PI / 2.0f);
+                (squareRotations[i] = static_cast<float>( - M_PI / 2.0f));
             }
 
             // colour easing

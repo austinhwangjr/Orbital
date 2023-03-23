@@ -187,7 +187,7 @@ void PlayerUI::update(f64 frame_time, Player& player)
 		// Start transition
 		if (shop_transition) {
 			// Adjust shop offset
-			shop_trans_timer += frame_time;
+			shop_trans_timer += static_cast<f32>(frame_time);
 			shop_offset = EaseOutExpo(static_cast<f32>(AEGetWindowWidth()), 0, shop_trans_timer / shop_trans_duration);
 
 			// Stop transition once duration is met
@@ -225,7 +225,7 @@ void PlayerUI::update(f64 frame_time, Player& player)
 		// Start transition
 		if (tutorial_transition) {
 			// Adjust shop offset
-			tutorial_trans_timer += frame_time;
+			tutorial_trans_timer += static_cast<f32>(frame_time);
 			tutorial_offset = EaseOutExpo(-tutorial_bg_width, 0, tutorial_trans_timer / tutorial_trans_duration);
 
 			// Stop transition once duration is met
@@ -419,8 +419,8 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 
 	// Capacity to fade to red when close to max capacity
 	AEGfxPrint(font_id, const_cast<s8*>(capacity.c_str()),
-		(capacity_pos.x - (0.5 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2),
-		(capacity_pos.y + (0.5 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2),
+		static_cast<f32>((capacity_pos.x - (0.5 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2)),
+		static_cast<f32>((capacity_pos.y + (0.5 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2)),
 		0.8f, 1.f, static_cast<f32>((player.max_capacity + player.capacity_level - player.current_capacity)) / static_cast<f32>((player.max_capacity + player.capacity_level)),
 				   static_cast<f32>((player.max_capacity + player.capacity_level - player.current_capacity)) / static_cast<f32>((player.max_capacity + player.capacity_level)));
 
@@ -696,8 +696,8 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 			AEVec2Sub(&tutorial_pos, &player.position, &camera.position);
 
 			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
-				(tutorial_pos.x - (3 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2),
-				(tutorial_pos.y + (1.5 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2),
+				static_cast<f32>((tutorial_pos.x - (3 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2)),
+				static_cast<f32>((tutorial_pos.y + (1.5 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2)),
 				1.2f, 1.f, 1.f, 1.f);
 		}
 	}
@@ -728,8 +728,8 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 
 			// Draw timer at center of planet using position calculated above
 			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
-				(tutorial_pos.x - (1.5 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2),
-				(tutorial_pos.y + (3 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2),
+				static_cast<f32>((tutorial_pos.x - (1.5 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2)),
+				static_cast<f32>((tutorial_pos.y + (3 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2)),
 				1.f, 1.f, 1.f, 1.f);
 
 			tutorial = "Collect Debris!";
@@ -737,8 +737,8 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 
 			// Draw timer at center of planet using position calculated above
 			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
-				(tutorial_pos.x - (3 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2),
-				(tutorial_pos.y + (1.5 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2),
+				static_cast<f32>((tutorial_pos.x - (3 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2)),
+				static_cast<f32>((tutorial_pos.y + (1.5 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2)),
 				1.2f, 1.f, 1.f, 1.f);
 		}
 	}
@@ -753,8 +753,8 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 
 			// Draw timer at center of planet using position calculated above
 			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
-				(tutorial_pos.x - (2.5 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2),
-				(tutorial_pos.y + FONT_ID_SIZE) / (AEGetWindowHeight() / 2),
+				static_cast<f32>((tutorial_pos.x - (2.5 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2)),
+				static_cast<f32>((tutorial_pos.y + FONT_ID_SIZE) / (AEGetWindowHeight() / 2)),
 				1.f, 1.f, 1.f, 1.f);
 		}
 
@@ -766,8 +766,8 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 			AEVec2Sub(&tutorial_pos, &space_station_vector[0].position, &camera.position);
 
 			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
-				(tutorial_pos.x - (4 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2),
-				(tutorial_pos.y - (2.5 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2),
+				static_cast<f32>((tutorial_pos.x - (4 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2)),
+				static_cast<f32>((tutorial_pos.y - (2.5 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2)),
 				1.f, 1.f, 1.f, 1.f);
 		}
 
@@ -780,8 +780,8 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 
 			// Draw timer at center of planet using position calculated above
 			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
-				2 * (tutorial_pos.x - FONT_ID_SIZE * 5.2) / AEGetWindowWidth(),
-				2 * (tutorial_pos.y + FONT_ID_SIZE * 3.5) / AEGetWindowHeight(),
+				static_cast < f32>(2 * (tutorial_pos.x - FONT_ID_SIZE * 5.2) / AEGetWindowWidth()),
+				static_cast < f32>(2 * (tutorial_pos.y + FONT_ID_SIZE * 3.5) / AEGetWindowHeight()),
 				1.5f, 1.f, 1.f, 1.f);
 
 			tutorial = "Do not let them crash!";
@@ -789,8 +789,8 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 
 			// Draw timer at center of planet using position calculated above
 			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
-				2 * (tutorial_pos.x - FONT_ID_SIZE * 4.5) / AEGetWindowWidth(),
-				2 * (tutorial_pos.y + FONT_ID_SIZE * 2) / AEGetWindowHeight(),
+				static_cast < f32>(2 * (tutorial_pos.x - FONT_ID_SIZE * 4.5) / AEGetWindowWidth()),
+				static_cast < f32>(2 * (tutorial_pos.y + FONT_ID_SIZE * 2) / AEGetWindowHeight()),
 				1.5f, 1.f, 1.f, 1.f);
 		}
 	}

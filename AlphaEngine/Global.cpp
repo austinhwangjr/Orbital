@@ -45,10 +45,10 @@ void Global_UpdateWindowSize()
 	g_windowWidth	= g_WindowRect.right - g_WindowRect.left;						// Calculate window width
 	g_windowHeight	= g_WindowRect.bottom - g_WindowRect.top;					// Calculate window height
 
-	g_screenLeft	= g_windowWidth / -2.0f;
-	g_screenRight	= g_windowWidth / 2.0f;
-	g_screenTop		= g_windowHeight / -2.0f;
-	g_screenBottom	= g_windowHeight / 2.0f;
+	g_screenLeft	= static_cast<float>(g_windowWidth / -2.0f);
+	g_screenRight	= static_cast<float>(g_windowWidth / 2.0f);
+	g_screenTop		= static_cast<float>(g_windowHeight / -2.0f);
+	g_screenBottom	= static_cast<float>(g_windowHeight / 2.0f);
 }
 
 void Global_ToggleScreen()

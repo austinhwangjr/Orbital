@@ -333,7 +333,7 @@ void WaveManager::draw(AEGfxVertexList* pMesh)
 		print_string = str_wave_complete.c_str();
 
 		// Calculate alpha value for fade-in and fade-out effect using EaseInOutBack easing function
-		float progress = wave_interval_timer / WAVE_INTERVAL_TIME;
+		float progress = static_cast<float>(wave_interval_timer / WAVE_INTERVAL_TIME);
 		float easedProgress = EaseInOutBack(0, 1, progress);
 		float alpha;
 

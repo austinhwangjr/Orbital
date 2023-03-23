@@ -75,7 +75,7 @@ void Player::init()
 
 void Player::update(f64 frame_time)
 {
-	elapsedTime += AEFrameRateControllerGetFrameTime();
+	elapsedTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
 
 	// Player is in orbit state
 	if (state == PLAYER_ORBIT)
