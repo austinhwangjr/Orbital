@@ -283,14 +283,14 @@ void PlayerUI::update(f64 frame_time, Player& player)
 
 	// Button to open tutorial
 	button_vector[TUTORIAL_OPEN].position.x = cam_x - (static_cast<f32>(AEGetWindowWidth()) - button_vector[TUTORIAL_OPEN].width) / 2.f + tutorial_bg_width + tutorial_offset;
-	button_vector[TUTORIAL_OPEN].position.y = cam_y + static_cast<f32>(AEGetWindowHeight()) / 2.f - button_vector[TUTORIAL_OPEN].height * 2.5f;
+	button_vector[TUTORIAL_OPEN].position.y = cam_y + static_cast<f32>(AEGetWindowHeight()) / 2.f - button_vector[TUTORIAL_OPEN].height * 3.f;
 
 	// Upgrade preview on left half of shop
 	upgrade_preview_position.x = cam_x - shop_bg_width / 4.f + shop_offset;
 	upgrade_preview_position.y = cam_y + shop_bg_width / 8.f;
 
 	// Movement speed, capacity and beam strength buttons on the left half
-	for (int i = 1; i < 4; ++i) {
+	for (int i = MOVEMENT_SPEED; i < CREATE_DRONE; ++i) {
 		ShopOption& button = button_vector[i];
 		button.position.x = cam_x - shop_bg_width / 4.f - button.width * 1.3f * (2 - i) + shop_offset;
 		//button.position.y = button_vector[0].position.y - button.height * 4.f;
@@ -305,10 +305,10 @@ void PlayerUI::update(f64 frame_time, Player& player)
 	}
 
 	// Drone and space station buttons on the right half
-	for (int i = 4; i < 6; ++i) {
+	for (int i = CREATE_DRONE; i < TUTORIAL_OPEN; ++i) {
 		ShopOption& button = button_vector[i];
 		button.position.x = cam_x + shop_bg_width / 4.f + shop_offset;
-		button.position.y = button_vector[0].position.y - (i - 4) * button.height * 4.f;
+		button.position.y = button_vector[SHOP_OPEN].position.y - (i - 4) * button.height * 4.f;
 
 		// Level indicators for upgrades
 		for (int j = 0; j < button.indicator_vector.size(); ++j) {
@@ -362,7 +362,7 @@ void PlayerUI::update(f64 frame_time, Player& player)
 		AEMtx33Concat(&button.transform, &trans, &button.transform);
 
 		// Level indicators for upgrades
-		if (i > 0) {
+		if (i > SHOP_OPEN) {
 			for (int j = 0; j < button.indicator_vector.size(); ++j) {
 				UpgradeLevelIndicator& indicator = button.indicator_vector[j];
 				AEMtx33Scale(&scale, indicator.width, indicator.height);
@@ -374,14 +374,14 @@ void PlayerUI::update(f64 frame_time, Player& player)
 		}
 
 		// Shop icons (drone/space station)
-		if (button_vector[i].button_type == CREATE_DRONE) {			
+		if (button.button_type == CREATE_DRONE) {
 			AEMtx33Scale(&scale, icon_size * 4, icon_size * 4);
 			AEMtx33Rot(&rot, PI);
 			AEMtx33Trans(&trans, button.position.x, button.position.y);
 			AEMtx33Concat(&drone_icon_transform, &rot, &scale);
 			AEMtx33Concat(&drone_icon_transform, &trans, &drone_icon_transform);
 		}
-		else if (button_vector[i].button_type == SPACE_STATION) {
+		else if (button.button_type == SPACE_STATION) {
 			AEMtx33Scale(&scale, icon_size * 4, icon_size * 4);
 			AEMtx33Rot(&rot, PI);
 			AEMtx33Trans(&trans, button.position.x, button.position.y);
@@ -474,7 +474,7 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 	for (int i = 0; i < button_vector.size(); ++i) {
 		ShopOption& button = button_vector[i];
 
-		if (i == 0) {
+		if (button.button_type == SHOP_OPEN) {
 			if (shop_triggered)
 				AEGfxTextureSet(shop_close_tex, 0, 0);
 			else
@@ -485,7 +485,7 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 		}
 
 		// Shop upgrades
-		if (i > 0) {
+		if (i > SHOP_OPEN) {
 			switch (button.button_type) {
 				case MOVEMENT_SPEED:
 					AEGfxTextureSet(mov_speed_button_tex, 0, 0);
@@ -811,7 +811,7 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 
 			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
 				static_cast<f32>((tutorial_pos.x - (4 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2)),
-				static_cast<f32>((tutorial_pos.y - (2.5 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2)),
+				static_cast<f32>((tutorial_pos.y - (3 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2)),
 				1.f, 1.f, 1.f, 1.f);
 		}
 
@@ -1001,7 +1001,7 @@ void PlayerUI::tutorial_open()
 	// ===================
 
 	// Player clicks outside tutorial
-	if (button_clicked(button_vector[6]) || AEInputCheckTriggered(AEVK_ESCAPE))
+	if (button_clicked(button_vector[TUTORIAL_OPEN]) || AEInputCheckTriggered(AEVK_ESCAPE))
 		close_tutorial();
 }
 
@@ -1011,7 +1011,7 @@ void PlayerUI::tutorial_closed()
 	// Check for input
 	// ================
 
-	if (button_clicked(button_vector[6])) {
+	if (button_clicked(button_vector[TUTORIAL_OPEN])) {
 		tutorial_triggered = true;
 		tutorial_transition = true;
 	}
