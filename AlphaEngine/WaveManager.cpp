@@ -29,7 +29,6 @@ AEGfxTexture* indicator_tex;
 AEGfxTexture* arrow_tex;
 AEGfxTexture* lineTexture;
 
-
 std::vector<WaveManager::Indicator> indicator_vector;
 std::vector<WaveManager::Arrow>	arrow_vector;
 
@@ -60,11 +59,11 @@ void WaveManager::init()
 	shuttle_has_escaped = false;
 	shuttle_has_collided = false;
 
-	add_indicator();
 	gameLost = false;
 
 	planet.spawn(rand() % (SHUTTLE_SPAWN_MAX - SHUTTLE_SPAWN_MIN) + SHUTTLE_SPAWN_MIN);
 	planet.add_runway(planet_vector[0].position);
+	add_indicator();
 	planet_count++;
 
 	std::cout << "----------------------------------------" << std::endl;
@@ -121,10 +120,9 @@ void WaveManager::update(f64 frame_time)
 	{
 		planet.spawn(rand() % (SHUTTLE_SPAWN_MAX - SHUTTLE_SPAWN_MIN) + SHUTTLE_SPAWN_MIN);
 		planet.add_runway(planet_vector[planet_count].position);
+		add_indicator();
 		planet_count++;
 		planet_adding = true;
-
-		add_indicator();
 
 		std::cout << '\n' << "Wave " << wave_number << '\t' << "Added Planet." << '\t';
 		std::cout << "Planet Count: " << planet_count << '\n';
@@ -135,6 +133,10 @@ void WaveManager::update(f64 frame_time)
 	if (wave_completed && !planet_adding)
 	{
 		wave_interval_timer += frame_time;
+		if (AEInputCheckTriggered(AEVK_R))
+		{
+			wave_interval_timer = WAVE_INTERVAL_TIME * (1 + static_cast<f32>(planet_count / 2));
+		}
 	}
 	// Wave interval timer---------------------------------------------------
 
@@ -193,7 +195,7 @@ void WaveManager::update(f64 frame_time)
 	// Update logic for off-screen indicator-------------------------------
 
 	// Start of new wave-----------------------------------------------------
-	if (wave_completed && wave_interval_timer >= WAVE_INTERVAL_TIME || AEInputCheckTriggered(AEVK_3))
+	if (wave_completed && wave_interval_timer >= (WAVE_INTERVAL_TIME * (1 + static_cast<f32>(planet_count / 2))) || AEInputCheckTriggered(AEVK_3))
 	{
 		for (size_t i{}; i < planet_vector.size(); i++)
 		{
@@ -309,7 +311,7 @@ void WaveManager::draw(AEGfxVertexList* pMesh)
 		if (off_screen && !planet_adding)
 		{
 			// Render planet image for distance indicator
-			AEGfxTextureSet(indicator_tex, 0, 0);
+			AEGfxTextureSet(indicator_vector[i].tex, 0, 0);
 			AEGfxSetTransform(indicator_vector[i].transform.m);
 			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
@@ -326,7 +328,7 @@ void WaveManager::draw(AEGfxVertexList* pMesh)
 	}
 
 	// Wave Complete font
-	if (wave_completed && wave_interval_timer <= WAVE_INTERVAL_TIME)
+	if (wave_completed)
 	{
 		// Place holder "Wave Complete"
 		std::string str_wave_complete = "Wave " + std::to_string(wave_number) + " Completed";
@@ -352,20 +354,24 @@ void WaveManager::draw(AEGfxVertexList* pMesh)
 
 		// Render text with fade-in and fade-out effect
 		AEGfxPrint(font_id, const_cast<s8*>(print_string), centerX, centerY, 1.f, 1.f, 1.f, alpha);
+
+
+		// Next Wave timer display
+		std::string next_wave = "Next Wave: " + std::to_string(static_cast<int>(abs(WAVE_INTERVAL_TIME - wave_interval_timer)));
+		print_string = next_wave.c_str();
+		AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.f - (next_wave.length() / 2 * static_cast<f32>(FONT_ID_SIZE) / static_cast<f32>(AEGetWindowWidth())), -0.7f, 1.f, 1.f, 1.f, 1.f);
+
+
+		// Next Wave timer display
+		next_wave = "Skip   [R]";
+		print_string = next_wave.c_str();
+		AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.f - (next_wave.length() / 2 * static_cast<f32>(FONT_ID_SIZE) / static_cast<f32>(AEGetWindowWidth())), -0.75f, 1.f, 1.f, 1.f, 1.f);
 	}
 
 	// Shuttles Lost counter
 	std::string str_shuttle_lost = "Shuttles Lost: " + std::to_string(shuttle_destroyed);
 	print_string = str_shuttle_lost.c_str();
 	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.f - (str_shuttle_lost.length() / 2 * static_cast<f32>(FONT_ID_SIZE) / static_cast<f32>(AEGetWindowWidth())), -0.65f, 1.f, 1.f, 1.f, 1.f);
-
-	if (wave_completed)
-	{
-		// Next Wave timer display
-		std::string next_wave = "Next Wave: " + std::to_string(static_cast<int>(abs(WAVE_INTERVAL_TIME - wave_interval_timer)));
-		print_string = next_wave.c_str();
-		AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.f - (next_wave.length() / 2 * static_cast<f32>(FONT_ID_SIZE) / static_cast<f32>(AEGetWindowWidth())), -0.7f, 1.f, 1.f, 1.f, 1.f);
-	}
 
 	// WAVE | SHUTTLES | PLANETS -------------------------------------------------------------------------------------------------------------------------------------
 	std::string str_count; std::string str_headers;
@@ -455,6 +461,8 @@ void WaveManager::add_indicator()
 	AEMtx33Trans(&new_indicator.translate, 0.f, 0.f);
 	AEMtx33Concat(&new_indicator.transform, &new_indicator.rotate, &new_indicator.scale);
 	AEMtx33Concat(&new_indicator.transform, &new_indicator.translate, &new_indicator.transform);
+
+	new_indicator.tex = planet_textures[planet_vector[planet_count].texture_index];
 
 	indicator_vector.push_back(new_indicator);
 

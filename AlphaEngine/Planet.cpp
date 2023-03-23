@@ -206,7 +206,6 @@ void Planets::spawn(int shuttle_randomize_amount)
 	// yy random planet tex
 	new_planet.texture_index = rand() % planet_textures.size();
 
-
 	new_planet.id = wave_manager.planet_count;
 	new_planet.wave_complete = false;
 
