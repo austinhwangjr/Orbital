@@ -2,11 +2,13 @@
 #include "Drone.h"
 #include "Planet.h"
 #include <vector>
+#include <string>
 
 // Textures
 AEGfxTexture* drone_tex;
 extern AEGfxTexture* tractor_beam_tex;
 extern AEGfxTexture* shop_icon_tex;
+
 
 // Variables
 bool drone_valid_placement = false;
@@ -19,6 +21,8 @@ extern AEVec2 mouse_pos_world;
 std::vector<std::vector<Drone>> drone_vector_all;
 extern std::vector<Planets> planet_vector;
 extern std::vector<std::vector<Debris>> debris_vector_all;
+
+extern s8 font_id;
 
 void Drone::load()
 {
@@ -284,6 +288,12 @@ void Drone::draw(AEGfxVertexList* pMesh, PlayerUI player_ui)
 {
 	// For UI
 	if (player_ui.placing_drone) {
+
+		////Description for Placeables
+		//std::string	drone_text;
+		//drone_text = "Hover the mouse on a planet to place Space Station";
+		//AEGfxPrint(font_id, const_cast<s8*>(drone_text.c_str()), mouse_pos_world.x, mouse_pos_world.y + 100, 1.f, 1.f, 1.f, 1.f);
+
 
 		if (drone_valid_placement)
 			AEGfxSetTintColor(0.f, 1.f, 0.f, 1.f);

@@ -576,6 +576,31 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 	shop_text = "PLACEABLES";
 	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), 0.28f + shop_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.7f, 3.f, 0.f, 0.f, 0.f);
 
+
+
+	//Description for Placeables (DRONE)
+	shop_text = "LMB to select drone";
+	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), 0.15f + shop_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.4f, 1.f, 1.f, 1.f, 1.f);
+
+	shop_text = "Information: Drone will travel around the respective planet to clear the debris";
+	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), 0.15f + shop_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.3f, 1.f, 1.f, 1.f, 1.f);
+
+	shop_text = "Note: Drone is placeable onto the planet when it turns green";
+	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), 0.15f + shop_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.2f, 1.f, 1.f, 1.f, 1.f);
+
+
+
+	//Description for Placeables (SPACE STATION)
+	shop_text = "LMB to select Space Station";
+	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), 0.15f + shop_offset / static_cast<f32>(AEGetWindowWidth() / 2), -0.4f, 1.f, 1.f, 1.f, 1.f);
+
+	shop_text = "Information: Place more Space Station to generate more currency";
+	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), 0.15f + shop_offset / static_cast<f32>(AEGetWindowWidth() / 2), -0.5f, 1.f, 1.f, 1.f, 1.f);
+
+	shop_text = "Note: Space Station is placeable when it turns green";
+	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), 0.15f + shop_offset / static_cast<f32>(AEGetWindowWidth() / 2), -0.6f, 1.f, 1.f, 1.f, 1.f);
+
+
 	for (int i = 0; i < button_vector.size(); ++i) {
 		ShopOption& button = button_vector[i];
 
