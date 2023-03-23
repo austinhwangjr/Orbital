@@ -24,6 +24,14 @@
 
         extern float volume;
         extern bool muted;
+
+        struct Button11
+        {
+            float x;
+            float y;
+            float width;
+            float height;
+        };
     }
 
     #endif // OPTIONS_H

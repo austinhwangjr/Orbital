@@ -2,6 +2,7 @@
 #include "Input.h"
 #include "Graphics.h"
 #include "AudioManager.h"
+#include "GameStateManager.h"
 #include "Global.h"
 #include "Easing.h"
 #include <iostream>
@@ -15,9 +16,23 @@ AEGfxTexture* o_MuteSliderThumb_NOT_ACTIVE = nullptr;
 AEGfxTexture* o_VolumeSlider = nullptr;
 AEGfxTexture* o_VolumeSliderThumb = nullptr;
 
+AEGfxTexture* returnToMMTexture11 = nullptr;
+
 AEGfxVertexList* optionsMesh;
 
 Rendering optionsMenu;
+
+static float returnToMMX11 = -400.0f;
+static float returnToMMY11 = 0.0f;
+
+// Set the dimensions of each button
+static float buttonWidth11 = 200.f;
+static float buttonHeight11 = 50.f;
+
+// Define the positions and dimensions for each button
+Options::Button11 buttons11[] = {
+    {returnToMMX11, returnToMMY11, buttonWidth11, buttonHeight11},   // Return to main menu button
+};
 
 namespace Options
 {
@@ -61,6 +76,9 @@ void Options::load()
 
     o_VolumeSlider              = AEGfxTextureLoad("Assets/MainMenu/Options/o_Slider.png");
     o_VolumeSliderThumb         = AEGfxTextureLoad("Assets/MainMenu/Options/o_SliderThumb.png");
+
+    returnToMMTexture11 = AEGfxTextureLoad("Assets/MainMenu/Options/o_ExitButtonCredits.png");
+
 }
 
 void Options::init()
@@ -71,6 +89,18 @@ void Options::init()
 
 void Options::update(float* volume, bool* muted)
 {
+    // Check if the left mouse button has been clicked
+    if (AEInputCheckTriggered(AEVK_LBUTTON))
+    {
+        // Check which button has been clicked
+
+        if (Input::isButtonClicked(buttons11[0].x, buttons11[0].y, buttons11[0].width, buttons11[0].height))
+        {
+
+            next_state = GS_MAINMENU;
+        }
+    }
+
     static float animationProgress = 0.0f;
     static bool lastMuteState = false;
 
@@ -135,6 +165,9 @@ void Options::draw()
 {
     AEGfxSetBackgroundColor(0.5f, 0.0f, 0.0f);
 
+    Rendering::RenderSprite(returnToMMTexture11, returnToMMX11, returnToMMY11, buttonWidth11, buttonHeight11, optionsMesh);
+
+
     Rendering::RenderSprite(o_VolumeSlider, sliderX, sliderY, sliderWidth, sliderHeight, optionsMesh);
     Rendering::RenderSprite(o_VolumeSliderThumb, sliderThumbX, sliderThumbY, sliderThumbWidth, sliderThumbHeight, optionsMesh);
 
@@ -166,6 +199,9 @@ void Options::unload()
 
     AEGfxTextureUnload(o_VolumeSlider);
     AEGfxTextureUnload(o_VolumeSliderThumb);
+
+    AEGfxTextureUnload(returnToMMTexture11);
+
 }
 
 
