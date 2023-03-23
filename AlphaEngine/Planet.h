@@ -32,7 +32,7 @@ struct Planets
 
 // PLANET VARIABLES------------------
 	int					id;						//ID for current planet
-	int					 texture_index; //-yy
+	int					texture_index; //-yy
 
 	AEMtx33				scale;
 	AEMtx33				rotate;

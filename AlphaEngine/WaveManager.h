@@ -18,6 +18,7 @@ struct WaveManager
 {
 	struct Indicator
 	{
+		AEGfxTexture*		tex;
 		AEMtx33				scale;
 		AEMtx33				rotate;
 		AEMtx33				translate;
@@ -96,4 +97,5 @@ extern Player player;
 extern Planets planet;
 extern Camera camera;
 extern std::vector<Planets> planet_vector;
+extern std::vector<AEGfxTexture*> planet_textures;
 extern std::vector<Shuttles> shuttle_vector;
