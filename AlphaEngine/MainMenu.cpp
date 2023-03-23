@@ -102,7 +102,7 @@ void main_menu::init()
     MMplanet.debris_vector = MM_create_debris(MMplanet.position.x, MMplanet.position.y, MMplanet.size, MMplanet.max_debris);
 
 
-    MMplanet.position.x = -AEGetWindowWidth() / 2;
+    MMplanet.position.x = AEGetWindowWidth() / 2;
     MMplanet.position.y = -AEGetWindowHeight() / 2;
     MMplanet.size = 1200;
     MMplanet.shuttle_timer = 0.0;																													// Zero out shuttle timer on spawn
@@ -174,14 +174,14 @@ void main_menu::update()
         // ================
         // Check for input
         // ================
-        if (AEInputCheckCurr(AEVK_A) && MMplayer.position.x >= AEGfxGetWinMinX() + MMplayer.size) {
+        if (AEInputCheckCurr(AEVK_A) && MMplayer.position.y >= AEGfxGetWinMinY() + MMplayer.size) {
             MMplayer.direction += (MMplayer.rot_speed / 2) * static_cast<f32>(MMframe_time);
 
             MMplayer.position.x = MMplanet.position.x + (static_cast<f32>(MMplanet.size) / 2 + MMplanet.orbit_range) * AECos(MMplayer.direction);
             MMplayer.position.y = MMplanet.position.y + (static_cast<f32>(MMplanet.size) / 2 + MMplanet.orbit_range) * AESin(MMplayer.direction);
         }
 
-        if (AEInputCheckCurr(AEVK_D) && MMplayer.position.y >= AEGfxGetWinMinY() + MMplayer.size) {
+        if (AEInputCheckCurr(AEVK_D) && MMplayer.position.x <= AEGfxGetWinMaxX() - MMplayer.size) {
             MMplayer.direction -= (MMplayer.rot_speed / 2) * static_cast<f32>(MMframe_time);
 
             MMplayer.position.x = MMplanet.position.x + (static_cast<f32>(MMplanet.size) / 2 + MMplanet.orbit_range) * AECos(MMplayer.direction);
@@ -584,10 +584,10 @@ void MMspawn_shuttle()
 
     AEVec2Zero(&new_shuttle.velocity);
 
-    new_shuttle.position.x = MMplanet.position.x + 250;
+    new_shuttle.position.x = MMplanet.position.x - 250;
     new_shuttle.position.y = MMplanet.position.y + 250;
 
-    f32 rand_angle = 45;
+    f32 rand_angle = 45 + 90;
     new_shuttle.direction.x = cos(rand_angle);
     new_shuttle.direction.y = sin(rand_angle);
 
