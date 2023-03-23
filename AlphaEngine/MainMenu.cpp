@@ -67,8 +67,8 @@ void main_menu::load()
 
     AudioManager::LoadSound("Assets/BGM/cinescifi.wav", true);
 
-    MMtexplayer = AEGfxTextureLoad("Assets/MainLevel/ml_Spaceship.png");
-    MMtexplanet = AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture.png");
+    MMtexplayer = AEGfxTextureLoad("Assets/MainLevel/ml_Spaceship2.png");
+    MMtexplanet = AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture4.png");
     MMorbit_tex = AEGfxTextureLoad("Assets/MainLevel/ml_OrbitRing.png");
     MMtexdebris = AEGfxTextureLoad("Assets/MainLevel/ml_Debris.png");
     MMtexbeam = AEGfxTextureLoad("Assets/MainLevel/ml_TractorBeam.png");

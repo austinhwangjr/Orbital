@@ -39,6 +39,14 @@ void Planets::load()
 {
 	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture0.png"));
 	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture1.png"));
+	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture2.png"));
+	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture3.png"));
+	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture4.png"));
+	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture5.png"));
+	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture6.png"));
+	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture7.png"));
+	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture8.png"));
+	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture9.png"));
 
 	orbit_tex = AEGfxTextureLoad("Assets/MainLevel/ml_OrbitRing.png");
 	runway_tex = AEGfxTextureLoad("Assets/MainLevel/ml_arrow.png");
