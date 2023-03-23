@@ -4,7 +4,7 @@
 #include <vector>
 
 // Textures
-extern AEGfxTexture* player_tex;
+AEGfxTexture* drone_tex;
 extern AEGfxTexture* tractor_beam_tex;
 extern AEGfxTexture* shop_icon_tex;
 
@@ -22,7 +22,8 @@ extern std::vector<std::vector<Debris>> debris_vector_all;
 
 void Drone::load()
 {
-	
+	drone_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Drone.png");
+
 }
 
 void Drone::init(Player player)
@@ -289,7 +290,7 @@ void Drone::draw(AEGfxVertexList* pMesh, PlayerUI player_ui)
 		else
 			AEGfxSetTintColor(1.f, 0.3f, 0.3f, 1.f);
 
-		AEGfxTextureSet(player_tex, 0, 0);
+		AEGfxTextureSet(drone_tex, 0, 0);
 		AEGfxSetTransform(drone_transform.m);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 	}
@@ -303,7 +304,7 @@ void Drone::draw(AEGfxVertexList* pMesh, PlayerUI player_ui)
 			Drone& drone = drone_vector_all[i][j];
 
 			// Drone
-			AEGfxTextureSet(player_tex, 0, 0);
+			AEGfxTextureSet(drone_tex, 0, 0);
 			AEGfxSetTransform(drone.drone_transform.m);
 			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 			
@@ -330,5 +331,6 @@ void Drone::free()
 
 void Drone::unload()
 {
-	
+	AEGfxTextureUnload(drone_tex);
+
 }
