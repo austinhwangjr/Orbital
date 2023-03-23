@@ -27,6 +27,7 @@ AEGfxTexture* runway_tex;
 
 std::vector<Planets> planet_vector;
 std::vector<Planets::Runway> runway_vector;
+std::vector<AEGfxTexture*> planet_textures;
 
 extern WaveManager wave_manager;
 extern Shuttles shuttle;
@@ -36,7 +37,9 @@ extern std::vector<std::vector<Drone>> drone_vector_all;
 
 void Planets::load()
 {
-	planet_tex = AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture.png");
+	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture0.png"));
+	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture1.png"));
+
 	orbit_tex = AEGfxTextureLoad("Assets/MainLevel/ml_OrbitRing.png");
 	runway_tex = AEGfxTextureLoad("Assets/MainLevel/ml_arrow.png");
 }
@@ -146,7 +149,7 @@ void Planets::draw(AEGfxVertexList* pMesh)
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
 		// Draw planet sprite
-		AEGfxTextureSet(planet_tex, 0, 0);
+		AEGfxTextureSet(planet_textures[planet_vector[i].texture_index], 0, 0);
 		AEGfxSetTransform(planet_vector[i].transform.m);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
@@ -180,7 +183,10 @@ void Planets::free()
 
 void Planets::unload()
 {
-	AEGfxTextureUnload(planet_tex);
+	for (auto& texture : planet_textures)
+	{
+		AEGfxTextureUnload(texture);
+	}
 	AEGfxTextureUnload(orbit_tex);
 	AEGfxTextureUnload(runway_tex);
 }
@@ -188,6 +194,10 @@ void Planets::unload()
 void Planets::spawn(int shuttle_randomize_amount)
 {
 	Planets new_planet;
+
+	// yy random planet tex
+	new_planet.texture_index = rand() % planet_textures.size();
+
 
 	new_planet.id = wave_manager.planet_count;
 	new_planet.wave_complete = false;

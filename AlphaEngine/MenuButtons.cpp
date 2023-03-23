@@ -28,29 +28,29 @@ static float hoverOffsetX = 30.0f;
 
 
 // Set the dimensions of each button
-static float buttonWidth = 200.f;
-static float buttonHeight = 50.f;
+static float buttonWidth = 300.f;
+static float buttonHeight = 100.f;
 
 // Set the dimensions of each button for the hover state
-static float hoverButtonWidth = 210.f;
-static float hoverButtonHeight = 60.f;
+static float hoverButtonWidth = 310.f;
+static float hoverButtonHeight = 110.f;
 
-static float startX = -590.0f;
+static float startX = -530.0f;
 static float startY = 15.f;
 
-static float howToPlayX = -590.0f;
+static float howToPlayX = -530.0f;
 static float howToPlayY = -60.f;
 
-static float highScoreX = -590.0f;
+static float highScoreX = -530.0f;
 static float highScoreY = -135.f;
 
-static float optionsX = -590.0f;
+static float optionsX = -530.0f;
 static float optionsY = -210.f;
 
-static float creditsX = -590.0f;
+static float creditsX = -530.0f;
 static float creditsY = -285.f;
 
-static float quitX = -590.0f;
+static float quitX = -530.0f;
 static float quitY = -360.f;
 // checking input area stuff
 struct Button
@@ -253,7 +253,7 @@ void Menu_Button::update()
 void Menu_Button::draw(AEGfxVertexList* pMesh)
 {
     float squareSize = 23.0f;
-    float offsetX = -110.0f;
+    float offsetX = -180.0f;
 
     for (int i = 0; i < 6; ++i)
     {
