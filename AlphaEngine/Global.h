@@ -2,7 +2,7 @@
 #include "AEEngine.h"
 
 #define FONT_ID_SIZE 20
-#define FONT_ID_SHOP_SIZE 15
+#define FONT_ID_SHOP_SIZE 20
 
 extern bool		g_isMute;
 

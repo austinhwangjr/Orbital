@@ -75,7 +75,7 @@ void Player::init()
 
 void Player::update(f64 frame_time)
 {
-	elapsedTime += AEFrameRateControllerGetFrameTime();
+	elapsedTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
 
 	// Player is in orbit state
 	if (state == PLAYER_ORBIT)
@@ -133,7 +133,7 @@ static bool isOrbitingPlanet = false; // flag for is orbiting.. pretty sure supp
 		// Update the Lerp value for the halo scale
 		halo_scale_lerp += (1.0f - halo_scale_lerp) * 0.1f;
 
-		f32 val{ current_planet.size - 60.f };
+		f32 val{ current_planet.size + 50.f };
 
 		// Use the Lerp value to scale the halo
 		AEMtx33Scale(&scale, val * halo_scale_lerp, val * halo_scale_lerp);

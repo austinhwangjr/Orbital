@@ -12,13 +12,15 @@
 #include "Planet.h"
 #include "Debris.h"
 #include "Shuttle.h"
+#include "Easing.h"
 
 #define MM_SHUTTLE_SIZE 20
 AEGfxTexture* TexMMBackground = nullptr;
 AEGfxTexture* TexTitle = nullptr;
 
-int flag=0;
+static bool isOrbitingPlanet = false; // flag for is orbiting
 // Variables
+float MManimationDuration = 1.0f; // Duration of the animation in seconds
 bool MMbeam_active = false;
 AEGfxVertexList* pMeshMMBackground;
 AEGfxVertexList* pMeshMM;
@@ -36,6 +38,7 @@ AEGfxTexture* MMtexdebris;
 AEGfxTexture* MMtexbeam;
 AEGfxTexture* MMshuttle_tex;
 AEGfxTexture* MMexplosion_tex;
+AEGfxTexture* MMorbit_halo_tex;
 
 f64 MMframe_time{}, MMtotal_time{};
 
@@ -74,6 +77,7 @@ void main_menu::load()
     MMtexbeam = AEGfxTextureLoad("Assets/MainLevel/ml_TractorBeam.png");
     MMshuttle_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Shuttle.png");
     MMexplosion_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Explosion.png");
+    MMorbit_halo_tex = AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
 }
 
 void main_menu::init()
@@ -103,11 +107,12 @@ void main_menu::init()
     MMplanet.debris_vector = MM_create_debris(MMplanet.position.x, MMplanet.position.y, MMplanet.size, MMplanet.max_debris);
 
 
-    MMplanet.position.x = AEGetWindowWidth() / 2;
-    MMplanet.position.y = -AEGetWindowHeight() / 2;
+    MMplanet.position.x = static_cast<f32>(AEGetWindowWidth() / 2);
+    MMplanet.position.y = static_cast<f32>( - AEGetWindowHeight() / 2);
     MMplanet.size = 1200;
     MMplanet.shuttle_timer = 0.0;																													// Zero out shuttle timer on spawn
     MMplanet.shuttle_time_to_spawn = static_cast<f32>(rand() % (SHUTTLE_SPAWN_TIME_MAX - SHUTTLE_SPAWN_TIME_MIN + 1) + SHUTTLE_SPAWN_TIME_MIN);	// Randomize value for timer to reach before spawning
+    
 }
 
 void main_menu::update()
@@ -117,11 +122,15 @@ void main_menu::update()
     MMframe_time = AEFrameRateControllerGetFrameTime();
     MMtotal_time += MMframe_time;
 
-    //PLAYER MOVEMENT
     
-    // Player is in free-flying mode
+    // =======================
+    //  PLAYER MOVEMENT
+    // =======================
+
+    // =======================
+    //  FREE FLYING MODE
+    // =======================
     if (MMplayer.state == PLAYER_FLY) {
-        flag = 0;
         if (AEInputCheckCurr(AEVK_W)) {
             AEVec2 added;
             AEVec2Set(&added, AECos(MMplayer.direction), AESin(MMplayer.direction));
@@ -164,16 +173,20 @@ void main_menu::update()
         }
 
         // =======================
-        // Update player position
+        // Update Player Position
         // =======================
 
         MMplayer.position.x = MMplayer.position.x + MMplayer.velocity.x * static_cast<f32>(MMframe_time);
         MMplayer.position.y = MMplayer.position.y + MMplayer.velocity.y * static_cast<f32>(MMframe_time);
 
     }
+
+    // =======================
+    //  ORBIT MODE
+    // =======================
     if (MMplayer.state == PLAYER_ORBIT) {
         // ================
-        // Check for input
+        // Check for Input
         // ================
         if (AEInputCheckCurr(AEVK_A) && MMplayer.position.y >= AEGfxGetWinMinY() + MMplayer.size) {
             MMplayer.direction += (MMplayer.rot_speed / 2) * static_cast<f32>(MMframe_time);
@@ -262,11 +275,17 @@ void main_menu::update()
 
     }
 
+
+    // ============================
+    //  WRAPPING OF PLAYER POSITION 
+    // ============================
     MMplayer.position.x = AEWrap(MMplayer.position.x, AEGfxGetWinMinX(), AEGfxGetWinMaxX());
     MMplayer.position.y = AEWrap(MMplayer.position.y, AEGfxGetWinMinY(), AEGfxGetWinMaxY());
 
 
-
+    // ============================
+    //  SPAWN SHUTTLE
+    // ============================
     if (MMplanet.shuttle_timer >= MMplanet.shuttle_time_to_spawn)
     {
         MMspawn_shuttle();
@@ -274,11 +293,17 @@ void main_menu::update()
         MMplanet.shuttle_time_to_spawn = static_cast<f32>(rand() % (SHUTTLE_SPAWN_TIME_MAX - SHUTTLE_SPAWN_TIME_MIN) + SHUTTLE_SPAWN_TIME_MIN);	// Randomize time_to_spawn
     }
 
-    // Update shuttle timer
+    // ===================================
+    //  UPDATE SHUTTLE TIMER AND DIRECTION
+    // ===================================
     MMplanet.shuttle_timer += static_cast<f32>(MMframe_time);
    
     MMplanet.direction += PLANET_ROT_SPEED * static_cast<f32>(MMframe_time);
 
+
+    // =========================================
+    // Calculate the matrix for Planet
+    // =========================================
     AEMtx33Scale(&MMplanet.scale, MMplanet.size, MMplanet.size);
     
     AEMtx33Rot(&MMplanet.rotate, MMplanet.direction);
@@ -325,13 +350,19 @@ void main_menu::update()
     AEMtx33Concat(&MMplayer.beam_transform, &trans, &MMplayer.beam_transform);
 
     
-
+    // =========================================
+    // ERASE DEBRIS IF IT IS NOT ACTIVE
+    // =========================================
     for (size_t i = 0; i < MMplanet.debris_vector.size(); i++) {
         if (MMplanet.debris_vector[i].active == false && MMplanet.debris_vector[i].explosion.is_draw == 0) {
             MMplanet.debris_vector.erase(MMplanet.debris_vector.begin() + i);
         }
     }
 
+
+    // =========================================
+    // GAME LOGIC FOR DEBRIS
+    // =========================================
     for (size_t i = 0; i < MMplanet.debris_vector.size(); i++) {
         Debris& debris = MMplanet.debris_vector[i];
 
@@ -366,7 +397,50 @@ void main_menu::update()
         }
     }
 
-    //Collision Check with shuttle and debris
+    // =============================================
+    // GAME LOGIC FOR ORBIT INDICATOR AND ITS MATRIX
+    // =============================================
+    if (MMplayer.state == PLAYER_ORBIT)
+    {
+        // Check if the spaceship just started orbiting a planet
+        if (!isOrbitingPlanet)
+        {
+            MMplayer.halo_scale_lerp = 0; // Reset the Lerp value for halo scale
+            isOrbitingPlanet = true;
+        }
+
+        // Calculate progress based on the elapsed time and animation duration
+        float progress = static_cast<float>(MMframe_time / MManimationDuration);
+        if (progress > 1.0f)
+        {
+            progress = 1.0f; // Clamp progress to 1.0f to prevent overshooting
+        }
+
+        // Use the EaseInOutBack easing function for smooth interpolation
+        float easedProgress = EaseInOutBack(0, 1, progress);
+
+        // Update the Lerp value for the halo scale
+        MMplayer.halo_scale_lerp += (1.0f - MMplayer.halo_scale_lerp) * 0.5f;
+
+        f32 val{ MMplanet.size + 50.f };
+
+        // Use the Lerp value to scale the halo
+        AEMtx33Scale(&scale, val * MMplayer.halo_scale_lerp, val * MMplayer.halo_scale_lerp);
+        AEMtx33Trans(&trans, MMplanet.position.x, MMplanet.position.y);
+        AEMtx33Concat(&MMplayer.orbit_halo_transform, &rot, &scale);
+        AEMtx33Concat(&MMplayer.orbit_halo_transform, &trans, &MMplayer.orbit_halo_transform);
+    }
+    else
+    {
+        // The spaceship is not orbiting a planet, so set the flag to false
+        isOrbitingPlanet = false;
+    }
+
+
+    // =======================================
+    // COLLISION CHECK WITH SHUTTLE AND DEBRIS
+    // =======================================
+    
     for (size_t i{}; i < MMshuttle_vector.size(); i++) {
         for (int k = 0; k < MMplanet.debris_vector.size(); ++k) {
             if (MMshuttle_vector[i].active) {
@@ -385,13 +459,16 @@ void main_menu::update()
         }
     }
 
+    // =======================================
+    // EXPLOPSION LOGIC AND MATRIX
+    // =======================================
     for (size_t i = 0; i < MMplanet.debris_vector.size(); i++) {
         Explosion& explosion = MMplanet.debris_vector[i].explosion;
 
         if (explosion.is_draw == 1) {
 
             if (explosion.timer <= explosion.total_time) {
-                explosion.timer += MMframe_time;
+                explosion.timer += static_cast<f32>(MMframe_time);
                 AEMtx33Scale(&scale, explosion.width, explosion.height);
                 AEMtx33Rot(&rot, 0);
                 AEMtx33Trans(&trans, explosion.position.x, explosion.position.y);
@@ -426,7 +503,9 @@ void main_menu::update()
     }
     
 
-
+    // =======================================
+    // GAME LOGIC FOR SHUTTLE AND ITS MATRIX
+    // =======================================
     for (size_t i{}; i < MMshuttle_vector.size(); i++)
     {
         if (MMshuttle_vector[i].active)
@@ -459,7 +538,9 @@ void main_menu::update()
         }
     }
 
-   
+    // ================
+    //  MENU BUTTONS
+    // ================
     menuButtons.update();
 }
 
@@ -470,25 +551,38 @@ void main_menu::draw()
 
     // Draw the background mesh
     RenderMMBackground.RenderSprite(TexMMBackground, 0.f, 0.f, 800.f, 450.f, pMeshMMBackground);
-    RenderMMBackground.RenderSprite(TexTitle, 0.f, 0.f, 800.f, 450.f, pMeshMMBackground);
+    RenderMMBackground.RenderSprite(TexTitle, -250.f, 50.f, 800.f, 450.f, pMeshMMBackground);
 
-    // Draw orbit ring first
+    // ====================
+    //  DRAWING ORBIT RING
+    // ====================
     AEGfxTextureSet(MMorbit_tex, 0, 0);
     AEGfxSetTransform(MMplanet.orbit_transform.m);
     AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
 
-    // Draw planet sprite
+    if (MMplayer.state == PLAYER_ORBIT) {
+        AEGfxTextureSet(MMorbit_halo_tex, 0, 0);
+        AEGfxSetTransform(MMplayer.orbit_halo_transform.m);
+        AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
+    }
+
+    // ====================
+    //  DRAWING PLANET
+    // ====================
     AEGfxTextureSet(MMtexplanet, 0, 0);
     AEGfxSetTransform(MMplanet.transform.m);
     AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
 
-    //Draw Player sprite
+    // ====================
+    //  DRAWING PLAYER
+    // ====================
     AEGfxTextureSet(MMtexplayer, 0, 0);
     AEGfxSetTransform(MMplayer.player_transform.m);
     AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
 
-    //Draw beam sprite
- // tractor beam
+    // =====================
+    //  DRAWING TRACTOR BEAM
+    // =====================
     if (AEInputCheckCurr(AEVK_SPACE) && MMplayer.state == PLAYER_ORBIT) {
         AEGfxTextureSet(MMtexbeam, 0, 0);
         AEGfxSetTransform(MMplayer.beam_transform.m);
@@ -496,7 +590,9 @@ void main_menu::draw()
     }
 
 
-    //Draw debris sprite
+    // ====================
+    //  DRAWING DEBRIS 
+    // ====================
     for (size_t i = 0; i < MMplanet.debris_vector.size(); i++) {
         if (MMplanet.debris_vector[i].active)
         {
@@ -506,7 +602,9 @@ void main_menu::draw()
         }
     }
 
-    //Draw Explosion
+    // ====================
+    //  DRAWING EXOLOSION
+    // ====================
     for (size_t i = 0; i < MMplanet.debris_vector.size(); i++) {
 
         Explosion& explosion = MMplanet.debris_vector[i].explosion;
@@ -526,6 +624,9 @@ void main_menu::draw()
     }
 
 
+    // ====================
+    //  DRAWING SHUTTLE
+    // ====================
     for (size_t i{}; i < MMshuttle_vector.size(); i++)
     {
         AEGfxTextureSet(MMshuttle_tex, 0, 0);
@@ -547,7 +648,9 @@ void main_menu::draw()
 
     AEGfxSetTransparency(1.0f);
   
-    // Draw the menu buttons using pMesh1
+    // ====================
+    //  DRAWING MENU BUTTONS
+    // ====================
     menuButtons.draw(pMeshMM);
 }
 
@@ -570,10 +673,13 @@ void main_menu::unload()
     AEGfxTextureUnload(TexTitle);
     AEGfxTextureUnload(MMshuttle_tex);
     AEGfxTextureUnload(MMexplosion_tex);
+    AEGfxTextureUnload(MMorbit_halo_tex);
     AEGfxTextureUnload(TexMMBackground); // unload the texture for the background image
 }
 
-
+// ===========================
+//  SPAWN SHUTTLE IN MAIN MENU
+// ===========================
 void MMspawn_shuttle()
 {
     Shuttles new_shuttle;

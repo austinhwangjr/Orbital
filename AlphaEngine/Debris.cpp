@@ -164,7 +164,7 @@ void Debris::update(f64 frame_time)
 			if (explosion.is_draw == 1) {
 
 				if (explosion.timer <= explosion.total_time) {
-					explosion.timer += frame_time;
+					explosion.timer += static_cast<f32>(frame_time);
 					AEMtx33Scale(&scale, explosion.width, explosion.height);
 					AEMtx33Rot(&rot, 0);
 					AEMtx33Trans(&trans, explosion.position.x, explosion.position.y);
@@ -252,12 +252,12 @@ std::vector<Debris> Debris::create_debris(f32 planet_x, f32 planet_y, double siz
 		new_debris.id = i + 1;
 		new_debris.angle = i * (2 * PI / static_cast<f32>(total_debris));
 		new_debris.size = static_cast<f32>(rand() % (MAX_DEBRIS_SIZE - MIN_DEBRIS_SIZE) + MIN_DEBRIS_SIZE);
-		new_debris.position.x = planet_x + ((size / 2) + 20) * AECos(AEDegToRad(new_debris.angle));
-		new_debris.position.y = planet_y + ((size / 2) + 20) * AESin(AEDegToRad(new_debris.angle));
+		new_debris.position.x = static_cast<f32>(planet_x + ((size / 2) + 20) * AECos(AEDegToRad(new_debris.angle)));
+		new_debris.position.y = static_cast<f32>(planet_y + ((size / 2) + 20) * AESin(AEDegToRad(new_debris.angle)));
 		new_debris.turning_speed = SPEED_DEBRIS;
 		new_debris.active = true;
 		new_debris.state = ORBIT_AROUND_PLANET;
-		new_debris.distance = OUTERRIM_TO_DEBRIS;
+		new_debris.distance = static_cast<f32>(OUTERRIM_TO_DEBRIS);
 
 		new_debris.scale = { 0 };
 		new_debris.rotate = { 0 };
@@ -286,7 +286,7 @@ void spawn_debris_shuttle(AEVec2 position, int planet_id, int num_of_debris) {
 		new_debris.angle = static_cast<f32>(rand() % static_cast<int>(new_debris.size));
 		new_debris.position.x = position.x + (-(rand()  % (MAX_BUFFER - MIN_BUFFER)) + new_debris.size);
 		new_debris.position.y = position.y + (-(rand() % (MAX_BUFFER - MIN_BUFFER)) + new_debris.size);
-		new_debris.id = debris_vector_all[planet_id].size() + 1;
+		new_debris.id = static_cast<int>(debris_vector_all[planet_id].size() + 1);
 		new_debris.turning_speed = SPEED_DEBRIS;
 		new_debris.active = true;
 		new_debris.state = MOVE_TOWARDS_PLANET;
@@ -295,7 +295,7 @@ void spawn_debris_shuttle(AEVec2 position, int planet_id, int num_of_debris) {
 		new_debris.rotate = { 0 };
 		new_debris.translate = { 0 };
 		new_debris.transform = { 0 };
-		new_debris.distance = OUTERRIM_TO_DEBRIS + (rand() % MIN_BUFFER);
+		new_debris.distance = static_cast<f32>(OUTERRIM_TO_DEBRIS + (rand() % MIN_BUFFER));
 
 
 		//EXPLOSION
@@ -362,7 +362,7 @@ void spawn_debris(int num_of_debris, int planet_id) {
 
 			if (not_collide == 1) {
 				current_count += 1;
-				new_debris.id = debris_vector_all[planet_id].size() + 1;
+				new_debris.id = static_cast<int>(debris_vector_all[planet_id].size() + 1);
 				new_debris.turning_speed = SPEED_DEBRIS;
 				new_debris.active = true;
 
@@ -388,12 +388,12 @@ std::vector<Debris> MM_create_debris(f32 planet_x, f32 planet_y, double size, in
 		new_debris.id = i + 1;
 		new_debris.angle = i * (2 * PI / static_cast<f32>(total_debris));
 		new_debris.size = static_cast<f32>(rand() % (MAX_DEBRIS_SIZE - MIN_DEBRIS_SIZE) + MIN_DEBRIS_SIZE);
-		new_debris.position.x = planet_x + ((size / 2) + 20) * AECos(AEDegToRad(new_debris.angle));
-		new_debris.position.y = planet_y + ((size / 2) + 20) * AESin(AEDegToRad(new_debris.angle));
+		new_debris.position.x = static_cast<f32>(planet_x + ((size / 2) + 20) * AECos(AEDegToRad(new_debris.angle)));
+		new_debris.position.y = static_cast<f32>(planet_y + ((size / 2) + 20) * AESin(AEDegToRad(new_debris.angle)));
 		new_debris.turning_speed = SPEED_DEBRIS;
 		new_debris.active = true;
 		new_debris.state = ORBIT_AROUND_PLANET;
-		new_debris.distance = OUTERRIM_TO_DEBRIS;
+		new_debris.distance = static_cast<int>(OUTERRIM_TO_DEBRIS);
 
 		new_debris.scale = { 0 };
 		new_debris.rotate = { 0 };
@@ -418,7 +418,7 @@ void MMspawn_debris_shuttle(AEVec2 position, int num_of_debris) {
 		new_debris.angle = static_cast<f32>(rand() % static_cast<int>(new_debris.size));
 		new_debris.position.x = position.x + (-(rand() % (MAX_BUFFER - MIN_BUFFER)) + new_debris.size);
 		new_debris.position.y = position.y + (-(rand() % (MAX_BUFFER - MIN_BUFFER)) + new_debris.size);
-		new_debris.id = MMplanet.debris_vector.size() + 1;
+		new_debris.id = static_cast<int>(MMplanet.debris_vector.size() + 1);
 		new_debris.turning_speed = SPEED_DEBRIS;
 		new_debris.active = true;
 		new_debris.state = MOVE_TOWARDS_PLANET;
@@ -427,7 +427,7 @@ void MMspawn_debris_shuttle(AEVec2 position, int num_of_debris) {
 		new_debris.rotate = { 0 };
 		new_debris.translate = { 0 };
 		new_debris.transform = { 0 };
-		new_debris.distance = OUTERRIM_TO_DEBRIS + (rand() % MIN_BUFFER);
+		new_debris.distance = static_cast<f32>(OUTERRIM_TO_DEBRIS + (rand() % MIN_BUFFER));
 
 		//EXPLOSION
 		new_debris.explosion.height = EXPLOSION_HEIGHT;

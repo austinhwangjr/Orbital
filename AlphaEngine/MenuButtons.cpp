@@ -36,22 +36,22 @@ static float hoverButtonWidth = 310.f;
 static float hoverButtonHeight = 110.f;
 
 static float startX = -530.0f;
-static float startY = 15.f;
+static float startY = 40.f;
 
 static float howToPlayX = -530.0f;
-static float howToPlayY = -60.f;
+static float howToPlayY = -45.f;
 
 static float highScoreX = -530.0f;
-static float highScoreY = -135.f;
+static float highScoreY = -120.f;
 
 static float optionsX = -530.0f;
-static float optionsY = -210.f;
+static float optionsY = -195.f;
 
 static float creditsX = -530.0f;
-static float creditsY = -285.f;
+static float creditsY = -270.f;
 
 static float quitX = -530.0f;
-static float quitY = -360.f;
+static float quitY = -345.f;
 // checking input area stuff
 struct Button
 {
@@ -205,7 +205,7 @@ void Menu_Button::update()
             squareRotations[i] -= rotationSpeed;
             if (squareRotations[i] < -M_PI / 2.0f)
             {
-                (squareRotations[i] = -M_PI / 2.0f);
+                (squareRotations[i] = static_cast<float>( - M_PI / 2.0f));
             }
 
             // colour easing
