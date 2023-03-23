@@ -551,7 +551,7 @@ void main_menu::draw()
 
     // Draw the background mesh
     RenderMMBackground.RenderSprite(TexMMBackground, 0.f, 0.f, 800.f, 450.f, pMeshMMBackground);
-    RenderMMBackground.RenderSprite(TexTitle, 0.f, 0.f, 800.f, 450.f, pMeshMMBackground);
+    RenderMMBackground.RenderSprite(TexTitle, -250.f, 50.f, 800.f, 450.f, pMeshMMBackground);
 
     // ====================
     //  DRAWING ORBIT RING
