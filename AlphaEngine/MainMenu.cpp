@@ -12,6 +12,7 @@
 #include "Planet.h"
 #include "Debris.h"
 #include "Shuttle.h"
+#include "Easing.h"
 
 #define MM_SHUTTLE_SIZE 20
 AEGfxTexture* TexMMBackground = nullptr;
@@ -19,6 +20,7 @@ AEGfxTexture* TexTitle = nullptr;
 
 int flag=0;
 // Variables
+float MManimationDuration = 1.0f; // Duration of the animation in seconds
 bool MMbeam_active = false;
 AEGfxVertexList* pMeshMMBackground;
 AEGfxVertexList* pMeshMM;
@@ -36,6 +38,7 @@ AEGfxTexture* MMtexdebris;
 AEGfxTexture* MMtexbeam;
 AEGfxTexture* MMshuttle_tex;
 AEGfxTexture* MMexplosion_tex;
+AEGfxTexture* MMorbit_halo_tex;
 
 f64 MMframe_time{}, MMtotal_time{};
 
@@ -74,6 +77,7 @@ void main_menu::load()
     MMtexbeam = AEGfxTextureLoad("Assets/MainLevel/ml_TractorBeam.png");
     MMshuttle_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Shuttle.png");
     MMexplosion_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Explosion.png");
+    MMorbit_halo_tex = AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
 }
 
 void main_menu::init()
@@ -366,6 +370,44 @@ void main_menu::update()
         }
     }
 
+    static bool isOrbitingPlanet = false; // flag for is orbiting.. pretty sure suppose to be init, but placeholder! :(
+
+    if (MMplayer.state == PLAYER_ORBIT)
+    {
+        // Check if the spaceship just started orbiting a planet
+        if (!isOrbitingPlanet)
+        {
+            MMplayer.halo_scale_lerp = 0; // Reset the Lerp value for halo scale
+            isOrbitingPlanet = true;
+        }
+
+        // Calculate progress based on the elapsed time and animation duration
+        float progress = MMframe_time / MManimationDuration;
+        if (progress > 1.0f)
+        {
+            progress = 1.0f; // Clamp progress to 1.0f to prevent overshooting
+        }
+
+        // Use the EaseInOutBack easing function for smooth interpolation
+        float easedProgress = EaseInOutBack(0, 1, progress);
+
+        // Update the Lerp value for the halo scale
+        MMplayer.halo_scale_lerp += (1.0f - MMplayer.halo_scale_lerp) * 0.1f;
+
+        f32 val{ MMplanet.size + 50.f };
+
+        // Use the Lerp value to scale the halo
+        AEMtx33Scale(&scale, val * MMplayer.halo_scale_lerp, val * MMplayer.halo_scale_lerp);
+        AEMtx33Trans(&trans, MMplanet.position.x, MMplanet.position.y);
+        AEMtx33Concat(&MMplayer.orbit_halo_transform, &rot, &scale);
+        AEMtx33Concat(&MMplayer.orbit_halo_transform, &trans, &MMplayer.orbit_halo_transform);
+    }
+    else
+    {
+        // The spaceship is not orbiting a planet, so set the flag to false
+        isOrbitingPlanet = false;
+    }
+
     //Collision Check with shuttle and debris
     for (size_t i{}; i < MMshuttle_vector.size(); i++) {
         for (int k = 0; k < MMplanet.debris_vector.size(); ++k) {
@@ -477,6 +519,12 @@ void main_menu::draw()
     AEGfxSetTransform(MMplanet.orbit_transform.m);
     AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
 
+    if (MMplayer.state == PLAYER_ORBIT) {
+        AEGfxTextureSet(MMorbit_halo_tex, 0, 0);
+        AEGfxSetTransform(MMplayer.orbit_halo_transform.m);
+        AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
+    }
+
     // Draw planet sprite
     AEGfxTextureSet(MMtexplanet, 0, 0);
     AEGfxSetTransform(MMplanet.transform.m);
@@ -526,6 +574,7 @@ void main_menu::draw()
     }
 
 
+
     for (size_t i{}; i < MMshuttle_vector.size(); i++)
     {
         AEGfxTextureSet(MMshuttle_tex, 0, 0);
@@ -570,6 +619,7 @@ void main_menu::unload()
     AEGfxTextureUnload(TexTitle);
     AEGfxTextureUnload(MMshuttle_tex);
     AEGfxTextureUnload(MMexplosion_tex);
+    AEGfxTextureUnload(MMorbit_halo_tex);
     AEGfxTextureUnload(TexMMBackground); // unload the texture for the background image
 }
 
