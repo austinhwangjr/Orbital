@@ -37,6 +37,12 @@ extern std::vector<std::vector<Drone>> drone_vector_all;
 
 void Planets::load()
 {
+	orbit_tex = AEGfxTextureLoad("Assets/MainLevel/ml_OrbitRing.png");
+	runway_tex = AEGfxTextureLoad("Assets/MainLevel/ml_arrow.png");
+}
+
+void Planets::init()
+{
 	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture0.png"));
 	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture1.png"));
 	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture2.png"));
@@ -47,14 +53,6 @@ void Planets::load()
 	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture7.png"));
 	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture8.png"));
 	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture9.png"));
-
-	orbit_tex = AEGfxTextureLoad("Assets/MainLevel/ml_OrbitRing.png");
-	runway_tex = AEGfxTextureLoad("Assets/MainLevel/ml_arrow.png");
-}
-
-void Planets::init()
-{
-
 }
 
 void Planets::update(f64 frame_time)
@@ -186,6 +184,7 @@ void Planets::free()
 		planet_vector[i].debris_vector.clear();
 	}
 	planet_vector.clear();
+	planet_textures.clear();
 	runway_vector.clear();
 }
 

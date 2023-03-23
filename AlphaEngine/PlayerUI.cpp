@@ -29,6 +29,8 @@ AEGfxTexture* strength_hover_tex;
 AEGfxTexture* mov_speed_button_tex;
 AEGfxTexture* capacity_button_tex;
 AEGfxTexture* strength_button_tex;
+AEGfxTexture* drone_button_tex;
+AEGfxTexture* space_station_button_tex;
 
 // Variables for general UI
 std::string		score, credits, capacity;
@@ -71,6 +73,8 @@ void PlayerUI::load()
 	mov_speed_button_tex		= AEGfxTextureLoad("Assets/MainLevel/ml_MovSpeedUpgradeButton.png");
 	capacity_button_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_CapacityUpgradeButton.png");
 	strength_button_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_BeamStrengthUpgradeButton.png");
+	drone_button_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_DroneButton.png");
+	space_station_button_tex	= AEGfxTextureLoad("Assets/MainLevel/ml_SpaceStationButton.png");
 }
 
 void PlayerUI::init()
@@ -143,18 +147,18 @@ void PlayerUI::init()
 	shop_bg_height			= static_cast<f32>(AEGetWindowHeight()) * 0.85f;
 
 	// Tutorial is opened initially
-	tutorial_triggered = true;
-	tutorial_transition = false;
+	tutorial_triggered		= true;
+	tutorial_transition		= false;
 
 	// Tutorial background
-	tutorial_bg_width = static_cast<f32>(12 * FONT_ID_SIZE);
-	tutorial_bg_height = static_cast<f32>(10 * FONT_ID_SIZE);
+	tutorial_bg_width		= static_cast<f32>(12 * FONT_ID_SIZE);
+	tutorial_bg_height		= static_cast<f32>(10 * FONT_ID_SIZE);
 
 	// Set the offset of the shop
 	shop_offset				= static_cast<f32>(AEGetWindowWidth());
 
 	// Set the offset of the tutorial
-	tutorial_offset = 0;
+	tutorial_offset			= 0;
 
 	// Icons in shop
 	icon_size				= 20.f;
@@ -163,11 +167,11 @@ void PlayerUI::init()
 	upgrade_preview_size	= 400.f;
 
 	// Timer for shop transition
-	shop_trans_timer = 0.f;
-	shop_trans_duration = 1.f;
+	shop_trans_timer		= 0.f;
+	shop_trans_duration		= 1.f;
 
 	// Timer for tutorial transition
-	tutorial_trans_timer = 0.f;
+	tutorial_trans_timer	= 0.f;
 	tutorial_trans_duration = 1.f;
 }
 
@@ -275,7 +279,7 @@ void PlayerUI::update(f64 frame_time, Player& player)
 
 	// Button to open shop
 	button_vector[SHOP_OPEN].position.x = cam_x + static_cast<f32>(AEGetWindowWidth()) / 2.f - button_vector[SHOP_OPEN].width / 2.f;
-	button_vector[SHOP_OPEN].position.y = cam_y + static_cast<f32>(AEGetWindowHeight()) / 2.f - button_vector[SHOP_OPEN].height * 2.5f;
+	button_vector[SHOP_OPEN].position.y = cam_y + static_cast<f32>(AEGetWindowHeight()) / 2.f - button_vector[SHOP_OPEN].height * 3.f;
 
 	// Button to open tutorial
 	button_vector[TUTORIAL_OPEN].position.x = cam_x - (static_cast<f32>(AEGetWindowWidth()) - button_vector[TUTORIAL_OPEN].width) / 2.f + tutorial_bg_width + tutorial_offset;
@@ -540,8 +544,14 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 					}
 					break;
 
+				case CREATE_DRONE:
+					AEGfxTextureSet(drone_button_tex, 0, 0);
+					AEGfxSetTransform(button.transform.m);
+					AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+					break;
+
 				case SPACE_STATION:
-					AEGfxTextureSet(mov_speed_button_tex, 0, 0);
+					AEGfxTextureSet(space_station_button_tex, 0, 0);
 					AEGfxSetTransform(button.transform.m);
 					AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
@@ -576,60 +586,63 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 	shop_text = "PLACEABLES";
 	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), 0.28f + shop_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.7f, 3.f, 0.f, 0.f, 0.f);
 
-	for (int i = 0; i < button_vector.size(); ++i) {
+
+	//Description for Placeables (DRONE)
+	shop_text = "LMB          Select/Place Drone";
+	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), 0.15f + shop_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.35f, 1.f, 1.f, 1.f, 1.f);
+
+	shop_text = "Orbits around the respective planet to clear debris";
+	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), 0.15f + shop_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.25f, 1.f, 1.f, 1.f, 1.f);
+
+	shop_text = "Placeable onto the planet upon turning green";
+	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), 0.15f + shop_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.15f, 1.f, 1.f, 1.f, 1.f);
+
+
+	//Description for Placeables (SPACE STATION)
+	shop_text = "LMB          Select/Place Space Station";
+	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), 0.15f + shop_offset / static_cast<f32>(AEGetWindowWidth() / 2), -0.45f, 1.f, 1.f, 1.f, 1.f);
+
+	shop_text = "Place more Space Stations to generate more currency";
+	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), 0.15f + shop_offset / static_cast<f32>(AEGetWindowWidth() / 2), -0.55f, 1.f, 1.f, 1.f, 1.f);
+
+	shop_text = "Placeable upon turning green";
+	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), 0.15f + shop_offset / static_cast<f32>(AEGetWindowWidth() / 2), -0.65f, 1.f, 1.f, 1.f, 1.f);
+
+
+	for (int i = 1; i < button_vector.size() - 1; ++i) {
 		ShopOption& button = button_vector[i];
 
 		if (button.button_type == MOVEMENT_SPEED) {
 			// Print upgrade name
 			shop_text = "Movement Speed";
-			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()),
-				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button.position.y - button.height / 2.f - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
-				1.f, 1.f, 1.f, 1.f);
 		}
 		else if (button.button_type == CAPACITY) {
 			// Print upgrade name
 			shop_text = "Increase Capacity";
-			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()),
-				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button.position.y - button.height / 2.f - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
-				1.f, 1.f, 1.f, 1.f);
 		}
 		else if (button.button_type == TRACTOR_BEAM_STRENGTH) {
 			// Print upgrade name
 			shop_text = "Beam Strength";
-			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()),
-				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button.position.y - button.height / 2.f - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
-				1.f, 1.f, 1.f, 1.f);
 		}
 		else if (button.button_type == CREATE_DRONE) {
-			// Draw icon
-			AEGfxTextureSet(player_tex, 0, 0);
-			AEGfxSetTransform(drone_icon_transform.m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-
-			// Print upgrade cost
-			shop_text = "Cost: " + std::to_string(drone_cost);
-			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()),
-				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button.position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
-				1.f, 1.f, 1.f, 1.f);
+			// Print upgrade name
+			shop_text = "Drone";
 		}
 		else if (button.button_type == SPACE_STATION) {
-			// Draw icon
-			AEGfxTextureSet(space_station_tex, 0, 0);
-			AEGfxSetTransform(space_station_icon_transform.m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-
-			// Print upgrade cost
-			shop_text = "Cost: " + std::to_string(space_station_cost);
-			AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()),
-				(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
-				(button.position.y - cam_y - FONT_ID_SHOP_SIZE) / static_cast<f32>(AEGetWindowHeight() / 2),
-				1.f, 1.f, 1.f, 1.f);
+			// Print upgrade name
+			shop_text = "Space Station";
 		}
+		AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()),
+			(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
+			(button.position.y - button.height / 2.f - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
+			1.f, 1.f, 1.f, 1.f);
 	}
+
+	shop_text = "PLAYER UPGRADES";
+	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), -0.61f + shop_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.7f, 3.f, 0.f, 0.f, 0.f);
+
+	shop_text = "PLACEABLES";
+	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), 0.28f + shop_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.7f, 3.f, 0.f, 0.f, 0.f);
 	
 	// Tutorial text
 	std::string tutorial;
@@ -850,6 +863,8 @@ void PlayerUI::unload()
 	AEGfxTextureUnload(mov_speed_button_tex);
 	AEGfxTextureUnload(capacity_button_tex);
 	AEGfxTextureUnload(strength_button_tex);
+	AEGfxTextureUnload(drone_button_tex);
+	AEGfxTextureUnload(space_station_button_tex);
 }
 
 void PlayerUI::shop_open(Player& player)

@@ -29,12 +29,15 @@ AEGfxTexture* indicator_tex;
 AEGfxTexture* arrow_tex;
 AEGfxTexture* lineTexture;
 
+//extern AEGfxTexture* space_station_tex;
+
+std::vector<WaveManager::Indicator> ss_indicator_vector;
 std::vector<WaveManager::Indicator> indicator_vector;
 std::vector<WaveManager::Arrow>	arrow_vector;
 
 void WaveManager::load()
 {
-	indicator_tex = AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture.png");
+	//indicator_tex = AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture.png");
 	arrow_tex = AEGfxTextureLoad("Assets/MainLevel/ml_arrow.png");
 	lineTexture = AEGfxTextureLoad("Assets/MainLevel/line.png");
 
@@ -192,6 +195,25 @@ void WaveManager::update(f64 frame_time)
 			arrow_vector[i].blinker = 1;
 		}
 	}
+
+	//for (size_t i{}; i < ss_indicator_vector.size(); i++)
+	//{
+	//	f32 cam_x{}, cam_y{};
+	//	AEGfxGetCamPosition(&cam_x, &cam_y);
+
+	//	// Update position of Planet image in the distance indicator
+	//	// Clamp the image to the screen
+	//	AEVec2Sub(&ss_indicator_vector[i].position, &space_station_vector[i].position, &camera.position);
+	//	AEMtx33Trans(&ss_indicator_vector[i].translate, AEClamp(ss_indicator_vector[i].position.x * 0.5 + cam_x,
+	//															-((AEGetWindowWidth() - ss_indicator_vector[i].size) / 2) * 0.9f + cam_x,
+	//															 ((AEGetWindowWidth() - ss_indicator_vector[i].size) / 2) * 0.9f + cam_x),
+	//												 AEClamp(ss_indicator_vector[i].position.y * 0.5 + cam_y,
+	//															-(AEGetWindowHeight() / 2) * 0.9f + cam_y,
+	//															 (AEGetWindowHeight() / 2) * 0.9f + cam_y));
+	//	AEMtx33Concat(&ss_indicator_vector[i].transform, &ss_indicator_vector[i].rotate, &ss_indicator_vector[i].scale);
+	//	AEMtx33Concat(&ss_indicator_vector[i].transform, &ss_indicator_vector[i].translate, &ss_indicator_vector[i].transform);
+	//}
+
 	// Update logic for off-screen indicator-------------------------------
 
 	// Start of new wave-----------------------------------------------------
@@ -310,6 +332,11 @@ void WaveManager::draw(AEGfxVertexList* pMesh)
 		bool off_screen{ pow(AEVec2Distance(&planet_vector[i].position, &camera.position), 2) > (pow(AEGetWindowWidth() / 2, 2) + pow(AEGetWindowHeight() / 2, 2)) };
 		if (off_screen && !planet_adding)
 		{
+			//// Render planet image for space station indicator
+			//AEGfxTextureSet(ss_indicator_vector[i].tex, 0, 0);
+			//AEGfxSetTransform(ss_indicator_vector[i].transform.m);
+			//AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+
 			// Render planet image for distance indicator
 			AEGfxTextureSet(indicator_vector[i].tex, 0, 0);
 			AEGfxSetTransform(indicator_vector[i].transform.m);
@@ -404,6 +431,7 @@ void WaveManager::draw(AEGfxVertexList* pMesh)
 
 void WaveManager::free()
 {
+	//ss_indicator_vector.clear();
 	indicator_vector.clear();
 	arrow_vector.clear();
 	lose_menu::free();
@@ -411,7 +439,7 @@ void WaveManager::free()
 
 void WaveManager::unload()
 {
-	AEGfxTextureUnload(indicator_tex);
+	//AEGfxTextureUnload(indicator_tex);
 	AEGfxTextureUnload(arrow_tex);
 	AEGfxTextureUnload(lineTexture);
 
@@ -448,6 +476,24 @@ bool WaveManager::no_more_shuttles()
 	}
 	return check;
 }
+
+//void WaveManager::add_ss_indicator()
+//{
+//	WaveManager::Indicator new_indicator;
+//
+//	new_indicator.size = 60.f;
+//	AEVec2Set(&new_indicator.position, 0.f, 0.f);
+//
+//	AEMtx33Scale(&new_indicator.scale, new_indicator.size, new_indicator.size);
+//	AEMtx33Rot(&new_indicator.rotate, 0.f);
+//	AEMtx33Trans(&new_indicator.translate, 0.f, 0.f);
+//	AEMtx33Concat(&new_indicator.transform, &new_indicator.rotate, &new_indicator.scale);
+//	AEMtx33Concat(&new_indicator.transform, &new_indicator.translate, &new_indicator.transform);
+//
+//	new_indicator.tex = space_station_tex;
+//
+//	ss_indicator_vector.push_back(new_indicator);
+//}
 
 void WaveManager::add_indicator()
 {

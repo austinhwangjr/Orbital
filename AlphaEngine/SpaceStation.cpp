@@ -193,6 +193,8 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 			player.credits -= player_ui.space_station_cost;
 			player.space_station_count++;
 			space_station_added = true;
+
+			//wave_manager.add_ss_indicator();
 		}
 	}
 	else {
@@ -375,6 +377,11 @@ void SpaceStation::draw(AEGfxVertexList* pMesh, PlayerUI player_ui)
 	// ===================
 	// For UI
 	if (player_ui.placing_station) {
+
+		//Description for Placeables
+		/*std::string	station_text;
+		station_text = "Hover the mouse in space to place Space Station";
+		AEGfxPrint(font_id, const_cast<s8*>(station_text.c_str()), mouse_pos_world.x, mouse_pos_world.y + 100, 1.f, 1.f, 1.f, 1.f);*/
 
 		if (space_station_valid_placement)
 			AEGfxSetTintColor(0.f, 1.f, 0.f, 1.f);

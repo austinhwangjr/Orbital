@@ -11,6 +11,7 @@
 #include "Player.h"
 #include "Planet.h"
 #include "Shuttle.h"
+//#include "SpaceStation.h"
 #include "Camera.h"
 #include "Global.h"
 
@@ -91,6 +92,7 @@ struct WaveManager
 
 	void checkLoseCondition();
 	void add_indicator();
+	//void add_ss_indicator();
 };
 
 extern Player player;
@@ -99,3 +101,4 @@ extern Camera camera;
 extern std::vector<Planets> planet_vector;
 extern std::vector<AEGfxTexture*> planet_textures;
 extern std::vector<Shuttles> shuttle_vector;
+//extern std::vector<SpaceStation> space_station_vector;
