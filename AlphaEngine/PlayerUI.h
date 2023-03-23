@@ -13,6 +13,7 @@ enum BUTTON_TYPE
 	SPACE_STATION,
 	UPGRADE_COUNT,
 	SHOP_OPEN,
+	TUTORIAL_OPEN
 };
 
 struct UpgradeLevelIndicator
@@ -40,11 +41,16 @@ struct PlayerUI
 	bool		placing_station;
 	bool		shop_triggered;
 	bool		shop_transition;
+	bool		tutorial_triggered;
+	bool		tutorial_transition;
 	bool		drone_placement_flag;
 	bool		station_placement_flag;
 	f32			shop_offset;
 	f32			shop_trans_timer;
 	f32			shop_trans_duration;
+	f32			tutorial_offset;
+	f32			tutorial_trans_timer;
+	f32			tutorial_trans_duration;
 	AEMtx33		transform;
 
 	//--------------------Player HUD--------------------
@@ -67,6 +73,11 @@ struct PlayerUI
 	f32			shop_bg_width, shop_bg_height;
 	AEMtx33		shop_bg_transform;
 
+	//--------------------Tutorial background--------------------
+	AEVec2		tutorial_bg_position;
+	f32			tutorial_bg_width, tutorial_bg_height;
+	AEMtx33		tutorial_bg_transform;
+
 	//--------------------Cost of Upgrades--------------------
 	const int mov_speed_cost		= 100;
 	const int capacity_cost			= 200;
@@ -87,4 +98,8 @@ struct PlayerUI
 	bool button_clicked(ShopOption);
 	bool click_outside_shop();
 	bool hover_over_button(ShopOption);
+
+	void tutorial_open();
+	void tutorial_closed();
+	void close_tutorial();
 };

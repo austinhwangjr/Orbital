@@ -13,6 +13,8 @@ AEGfxTexture* shop_open_tex;
 AEGfxTexture* shop_close_tex;
 AEGfxTexture* space_station_tex;
 AEGfxTexture* shop_background_tex;
+AEGfxTexture* tutorial_open_tex;
+AEGfxTexture* tutorial_background_tex;
 AEGfxTexture* upgrade_level_hollow_tex;
 AEGfxTexture* upgrade_level_solid_tex;
 AEGfxTexture* player_hud_tex;
@@ -53,6 +55,8 @@ void PlayerUI::load()
 	shop_close_tex				= AEGfxTextureLoad("Assets/MainLevel/ml_ShopCloseButton.png");
 	space_station_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_SpaceStation.png");
 	shop_background_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_ShopBackground.png");
+	tutorial_open_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_TutorialBackground.png");
+	tutorial_background_tex		= AEGfxTextureLoad("Assets/MainLevel/ml_TutorialBackground.png");
 	upgrade_level_hollow_tex	= AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelHollow.png");
 	upgrade_level_solid_tex		= AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelSolid.png");
 	player_hud_tex				= AEGfxTextureLoad("Assets/MainLevel/ml_HeadsUpDisplay.png");
@@ -116,6 +120,12 @@ void PlayerUI::init()
 		button_vector.push_back(player_upgrade);
 	}
 
+	ShopOption tutorial_button{};
+	tutorial_button.width = 70.f;
+	tutorial_button.height = 70.f;
+	tutorial_button.button_type = TUTORIAL_OPEN;
+	button_vector.push_back(tutorial_button);
+
 	// Not in placing mode initially
 	placing_drone			= false;
 	placing_station			= false;
@@ -131,8 +141,19 @@ void PlayerUI::init()
 	shop_bg_width			= static_cast<f32>(AEGetWindowWidth()) * 0.85f;
 	shop_bg_height			= static_cast<f32>(AEGetWindowHeight()) * 0.85f;
 
+	// Tutorial is opened initially
+	tutorial_triggered = true;
+	tutorial_transition = false;
+
+	// Tutorial background
+	tutorial_bg_width = static_cast<f32>(12 * FONT_ID_SIZE);
+	tutorial_bg_height = static_cast<f32>(10 * FONT_ID_SIZE);
+
 	// Set the offset of the shop
 	shop_offset				= static_cast<f32>(AEGetWindowWidth());
+
+	// Set the offset of the tutorial
+	tutorial_offset = 0;
 
 	// Icons in shop
 	icon_size				= 20.f;
@@ -141,8 +162,12 @@ void PlayerUI::init()
 	upgrade_preview_size	= 400.f;
 
 	// Timer for shop transition
-	shop_trans_timer		= 0.f;
-	shop_trans_duration		= 1.f;
+	shop_trans_timer = 0.f;
+	shop_trans_duration = 1.f;
+
+	// Timer for tutorial transition
+	tutorial_trans_timer = 0.f;
+	tutorial_trans_duration = 1.f;
 }
 
 void PlayerUI::update(f64 frame_time, Player& player)
@@ -154,6 +179,7 @@ void PlayerUI::update(f64 frame_time, Player& player)
 	mouse_pos_world.x = cam_x + mouse_x_screen - static_cast<f32>(AEGetWindowWidth() / 2);
 	mouse_pos_world.y = cam_y + static_cast<f32>(AEGetWindowHeight() / 2.f) - mouse_y_screen;
 
+	// Shop transitions
 	if (shop_triggered) {
 		// Start transition
 		if (shop_transition) {
@@ -191,10 +217,49 @@ void PlayerUI::update(f64 frame_time, Player& player)
 			shop_closed();
 	}
 
+	// Tutorial transitions
+	if (tutorial_triggered) {
+		// Start transition
+		if (tutorial_transition) {
+			// Adjust shop offset
+			tutorial_trans_timer += frame_time;
+			tutorial_offset = EaseOutExpo(-tutorial_bg_width, 0, tutorial_trans_timer / tutorial_trans_duration);
+
+			// Stop transition once duration is met
+			if (tutorial_trans_timer >= tutorial_trans_duration) {
+				tutorial_trans_timer = 0.f;
+				tutorial_transition = false;
+			}
+		}
+
+		// Transition done
+		else
+			tutorial_open();
+	}
+	else {
+		// Start transition
+		if (tutorial_transition) {
+			// Adjust tutorial offset
+			tutorial_trans_timer += static_cast<f32>(frame_time);
+			tutorial_offset = EaseInOutBack(0, -tutorial_bg_width, tutorial_trans_timer / tutorial_trans_duration);
+
+			// Stop transition once duration is met
+			if (tutorial_trans_timer >= tutorial_trans_duration) {
+				tutorial_trans_timer = 0.f;
+				tutorial_transition = false;
+			}
+		}
+
+		// Transition done
+		else
+			tutorial_closed();
+	}
+
 	// =================
 	// Update positions
 	// =================
 
+	AEGfxGetCamPosition(&cam_x, &cam_y);
 	// Player HUD to follow camera
 	player_hud_position.x = cam_x;
 	player_hud_position.y = cam_y;
@@ -203,10 +268,18 @@ void PlayerUI::update(f64 frame_time, Player& player)
 	shop_bg_position.x = cam_x + shop_offset;
 	shop_bg_position.y = cam_y;
 
+	// Tutorial background
+	//tutorial_bg_position.x = cam_x - static_cast<f32>(AEGetWindowWidth()) / 2.f - button_vector[6].width / 2.f - tutorial_offset;
+	tutorial_bg_position.x = cam_x - static_cast<f32>(AEGetWindowWidth()) / 2.f + tutorial_bg_width / 2 + tutorial_offset;
+	tutorial_bg_position.y = cam_y + static_cast<f32>(AEGetWindowHeight()) / 2.f - button_vector[6].height * 3.f;
+
 	// Button to open shop
-	AEGfxGetCamPosition(&cam_x, &cam_y);
 	button_vector[0].position.x = cam_x + static_cast<f32>(AEGetWindowWidth()) / 2.f - button_vector[0].width / 2.f;
 	button_vector[0].position.y = cam_y + static_cast<f32>(AEGetWindowHeight()) / 2.f - button_vector[0].height * 2.5f;
+
+	// Button to open tutorial
+	button_vector[6].position.x = cam_x - static_cast<f32>(AEGetWindowWidth()) / 2.f + button_vector[6].width / 2 + tutorial_bg_width + tutorial_offset;
+	button_vector[6].position.y = cam_y + static_cast<f32>(AEGetWindowHeight()) / 2.f - button_vector[6].height * 2.5f;
 
 	// Upgrade preview on left half of shop
 	upgrade_preview_position.x = cam_x - shop_bg_width / 4.f + shop_offset;
@@ -261,13 +334,20 @@ void PlayerUI::update(f64 frame_time, Player& player)
 	AEMtx33Concat(&shop_bg_transform, &rot, &scale);
 	AEMtx33Concat(&shop_bg_transform, &trans, &shop_bg_transform);
 
+	// Tutorial background
+	AEMtx33Scale(&scale, tutorial_bg_width, tutorial_bg_height);
+	AEMtx33Rot(&rot, 0.f);
+	AEMtx33Trans(&trans, tutorial_bg_position.x, tutorial_bg_position.y);
+	AEMtx33Concat(&tutorial_bg_transform, &rot, &scale);
+	AEMtx33Concat(&tutorial_bg_transform, &trans, &tutorial_bg_transform);
+
 	// Upgrade preview
 	AEMtx33Scale(&scale, upgrade_preview_size, upgrade_preview_size);
 	AEMtx33Rot(&rot, PI);
 	AEMtx33Trans(&trans, upgrade_preview_position.x, upgrade_preview_position.y);
 	AEMtx33Concat(&upgrade_preview_transform, &rot, &scale);
 	AEMtx33Concat(&upgrade_preview_transform, &trans, &upgrade_preview_transform);
-
+	
 	// Shop buttons
 	for (int i = 0; i < button_vector.size(); ++i) {
 		ShopOption& button = button_vector[i];
@@ -337,6 +417,12 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 	AEGfxTextureSet(shop_background_tex, 0, 0);
 	AEGfxSetTransparency(0.5f);
 	AEGfxSetTransform(shop_bg_transform.m);
+	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+
+	// Tutorial background
+	AEGfxTextureSet(tutorial_background_tex, 0, 0);
+	AEGfxSetTransparency(0.5f);
+	AEGfxSetTransform(tutorial_bg_transform.m);
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
 	// Reset transparency
@@ -464,6 +550,12 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 						AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 					}
 					break;
+
+				case TUTORIAL_OPEN:
+					AEGfxTextureSet(tutorial_open_tex, 0, 0);
+					AEGfxSetTransform(button.transform.m);
+					AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+					break;
 			}
 		}
 	}
@@ -551,6 +643,44 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 				1.f, 0.f, 0.f, 0.f);
 		}
 	}
+	
+	// Tutorial text
+	if (PLAYER_FLY == player.state)
+	{
+		// Tutorial
+		std::string tutorial = "W          Accelerate";
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.65f, 1.f, 1.f, 1.f, 1.f);
+
+		tutorial = "S           Decelerate";
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.6f, 1.f, 1.f, 1.f, 1.f);
+
+		tutorial = "A           Rotate Left";
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.55f, 1.f, 1.f, 1.f, 1.f);
+
+		tutorial = "D           Rotate Right";
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.5f, 1.f, 1.f, 1.f, 1.f);
+
+		tutorial = "LMB      Release Debris";
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.42f, 1.f, 1.f, 1.f, 1.f);
+	}
+	else
+	{
+		// Tutorial
+		std::string tutorial = "W          Leave Planet";
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.65f, 1.f, 1.f, 1.f, 1.f);
+
+		tutorial = "A           Rotate Left";
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.6f, 1.f, 1.f, 1.f, 1.f);
+
+		tutorial = "D           Rotate Right";
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.55f, 1.f, 1.f, 1.f, 1.f);
+
+		tutorial = "Space   Collect Debris";
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.48f, 1.f, 1.f, 1.f, 1.f);
+
+		tutorial = "LMB      Release Debris";
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.43f, 1.f, 1.f, 1.f, 1.f);
+	}
 }
 
 void PlayerUI::free()
@@ -565,6 +695,8 @@ void PlayerUI::unload()
 	AEGfxTextureUnload(shop_close_tex);
 	AEGfxTextureUnload(space_station_tex);
 	AEGfxTextureUnload(shop_background_tex);
+	AEGfxTextureUnload(tutorial_open_tex);
+	AEGfxTextureUnload(tutorial_background_tex);
 	AEGfxTextureUnload(upgrade_level_hollow_tex);
 	AEGfxTextureUnload(upgrade_level_solid_tex);
 	AEGfxTextureUnload(player_hud_tex);
@@ -701,4 +833,34 @@ bool PlayerUI::hover_over_button(ShopOption button)
 	}
 
 	return false;
+}
+
+void PlayerUI::tutorial_open()
+{
+	// ===================
+	// Check player input
+	// ===================
+
+	// Player clicks outside tutorial
+	if (button_clicked(button_vector[6]) || AEInputCheckTriggered(AEVK_ESCAPE))
+		close_tutorial();
+}
+
+void PlayerUI::tutorial_closed()
+{
+	// ================
+	// Check for input
+	// ================
+
+	if (button_clicked(button_vector[6])) {
+		tutorial_triggered = true;
+		tutorial_transition = true;
+	}
+}
+
+void PlayerUI::close_tutorial()
+{
+	// Close tutorial
+	tutorial_triggered = false;
+	tutorial_transition = true;
 }

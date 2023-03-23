@@ -133,7 +133,7 @@ static bool isOrbitingPlanet = false; // flag for is orbiting.. pretty sure supp
 		// Update the Lerp value for the halo scale
 		halo_scale_lerp += (1.0f - halo_scale_lerp) * 0.1f;
 
-		f32 val{ current_planet.size + 50.f };
+		f32 val{ current_planet.size - 60.f };
 
 		// Use the Lerp value to scale the halo
 		AEMtx33Scale(&scale, val * halo_scale_lerp, val * halo_scale_lerp);

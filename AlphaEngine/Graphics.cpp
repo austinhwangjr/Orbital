@@ -48,6 +48,33 @@ void Rendering::RenderSprite(AEGfxTexture* texture, float centerX, float centerY
     AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);             // Draw the mesh
 }
 
+void Rendering::RenderSpriteWithRotations(AEGfxTexture* texture, float centerX, float centerY, float width, float height, AEGfxVertexList* pMesh, float rotation, float r, float g, float b, float a)
+{
+    // Set up the transformation matrix for the button
+    AEMtx33 scale = {};
+    AEMtx33 rotate = {};
+    AEMtx33 translate = {};
+    AEMtx33 transform = {};
+
+    AEMtx33Scale(&scale, width, height);                    // Scale the button by given dimensions
+    AEMtx33Rot(&rotate, rotation);                          // Set the rotation angle to the specified value
+    AEMtx33Trans(&translate, centerX, centerY);             // Set the translation to (centerX, centerY)
+    AEMtx33Concat(&transform, &rotate, &scale);             // Concatenate the scale and rotation matrices
+    AEMtx33Concat(&transform, &translate, &transform);      // Concatenate the translation matrix
+
+    // Set up the rendering pipeline for the button
+    AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);                  // Set the render mode to use textures
+    AEGfxSetTintColor(r, g, b, a);                          // Set the tint color
+    AEGfxSetBlendMode(AE_GFX_BM_BLEND);                     // Set the blend mode to alpha blending
+    AEGfxSetTransparency(1.0f);                             // Set the transparency to fully opaque
+
+    AEGfxTextureSet(texture, 0, 0);                         // Set the texture to use for drawing
+    AEGfxSetTransform(transform.m);                         // Set the transformation matrix for the mesh
+    AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);             // Draw the mesh
+}
+
+
+
 void Rendering::RenderFadedBackground(AEGfxTexture* texture, float centerX, float centerY, float width, float height, AEGfxVertexList* pMesh, float alpha)
 {
     AEGfxSetTintColor(1.0f, 1.0f, 1.0f, alpha); // Set the tint color to white with the specified alpha value
@@ -129,6 +156,8 @@ void Rendering::BackgroundMesh(AEGfxVertexList*& pMesh)
     // debugging logs
     AE_ASSERT_MESG(pMesh, "Error: Failed to create pMesh in createBackgroundMesh!");
 }
+
+
 
 //void Rendering::RenderText(const char* text, float x, float y, int fontSize)
 //{

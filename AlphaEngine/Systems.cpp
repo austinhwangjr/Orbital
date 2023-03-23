@@ -36,8 +36,8 @@ void system_call::init(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
 
 	// Fonts
 
-	font_id = AEGfxCreateFont("Assets/Fonts/Roboto-Regular.ttf", FONT_ID_SIZE);
-	font_id_shop = AEGfxCreateFont("Assets/Fonts/Roboto-Regular.ttf", FONT_ID_SHOP_SIZE);
+	font_id = AEGfxCreateFont("Assets/Fonts/Tungsten-Semibold.ttf", FONT_ID_SIZE);
+	font_id_shop = AEGfxCreateFont("Assets/Fonts/Tungsten-Semibold.ttf", FONT_ID_SHOP_SIZE);
 }
 
 // ----------------------------------------------------------------------------

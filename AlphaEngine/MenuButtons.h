@@ -17,7 +17,8 @@ public:
         const char* creditsButtonFilename,
         const char* creditsButtonHoverFilename,
         const char* exitButtonFilename,
-        const char* exitButtonHoverFilename);
+        const char* exitButtonHoverFilename,
+        const char* squareTextureFilename);
 
     void init();
     void update();
@@ -25,6 +26,11 @@ public:
     void unload();
 
 private:
+    AEGfxTexture* squareTexture;
+    float squareRotations[6];
+    float tint[4];
+
+
     AEGfxTexture* normalButtonTextures[6];
     AEGfxTexture* hoverButtonTextures[6];
     bool hoverStates[6];

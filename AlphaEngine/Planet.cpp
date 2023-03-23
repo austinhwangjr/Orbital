@@ -23,7 +23,11 @@ Technology is prohibited.
 
 AEGfxTexture* planet_tex;
 AEGfxTexture* orbit_tex;
+AEGfxTexture* runway_tex;
+
 std::vector<Planets> planet_vector;
+std::vector<Planets::Runway> runway_vector;
+std::vector<AEGfxTexture*> planet_textures;
 
 extern WaveManager wave_manager;
 extern Shuttles shuttle;
@@ -33,8 +37,11 @@ extern std::vector<std::vector<Drone>> drone_vector_all;
 
 void Planets::load()
 {
-	planet_tex = AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture.png");
+	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture0.png"));
+	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture1.png"));
+
 	orbit_tex = AEGfxTextureLoad("Assets/MainLevel/ml_OrbitRing.png");
+	runway_tex = AEGfxTextureLoad("Assets/MainLevel/ml_arrow.png");
 }
 
 void Planets::init()
@@ -49,17 +56,31 @@ void Planets::update(f64 frame_time)
 		// Only spawn shuttle if wave is completed and planet is not being added (camera transition)
 		if (!planet_vector[i].wave_complete && !wave_manager.planet_adding)
 		{
+			if (planet_vector[i].shuttle_timer <= 0.0)
+			{
+				AEVec2Zero(&runway_vector[i].velocity);
+				planet_vector[i].shuttle_direction = AERandFloat() * (2 * PI);	// Randomize shuttle direction
+			}
+
+			// Update shuttle timer
+			planet_vector[i].shuttle_timer += static_cast<f32>(frame_time);
+
+			// Update runway timer
+			runway_vector[i].lifespan -= static_cast<f32>(frame_time);
+
 			// Spawn shuttle when timer exceeds time_to_spawn, next shuttle will have randomized time_to_spawn
 			if (planet_vector[i].shuttle_timer >= planet_vector[i].shuttle_time_to_spawn)
 			{
-				shuttle.Shuttles::spawn(planet_vector[i].id);	// Spawn shuttle
-				planet_vector[i].current_shuttle--;				// Decrement current_shuttle
-				planet_vector[i].shuttle_timer = 0.0;			// Reset shuttle timer
+				shuttle.spawn(planet_vector[i].id, planet_vector[i].shuttle_direction);	// Spawn shuttle
+				planet_vector[i].current_shuttle--;										// Decrement current_shuttle
+				planet_vector[i].shuttle_timer = 0.0;									// Reset shuttle timer
 				planet_vector[i].shuttle_time_to_spawn = static_cast<f32>(rand() % (SHUTTLE_SPAWN_TIME_MAX - SHUTTLE_SPAWN_TIME_MIN) + SHUTTLE_SPAWN_TIME_MIN);	// Randomize time_to_spawn
+
+				// Resetting runway
+				runway_vector[i].position = planet_vector[i].position;
+				AEVec2Zero(&runway_vector[i].velocity);
+				runway_vector[i].lifespan = RUNWAY_LIFESPAN;
 			}
-			
-			// Update shuttle timer
-			planet_vector[i].shuttle_timer += static_cast<f32>(frame_time);
 		}
 
 		// Rotate the planet
@@ -78,6 +99,41 @@ void Planets::update(f64 frame_time)
 		AEMtx33Trans(&planet_vector[i].orbit_translate, planet_vector[i].position.x, planet_vector[i].position.y);
 		AEMtx33Concat(&planet_vector[i].orbit_transform, &planet_vector[i].orbit_rotate, &planet_vector[i].orbit_scale);
 		AEMtx33Concat(&planet_vector[i].orbit_transform, &planet_vector[i].orbit_translate, &planet_vector[i].orbit_transform);
+
+
+		AEVec2Zero(&added);
+		// Runway accelerating
+		AEVec2Set(&added, AECos(planet_vector[i].shuttle_direction), AESin(planet_vector[i].shuttle_direction));
+		AEVec2Scale(&added, &added, RUNWAY_MAX_ACCEL * static_cast<f32>(frame_time));
+		AEVec2Add(&runway_vector[i].velocity, &added, &runway_vector[i].velocity);
+
+		// Limiting runway velocity
+		AEVec2Scale(&runway_vector[i].velocity, &runway_vector[i].velocity, 0.99f);
+
+		if (wave_manager.planet_adding)
+		{
+			// Do not move if transitioning
+			runway_vector[i].position = planet_vector[i].position;
+		}
+		else
+		{
+			// Update runway position
+			runway_vector[i].position.x += runway_vector[i].velocity.x * static_cast<f32>(frame_time);
+			runway_vector[i].position.y += runway_vector[i].velocity.y * static_cast<f32>(frame_time);
+		}
+
+		// Resetting runway
+		if (runway_vector[i].lifespan <= 0)
+		{
+			runway_vector[i].position = planet_vector[i].position;
+			AEVec2Zero(&runway_vector[i].velocity);
+			runway_vector[i].lifespan = RUNWAY_LIFESPAN;
+		}
+
+		AEMtx33Rot(&runway_vector[i].rotate, planet_vector[i].shuttle_direction - PI);
+		AEMtx33Trans(&runway_vector[i].translate, runway_vector[i].position.x, runway_vector[i].position.y);
+		AEMtx33Concat(&runway_vector[i].transform, &runway_vector[i].rotate, &runway_vector[i].scale);
+		AEMtx33Concat(&runway_vector[i].transform, &runway_vector[i].translate, &runway_vector[i].transform);
 	}
 }
 
@@ -85,15 +141,33 @@ void Planets::draw(AEGfxVertexList* pMesh)
 {
 	for (int i{}; i < wave_manager.planet_count; i++)
 	{
+		AEGfxSetTransparency(1.f);
+
 		// Draw orbit ring first
 		AEGfxTextureSet(orbit_tex, 0, 0);
 		AEGfxSetTransform(planet_vector[i].orbit_transform.m);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
 		// Draw planet sprite
-		AEGfxTextureSet(planet_tex, 0, 0);
+		AEGfxTextureSet(planet_textures[planet_vector[i].texture_index], 0, 0);
 		AEGfxSetTransform(planet_vector[i].transform.m);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+
+		if (!wave_manager.planet_adding)
+		{
+			// Draw runway sprite
+			AEGfxTextureSet(runway_tex, 0, 0);
+			AEGfxSetTransform(runway_vector[i].transform.m);
+			if (runway_vector[i].lifespan <= RUNWAY_LIFESPAN)
+			{
+				AEGfxSetTransparency(runway_vector[i].lifespan / (RUNWAY_LIFESPAN));
+			}
+			else
+			{
+				AEGfxSetTransparency(1.f);
+			}
+			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+		}
 	}
 }
 
@@ -104,17 +178,26 @@ void Planets::free()
 		planet_vector[i].debris_vector.clear();
 	}
 	planet_vector.clear();
+	runway_vector.clear();
 }
 
 void Planets::unload()
 {
-	AEGfxTextureUnload(planet_tex);
+	for (auto& texture : planet_textures)
+	{
+		AEGfxTextureUnload(texture);
+	}
 	AEGfxTextureUnload(orbit_tex);
+	AEGfxTextureUnload(runway_tex);
 }
 
 void Planets::spawn(int shuttle_randomize_amount)
 {
 	Planets new_planet;
+
+	// yy random planet tex
+	new_planet.texture_index = rand() % planet_textures.size();
+
 
 	new_planet.id = wave_manager.planet_count;
 	new_planet.wave_complete = false;
@@ -196,6 +279,24 @@ void Planets::check_spawn(Planets& new_planet)
 			}
 		}
 	}
+}
+
+void Planets::add_runway(AEVec2 const& planet_pos)
+{
+	Planets::Runway new_runway;
+
+	new_runway.size = 35.f;
+	new_runway.direction = 0.f;
+	new_runway.lifespan = RUNWAY_LIFESPAN;
+	AEVec2Set(&new_runway.position, planet_pos.x, planet_pos.y);
+	AEVec2Set(&new_runway.velocity, 0.f, 0.f);
+	AEMtx33Scale(&new_runway.scale, new_runway.size, new_runway.size);
+	AEMtx33Rot(&new_runway.rotate, shuttle_direction);
+	AEMtx33Trans(&new_runway.translate, 0.f, 0.f);
+	AEMtx33Concat(&new_runway.transform, &new_runway.rotate, &new_runway.scale);
+	AEMtx33Concat(&new_runway.transform, &new_runway.translate, &new_runway.transform);
+
+	runway_vector.push_back(new_runway);
 }
 
 // Return planet at furthest right x position
