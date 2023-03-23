@@ -50,7 +50,7 @@ void WaveManager::init()
 
 	wave_completed = false;
 	wave_number = 1;
-	wave_interval_timer = 0;
+	wave_interval_timer = -WAVE_INTERVAL_TIME; // Double time for tutorial
 
 	planet_count = 0;
 	planet_adding = true;
@@ -249,9 +249,9 @@ void WaveManager::draw(AEGfxVertexList* pMesh)
 
 			// Draw timer at center of planet using position calculated above
 			AEGfxPrint(font_id, const_cast<s8*>(print_string),
-				2 * (timer_pos.x - FONT_ID_SIZE / 4.f) / AEGetWindowWidth(),
-				2 * (timer_pos.y - FONT_ID_SIZE / 4.f) / AEGetWindowHeight(),
-				1.f, planet_vector[i].shuttle_timer * static_cast<f32>(1.5) / planet_vector[i].shuttle_time_to_spawn, 0.f, 0.f);  // Speed up red color lerp by 50%
+				2 * (timer_pos.x) / AEGetWindowWidth(),
+				2 * (timer_pos.y) / AEGetWindowHeight(),
+				1.5f, planet_vector[i].shuttle_timer * static_cast<f32>(1.5) / planet_vector[i].shuttle_time_to_spawn, 0.f, 0.f);  // Speed up red color lerp by 50%
 			// SHUTTLE TIMERS-------------------------------------------------------------------------------------------------------------------------------------
 
 			// SHUTTLE COUNT--------------------------------------------------------------------------------------------------------------------------------------
@@ -278,7 +278,7 @@ void WaveManager::draw(AEGfxVertexList* pMesh)
 
 		// DISTANCE INDICATOR-------------------------------------------------------------------------------------------------------------------------------------
 		// Only draw distance indicator if the planet is off screen
-		if (off_screen)
+		if (off_screen && !planet_adding)
 		{
 			// Calculating distance between player and planet and assign to print_string for printing
 			std::string dist = std::to_string(static_cast<int>(AEVec2Distance(&player.position, &planet_vector[i].position)));
@@ -306,7 +306,7 @@ void WaveManager::draw(AEGfxVertexList* pMesh)
 	for (size_t i{}; i < indicator_vector.size(); i++)
 	{
 		bool off_screen{ pow(AEVec2Distance(&planet_vector[i].position, &camera.position), 2) > (pow(AEGetWindowWidth() / 2, 2) + pow(AEGetWindowHeight() / 2, 2)) };
-		if (off_screen)
+		if (off_screen && !planet_adding)
 		{
 			// Render planet image for distance indicator
 			AEGfxTextureSet(indicator_tex, 0, 0);
@@ -354,17 +354,18 @@ void WaveManager::draw(AEGfxVertexList* pMesh)
 		AEGfxPrint(font_id, const_cast<s8*>(print_string), centerX, centerY, 1.f, 1.f, 1.f, alpha);
 	}
 
-
-
-
-
-
-
-
-	// Place holder "Shuttles Lost" counter
+	// Shuttles Lost counter
 	std::string str_shuttle_lost = "Shuttles Lost: " + std::to_string(shuttle_destroyed);
 	print_string = str_shuttle_lost.c_str();
 	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.f - (str_shuttle_lost.length() / 2 * static_cast<f32>(FONT_ID_SIZE) / static_cast<f32>(AEGetWindowWidth())), -0.65f, 1.f, 1.f, 1.f, 1.f);
+
+	if (wave_completed)
+	{
+		// Next Wave timer display
+		std::string next_wave = "Next Wave: " + std::to_string(static_cast<int>(abs(WAVE_INTERVAL_TIME - wave_interval_timer)));
+		print_string = next_wave.c_str();
+		AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.f - (next_wave.length() / 2 * static_cast<f32>(FONT_ID_SIZE) / static_cast<f32>(AEGetWindowWidth())), -0.7f, 1.f, 1.f, 1.f, 1.f);
+	}
 
 	// WAVE | SHUTTLES | PLANETS -------------------------------------------------------------------------------------------------------------------------------------
 	std::string str_count; std::string str_headers;
@@ -422,7 +423,7 @@ int WaveManager::get_total_shuttles()
 	return total_shuttles;
 }
 
-int WaveManager::get_current_shuttles()
+int WaveManager::get_current_shuttles() const
 {
 	int total_shuttles{};
 	for (size_t i{}; i < planet_vector.size(); i++)

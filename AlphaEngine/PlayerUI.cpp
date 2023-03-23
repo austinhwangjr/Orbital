@@ -1,5 +1,6 @@
 #include "AEEngine.h"
 #include "PlayerUI.h"
+#include "SpaceStation.h"
 #include "Global.h"
 #include "Easing.h"
 #include <iostream>
@@ -46,6 +47,8 @@ AEVec2 mouse_pos_world;
 
 // Vector of buttons
 std::vector<ShopOption> button_vector;
+
+extern std::vector<SpaceStation> space_station_vector;
 
 void PlayerUI::load()
 {
@@ -392,7 +395,7 @@ void PlayerUI::update(f64 frame_time, Player& player)
 	Draw Player UI
 */
 /******************************************************************************/
-void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
+void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wave_manager)
 {
 	AEGfxSetBlendColor(0.f, 0.f, 0.f, 0.f);
 
@@ -410,8 +413,16 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 	AEGfxPrint(font_id, const_cast<s8*>(credits.c_str()), 0.5f, 0.75f, 1.f, 1.f, 1.f, 1.f);
 
 	// Print capacity
-	capacity = "Capacity: " + std::to_string(player.current_capacity) + " / " + std::to_string(player.max_capacity + player.capacity_level);
-	AEGfxPrint(font_id, const_cast<s8*>(capacity.c_str()), -0.25f, -0.75f, 1.f, 1.f, 1.f, 1.f);
+	capacity = std::to_string(player.current_capacity) + " / " + std::to_string(player.max_capacity + player.capacity_level);
+	AEVec2 capacity_pos;
+	AEVec2Sub(&capacity_pos, &player.position, &camera.position);
+
+	// Capacity to fade to red when close to max capacity
+	AEGfxPrint(font_id, const_cast<s8*>(capacity.c_str()),
+		(capacity_pos.x - (0.5 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2),
+		(capacity_pos.y + (0.5 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2),
+		0.8f, 1.f, static_cast<f32>((player.max_capacity + player.capacity_level - player.current_capacity)) / static_cast<f32>((player.max_capacity + player.capacity_level)),
+				   static_cast<f32>((player.max_capacity + player.capacity_level - player.current_capacity)) / static_cast<f32>((player.max_capacity + player.capacity_level)));
 
 	// Shop background
 	AEGfxTextureSet(shop_background_tex, 0, 0);
@@ -645,10 +656,15 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 	}
 	
 	// Tutorial text
+	std::string tutorial;
+
+	tutorial = "Controls";
+	AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.75f, 1.5f, 1.f, 1.f, 1.f);
+
 	if (PLAYER_FLY == player.state)
 	{
-		// Tutorial
-		std::string tutorial = "W          Accelerate";
+		// Controls Tutorial text
+		tutorial = "W          Accelerate";
 		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.65f, 1.f, 1.f, 1.f, 1.f);
 
 		tutorial = "S           Decelerate";
@@ -662,10 +678,32 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 
 		tutorial = "LMB      Release Debris";
 		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.42f, 1.f, 1.f, 1.f, 1.f);
+
+		// Guide player to planet
+		if (1 == wave_manager.wave_number && !wave_manager.planet_adding && !wave_manager.wave_completed)
+		{
+			tutorial = "W A S D";
+			AEVec2 tutorial_pos;
+			AEVec2Sub(&tutorial_pos, &player.position, &camera.position);
+
+			// Draw timer at center of planet using position calculated above
+			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+				(tutorial_pos.x - FONT_ID_SIZE) / (AEGetWindowWidth() / 2),
+				(tutorial_pos.y + (3 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2),
+				1.f, 1.f, 1.f, 1.f);
+
+			tutorial = "Move to a Planet!";
+			AEVec2Sub(&tutorial_pos, &player.position, &camera.position);
+
+			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+				(tutorial_pos.x - (3 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2),
+				(tutorial_pos.y + (1.5 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2),
+				1.2f, 1.f, 1.f, 1.f);
+		}
 	}
 	else
 	{
-		// Tutorial
+		// Controls Tutorial text
 		std::string tutorial = "W          Leave Planet";
 		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.65f, 1.f, 1.f, 1.f, 1.f);
 
@@ -680,6 +718,81 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player)
 
 		tutorial = "LMB      Release Debris";
 		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (AEGetWindowWidth() / 2), 0.43f, 1.f, 1.f, 1.f, 1.f);
+
+		// Tell player what to do
+		if (1 == wave_manager.wave_number && !wave_manager.planet_adding && !wave_manager.wave_completed)
+		{
+			tutorial = "Spacebar";
+			AEVec2 tutorial_pos;
+			AEVec2Sub(&tutorial_pos, &player.position, &camera.position);
+
+			// Draw timer at center of planet using position calculated above
+			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+				(tutorial_pos.x - (1.5 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2),
+				(tutorial_pos.y + (3 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2),
+				1.f, 1.f, 1.f, 1.f);
+
+			tutorial = "Collect Debris!";
+			AEVec2Sub(&tutorial_pos, &player.position, &camera.position);
+
+			// Draw timer at center of planet using position calculated above
+			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+				(tutorial_pos.x - (3 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2),
+				(tutorial_pos.y + (1.5 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2),
+				1.2f, 1.f, 1.f, 1.f);
+		}
+	}
+	if (1 == wave_manager.wave_number)
+	{
+		// Shop Tutorial between waves
+		if (wave_manager.wave_completed)
+		{
+			tutorial = "Check the Shop!";
+			AEVec2 tutorial_pos;
+			AEVec2Sub(&tutorial_pos, &player.position, &camera.position);
+
+			// Draw timer at center of planet using position calculated above
+			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+				(tutorial_pos.x - (2.5 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2),
+				(tutorial_pos.y + FONT_ID_SIZE) / (AEGetWindowHeight() / 2),
+				1.f, 1.f, 1.f, 1.f);
+		}
+
+		// Space Station Tutorial
+		if (!wave_manager.wave_completed)
+		{
+			tutorial = "LMB to Unload Debris Here!";
+			AEVec2 tutorial_pos;
+			AEVec2Sub(&tutorial_pos, &space_station_vector[0].position, &camera.position);
+
+			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+				(tutorial_pos.x - (4 * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2),
+				(tutorial_pos.y - (2.5 * FONT_ID_SIZE)) / (AEGetWindowHeight() / 2),
+				1.f, 1.f, 1.f, 1.f);
+		}
+
+		// Shuttle Tutorial on Planet
+		if (7 == wave_manager.get_current_shuttles())
+		{
+			tutorial = "Shuttles are leaving soon.";
+			AEVec2 tutorial_pos;
+			AEVec2Sub(&tutorial_pos, &planet_vector[0].position, &camera.position);
+
+			// Draw timer at center of planet using position calculated above
+			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+				2 * (tutorial_pos.x - FONT_ID_SIZE * 5.2) / AEGetWindowWidth(),
+				2 * (tutorial_pos.y + FONT_ID_SIZE * 3.5) / AEGetWindowHeight(),
+				1.5f, 1.f, 1.f, 1.f);
+
+			tutorial = "Do not let them crash!";
+			AEVec2Sub(&tutorial_pos, &planet_vector[0].position, &camera.position);
+
+			// Draw timer at center of planet using position calculated above
+			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+				2 * (tutorial_pos.x - FONT_ID_SIZE * 4.5) / AEGetWindowWidth(),
+				2 * (tutorial_pos.y + FONT_ID_SIZE * 2) / AEGetWindowHeight(),
+				1.5f, 1.f, 1.f, 1.f);
+		}
 	}
 }
 
