@@ -33,7 +33,6 @@ struct Player
 	f32				timer;
 	AEMtx33			orbit_halo_transform;
 
-
 	//--------------------Upgrade Levels--------------------
 	int				mov_speed_level;
 	int				capacity_level;

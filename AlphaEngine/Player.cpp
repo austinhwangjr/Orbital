@@ -133,7 +133,7 @@ static bool isOrbitingPlanet = false; // flag for is orbiting.. pretty sure supp
 		// Update the Lerp value for the halo scale
 		halo_scale_lerp += (1.0f - halo_scale_lerp) * 0.1f;
 
-		f32 val{ current_planet.size + 50.f };
+		f32 val{ current_planet.size + 60.f };
 
 		// Use the Lerp value to scale the halo
 		AEMtx33Scale(&scale, val * halo_scale_lerp, val * halo_scale_lerp);
@@ -191,6 +191,7 @@ void Player::orbit_state(f64 frame_time)
 	// ================
 	// Check for input
 	// ================
+
 	if (AEInputCheckCurr(AEVK_A)) {
 		direction += (rot_speed / 2) * static_cast<f32>(frame_time);
 
@@ -338,27 +339,31 @@ void Player::flying_state(f64 frame_time)
 	// Check for input
 	// ================
 
-	if (AEInputCheckCurr(AEVK_W)) {
+	if (AEInputCheckCurr(AEVK_W))
+	{
 		AEVec2 added;
 		AEVec2Set(&added, AECos(direction), AESin(direction));
 
 		// Find the velocity according to the acceleration
-		AEVec2Scale(&added, &added, mov_speed * static_cast<f32>(mov_speed_level + 1) / 2.f);
-		velocity.x = velocity.x + added.x * static_cast<f32>(frame_time);
-		velocity.y = velocity.y + added.y * static_cast<f32>(frame_time);
+		f32 easing = easeOutQuad(static_cast<f32>(frame_time));
+		AEVec2Scale(&added, &added, mov_speed * static_cast<f32>(mov_speed_level + 1) / 2.f * easing);
+		velocity.x = velocity.x + added.x;
+		velocity.y = velocity.y + added.y;
 
 		// Limit player's speed
 		AEVec2Scale(&velocity, &velocity, 0.99f);
 	}
 
-	if (AEInputCheckCurr(AEVK_S)) {
+	if (AEInputCheckCurr(AEVK_S))
+	{
 		AEVec2 added;
 		AEVec2Set(&added, -AECos(direction), -AESin(direction));
 
 		// Find the velocity according to the decceleration
-		AEVec2Scale(&added, &added, mov_speed * static_cast<f32>(mov_speed_level + 1) / 2.f);
-		velocity.x = velocity.x + added.x * static_cast<f32>(frame_time);
-		velocity.y = velocity.y + added.y * static_cast<f32>(frame_time);
+		f32 easing = easeOutQuad(static_cast<f32>(frame_time));
+		AEVec2Scale(&added, &added, mov_speed * static_cast<f32>(mov_speed_level + 1) / 2.f * easing);
+		velocity.x = velocity.x + added.x;
+		velocity.y = velocity.y + added.y;
 
 		// Limit player's speed
 		AEVec2Scale(&velocity, &velocity, 0.99f);

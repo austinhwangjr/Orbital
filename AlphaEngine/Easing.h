@@ -31,3 +31,26 @@ static float Lerp(float a, float b, float t)
 {
 	return a + (b - a) * t;
 }
+
+// Linear easing
+static float easeLinear(f32 t)
+{
+	return t;
+}
+
+// Quadratic easing in
+static float easeInQuad(f32 t)
+{
+	return t * t;
+}
+
+// Quadratic easing out
+static float easeOutQuad(f32 t)
+{
+	return -(t * (t - 2));
+}
+
+static float easeInOutQuad(f32 t)
+{
+	return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+}
