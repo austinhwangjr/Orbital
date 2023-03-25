@@ -37,7 +37,7 @@ namespace AudioManager
     // Shuts down the FMOD system and unloads all sounds
     void Shutdown()
     {
-        UnLoadAllSounds();
+        UnloadAllSounds();
 
         // Clean up.
         ErrorCheck(_system->release());
@@ -71,7 +71,7 @@ namespace AudioManager
     }
 
     // Unloads a sound file from memory and removes it from the map
-    void UnLoadSound(const std::string& path)
+    void UnloadSound(const std::string& path)
     {
         // If we have it in our map, release it
         auto found = _soundMap.find(path);
@@ -83,7 +83,7 @@ namespace AudioManager
     }
 
     // Unloads all sound files from memory and clears the map
-    void UnLoadAllSounds()
+    void UnloadAllSounds()
     {
         // Release all sounds in the map
         for (auto const& found : _soundMap)

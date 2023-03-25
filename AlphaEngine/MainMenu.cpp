@@ -660,6 +660,7 @@ void main_menu::free()
     AEGfxMeshFree(pMeshMMBackground);
     AEGfxMeshFree(pMeshMM);
     AEGfxMeshFree(pMeshObj);
+
 }
 
 void main_menu::unload()
@@ -675,6 +676,9 @@ void main_menu::unload()
     AEGfxTextureUnload(MMexplosion_tex);
     AEGfxTextureUnload(MMorbit_halo_tex);
     AEGfxTextureUnload(TexMMBackground); // unload the texture for the background image
+
+    AudioManager::UnloadSound("Assets/BGM/cinescifi.wav");
+
 }
 
 // ===========================
