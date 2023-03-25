@@ -102,10 +102,12 @@ void main_menu::init()
     AudioManager::PlayBGM("Assets/BGM/cinescifi.wav", 0.25f);
     MMplayer.init();
 
+    MMplayer.position.x = 0.0f;
+    MMplayer.position.y = 0.0f;
+
     //DEBRIS
     MMplanet.max_debris = rand() % (DEBRIS_MAX - DEBRIS_MIN) + DEBRIS_MIN;												// Randomize debris count on planet spawn
     MMplanet.debris_vector = MM_create_debris(MMplanet.position.x, MMplanet.position.y, MMplanet.size, MMplanet.max_debris);
-
 
     MMplanet.position.x = static_cast<f32>(AEGetWindowWidth() / 2);
     MMplanet.position.y = static_cast<f32>( - AEGetWindowHeight() / 2);
