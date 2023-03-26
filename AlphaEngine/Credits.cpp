@@ -12,7 +12,10 @@
 static float buttonWidth2 = 200.f;
 static float buttonHeight2 = 50.f;
 
+int currentPage = 1;
+
 AEGfxTexture* texCreditsBackground = nullptr;
+AEGfxTexture* texCreditsBackground2 = nullptr;
 AEGfxTexture* texReturnToMMfromCredits = nullptr;
 
 AEGfxVertexList* pMeshCreditsBackground;
@@ -35,6 +38,7 @@ credits::Button2 buttons2[] = {
 void credits::load()
 {
 	texCreditsBackground = AEGfxTextureLoad("Assets/MainMenu/Credits/c_credits1.png");
+    texCreditsBackground2 = AEGfxTextureLoad("Assets/MainMenu/Credits/c_credits2.png");
 	texReturnToMMfromCredits = AEGfxTextureLoad("Assets/MainMenu/Credits/c_ExitButtonCredits.png");
 }
 
@@ -49,6 +53,15 @@ void credits::init()
 
 void credits::update()
 {
+    if (AEInputCheckTriggered(AEVK_LBUTTON) && currentPage > 1)
+    {
+        currentPage--;
+    }
+    if (AEInputCheckTriggered(AEVK_RBUTTON) && currentPage < 2)
+    {
+        currentPage++;
+    }
+
     // Check if the left mouse button has been clicked
     if (AEInputCheckTriggered(AEVK_LBUTTON))
     {
@@ -78,7 +91,15 @@ void credits::update()
 
 void credits::draw()
 {
-	renderCredits.RenderSprite(texCreditsBackground, 0.f, 0.f, 800.f, 450.f, pMeshCreditsBackground);
+    if (currentPage == 1)
+    {
+        renderCredits.RenderSprite(texCreditsBackground, 0.f, 0.f, 800.f, 450.f, pMeshCreditsBackground);
+    }
+    else if (currentPage == 2)
+    {
+        renderCredits.RenderSprite(texCreditsBackground2, 0.f, 0.f, 800.f, 450.f, pMeshCreditsBackground);
+    }
+
     renderCredits.RenderSprite(texReturnToMMfromCredits, returnToMMfromCreditsX, returnToMMfromCreditsY, buttonWidth2, buttonHeight2, pMeshCredits);
 }
 
@@ -90,7 +111,8 @@ void credits::free()
 
 void credits::unload()
 {
-	AEGfxTextureUnload(texCreditsBackground); // unload the texture for the background image
+	AEGfxTextureUnload(texCreditsBackground);
+    AEGfxTextureUnload(texCreditsBackground2);
 	AEGfxTextureUnload(texReturnToMMfromCredits);
 
 }
