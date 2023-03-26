@@ -168,15 +168,16 @@ void Options::draw()
 
     Rendering::RenderSprite(returnToMMTexture11, returnToMMX11, returnToMMY11, buttonWidth11, buttonHeight11, optionsMesh);
 
-
     Rendering::RenderSprite(o_VolumeSlider, sliderX, sliderY, sliderWidth, sliderHeight, optionsMesh);
     Rendering::RenderSprite(o_VolumeSliderThumb, sliderThumbX, sliderThumbY, sliderThumbWidth, sliderThumbHeight, optionsMesh);
 
     // Render the stationary rounded rectangle
-    if (muted) {
+    if (muted)
+    {
         Rendering::RenderSprite(o_RoundedRectangle_ACTIVE, muteButtonX, muteButtonY, muteButtonWidth, muteButtonHeight, optionsMesh);
     }
-    else {
+    else
+    {
         Rendering::RenderSprite(o_RoundedRectangle_NOT_ACTIVE, muteButtonX, muteButtonY, muteButtonWidth, muteButtonHeight, optionsMesh);
     }
 

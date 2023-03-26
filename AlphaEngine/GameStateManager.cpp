@@ -23,6 +23,7 @@ Technology is prohibited.
 #include "Highscore.h"
 #include "LoseMenu.h"
 #include "Options.h"
+#include "SplashScreen.h"
 #include <functional>
 #include <iostream>
 
@@ -51,14 +52,14 @@ void gsm::update()
 	// Depending on current state, assign function pointers to corresponding state
 	switch (current_state)
 	{
-	/*case GS_SPLASHSCREEN:
-		fpLoad = main_menu::load;
-		fpInit		= main_menu::init;
-		fpUpdate	= main_menu::update;
-		fpDraw		= main_menu::draw;
-		fpFree		= main_menu::free;
-		fpUnload	= main_menu::unload;
-		break;*/
+	case GS_SPLASHSCREEN:
+		fpLoad		= SplashScreen::load;
+		fpInit		= SplashScreen::init;
+		fpUpdate	= SplashScreen::update;
+		fpDraw		= SplashScreen::draw;
+		fpFree		= SplashScreen::free;
+		fpUnload	= SplashScreen::unload;
+		break;
 	case GS_MAINMENU:
 		fpLoad		= main_menu::load;
 		fpInit		= main_menu::init;
@@ -132,9 +133,4 @@ void gsm::update()
 void GSM_RestartLevel()
 {
 	next_state = GS_RESTART;
-}
-
-void gsm::changeGameState(int next_gamestate)
-{
-	next_state = next_gamestate;
 }

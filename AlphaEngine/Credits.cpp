@@ -34,7 +34,7 @@ credits::Button2 buttons2[] = {
 
 void credits::load()
 {
-	texCreditsBackground = AEGfxTextureLoad("Assets/MainMenu/Credits/c_CreditsBackground.png");
+	texCreditsBackground = AEGfxTextureLoad("Assets/MainMenu/Credits/c_credits1.png");
 	texReturnToMMfromCredits = AEGfxTextureLoad("Assets/MainMenu/Credits/c_ExitButtonCredits.png");
 }
 
@@ -80,14 +80,14 @@ void credits::draw()
 {
 	renderCredits.RenderSprite(texCreditsBackground, 0.f, 0.f, 800.f, 450.f, pMeshCreditsBackground);
     renderCredits.RenderSprite(texReturnToMMfromCredits, returnToMMfromCreditsX, returnToMMfromCreditsY, buttonWidth2, buttonHeight2, pMeshCredits);
-
 }
+
 void credits::free()
 {
 	AEGfxMeshFree(pMeshCreditsBackground);
 	AEGfxMeshFree(pMeshCredits);
-
 }
+
 void credits::unload()
 {
 	AEGfxTextureUnload(texCreditsBackground); // unload the texture for the background image

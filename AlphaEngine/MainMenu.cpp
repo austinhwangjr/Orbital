@@ -100,6 +100,7 @@ void main_menu::init()
     std::cout << std::endl;
     std::cout << "------------------------- MainMenu Initialised -------------------------" << std::endl << std::endl;
     AudioManager::PlayBGM("Assets/BGM/cinescifi.wav", 0.25f);
+
     MMplayer.init();
 
     MMplayer.position.x = 0.0f;
@@ -119,12 +120,16 @@ void main_menu::init()
 
 void main_menu::update()
 {
+    // ================
+    //  MENU BUTTONS
+    // ================
+    menuButtons.update();
+    
     //std::cout << "GameState: " << current_state << std::endl;
 
     MMframe_time = AEFrameRateControllerGetFrameTime();
     MMtotal_time += MMframe_time;
 
-    
     // =======================
     //  PLAYER MOVEMENT
     // =======================
@@ -132,8 +137,10 @@ void main_menu::update()
     // =======================
     //  FREE FLYING MODE
     // =======================
-    if (MMplayer.state == PLAYER_FLY) {
-        if (AEInputCheckCurr(AEVK_W)) {
+    if (MMplayer.state == PLAYER_FLY)
+    {
+        if (AEInputCheckCurr(AEVK_W))
+        {
             AEVec2 added;
             AEVec2Set(&added, AECos(MMplayer.direction), AESin(MMplayer.direction));
 
@@ -146,7 +153,8 @@ void main_menu::update()
             AEVec2Scale(&MMplayer.velocity, &MMplayer.velocity, 0.99f);
         }
 
-        if (AEInputCheckCurr(AEVK_S)) {
+        if (AEInputCheckCurr(AEVK_S))
+        {
             AEVec2 added;
             AEVec2Set(&added, -AECos(MMplayer.direction), -AESin(MMplayer.direction));
 
@@ -159,17 +167,20 @@ void main_menu::update()
             AEVec2Scale(&MMplayer.velocity, &MMplayer.velocity, 0.99f);
         }
 
-        if (AEInputCheckCurr(AEVK_A)) {
+        if (AEInputCheckCurr(AEVK_A))
+        {
             MMplayer.direction += MMplayer.rot_speed * static_cast<f32>(MMframe_time);
             MMplayer.direction = AEWrap(MMplayer.direction, -PI, PI);
         }
 
-        if (AEInputCheckCurr(AEVK_D)) {
+        if (AEInputCheckCurr(AEVK_D))
+        {
             MMplayer.direction -= MMplayer.rot_speed * static_cast<f32>(MMframe_time);
             MMplayer.direction = AEWrap(MMplayer.direction, -PI, PI);
         }
 
-        if (AEVec2Distance(&MMplanet.position, &MMplayer.position) <= (MMplanet.size / 2 + MMplanet.orbit_range)) {
+        if (AEVec2Distance(&MMplanet.position, &MMplayer.position) <= (MMplanet.size / 2 + MMplanet.orbit_range))
+        {
             MMplayer.direction = static_cast<f32>(atan2(MMplayer.position.y - MMplanet.position.y, MMplayer.position.x - MMplanet.position.x));
             MMplayer.state = PLAYER_ORBIT;
         }
@@ -180,24 +191,26 @@ void main_menu::update()
 
         MMplayer.position.x = MMplayer.position.x + MMplayer.velocity.x * static_cast<f32>(MMframe_time);
         MMplayer.position.y = MMplayer.position.y + MMplayer.velocity.y * static_cast<f32>(MMframe_time);
-
     }
 
     // =======================
     //  ORBIT MODE
     // =======================
-    if (MMplayer.state == PLAYER_ORBIT) {
+    if (MMplayer.state == PLAYER_ORBIT)
+    {
         // ================
         // Check for Input
         // ================
-        if (AEInputCheckCurr(AEVK_A) && MMplayer.position.y >= AEGfxGetWinMinY() + MMplayer.size) {
+        if (AEInputCheckCurr(AEVK_A) && MMplayer.position.y >= AEGfxGetWinMinY() + MMplayer.size)
+        {
             MMplayer.direction += (MMplayer.rot_speed / 2) * static_cast<f32>(MMframe_time);
 
             MMplayer.position.x = MMplanet.position.x + (static_cast<f32>(MMplanet.size) / 2 + MMplanet.orbit_range) * AECos(MMplayer.direction);
             MMplayer.position.y = MMplanet.position.y + (static_cast<f32>(MMplanet.size) / 2 + MMplanet.orbit_range) * AESin(MMplayer.direction);
         }
 
-        if (AEInputCheckCurr(AEVK_D) && MMplayer.position.x <= AEGfxGetWinMaxX() - MMplayer.size) {
+        if (AEInputCheckCurr(AEVK_D) && MMplayer.position.x <= AEGfxGetWinMaxX() - MMplayer.size)
+        {
             MMplayer.direction -= (MMplayer.rot_speed / 2) * static_cast<f32>(MMframe_time);
 
             MMplayer.position.x = MMplanet.position.x + (static_cast<f32>(MMplanet.size) / 2 + MMplanet.orbit_range) * AECos(MMplayer.direction);
@@ -540,10 +553,7 @@ void main_menu::update()
         }
     }
 
-    // ================
-    //  MENU BUTTONS
-    // ================
-    menuButtons.update();
+
 }
 
 void main_menu::draw()
@@ -679,7 +689,6 @@ void main_menu::unload()
     AEGfxTextureUnload(MMorbit_halo_tex);
     AEGfxTextureUnload(TexMMBackground); // unload the texture for the background image
 
-    AudioManager::UnloadSound("Assets/BGM/cinescifi.wav");
 
 }
 

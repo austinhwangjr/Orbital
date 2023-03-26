@@ -7,6 +7,7 @@
 #include "input.h"
 #include "Graphics.h"
 #include "Easing.h"
+#include "AudioManager.h"
 #include <cmath>
 
 #ifndef M_PI
@@ -68,7 +69,8 @@ struct HoverButton
 };
 
 // Define the positions and dimensions for each button
-Button buttons[] = {
+Button buttons[] =
+{
     {startX, startY, buttonWidth, buttonHeight},   // Start button
     {howToPlayX, howToPlayY, buttonWidth, buttonHeight},  // How to play button
     {highScoreX, highScoreY, buttonWidth, buttonHeight},    // high score button
@@ -78,7 +80,8 @@ Button buttons[] = {
 };
 
 // Define the hover dimensions for each button
-HoverButton hoverButtons[] = {
+HoverButton hoverButtons[] =
+{
     {hoverButtonWidth, hoverButtonHeight}, // Start button
     {hoverButtonWidth, hoverButtonHeight}, // How to play button
     {hoverButtonWidth, hoverButtonHeight}, // High score button
@@ -88,8 +91,6 @@ HoverButton hoverButtons[] = {
 };
 
 Button currentButtonSizes[6];
-
-
 
 void Menu_Button::load( const char* startButtonFilename,
                         const char* howToPlayButtonFilename,
