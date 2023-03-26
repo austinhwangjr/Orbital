@@ -76,7 +76,7 @@ void credits::update()
     sliderThumbY = scrollRatio * (sliderHeight - sliderThumbHeight) + (scrollRatio) * (sliderY);
 
 
-    int mouseWheelDelta = GetMouseWheelDelta();
+    int mouseWheelDelta = Input::GetMouseWheelDelta();
     if (mouseWheelDelta != 0)
     {
         float scrollSpeed = 70.0f;

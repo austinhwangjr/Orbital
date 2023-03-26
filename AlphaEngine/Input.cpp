@@ -80,7 +80,7 @@ bool Input::isMouseHover(float center_x, float center_y, float width, float heig
     return false;
 }
 
-int GetMouseWheelDelta()
+int Input::GetMouseWheelDelta()
 {
     MSG msg;
     while (PeekMessage(&msg, NULL, WM_MOUSEWHEEL, WM_MOUSEWHEEL, PM_REMOVE))
