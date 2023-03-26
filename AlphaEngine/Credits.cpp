@@ -8,15 +8,15 @@
 #include "Credits.h"
 #include "Input.h"
 
-// Set the dimensions of each button
-static float buttonWidth2 = 200.f;
-static float buttonHeight2 = 50.f;
-
-int currentPage = 1;
-
 AEGfxTexture* texCreditsBackground = nullptr;
 AEGfxTexture* texCreditsBackground2 = nullptr;
 AEGfxTexture* texReturnToMMfromCredits = nullptr;
+AEGfxTexture* texSlider = nullptr;
+AEGfxTexture* texSliderThumb = nullptr;
+
+// Set the dimensions of each button
+static float buttonWidth2 = 200.f;
+static float buttonHeight2 = 50.f;
 
 AEGfxVertexList* pMeshCreditsBackground;
 AEGfxVertexList* pMeshCredits;
@@ -27,12 +27,28 @@ Rendering renderCredits;
 static float creditsBGX = 0.0f;
 static float creditsBGY = 0.0f;
 
-static float returnToMMfromCreditsX = 650.0f;
-static float returnToMMfromCreditsY = -20.0f;
+static float creditsBGX2 = 0.0f;
+static float creditsBGY2 = -900.0f;
+
+static float returnToMMfromCreditsX = 0.0f;
+static float returnToMMfromCreditsY = -400.0f;
+
+static float sliderX = 780.0f;
+static float sliderY = 0.0f;
+static float sliderWidth = 10.0f;
+static float sliderHeight = 800.0f;
+
+static float sliderThumbX = sliderX;
+static float sliderThumbY = 0.0f;
+static float sliderThumbWidth = 20.0f;
+
+static float contentHeight = 900.0f;
+static float visibleHeight = 450.0f;
+static float sliderThumbHeight = sliderHeight * (visibleHeight / contentHeight);
 
 // Define the positions and dimensions for each button
 credits::Button2 buttons2[] = {
-	{returnToMMfromCreditsX, returnToMMfromCreditsY, buttonWidth2, buttonHeight2},   // Return to main menu button
+	{returnToMMfromCreditsX, returnToMMfromCreditsY, buttonWidth2, buttonHeight2},
 };
 
 void credits::load()
@@ -40,10 +56,13 @@ void credits::load()
 	texCreditsBackground = AEGfxTextureLoad("Assets/MainMenu/Credits/c_credits1.png");
     texCreditsBackground2 = AEGfxTextureLoad("Assets/MainMenu/Credits/c_credits2.png");
 	texReturnToMMfromCredits = AEGfxTextureLoad("Assets/MainMenu/Credits/c_ExitButtonCredits.png");
+    texSlider = AEGfxTextureLoad("Assets/MainMenu/Credits/c_Slider.png");
+    texSliderThumb = AEGfxTextureLoad("Assets/MainMenu/Credits/c_SliderThumb.png");
 }
 
 void credits::init()
 {
+
 	createMeshCredits.BackgroundMesh(pMeshCreditsBackground);
 	createMeshCredits.SquareMesh(pMeshCredits);
 
@@ -53,20 +72,32 @@ void credits::init()
 
 void credits::update()
 {
-    if (AEInputCheckTriggered(AEVK_LBUTTON) && currentPage > 1)
+    float scrollRatio = 1.0f - (creditsBGY / (contentHeight - visibleHeight));
+    sliderThumbY = scrollRatio * (sliderHeight - sliderThumbHeight) + (scrollRatio) * (sliderY);
+
+
+    int mouseWheelDelta = GetMouseWheelDelta();
+    if (mouseWheelDelta != 0)
     {
-        currentPage--;
-    }
-    if (AEInputCheckTriggered(AEVK_RBUTTON) && currentPage < 2)
-    {
-        currentPage++;
+        float scrollSpeed = 70.0f;
+        creditsBGY -= mouseWheelDelta / (float)WHEEL_DELTA * scrollSpeed;
+        creditsBGY2 = creditsBGY - 900.0f;
+
+        // Limit the scrolling range
+        if (creditsBGY < 0.0f)
+        {
+            creditsBGY = 0.0f;
+            creditsBGY2 = -900.0f;
+        }
+        if (creditsBGY > 900.0f)
+        {
+            creditsBGY = 900.0f;
+            creditsBGY2 = 0.0f;
+        }
     }
 
-    // Check if the left mouse button has been clicked
     if (AEInputCheckTriggered(AEVK_LBUTTON))
     {
-        // Check which button has been clicked
-
         if (Input::isButtonClicked(buttons2[0].x, buttons2[0].y, buttons2[0].width, buttons2[0].height))
         {
 
@@ -91,16 +122,12 @@ void credits::update()
 
 void credits::draw()
 {
-    if (currentPage == 1)
-    {
-        renderCredits.RenderSprite(texCreditsBackground, 0.f, 0.f, 800.f, 450.f, pMeshCreditsBackground);
-    }
-    else if (currentPage == 2)
-    {
-        renderCredits.RenderSprite(texCreditsBackground2, 0.f, 0.f, 800.f, 450.f, pMeshCreditsBackground);
-    }
+    renderCredits.RenderSprite(texCreditsBackground2, 0.f, creditsBGY2, 800.f, 450.f, pMeshCreditsBackground);
+    renderCredits.RenderSprite(texCreditsBackground, 0.f, creditsBGY, 800.f, 450.f, pMeshCreditsBackground);
 
     renderCredits.RenderSprite(texReturnToMMfromCredits, returnToMMfromCreditsX, returnToMMfromCreditsY, buttonWidth2, buttonHeight2, pMeshCredits);
+    renderCredits.RenderSprite(texSlider, sliderX, sliderY, sliderWidth, sliderHeight, pMeshCredits);
+    renderCredits.RenderSprite(texSliderThumb, sliderThumbX, sliderThumbY, sliderThumbWidth, 20, pMeshCredits);
 }
 
 void credits::free()
@@ -114,5 +141,6 @@ void credits::unload()
 	AEGfxTextureUnload(texCreditsBackground);
     AEGfxTextureUnload(texCreditsBackground2);
 	AEGfxTextureUnload(texReturnToMMfromCredits);
-
+    AEGfxTextureUnload(texSlider);
+    AEGfxTextureUnload(texSliderThumb);
 }

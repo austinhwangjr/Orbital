@@ -18,4 +18,8 @@ namespace credits
         float height;
     };
 
+
+
+
 }
+int GetMouseWheelDelta();
