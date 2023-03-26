@@ -16,7 +16,6 @@
 
 static float normalTint[4] = { 1.0f, 1.0f, 1.0f, 1.0f }; // white
 static float hoverTint[4] = { 0.196f, 0.874f, 0.812f, 1.0f }; // #32dfcf
-
 static float currentTints[6][4];
 
 static float normalSquareSize = 15.0f;
@@ -24,9 +23,7 @@ static float hoverSquareSize = 25.0f;
 static float currentSquareSizes[6];
 static float currentXPositions[6];
 
-
 static float hoverOffsetX = 30.0f; 
-
 
 // Set the dimensions of each button
 static float buttonWidth = 300.f;
@@ -53,6 +50,7 @@ static float creditsY = -270.f;
 
 static float quitX = -530.0f;
 static float quitY = -345.f;
+
 // checking input area stuff
 struct Button
 {
@@ -123,7 +121,6 @@ void Menu_Button::load( const char* startButtonFilename,
     hoverButtonTextures[4]      = AEGfxTextureLoad(creditsButtonHoverFilename);
     hoverButtonTextures[5]      = AEGfxTextureLoad(exitButtonHoverFilename);
     squareTexture = AEGfxTextureLoad(squareTextureFilename);
-
 }
 
 void Menu_Button::init()
@@ -143,8 +140,6 @@ void Menu_Button::init()
         }
     }
 }
-
-
 
 void Menu_Button::update()
 {
@@ -260,22 +255,12 @@ void Menu_Button::draw(AEGfxVertexList* pMesh)
     {
         if (hoverStates[i])
         {
-            tint[0] = 0.0f; // red
-            tint[1] = 0.0f; // green
-            tint[2] = 1.0f; // blue
-            tint[3] = 1.0f; // alpha
-
             Rendering::RenderSprite(hoverButtonTextures[i], currentXPositions[i], buttons[i].y, currentButtonSizes[i].width, currentButtonSizes[i].height, pMesh);
         }
         else
         {
-            tint[0] = 1.0f; // red
-            tint[1] = 1.0f; // green
-            tint[2] = 1.0f; // blue
-            tint[3] = 1.0f; // alpha
             Rendering::RenderSprite(normalButtonTextures[i], currentXPositions[i], buttons[i].y, currentButtonSizes[i].width, currentButtonSizes[i].height, pMesh);
         }
-
         Rendering::RenderSpriteWithRotations(squareTexture, buttons[i].x + offsetX, buttons[i].y, currentSquareSizes[i], currentSquareSizes[i], pMesh, squareRotations[i], currentTints[i][0], currentTints[i][1], currentTints[i][2], currentTints[i][3]);
     }
 }
@@ -289,4 +274,3 @@ void Menu_Button::unload()
     }
     AEGfxTextureUnload(squareTexture);
 }
-

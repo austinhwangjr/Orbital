@@ -18,8 +18,11 @@ namespace credits
         float height;
     };
 
-
+    struct HoverButton2
+    {
+        float width;
+        float height;
+    };
 
 
 }
-int GetMouseWheelDelta();
