@@ -7,6 +7,8 @@
 #include "Graphics.h"
 #include "Credits.h"
 #include "Input.h"
+#include "Easing.h"
+
 
 AEGfxTexture* texCreditsBackground = nullptr;
 AEGfxTexture* texCreditsBackground2 = nullptr;
@@ -45,7 +47,9 @@ static float sliderThumbWidth = 20.0f;
 static float contentHeight = 900.0f;
 static float visibleHeight = 450.0f;
 static float sliderThumbHeight = sliderHeight * (visibleHeight / contentHeight);
-
+static float targetCreditsBGY = 0.0f;
+static float easingProgress = 1.0f;
+static float easingDuration = 0.5f;
 // Define the positions and dimensions for each button
 credits::Button2 buttons2[] = {
 	{returnToMMfromCreditsX, returnToMMfromCreditsY, buttonWidth2, buttonHeight2},
@@ -74,26 +78,38 @@ void credits::update()
 {
     float scrollRatio = 1.0f - (creditsBGY / (contentHeight - visibleHeight));
     sliderThumbY = scrollRatio * (sliderHeight - sliderThumbHeight) + (scrollRatio) * (sliderY);
+    sliderThumbX = sliderX - (sliderThumbWidth - sliderWidth) / 2.0f;
 
 
     int mouseWheelDelta = Input::GetMouseWheelDelta();
     if (mouseWheelDelta != 0)
     {
         float scrollSpeed = 70.0f;
-        creditsBGY -= mouseWheelDelta / (float)WHEEL_DELTA * scrollSpeed;
-        creditsBGY2 = creditsBGY - 900.0f;
+        targetCreditsBGY -= mouseWheelDelta / (float)WHEEL_DELTA * scrollSpeed;
 
         // Limit the scrolling range
-        if (creditsBGY < 0.0f)
+        if (targetCreditsBGY < 0.0f)
         {
-            creditsBGY = 0.0f;
-            creditsBGY2 = -900.0f;
+            targetCreditsBGY = 0.0f;
         }
-        if (creditsBGY > 900.0f)
+        if (targetCreditsBGY > 900.0f)
         {
-            creditsBGY = 900.0f;
-            creditsBGY2 = 0.0f;
+            targetCreditsBGY = 900.0f;
         }
+
+        // Reset easing progress
+        easingProgress = 0.0f;
+    }
+
+    if (easingProgress < 1.0f)
+    {
+        // Update easing progress
+        easingProgress += (1.0f / 240.0f) / easingDuration; //actually 60fps so 60.0f but 240.0f is smoother soo....
+        if (easingProgress > 1.0f) easingProgress = 1.0f;
+
+        // Apply easing to background position
+        creditsBGY = EaseOutExpo(creditsBGY, targetCreditsBGY, easingProgress);
+        creditsBGY2 = creditsBGY - 900.0f;
     }
 
     if (AEInputCheckTriggered(AEVK_LBUTTON))
