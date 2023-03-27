@@ -346,6 +346,9 @@ void Drone::free()
 		drone_vector_all[i].clear();
 	
 	drone_vector_all.clear();
+
+	DroneData.clear();
+	DroneDataMap.clear();
 }
 
 void Drone::unload()

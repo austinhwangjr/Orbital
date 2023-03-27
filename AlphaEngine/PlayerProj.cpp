@@ -2,6 +2,9 @@
 #include "PlayerProj.h"
 #include <vector>
 #include "SpaceStation.h"
+#include "Data.h"
+#include <iostream>
+#include <fstream>
 
 // Textures
 AEGfxTexture* player_proj_tex;
@@ -16,28 +19,31 @@ extern std::vector<ShopOption> button_vector;
 
 extern f32 cam_x, cam_y;
 
-
+//IMPORT DATA VECTOR
+std::map<std::string, f32> ProjDataMap;
+std::vector<Data> ProjData;
 
 void PlayerProj::load()
 {
 	player_proj_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Debris.png");
+	ImportPlayerDataFromFile("Assets/GameObjectData/PlayerProjectileData.txt", ProjData, ProjDataMap);
 }
 
 void PlayerProj::init()
 {
-	position.x		= 0.f;
-	position.y		= 0.f;
+	position.x		= ProjDataMap["Position_X"];
+	position.y		= ProjDataMap["Position_Y"];
 
-	velocity.x		= 0.f;
-	velocity.y		= 0.f;
+	velocity.x		= ProjDataMap["Velocity_X"];
+	velocity.y		= ProjDataMap["Velocity_Y"];
 
-	size			= 30.f;
+	size			= ProjDataMap["Size"];
 
-	speed			= 150.f;
+	speed			= ProjDataMap["Speed"];
 
-	direction		= 0.f;
+	direction		= ProjDataMap["Direction"];
 
-	is_delete = 0;
+	is_delete		= static_cast<int>(ProjDataMap["Delete_flag"]);
 }
 
 void PlayerProj::update(f64 frame_time, Player& player, PlayerUI& player_ui)
@@ -156,9 +162,66 @@ void PlayerProj::draw(AEGfxVertexList* pMesh)
 void PlayerProj::free()
 {
 	player_proj_vector.clear();
+
+	ProjData.clear();
+	ProjDataMap.clear();
 }
 
 void PlayerProj::unload()
 {
 	AEGfxTextureUnload(player_proj_tex);
+}
+
+int ImportPlayerProjDataFromFile(const char* FileName, std::vector<Data>& ProjData, std::map<std::string, f32>& ProjDatamap)
+{
+
+	std::ifstream ifs{ FileName, std::ios_base::in };
+	if (!ifs.is_open()) {											// Check if file exist/open	
+		std::cout << FileName << "does not exist." << '\n';
+		return 0;
+	}
+
+	std::string line;
+	while (std::getline(ifs, line)) {
+		Data Node;
+		std::string word;
+		int find_word = 1;
+
+		for (char const ch : line) {
+
+			if (find_word) {
+				if (ch == '/') {
+					break;
+				}
+				if (ch == ' ' || ch == '\t') {
+					if (!word.empty()) {    // if ch is a whitespace and word contains some letters
+						Node.variable_name = word;
+						find_word = 0;
+						word.clear();
+					}
+				}
+				else {
+					word.push_back(ch);
+
+				}
+			}
+			else if (!find_word) {
+				word.push_back(ch);
+			}
+		}
+
+		if (find_word == 0) {
+			Node.data = word;
+			ProjData.push_back(Node);
+		}
+
+	}
+
+	for (size_t i = 0; i < ProjData.size(); i++) {
+		ProjDatamap[ProjData[i].variable_name] = std::stof(ProjData[i].data);
+	}
+
+	ifs.close();
+
+	return 1;
 }
