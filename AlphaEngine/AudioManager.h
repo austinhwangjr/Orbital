@@ -20,4 +20,9 @@ namespace AudioManager
 
     void setVolume(float volume);
 
+    static bool isBGMPlaying;
+
+    void StopBGMIfPlaying();
+
 }
+

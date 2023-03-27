@@ -54,3 +54,9 @@ static float easeInOutQuad(f32 t)
 {
 	return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 }
+
+static float EaseAudioVolume(float startVolume, float targetVolume, float progress)
+{
+	float easedProgress = EaseOutExpo(0, 1, progress);
+	return Lerp(startVolume, targetVolume, easedProgress);
+}

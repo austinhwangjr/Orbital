@@ -121,14 +121,22 @@ void Menu_Button::load( const char* startButtonFilename,
     hoverButtonTextures[4]      = AEGfxTextureLoad(creditsButtonHoverFilename);
     hoverButtonTextures[5]      = AEGfxTextureLoad(exitButtonHoverFilename);
     squareTexture = AEGfxTextureLoad(squareTextureFilename);
+
+    AudioManager::LoadSound("Assets/BGM/one-last-time-141289.mp3", true);
+
 }
 
 void Menu_Button::init()
 {
+    if (!AudioManager::isBGMPlaying)
+    {
+        AudioManager::PlayBGM("Assets/BGM/one-last-time-141289.mp3", 0.25f);
+    }
+
     for (int i = 0; i < 6; ++i)
     {
         hoverStates[i] = false;
-        currentXPositions[i] = buttons[i].x; 
+        currentXPositions[i] = buttons[i].x;
         currentButtonSizes[i].width = buttons[i].width;
         currentButtonSizes[i].height = buttons[i].height;
         squareRotations[i] = 0.0f;
@@ -141,6 +149,7 @@ void Menu_Button::init()
     }
 }
 
+
 void Menu_Button::update()
 {
     for (int i = 0; i < 6; ++i)
@@ -148,6 +157,8 @@ void Menu_Button::update()
         hoverStates[i] = Input::isMouseHover(buttons[i].x, buttons[i].y, buttons[i].width, buttons[i].height, hoverButtons[i].width, hoverButtons[i].height);
         if (AEInputCheckTriggered(AEVK_LBUTTON) && hoverStates[i])
         {
+            AudioManager::StopBGMIfPlaying(); 
+
             switch (i)
             {
             case 0: // Start button
@@ -263,6 +274,9 @@ void Menu_Button::draw(AEGfxVertexList* pMesh)
         }
         Rendering::RenderSpriteWithRotations(squareTexture, buttons[i].x + offsetX, buttons[i].y, currentSquareSizes[i], currentSquareSizes[i], pMesh, squareRotations[i], currentTints[i][0], currentTints[i][1], currentTints[i][2], currentTints[i][3]);
     }
+}
+void Menu_Button::free()
+{
 }
 
 void Menu_Button::unload()

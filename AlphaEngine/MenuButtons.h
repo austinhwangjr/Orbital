@@ -23,6 +23,8 @@ public:
     void init();
     void update();
     void draw(AEGfxVertexList* pMesh);
+    void free();
+
     void unload();
 
 private:

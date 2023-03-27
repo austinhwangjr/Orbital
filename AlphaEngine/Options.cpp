@@ -42,6 +42,8 @@ namespace Options
     bool muteHoverState = false;
     bool draggingSlider = false;
 
+    float targetVolume = 0.5f;
+
     // mute button
     float muteButtonX = 0.0f;
     float muteButtonY = 100.0f;
@@ -79,12 +81,18 @@ void Options::load()
     o_VolumeSliderThumb         = AEGfxTextureLoad("Assets/MainMenu/Options/o_SliderThumb.png");
 
     returnToMMTexture11 = AEGfxTextureLoad("Assets/MainMenu/Options/o_ExitButtonCredits.png");
+    AudioManager::LoadSound("Assets/BGM/one-last-time-141289.mp3", true);
 
 }
 
 void Options::init()
 {
     optionsMenu.SquareMesh(optionsMesh);
+
+    if (!AudioManager::isBGMPlaying)
+    {
+        AudioManager::PlayBGM("Assets/BGM/one-last-time-141289.mp3", 0.25f);
+    }
 
 }
 
@@ -97,6 +105,7 @@ void Options::update(float* volume, bool* muted)
 
         if (Input::isButtonClicked(buttons11[0].x, buttons11[0].y, buttons11[0].width, buttons11[0].height))
         {
+            AudioManager::StopBGMIfPlaying();
 
             next_state = GS_MAINMENU;
         }
@@ -137,15 +146,19 @@ void Options::update(float* volume, bool* muted)
     if (draggingSlider)
     {
         sliderThumbX = mouseX - AEGetWindowWidth() / 2.0f - 10;
-        if (sliderThumbX < sliderX - 50) 
+        if (sliderThumbX < sliderX - 50)
         {
-            sliderThumbX = sliderX - 50; 
+            sliderThumbX = sliderX - 50;
         }
-        if (sliderThumbX > sliderX + 50) 
+        if (sliderThumbX > sliderX + 50)
         {
-            sliderThumbX = sliderX + 50; 
+            sliderThumbX = sliderX + 50;
         }
-        *volume = (sliderThumbX - (sliderX - 50)) / 100; 
+        targetVolume = (sliderThumbX - (sliderX - 50)) / 100;
+    }
+    else if (next_state != GS_MAINMENU) // Add this condition to prevent updating the volume after switching states
+    {
+        *volume = EaseAudioVolume(*volume, targetVolume, 0.05f);
         AudioManager::setVolume(*volume);
     }
 
@@ -189,6 +202,7 @@ void Options::draw()
 void Options::free()
 {
     AEGfxMeshFree(optionsMesh);
+
 }
 
 void Options::unload()

@@ -68,7 +68,6 @@ void main_menu::load()
                         "Assets/MainMenu/mm_ExitButtonHover.png",
                         "Assets/MainMenu/squareTexture.png");
 
-    AudioManager::LoadSound("Assets/BGM/cinescifi.wav", true);
 
     MMtexplayer = AEGfxTextureLoad("Assets/MainLevel/ml_Spaceship2.png");
     MMtexplanet = AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture4.png");
@@ -78,6 +77,8 @@ void main_menu::load()
     MMshuttle_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Shuttle.png");
     MMexplosion_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Explosion.png");
     MMorbit_halo_tex = AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
+
+
 }
 
 void main_menu::init()
@@ -99,7 +100,6 @@ void main_menu::init()
 
     std::cout << std::endl;
     std::cout << "------------------------- MainMenu Initialised -------------------------" << std::endl << std::endl;
-    AudioManager::PlayBGM("Assets/BGM/cinescifi.wav", 0.25f);
 
     MMplayer.init();
 
