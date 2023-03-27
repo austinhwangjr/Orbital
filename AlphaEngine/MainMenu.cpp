@@ -13,6 +13,8 @@
 #include "Debris.h"
 #include "Shuttle.h"
 #include "Easing.h"
+#include <map>
+#include "Data.h"
 
 #define MM_SHUTTLE_SIZE 20
 AEGfxTexture* TexMMBackground = nullptr;
@@ -47,6 +49,10 @@ Menu_Button menuButtons;
 Rendering createMesh;
 Rendering RenderMMBackground;
 
+//IMPORT DATA VECTOR
+std::map<std::string, f32> MMPlayerDataMap;
+std::vector<Data> MMPlayerData;
+
 void main_menu::load()
 {
     TexMMBackground = AEGfxTextureLoad("Assets/MainMenu/mm_Background.png");
@@ -78,6 +84,7 @@ void main_menu::load()
     MMshuttle_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Shuttle.png");
     MMexplosion_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Explosion.png");
     MMorbit_halo_tex = AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
+    ImportPlayerDataFromFile("Assets/MainLevel/PlayerData.txt", MMPlayerData, MMPlayerDataMap);
 }
 
 void main_menu::init()
@@ -100,10 +107,52 @@ void main_menu::init()
     std::cout << std::endl;
     std::cout << "------------------------- MainMenu Initialised -------------------------" << std::endl << std::endl;
     AudioManager::PlayBGM("Assets/BGM/cinescifi.wav", 0.25f);
-    MMplayer.init();
+    
+    //--------------------Player--------------------
+    MMplayer.state = PLAYER_FLY;
 
-    MMplayer.position.x = 0.0f;
-    MMplayer.position.y = 0.0f;
+    MMplayer.position.x = MMPlayerDataMap["position.x"];
+    MMplayer.position.y = MMPlayerDataMap["position.y"];
+
+    MMplayer.velocity.x = MMPlayerDataMap["velocity.x"];
+    MMplayer.velocity.y = MMPlayerDataMap["velocity.y"];
+
+    MMplayer.size = MMPlayerDataMap["size"];
+
+    MMplayer.mov_speed = MMPlayerDataMap["mov_speed"];
+    MMplayer.rot_speed = MMPlayerDataMap["rot_speed"] * PI;
+
+    MMplayer.shortest_distance = MMPlayerDataMap["shortest_distance"];
+
+    MMplayer.direction = MMPlayerDataMap["direction"];
+
+    MMplayer.current_capacity = MMPlayerDataMap["current_capacity"];
+    MMplayer.max_capacity = MMPlayerDataMap["max_capacity"];
+
+    MMplayer.can_leave_orbit = true;
+
+    MMplayer.timer = MMPlayerDataMap["timer"];
+
+    //--------------------Score-keeping--------------------
+    MMplayer.score = MMPlayerDataMap["score"];
+    MMplayer.credits = MMPlayerDataMap["credits"];
+
+    //--------------------Upgrade Levels--------------------
+    MMplayer.mov_speed_level = MMPlayerDataMap["mov_speed_level"];
+    MMplayer.capacity_level = MMPlayerDataMap["capacity_level"];
+    MMplayer.space_station_count = MMPlayerDataMap["space_station_count"];
+    MMplayer.beam_level = MMPlayerDataMap["beam_level"];
+
+    //--------------------Tractor Beam--------------------
+    MMplayer.beam_pos.x = MMPlayerDataMap["beam_pos.x"];
+    MMplayer.beam_pos.y = MMPlayerDataMap["beam_pos.y"];
+
+    MMplayer.beam_width = MMplayer.size * 0.6f;
+    MMplayer.beam_height = MMplayer.beam_width * 2.f;
+
+    //--------------------Planet Halo--------------------
+    MMplayer.halo_scale_lerp = MMPlayerDataMap["halo_scale_lerp"];
+
 
     //DEBRIS
     MMplanet.max_debris = rand() % (DEBRIS_MAX - DEBRIS_MIN) + DEBRIS_MIN;												// Randomize debris count on planet spawn
@@ -662,6 +711,8 @@ void main_menu::free()
     AEGfxMeshFree(pMeshMMBackground);
     AEGfxMeshFree(pMeshMM);
     AEGfxMeshFree(pMeshObj);
+    MMPlayerData.clear();
+    MMPlayerDataMap.clear();
 
 }
 

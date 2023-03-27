@@ -184,7 +184,6 @@ void Planets::free()
 		planet_vector[i].debris_vector.clear();
 	}
 	planet_vector.clear();
-	planet_textures.clear();
 	runway_vector.clear();
 }
 
@@ -194,6 +193,7 @@ void Planets::unload()
 	{
 		AEGfxTextureUnload(texture);
 	}
+	planet_textures.clear(); // to change!!
 	AEGfxTextureUnload(orbit_tex);
 	AEGfxTextureUnload(runway_tex);
 }

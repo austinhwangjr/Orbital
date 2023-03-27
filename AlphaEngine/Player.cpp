@@ -1,6 +1,9 @@
 #include "AEEngine.h"
 #include "Player.h"
 #include "Easing.h"
+#include <iostream>
+#include <fstream>
+#include "Data.h"
 
 // Textures
 AEGfxTexture* player_tex;
@@ -16,60 +19,68 @@ bool beam_active = false;
 extern std::vector<Planets> planet_vector;
 extern std::vector<std::vector<Debris>> debris_vector_all;
 
+
+//IMPORT DATA VECTOR
+std::map<std::string, f32> PlayerDataMap;
+std::vector<Data> PlayerData;
+
+
 void Player::load()
 {
 	// Load textures
 	player_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_Spaceship2.png");
 	tractor_beam_tex	= AEGfxTextureLoad("Assets/MainLevel/ml_TractorBeam.png");
 	orbit_halo_tex		= AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
+	ImportPlayerDataFromFile("Assets/MainLevel/PlayerData.txt", PlayerData, PlayerDataMap);
 }
 
 void Player::init()
 {
+
 	//--------------------Player--------------------
 	state					= PLAYER_FLY;
 
-	position.x				= 100.f;
-	position.y				= 100.f;
+	position.x				= PlayerDataMap["position.x"];
+	position.y				= PlayerDataMap["position.y"];
 
-	velocity.x				= 0.f;
-	velocity.y				= 0.f;
+	velocity.x				= PlayerDataMap["velocity.x"];
+	velocity.y				= PlayerDataMap["velocity.y"];
 
-	size					= 50.f;
+	size					= PlayerDataMap["size"];
 
-	mov_speed				= 150.f;
-	rot_speed				= 0.85f * PI;
+	mov_speed				= PlayerDataMap["mov_speed"];
+	rot_speed				= PlayerDataMap["rot_speed"] * PI;
 
-	shortest_distance		= 0.f;
+	shortest_distance		= PlayerDataMap["shortest_distance"];
 
-	direction				= 0.f;
+	direction				= PlayerDataMap["direction"];
 
-	current_capacity		= 0;
-	max_capacity			= 5;
+	current_capacity		= PlayerDataMap["current_capacity"];
+	max_capacity			= PlayerDataMap["max_capacity"];
 
 	can_leave_orbit			= true;
 
-	timer					= 0.f;
+	timer					= PlayerDataMap["timer"];
 
 	//--------------------Score-keeping--------------------
-	score					= 0;
-	credits					= 200;
+	score					= PlayerDataMap["score"];
+	credits					= PlayerDataMap["credits"];
 
 	//--------------------Upgrade Levels--------------------
-	mov_speed_level			= 0;
-	capacity_level			= 0;
-	space_station_count		= 0;
-	beam_level				= 0;
+	mov_speed_level			= PlayerDataMap["mov_speed_level"];
+	capacity_level			= PlayerDataMap["capacity_level"];
+	space_station_count		= PlayerDataMap["space_station_count"];
+	beam_level				= PlayerDataMap["beam_level"];
 
 	//--------------------Tractor Beam--------------------
-	beam_pos.x				= 0.f;
-	beam_pos.y				= 0.f;
+	beam_pos.x				= PlayerDataMap["beam_pos.x"];
+	beam_pos.y				= PlayerDataMap["beam_pos.y"];
 
 	beam_width				= size * 0.6f;
 	beam_height				= beam_width * 2.f;
 
 	//--------------------Planet Halo--------------------
-	halo_scale_lerp			= 0.0f;
+	halo_scale_lerp			= PlayerDataMap["halo_scale_lerp"];
 
 }
 
@@ -176,7 +187,8 @@ void Player::draw(AEGfxVertexList* pMesh)
 
 void Player::free()
 {
-
+	PlayerData.clear();
+	PlayerDataMap.clear();
 }
 
 void Player::unload()
@@ -417,4 +429,59 @@ void Player::flying_state(f64 frame_time)
 		if (debris.state == MOVE_TOWARDS_PLAYER)
 			debris.state = MOVE_TOWARDS_PLANET;
 	}
+}
+
+
+int ImportPlayerDataFromFile(const char* FileName, std::vector<Data> &PlayerData, std::map<std::string, f32> &PlayerDatamap)
+{
+
+	std::ifstream ifs{ FileName, std::ios_base::in };
+	if (!ifs.is_open()) {											// Check if file exist/open	
+		std::cout << FileName << "does not exist." << '\n';
+		return 0;
+	}
+
+	std::string line;
+	while (std::getline(ifs, line)) {
+		Data Node;
+		std::string word;
+		int find_word = 1;
+
+		for (char const ch : line) {
+
+			if (find_word) {
+				if (ch == '/') {
+					break;
+				}
+				if (ch == ' ') {
+					if (!word.empty()) {    // if ch is a whitespace and word contains some letters
+						Node.variable_name = word;
+						find_word = 0;
+						word.clear();
+					}
+				}
+				else {
+					word.push_back(ch);
+
+				}
+			}
+			else if (!find_word){
+				word.push_back(ch);
+			}
+		}
+
+		if (find_word == 0) {
+			Node.data = word;
+			PlayerData.push_back(Node);
+		}
+
+	}
+
+	for (size_t i = 0; i < PlayerData.size(); i++) {
+		PlayerDatamap[PlayerData[i].variable_name] = std::stof(PlayerData[i].data);
+	}
+
+	ifs.close();
+
+	return 1;
 }

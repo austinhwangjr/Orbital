@@ -138,6 +138,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.09\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Credits.h" />
+    <ClInclude Include="Data.h" />
     <ClInclude Include="Debris.h" />
     <ClInclude Include="Drone.h" />
     <ClInclude Include="Easing.h" />

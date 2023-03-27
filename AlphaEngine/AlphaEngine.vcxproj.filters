@@ -177,6 +177,9 @@
     <ClInclude Include="Highscore.h">
       <Filter>Header\InGame\InGameMenus</Filter>
     </ClInclude>
+    <ClInclude Include="Data.h">
+      <Filter>Header\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header">

@@ -63,3 +63,5 @@ struct Player
 	void transit_state(f64);
 	void flying_state(f64);
 };
+
+int ImportPlayerDataFromFile(const char* FileName);

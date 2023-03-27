@@ -9,6 +9,7 @@
 #include "HowToPlay.h"
 #include <iostream>
 #include <fstream>
+#include "data.h"
 
 // Set the dimensions of each button
 static float buttonWidth1;

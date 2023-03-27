@@ -1,0 +1,21 @@
+//--------------------Player--------------------
+position.x 100
+position.y 100
+velocity.x 0
+velocity.y 0
+size 50
+mov_speed 150
+rot_speed 0.85
+shortest_distance 0
+direction 0
+current_capacity 0
+max_capacity 5
+timer 0
+//--------------------Score-keeping--------------------	
+score 0
+credits 200
+//--------------------Upgrade Levels--------------------
+mov_speed_level	0
+capacity_level 0
+space_station_count 0
+beam_level 0
