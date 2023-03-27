@@ -3,6 +3,10 @@
 #include "Planet.h"
 #include <vector>
 #include <string>
+#include "Data.h"
+#include <iostream>
+#include <fstream>
+
 
 // Textures
 AEGfxTexture* drone_tex;
@@ -24,44 +28,49 @@ extern std::vector<std::vector<Debris>> debris_vector_all;
 
 extern s8 font_id;
 
+//IMPORT DATA VECTOR
+std::map<std::string, f32> DroneDataMap;
+std::vector<Data> DroneData;
+
 void Drone::load()
 {
 	drone_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Drone.png");
+	ImportPlayerDataFromFile("Assets/GameObjectData/DroneData.txt", DroneData, DroneDataMap);
 
 }
 
 void Drone::init(Player player)
 {
 	//--------------------Drone--------------------
-	position.x				= 0.f;
-	position.y				= 0.f;
+	position.x				= DroneDataMap["Position_X"];
+	position.y				= DroneDataMap["Position_Y"];
 
-	velocity.x				= 0.f;
-	velocity.y				= 0.f;
+	velocity.x				= DroneDataMap["Velocity_X"];
+	velocity.y				= DroneDataMap["Velocity_Y"];
 
 	size					= player.size;
 
 	rot_speed				= player.rot_speed / 10.f;
 
-	shortest_distance		= 0.f;
+	shortest_distance		= DroneDataMap["Shortest_Distance"];
 
 	direction				= player.direction;
 
-	current_capacity		= 0;
-	max_capacity			= 3;
+	current_capacity		= DroneDataMap["Current_Capacity"];
+	max_capacity			= DroneDataMap["Max_Capacity"];
 
 	//--------------------Cooldown Bar--------------------
 	cd_bar.position.x		= position.x;
 	cd_bar.position.y		= position.y - size;
-	cd_bar.height			= 5.f;
-	cd_bar.width			= 0.f;
-	cd_bar.max_width		= 40.f;
-	cd_bar.timer			= 0.f;
-	cd_bar.total_time		= 8.f;
+	cd_bar.height			= DroneDataMap["CoolDownBar_height"];
+	cd_bar.width			= DroneDataMap["CoolDownBar_width"];
+	cd_bar.max_width		= DroneDataMap["CoolDownBar_max_width"];
+	cd_bar.timer			= DroneDataMap["CoolDownBar_timer"];
+	cd_bar.total_time		= DroneDataMap["CoolDownBar_total_time"];
 
 	//--------------------Tractor Beam--------------------
-	beam_pos.x				= 0.f;
-	beam_pos.y				= 0.f;
+	beam_pos.x				= DroneDataMap["TractorBeam_position_X"];
+	beam_pos.y				= DroneDataMap["TractorBeam_position_Y"];
 
 	beam_width				= size;
 	beam_height				= beam_width * 3 / 2;
@@ -343,4 +352,58 @@ void Drone::unload()
 {
 	AEGfxTextureUnload(drone_tex);
 
+}
+
+int ImportDroneDataFromFile(const char* FileName, std::vector<Data>& DroneData, std::map<std::string, f32>& DroneDatamap)
+{
+
+	std::ifstream ifs{ FileName, std::ios_base::in };
+	if (!ifs.is_open()) {											// Check if file exist/open	
+		std::cout << FileName << "does not exist." << '\n';
+		return 0;
+	}
+
+	std::string line;
+	while (std::getline(ifs, line)) {
+		Data Node;
+		std::string word;
+		int find_word = 1;
+
+		for (char const ch : line) {
+
+			if (find_word) {
+				if (ch == '/') {
+					break;
+				}
+				if (ch == ' ' || ch == '\t') {
+					if (!word.empty()) {    // if ch is a whitespace and word contains some letters
+						Node.variable_name = word;
+						find_word = 0;
+						word.clear();
+					}
+				}
+				else {
+					word.push_back(ch);
+
+				}
+			}
+			else if (!find_word) {
+				word.push_back(ch);
+			}
+		}
+
+		if (find_word == 0) {
+			Node.data = word;
+			DroneData.push_back(Node);
+		}
+
+	}
+
+	for (size_t i = 0; i < DroneData.size(); i++) {
+		DroneDatamap[DroneData[i].variable_name] = std::stof(DroneData[i].data);
+	}
+
+	ifs.close();
+
+	return 1;
 }

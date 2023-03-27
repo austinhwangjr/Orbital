@@ -31,7 +31,7 @@ void Player::load()
 	player_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_Spaceship2.png");
 	tractor_beam_tex	= AEGfxTextureLoad("Assets/MainLevel/ml_TractorBeam.png");
 	orbit_halo_tex		= AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
-	ImportPlayerDataFromFile("Assets/MainLevel/PlayerData.txt", PlayerData, PlayerDataMap);
+	ImportPlayerDataFromFile("Assets/GameObjectData/PlayerData.txt", PlayerData, PlayerDataMap);
 }
 
 void Player::init()
@@ -453,7 +453,7 @@ int ImportPlayerDataFromFile(const char* FileName, std::vector<Data> &PlayerData
 				if (ch == '/') {
 					break;
 				}
-				if (ch == ' ') {
+				if (ch == ' ' || ch == '\t') {
 					if (!word.empty()) {    // if ch is a whitespace and word contains some letters
 						Node.variable_name = word;
 						find_word = 0;
