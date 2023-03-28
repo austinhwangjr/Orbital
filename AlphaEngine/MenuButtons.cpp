@@ -9,6 +9,8 @@
 #include "Easing.h"
 #include "AudioManager.h"
 #include <cmath>
+#include "Transition.h"
+
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -155,10 +157,14 @@ void Menu_Button::update()
     for (int i = 0; i < 6; ++i)
     {
         hoverStates[i] = Input::isMouseHover(buttons[i].x, buttons[i].y, buttons[i].width, buttons[i].height, hoverButtons[i].width, hoverButtons[i].height);
+
         if (AEInputCheckTriggered(AEVK_LBUTTON) && hoverStates[i])
         {
-            AudioManager::StopBGMIfPlaying(); 
+            transition::isTransitionActive = true;
+            transition::resetTimer();
+            AudioManager::StopBGMIfPlaying();
 
+            // Set the next game state based on the button that was clicked
             switch (i)
             {
             case 0: // Start button

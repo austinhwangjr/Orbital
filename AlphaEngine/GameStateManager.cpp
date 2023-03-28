@@ -26,6 +26,8 @@ Technology is prohibited.
 #include "SplashScreen.h"
 #include <functional>
 #include <iostream>
+#include "Transition.h"
+
 
 using FP = std::function<void()>;
 
