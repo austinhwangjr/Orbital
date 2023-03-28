@@ -1,18 +1,16 @@
-/* Start Header ************************************************************************/
+/******************************************************************************/
 /*!
-\file		Level1.cpp
-\author		Hwang Jing Rui, Austin, jingruiaustin.hwang, 2200601
-\par		jingruiaustin.hwang\@digipen.edu
-\date		Jan 14, 2023
-\brief		This file contains the definition of the Load(), Initialize(), Update(),
-			Draw(), Free() and Unload() functions for Level 1.
+\file		MainLevel.cpp
+\author 	
+\par    	email: \@digipen.edu
+\date   	March 28, 2023
+\brief		This file contains the definition of functions for the main level.
 
 Copyright (C) 2023 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents
-without the prior written consent of DigiPen Institute of
-Technology is prohibited.
-*/
-/* End Header **************************************************************************/
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+/******************************************************************************/
 #include "pch.h"
 #include "GameStateManager.h"
 #include "MainLevel.h"

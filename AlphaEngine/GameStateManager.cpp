@@ -1,18 +1,23 @@
-/* Start Header ************************************************************************/
+/******************************************************************************/
 /*!
-\file		GameStateManager.cpp
-\author		Hwang Jing Rui, Austin, jingruiaustin.hwang, 2200601
-\par		jingruiaustin.hwang\@digipen.edu
-\date		Jan 14, 2023
-\brief		This file contains the definition for the Initialize() and Update() 
-			functions for the Game State Manager.
+\file		GameStateManager.h
+\author 	Hwang Jing Rui, Austin
+			Ong You Yang
+\par    	email: jingruiaustin.hwang\@digipen.edu
+				   xxx\@digipen.edu
+\date   	March 28, 2023
+\brief		This file contains the definition of functions for the Game State
+			Manager.
+
+			Austin 		- Basic Implementation
+			You Yang	- Implemented the RestartLevel and changeGameState()
+						  functions
 
 Copyright (C) 2023 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents
-without the prior written consent of DigiPen Institute of
-Technology is prohibited.
-*/
-/* End Header **************************************************************************/
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+/******************************************************************************/
 #include "pch.h"
 #include "GameStateManager.h"
 #include "MainMenu.h"
@@ -23,6 +28,7 @@ Technology is prohibited.
 #include "Highscore.h"
 #include "LoseMenu.h"
 #include "Options.h"
+#include "SplashScreen.h"
 #include <functional>
 #include <iostream>
 
@@ -51,14 +57,14 @@ void gsm::update()
 	// Depending on current state, assign function pointers to corresponding state
 	switch (current_state)
 	{
-	/*case GS_SPLASHSCREEN:
-		fpLoad = main_menu::load;
-		fpInit		= main_menu::init;
-		fpUpdate	= main_menu::update;
-		fpDraw		= main_menu::draw;
-		fpFree		= main_menu::free;
-		fpUnload	= main_menu::unload;
-		break;*/
+	case GS_SPLASHSCREEN:
+		fpLoad		= splashscreen::load;
+		fpInit		= splashscreen::init;
+		fpUpdate	= splashscreen::update;
+		fpDraw		= splashscreen::draw;
+		fpFree		= splashscreen::free;
+		fpUnload	= splashscreen::unload;
+		break;
 	case GS_MAINMENU:
 		fpLoad		= main_menu::load;
 		fpInit		= main_menu::init;

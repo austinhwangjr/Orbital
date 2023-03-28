@@ -1,3 +1,22 @@
+/******************************************************************************/
+/*!
+\file		SpaceStation.cpp
+\author 	Hwang Jing Rui, Austin
+			Leong Wen Bin Aceson
+\par    	email: jingruiaustin.hwang\@digipen.edu
+				   leong.w\@digipen.edu
+\date   	March 28, 2023
+\brief		This file contains the definition of functions for the space station.
+
+			Aceson	- Added cooldown bar and coin for space stations.
+					- Added check so that space stations cannot be too close to
+					  each other
+
+Copyright (C) 2023 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+/******************************************************************************/
 #include "AEEngine.h"
 #include "SpaceStation.h"
 #include <vector>

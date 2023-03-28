@@ -1,17 +1,16 @@
-/* Start Header ************************************************************************/
+/******************************************************************************/
 /*!
 \file		WaveManager.cpp
-\author		Tan Rui An Ryan, ruianryan.t, 2200600
-\par		ruianryan.t\@digipen.edu
-\date		Feb 27, 2023
+\author		Tan Rui An Ryan
+\par		email: ruianryan.t\@digipen.edu
+\date		March 28, 2023
 \brief		This file contains the behaviour for the WaveManager game object
 
 Copyright (C) 2023 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents
-without the prior written consent of DigiPen Institute of
-Technology is prohibited.
-*/
-/* End Header **************************************************************************/
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+/******************************************************************************/
 #include "AEEngine.h"
 #include "WaveManager.h"
 #include "LoseMenu.h"
@@ -38,6 +37,11 @@ std::vector<WaveManager::Arrow>	arrow_vector;
 
 static f32 w_width{}, w_height{};
 
+/******************************************************************************/
+/*!
+	Load Textures and Data
+*/
+/******************************************************************************/
 void WaveManager::load()
 {
 	//indicator_tex = AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture.png");
@@ -45,6 +49,11 @@ void WaveManager::load()
 	lineTexture = AEGfxTextureLoad("Assets/MainLevel/line.png");
 }
 
+/******************************************************************************/
+/*!
+	Initialize Variables
+*/
+/******************************************************************************/
 void WaveManager::init()
 {
 	w_width = static_cast<f32>(AEGetWindowWidth());
@@ -78,6 +87,11 @@ void WaveManager::init()
 	std::cout << "Planet Count: " << planet_count << '\n';
 }
 
+/******************************************************************************/
+/*!
+	Update Wave Manager
+*/
+/******************************************************************************/
 void WaveManager::update(f64 frame_time)
 {
 	// Lose Condition--------------------------------------------------------
@@ -249,6 +263,11 @@ void WaveManager::update(f64 frame_time)
 	// Update logic for off-screen indicator-------------------------------
 }
 
+/******************************************************************************/
+/*!
+	Draw Wave Manager (indicators)
+*/
+/******************************************************************************/
 void WaveManager::draw(AEGfxVertexList* pMesh)
 {
 	for (size_t i{}; i < indicator_vector.size(); i++)
@@ -412,6 +431,11 @@ void WaveManager::draw(AEGfxVertexList* pMesh)
 	// WAVE | SHUTTLES | PLANETS -------------------------------------------------------------------------------------------------------------------------------------
 }
 
+/******************************************************************************/
+/*!
+	Clean Object Instanes
+*/
+/******************************************************************************/
 void WaveManager::free()
 {
 	//ss_indicator_vector.clear();
@@ -419,6 +443,11 @@ void WaveManager::free()
 	arrow_vector.clear();
 }
 
+/******************************************************************************/
+/*!
+	Free Textures
+*/
+/******************************************************************************/
 void WaveManager::unload()
 {
 	putHighScore(player.score);
@@ -427,6 +456,12 @@ void WaveManager::unload()
 	AEGfxTextureUnload(lineTexture);
 }
 
+/******************************************************************************/
+/*!
+	Additional Functions
+*/
+/******************************************************************************/
+// Return number of shuttles
 int WaveManager::get_total_shuttles()
 {
 	int total_shuttles{};
@@ -437,6 +472,7 @@ int WaveManager::get_total_shuttles()
 	return total_shuttles;
 }
 
+// Return number of shuttles
 int WaveManager::get_current_shuttles() const
 {
 	int total_shuttles{};
@@ -447,6 +483,7 @@ int WaveManager::get_current_shuttles() const
 	return total_shuttles;
 }
 
+// Check if there are still shuttles
 bool WaveManager::no_more_shuttles()
 {
 	bool check = false;
@@ -475,6 +512,7 @@ bool WaveManager::no_more_shuttles()
 //	ss_indicator_vector.push_back(new_indicator);
 //}
 
+// Add distance indicator
 void WaveManager::add_indicator()
 {
 	WaveManager::Indicator new_indicator;

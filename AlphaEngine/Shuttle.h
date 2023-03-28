@@ -1,3 +1,16 @@
+/******************************************************************************/
+/*!
+\file		Shuttle.h
+\author		Tan Rui An Ryan
+\par		email: ruianryan.t\@digipen.edu
+\date		March 28, 2023
+\brief		This file contains the declaration of functions for the shuttle.
+
+Copyright (C) 2023 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+/******************************************************************************/
 #pragma once
 #define SHUTTLE_MAX_LIFESPAN	5.f			// Maximum life time for a shuttle before escaping (expiring)
 #define SHUTTLE_MAX_ACCEL		100.f		// Maximum acceleration for a shuttle

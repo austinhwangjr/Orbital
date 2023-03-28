@@ -1,37 +1,51 @@
-    #ifndef OPTIONS_H
-    #define OPTIONS_H
+/******************************************************************************/
+/*!
+\file		Options.h
+\author 	
+\par    	email: \@digipen.edu
+\date   	March 28, 2023
+\brief		This file contains the declaration of functions for the options
+            screen.
 
-    #include "AEEngine.h"
+Copyright (C) 2023 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+/******************************************************************************/
+#ifndef OPTIONS_H
+#define OPTIONS_H
 
-    namespace Options
+#include "AEEngine.h"
+
+namespace Options
+{
+    void load();
+    void init();
+    void update(float* volume, bool* muted);
+    void draw();
+    void free();
+    void unload();
+
+    extern bool muteHoverState;
+    extern bool draggingSlider;
+
+    extern float muteButtonX;
+    extern float muteButtonY;
+    extern float sliderX;
+    extern float sliderY;
+    extern float sliderThumbX;
+    extern float sliderThumbY;
+
+    extern float volume;
+    extern bool muted;
+
+    struct Button11
     {
-        void load();
-        void init();
-        void update(float* volume, bool* muted);
-        void draw();
-        void free();
-        void unload();
+        float x;
+        float y;
+        float width;
+        float height;
+    };
+}
 
-        extern bool muteHoverState;
-        extern bool draggingSlider;
-
-        extern float muteButtonX;
-        extern float muteButtonY;
-        extern float sliderX;
-        extern float sliderY;
-        extern float sliderThumbX;
-        extern float sliderThumbY;
-
-        extern float volume;
-        extern bool muted;
-
-        struct Button11
-        {
-            float x;
-            float y;
-            float width;
-            float height;
-        };
-    }
-
-    #endif // OPTIONS_H
+#endif // OPTIONS_H

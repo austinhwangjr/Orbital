@@ -1,3 +1,20 @@
+/******************************************************************************/
+/*!
+\file		Debris.cpp
+\author 	Leong Wen Bin Aceson
+			Hwang Jing Rui, Austin
+\par    	email: xxx\@digipen.edu
+				   jingruiaustin.hwang\@digipen.edu
+\date   	March 28, 2023
+\brief		This file contains the definition of functions for the Debris.
+
+			Austin - Added debris state and behaviour in each state
+
+Copyright (C) 2023 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+/******************************************************************************/
 #include "AEEngine.h"
 #include "Debris.h"
 #include "Planet.h"

@@ -1,26 +1,24 @@
-/* Start Header ************************************************************************/
+/******************************************************************************/
 /*!
 \file		Planet.cpp
-\author		Tan Rui An Ryan, ruianryan.t, 2200600
-\par		ruianryan.t\@digipen.edu
-\date		Feb 27, 2023
-\brief		This file contains the behaviour for the Planet game object
+\author		Tan Rui An Ryan
+\par		email: ruianryan.t\@digipen.edu
+\date		March 28, 2023
+\brief		This file contains the definition of functions for the planet.
 
 Copyright (C) 2023 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents
-without the prior written consent of DigiPen Institute of
-Technology is prohibited.
-*/
-/* End Header **************************************************************************/
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+/******************************************************************************/
+#include <iostream>
+#include <cmath>
 #include "AEEngine.h"
 #include "Planet.h"
 #include "Drone.h"
 #include "SpaceStation.h"
 #include "WaveManager.h"
-#include <cmath>
 #include "Easing.h"
-
-#include <iostream>
 
 AEGfxTexture* planet_tex;
 AEGfxTexture* orbit_tex;
@@ -37,6 +35,11 @@ extern Debris debris;
 extern std::vector<SpaceStation> space_station_vector;
 extern std::vector<std::vector<Drone>> drone_vector_all;
 
+/******************************************************************************/
+/*!
+	Load Textures and Data
+*/
+/******************************************************************************/
 void Planets::load()
 {
 	orbit_tex = AEGfxTextureLoad("Assets/MainLevel/ml_OrbitRing.png");
@@ -44,6 +47,11 @@ void Planets::load()
 	orbit_halo_tex = AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
 }
 
+/******************************************************************************/
+/*!
+	Initialize Variables
+*/
+/******************************************************************************/
 void Planets::init()
 {
 	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture0.png"));
@@ -63,6 +71,11 @@ void Planets::init()
 	halo_scale_lerp = 0.f;
 }
 
+/******************************************************************************/
+/*!
+	Update Planet
+*/
+/******************************************************************************/
 void Planets::update(f64 frame_time)
 {
 	for (size_t i{}; i < planet_vector.size(); i++)
@@ -180,6 +193,11 @@ void Planets::update(f64 frame_time)
 
 }
 
+/******************************************************************************/
+/*!
+	Draw Planet
+*/
+/******************************************************************************/
 void Planets::draw(AEGfxVertexList* pMesh)
 {
 	AEGfxTextureSet(orbit_halo_tex, 0, 0);
@@ -218,6 +236,11 @@ void Planets::draw(AEGfxVertexList* pMesh)
 	}
 }
 
+/******************************************************************************/
+/*!
+	Clean Object Instances
+*/
+/******************************************************************************/
 void Planets::free()
 {
 	for (size_t i{}; i < planet_vector.size(); i++)
@@ -228,6 +251,11 @@ void Planets::free()
 	runway_vector.clear();
 }
 
+/******************************************************************************/
+/*!
+	Free Textures
+*/
+/******************************************************************************/
 void Planets::unload()
 {
 	for (AEGfxTexture* texture : planet_textures)
@@ -240,6 +268,12 @@ void Planets::unload()
 	AEGfxTextureUnload(orbit_halo_tex);
 }
 
+/******************************************************************************/
+/*!
+	Additional Functions
+*/
+/******************************************************************************/
+// Spawn planet
 void Planets::spawn(int shuttle_randomize_amount)
 {
 	Planets new_planet;
@@ -299,6 +333,7 @@ void Planets::spawn(int shuttle_randomize_amount)
 	planet_vector.push_back(new_planet);
 }
 
+// Check spawn position of planet
 void Planets::check_spawn(Planets& new_planet)
 {
 	bool planet_check = false;
@@ -333,6 +368,7 @@ void Planets::check_spawn(Planets& new_planet)
 	}
 }
 
+// Add runway for shuttle
 void Planets::add_runway(AEVec2 const& planet_pos)
 {
 	Planets::Runway new_runway;

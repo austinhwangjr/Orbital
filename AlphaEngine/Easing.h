@@ -1,10 +1,24 @@
+/******************************************************************************/
+/*!
+\file		Easing.h
+\author 	Hwang Jing Rui, Austin
+			Ong You Yang
+\par    	email: jingruiaustin.hwang\@digipen.edu
+				   xxx\@digipen.edu
+\date   	March 28, 2023
+\brief		This file contains the definition of functions for Easing 
+			transitions.
+
+Copyright (C) 2023 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+/******************************************************************************/
 #pragma once
 
 #include <stdlib.h>
 #include <math.h>
 #define NATURAL_LOG_OF_2    0.693147181f
-
-
 
 static float EaseOutExpo(float start, float end, float value)
 {
