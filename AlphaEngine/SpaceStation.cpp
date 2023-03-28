@@ -4,23 +4,26 @@
 #include "Debris.h"
 #include <string>
 #include "Camera.h"
-
-//VARIABLES
-#define COOLDOWN_HEIGHT 5;
-#define COOLDOWN_WIDTH 0;
-#define COOLDOWN_TIME 3;
-#define COIN_HEIGHT 50;
-#define COIN_WIDTH 50;
+#include "Data.h"
+#include "GameStateManager.h"
 
 
-int BUFFER_SAFE_DISTANCE = 30;
+//VARIABLES FOR COIN AND COOLDOWN BAR
+static float COOLDOWN_HEIGHT;
+static float COOLDOWN_WIDTH;
+static float COOLDOWN_TIME;
+static float COIN_HEIGHT;
+static float COIN_WIDTH;
+
 
 // Textures
 extern AEGfxTexture* space_station_tex;
+extern AEGfxTexture* shop_icon_tex;
 
-// Variables
+// Variables for SpaceStation
 bool space_station_valid_placement = false;
 bool space_station_added;
+static int BUFFER_SAFE_DISTANCE;
 
 // Mouse coordinates
 extern AEVec2 mouse_pos_world;
@@ -35,7 +38,6 @@ std::string capacity_spacestation;
 extern s8 font_id;
 extern Camera camera;
 
-extern AEGfxTexture* shop_icon_tex;
 
 // Vector of cooldown bar
 std::vector<Cooldown_Bar> cooldown_vector;
@@ -45,27 +47,39 @@ std::vector<Cooldown_Bar> cooldown_vector;
 AEGfxTexture* coin_tex;
 std::vector<Coin> coin_vector;
 
+//IMPORT DATA VECTOR
+std::map<std::string, f32> SpaceStationDataMap;
+std::vector<Data> SpaceStationData;
+
 
 
 void SpaceStation::load()
 {
 	coin_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Coin.png");
+	ImportPlayerDataFromFile("Assets/GameObjectData/SpaceStationData.txt", SpaceStationData, SpaceStationDataMap);
 }
 
 void SpaceStation::init()
 {
-	position.x			= 0.f;
-	position.y			= 0.f;
-	size				= 100.0f;
-	current_capacity	= 0;
-	max_capacity		= 10;
-	initial_spawn		= false;
+	position.x				= SpaceStationDataMap["Position_X"];
+	position.y				= SpaceStationDataMap["Position_Y"];
+	size					= SpaceStationDataMap["Size"];
+	current_capacity		= static_cast<int>(SpaceStationDataMap["Current_Capacity"]);
+	max_capacity			= static_cast<int>(SpaceStationDataMap["Max_Capacity"]);
+	initial_spawn			= static_cast<bool>(SpaceStationDataMap["Initial_spawn"]);
+
+
+	COOLDOWN_HEIGHT			= SpaceStationDataMap["CoolDownBar_height"];
+	COOLDOWN_WIDTH			= SpaceStationDataMap["CoolDownBar_width"];
+	COOLDOWN_TIME			= SpaceStationDataMap["CoolDownBar_time"];
+	COIN_HEIGHT				= SpaceStationDataMap["Coin_height"];
+	COIN_WIDTH				= SpaceStationDataMap["Coin_width"];
+	BUFFER_SAFE_DISTANCE	= static_cast<int>(SpaceStationDataMap["Buffer_safe_distance"]);
 }
 
 void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 {
 	int safe_position = 0;
-	double radius_to_debris = 0;
 
 	// =========================
 	// Update according to input
@@ -95,23 +109,6 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 		position.x = mouse_pos_world.x;
 		position.y = mouse_pos_world.y;
 
-		double radius_to_debris = 0;
-		double radius_to_station = size;
-		double radius_x;
-		double radius_y;
-		
-
-		// =================
-		// CALCULATE RADIUS
-		// =================
-		for (int i = 0; i < planet_vector.size(); i++) {
-			for (int j = 0; j < debris_vector_all[i].size(); j++) {
-				radius_x = pow((debris_vector_all[i][j].position.x - planet_vector[i].position.x), 2);
-				radius_y = pow((debris_vector_all[i][j].position.y - planet_vector[i].position.y), 2);
-				radius_to_debris = sqrt((radius_x + radius_y));
-			}
-
-		}
 
 		// =================================
 		// COLLISION CHECK BETWEEN STATION
@@ -125,7 +122,7 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 		// ======================================
 		// COLLISION CHECK BETWEEN NEAREST PLANET
 		// ======================================
-		if ((AEVec2Distance(&current_planet.position, &position) > radius_to_debris + BUFFER_SAFE_DISTANCE) && safe_position == space_station_vector.size()) {
+		if ((AEVec2Distance(&current_planet.position, &position) > (current_planet.size)/2 + BUFFER_SAFE_DISTANCE) && safe_position == space_station_vector.size()) {
 			if (player.space_station_count < MAX_SPACE_STATION_CNT) {
 				space_station_valid_placement = true;
 				space_station_added = false;
@@ -412,9 +409,73 @@ void SpaceStation::free()
 	space_station_vector.clear();
 	cooldown_vector.clear();
 	coin_vector.clear();
+
+	if (next_state != GS_RESTART) {
+		SpaceStationData.clear();
+		SpaceStationDataMap.clear();
+	}
 }
 
 void SpaceStation::unload()
 {
 	AEGfxTextureUnload(coin_tex);
+}
+
+int ImportSpaceStationDataFromFile(const char* FileName, std::vector<Data>& StationData, std::map<std::string, f32>& StationDatamap)
+{
+
+	std::ifstream ifs{ FileName, std::ios_base::in };
+	if (!ifs.is_open()) {											// Check if file exist/open	
+		std::cout << FileName << "does not exist." << '\n';
+		return 0;
+	}
+
+	std::string line;
+	while (std::getline(ifs, line)) {
+		Data Node;
+		std::string word;
+		int find_word = 1;
+
+		for (char const ch : line) {
+
+			if (find_word) {
+				if (ch == '/') {
+					break;
+				}
+
+				if (ch == '\n') {
+					break;
+				}
+
+				if (ch == ' ' || ch == '\t') {
+					if (!word.empty()) {    // if ch is a whitespace and word contains some letters
+						Node.variable_name = word;
+						find_word = 0;
+						word.clear();
+					}
+				}
+				else {
+					word.push_back(ch);
+
+				}
+			}
+			else if (!find_word) {
+				word.push_back(ch);
+			}
+		}
+
+		if (find_word == 0) {
+			Node.data = word;
+			StationData.push_back(Node);
+		}
+
+	}
+
+	for (size_t i = 0; i < StationData.size(); i++) {
+		StationDatamap[StationData[i].variable_name] = std::stof(StationData[i].data);
+	}
+
+	ifs.close();
+
+	return 1;
 }

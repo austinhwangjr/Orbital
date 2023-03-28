@@ -1,5 +1,5 @@
-//--------------------Drone--------------------
-/-----Variable------------------Value-----------
+//-----------------Drone-----------------------
+/-----Variable------------------Value----------
 Position_X 			0
 Position_Y 			0
 Velocity_X 			0
@@ -7,12 +7,18 @@ Velocity_Y 			0
 Shortest_Distance 		0
 Current_Capacity 		0
 Max_Capacity 			3
-//--------------------Cooldown Bar--------------------
+
+
+//---------------Cooldown Bar-------------------
+/-----Variable------------------Value-----------
 CoolDownBar_height 		5
 CoolDownBar_width 		0
 CoolDownBar_max_width 		40
 CoolDownBar_timer 		0
 CoolDownBar_total_time 		8
-//--------------------Tractor Beam--------------------
+
+
+//---------------Tractor Beam--------------------
+/-----Variable------------------Value------------
 TractorBeam_position_X 		0
 TractorBeam_position_Y 		0

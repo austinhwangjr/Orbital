@@ -12,16 +12,28 @@ direction 			0
 current_capacity 		0
 max_capacity 			5
 timer 				0
-//--------------------Score-keeping-------------	
+
+
+//--------------------Score-keeping-------------
+/-----Variable------------------Value-----------	
 score 				0
-credits 			250
+credits 			500
+
+
 //--------------------Upgrade Levels------------
+/-----Variable------------------Value-----------
 mov_speed_level			0
 capacity_level 			0
 space_station_count 		0
 beam_level 			0
+
+
 //--------------------Tractor Beam--------------
+/-----Variable------------------Value-----------
 beam_pos.x 			0
 beam_pos.y 			0
-//--------------------Planet Halo---------------
+
+
+//--------------------Halo Indicator------------
+/-----Variable------------------Value-----------
 halo_scale_lerp			0

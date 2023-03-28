@@ -5,6 +5,7 @@
 #include "Data.h"
 #include <iostream>
 #include <fstream>
+#include "GameStateManager.h"
 
 // Textures
 AEGfxTexture* player_proj_tex;
@@ -163,8 +164,10 @@ void PlayerProj::free()
 {
 	player_proj_vector.clear();
 
-	ProjData.clear();
-	ProjDataMap.clear();
+	if (next_state != GS_RESTART) {
+		ProjData.clear();
+		ProjDataMap.clear();
+	}
 }
 
 void PlayerProj::unload()
@@ -193,6 +196,11 @@ int ImportPlayerProjDataFromFile(const char* FileName, std::vector<Data>& ProjDa
 				if (ch == '/') {
 					break;
 				}
+
+				if (ch == '\n') {
+					break;
+				}
+
 				if (ch == ' ' || ch == '\t') {
 					if (!word.empty()) {    // if ch is a whitespace and word contains some letters
 						Node.variable_name = word;

@@ -111,47 +111,47 @@ void main_menu::init()
     //--------------------Player--------------------
     MMplayer.state = PLAYER_FLY;
 
-    MMplayer.position.x = MMPlayerDataMap["position.x"];
-    MMplayer.position.y = MMPlayerDataMap["position.y"];
+    MMplayer.position.x                    = MMPlayerDataMap["position.x"];
+    MMplayer.position.y                    = MMPlayerDataMap["position.y"];
 
-    MMplayer.velocity.x = MMPlayerDataMap["velocity.x"];
-    MMplayer.velocity.y = MMPlayerDataMap["velocity.y"];
+    MMplayer.velocity.x                    = MMPlayerDataMap["velocity.x"];
+    MMplayer.velocity.y                    = MMPlayerDataMap["velocity.y"];
 
-    MMplayer.size = MMPlayerDataMap["size"];
+    MMplayer.size                          = MMPlayerDataMap["size"];
 
-    MMplayer.mov_speed = MMPlayerDataMap["mov_speed"];
-    MMplayer.rot_speed = MMPlayerDataMap["rot_speed"] * PI;
+    MMplayer.mov_speed                     = MMPlayerDataMap["mov_speed"];
+    MMplayer.rot_speed                     = MMPlayerDataMap["rot_speed"] * PI;
 
-    MMplayer.shortest_distance = MMPlayerDataMap["shortest_distance"];
+    MMplayer.shortest_distance             = MMPlayerDataMap["shortest_distance"];
 
-    MMplayer.direction = MMPlayerDataMap["direction"];
+    MMplayer.direction                     = MMPlayerDataMap["direction"];
 
-    MMplayer.current_capacity = MMPlayerDataMap["current_capacity"];
-    MMplayer.max_capacity = MMPlayerDataMap["max_capacity"];
+    MMplayer.current_capacity              = static_cast<int>(MMPlayerDataMap["current_capacity"]);
+    MMplayer.max_capacity                  = static_cast<int>(MMPlayerDataMap["max_capacity"]);
 
-    MMplayer.can_leave_orbit = true;
+    MMplayer.can_leave_orbit               = true;
 
-    MMplayer.timer = MMPlayerDataMap["timer"];
+    MMplayer.timer                         = MMPlayerDataMap["timer"];
 
     //--------------------Score-keeping--------------------
-    MMplayer.score = MMPlayerDataMap["score"];
-    MMplayer.credits = MMPlayerDataMap["credits"];
+    MMplayer.score                         = static_cast<int>(MMPlayerDataMap["score"]);
+    MMplayer.credits                       = static_cast<int>(MMPlayerDataMap["credits"]);
 
     //--------------------Upgrade Levels--------------------
-    MMplayer.mov_speed_level = MMPlayerDataMap["mov_speed_level"];
-    MMplayer.capacity_level = MMPlayerDataMap["capacity_level"];
-    MMplayer.space_station_count = MMPlayerDataMap["space_station_count"];
-    MMplayer.beam_level = MMPlayerDataMap["beam_level"];
+    MMplayer.mov_speed_level               = static_cast<int>(MMPlayerDataMap["mov_speed_level"]);
+    MMplayer.capacity_level                = static_cast<int>(MMPlayerDataMap["capacity_level"]);
+    MMplayer.space_station_count           = static_cast<int>(MMPlayerDataMap["space_station_count"]);
+    MMplayer.beam_level                    = static_cast<int>(MMPlayerDataMap["beam_level"]);
 
     //--------------------Tractor Beam--------------------
-    MMplayer.beam_pos.x = MMPlayerDataMap["beam_pos.x"];
-    MMplayer.beam_pos.y = MMPlayerDataMap["beam_pos.y"];
+    MMplayer.beam_pos.x                    = MMPlayerDataMap["beam_pos.x"];
+    MMplayer.beam_pos.y                    = MMPlayerDataMap["beam_pos.y"];
 
-    MMplayer.beam_width = MMplayer.size * 0.6f;
-    MMplayer.beam_height = MMplayer.beam_width * 2.f;
+    MMplayer.beam_width                    = MMplayer.size * 0.6f;
+    MMplayer.beam_height                   = MMplayer.beam_width * 2.f;
 
     //--------------------Planet Halo--------------------
-    MMplayer.halo_scale_lerp = MMPlayerDataMap["halo_scale_lerp"];
+    MMplayer.halo_scale_lerp               = MMPlayerDataMap["halo_scale_lerp"];
 
 
     //DEBRIS

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include "Data.h"
+#include "GameStateManager.h"
 
 // Textures
 AEGfxTexture* player_tex;
@@ -55,22 +56,22 @@ void Player::init()
 
 	direction				= PlayerDataMap["direction"];
 
-	current_capacity		= PlayerDataMap["current_capacity"];
-	max_capacity			= PlayerDataMap["max_capacity"];
+	current_capacity		= static_cast<int>(PlayerDataMap["current_capacity"]);
+	max_capacity			= static_cast<int>(PlayerDataMap["max_capacity"]);
 
 	can_leave_orbit			= true;
 
 	timer					= PlayerDataMap["timer"];
 
 	//--------------------Score-keeping--------------------
-	score					= PlayerDataMap["score"];
-	credits					= PlayerDataMap["credits"];
+	score					= static_cast<int>(PlayerDataMap["score"]);
+	credits					= static_cast<int>(PlayerDataMap["credits"]);
 
 	//--------------------Upgrade Levels--------------------
-	mov_speed_level			= PlayerDataMap["mov_speed_level"];
-	capacity_level			= PlayerDataMap["capacity_level"];
-	space_station_count		= PlayerDataMap["space_station_count"];
-	beam_level				= PlayerDataMap["beam_level"];
+	mov_speed_level			= static_cast<int>(PlayerDataMap["mov_speed_level"]);
+	capacity_level			= static_cast<int>(PlayerDataMap["capacity_level"]);
+	space_station_count		= static_cast<int>(PlayerDataMap["space_station_count"]);
+	beam_level				= static_cast<int>(PlayerDataMap["beam_level"]);
 
 	//--------------------Tractor Beam--------------------
 	beam_pos.x				= PlayerDataMap["beam_pos.x"];
@@ -186,9 +187,11 @@ void Player::draw(AEGfxVertexList* pMesh)
 }
 
 void Player::free()
-{
-	PlayerData.clear();
-	PlayerDataMap.clear();
+{	
+	if (next_state != GS_RESTART) {
+		PlayerData.clear();
+		PlayerDataMap.clear();
+	}
 }
 
 void Player::unload()
@@ -453,6 +456,11 @@ int ImportPlayerDataFromFile(const char* FileName, std::vector<Data> &PlayerData
 				if (ch == '/') {
 					break;
 				}
+
+				if (ch == '\n') {
+					break;
+				}
+
 				if (ch == ' ' || ch == '\t') {
 					if (!word.empty()) {    // if ch is a whitespace and word contains some letters
 						Node.variable_name = word;

@@ -6,6 +6,7 @@
 #include "Data.h"
 #include <iostream>
 #include <fstream>
+#include "GameStateManager.h"
 
 
 // Textures
@@ -56,8 +57,8 @@ void Drone::init(Player player)
 
 	direction				= player.direction;
 
-	current_capacity		= DroneDataMap["Current_Capacity"];
-	max_capacity			= DroneDataMap["Max_Capacity"];
+	current_capacity		= static_cast<int>(DroneDataMap["Current_Capacity"]);
+	max_capacity			= static_cast<int>(DroneDataMap["Max_Capacity"]);
 
 	//--------------------Cooldown Bar--------------------
 	cd_bar.position.x		= position.x;
@@ -347,8 +348,10 @@ void Drone::free()
 	
 	drone_vector_all.clear();
 
-	DroneData.clear();
-	DroneDataMap.clear();
+	if (next_state != GS_RESTART) {
+		DroneData.clear();
+		DroneDataMap.clear();
+	}
 }
 
 void Drone::unload()
@@ -378,6 +381,11 @@ int ImportDroneDataFromFile(const char* FileName, std::vector<Data>& DroneData, 
 				if (ch == '/') {
 					break;
 				}
+
+				if (ch == '\n') {
+					break;
+				}
+
 				if (ch == ' ' || ch == '\t') {
 					if (!word.empty()) {    // if ch is a whitespace and word contains some letters
 						Node.variable_name = word;
