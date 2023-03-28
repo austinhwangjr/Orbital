@@ -2,6 +2,7 @@
 #include "Transition.h"
 #include "Global.h"
 #include "Graphics.h"
+#include "Easing.h"
 
 namespace transition
 {
@@ -14,9 +15,8 @@ namespace transition
 
     float transition_timer;
     float transition_alpha;
-
+    float pause_duration;
 }
-
 
 void transition::load()
 {
@@ -29,22 +29,28 @@ void transition::init()
     transition_timer = 0.0f;
     transition_alpha = 0.0f;
     isTransitionActive = false;
-
 }
 
 void transition::update(float deltaTime)
 {
+    if (pause_duration > 0.0f)
+    {
+        pause_duration -= deltaTime;
+        return;
+    }
+
     transition_timer += deltaTime;
 
     if (transition_timer < 1.0f)
     {
-        transition_alpha = transition_timer;
+        // Using EaseOutExpo for fade-in
+        transition_alpha = EaseOutExpo(0.0f, 1.0f, transition_timer);
         isTransitionActive = true;
-
     }
-    else if (transition_timer > 2.0f && transition_timer < 3.0f)
+    else if (transition_timer >= 1.0f && transition_timer < 2.0f)
     {
-        transition_alpha = 3.0f - transition_timer;
+        // Using EaseInQuad for fade-out
+        transition_alpha = EaseInQuad(1.0f - (transition_timer - 1.0f));
     }
     else
     {
@@ -52,7 +58,6 @@ void transition::update(float deltaTime)
         isTransitionActive = false;
     }
 }
-
 void transition::draw()
 {
     if (transition_alpha > 0.0f)
@@ -80,10 +85,6 @@ void transition::unload()
 void transition::resetTimer()
 {
     transition_timer = 0.0f;
+    pause_duration = 0.0001f;
 }
 
-void transition::activateTransition()
-{
-    isTransitionActive = true;
-    resetTimer();
-}

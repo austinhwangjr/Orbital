@@ -3,7 +3,6 @@
 #include "Systems.h"
 
 bool		g_isMute = false;
-extern f64 MMframe_time;
 
 // Variables related to console display
 bool g_consoleOn = true;

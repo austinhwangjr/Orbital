@@ -3,6 +3,8 @@
 #include "Global.h"
 #include "GameStateManager.h"
 #include "Graphics.h"
+#include "Transition.h"
+#include "AudioManager.h"
 
 AEGfxTexture* ss_DigiPen_Logo;
 AEGfxTexture* ss_TeamNameANDLogo;
@@ -18,10 +20,15 @@ float splashScreenCenterY;
 float splashScreenWidth;
 float splashScreenHeight;
 
+bool hyperspacePlayed;
+
+
 void SplashScreen::load()
 {
     ss_DigiPen_Logo = AEGfxTextureLoad("Assets/SplashScreen/ss_DigiPenSplashScreen.png");
     ss_TeamNameANDLogo = AEGfxTextureLoad("Assets/SplashScreen/ss_TeamNameANDLogo.png");
+
+    AudioManager::LoadSound("Assets/BGM/hyperspace_jump.mp3", false);
 }
 
 void SplashScreen::init()
@@ -32,6 +39,7 @@ void SplashScreen::init()
 
     splashScreenCenterX = 0.f;
     splashScreenCenterY = 0.f;
+    hyperspacePlayed = false;
 }
 
 void SplashScreen::update()
@@ -40,6 +48,9 @@ void SplashScreen::update()
 
     if (timer > 6.0f || AEInputCheckTriggered(AEVK_LBUTTON) || AEInputCheckTriggered(AEVK_RBUTTON))
     {
+        AudioManager::PlayOneShot("Assets/BGM/hyperspace_jump.mp3", 1.0f);
+        transition::isTransitionActive = true;
+        transition::resetTimer();
         next_state = GS_MAINMENU;
     }
 }
@@ -88,4 +99,5 @@ void SplashScreen::unload()
 {
     AEGfxTextureUnload(ss_DigiPen_Logo);
     AEGfxTextureUnload(ss_TeamNameANDLogo);
+
 }

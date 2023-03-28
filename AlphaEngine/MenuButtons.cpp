@@ -11,10 +11,10 @@
 #include <cmath>
 #include "Transition.h"
 
-
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
+float buttonClickDelay = 0.0f; 
 
 static float normalTint[4] = { 1.0f, 1.0f, 1.0f, 1.0f }; // white
 static float hoverTint[4] = { 0.196f, 0.874f, 0.812f, 1.0f }; // #32dfcf
@@ -52,6 +52,7 @@ static float creditsY = -270.f;
 
 static float quitX = -530.0f;
 static float quitY = -345.f;
+
 
 // checking input area stuff
 struct Button
@@ -125,6 +126,8 @@ void Menu_Button::load( const char* startButtonFilename,
     squareTexture = AEGfxTextureLoad(squareTextureFilename);
 
     AudioManager::LoadSound("Assets/BGM/one-last-time-141289.mp3", true);
+    AudioManager::LoadSound("Assets/BGM/hyperspace_jumping.mp3", false);
+
 
 }
 
@@ -132,7 +135,7 @@ void Menu_Button::init()
 {
     if (!AudioManager::isBGMPlaying)
     {
-        AudioManager::PlayBGM("Assets/BGM/one-last-time-141289.mp3", 0.25f);
+        AudioManager::PlayBGM("Assets/BGM/one-last-time-141289.mp3", 0.5f);
     }
 
     for (int i = 0; i < 6; ++i)
@@ -160,8 +163,11 @@ void Menu_Button::update()
 
         if (AEInputCheckTriggered(AEVK_LBUTTON) && hoverStates[i])
         {
+            AudioManager::PlayOneShot("Assets/BGM/hyperspace_jumping.mp3", 1.0f);
+
             transition::isTransitionActive = true;
             transition::resetTimer();
+            MMtotal_time = 0.f;
             AudioManager::StopBGMIfPlaying();
 
             // Set the next game state based on the button that was clicked

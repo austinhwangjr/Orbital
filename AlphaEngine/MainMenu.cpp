@@ -40,12 +40,14 @@ AEGfxTexture* MMshuttle_tex;
 AEGfxTexture* MMexplosion_tex;
 AEGfxTexture* MMorbit_halo_tex;
 
-f64 MMframe_time{}, MMtotal_time{};
+f64 MMframe_time = 0.f;
+f64 MMtotal_time = 0.f;
 
 // class declaration 
 Menu_Button menuButtons;
 Rendering createMesh;
 Rendering RenderMMBackground;
+
 
 void main_menu::load()
 {
@@ -120,15 +122,13 @@ void main_menu::init()
 
 void main_menu::update()
 {
+    MMframe_time = AEFrameRateControllerGetFrameTime();
+    MMtotal_time += MMframe_time;
+
     // ================
     //  MENU BUTTONS
     // ================
     menuButtons.update();
-    
-    //std::cout << "GameState: " << current_state << std::endl;
-
-    MMframe_time = AEFrameRateControllerGetFrameTime();
-    MMtotal_time += MMframe_time;
 
     // =======================
     //  PLAYER MOVEMENT
@@ -558,112 +558,115 @@ void main_menu::update()
 
 void main_menu::draw()
 {
-    // Clear the screen
-    AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
+    if (MMtotal_time >= 1.5f)
+    {
+        // Clear the screen
+        AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
-    // Draw the background mesh
-    RenderMMBackground.RenderSprite(TexMMBackground, 0.f, 0.f, 800.f, 450.f, pMeshMMBackground);
-    RenderMMBackground.RenderSprite(TexTitle, -250.f, 50.f, 800.f, 450.f, pMeshMMBackground);
+        // Draw the background mesh
+        RenderMMBackground.RenderSprite(TexMMBackground, 0.f, 0.f, 800.f, 450.f, pMeshMMBackground);
+        RenderMMBackground.RenderSprite(TexTitle, -250.f, 50.f, 800.f, 450.f, pMeshMMBackground);
 
-    // ====================
-    //  DRAWING ORBIT RING
-    // ====================
-    AEGfxTextureSet(MMorbit_tex, 0, 0);
-    AEGfxSetTransform(MMplanet.orbit_transform.m);
-    AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
-
-    if (MMplayer.state == PLAYER_ORBIT) {
-        AEGfxTextureSet(MMorbit_halo_tex, 0, 0);
-        AEGfxSetTransform(MMplayer.orbit_halo_transform.m);
+        // ====================
+        //  DRAWING ORBIT RING
+        // ====================
+        AEGfxTextureSet(MMorbit_tex, 0, 0);
+        AEGfxSetTransform(MMplanet.orbit_transform.m);
         AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
-    }
 
-    // ====================
-    //  DRAWING PLANET
-    // ====================
-    AEGfxTextureSet(MMtexplanet, 0, 0);
-    AEGfxSetTransform(MMplanet.transform.m);
-    AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
-
-    // ====================
-    //  DRAWING PLAYER
-    // ====================
-    AEGfxTextureSet(MMtexplayer, 0, 0);
-    AEGfxSetTransform(MMplayer.player_transform.m);
-    AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
-
-    // =====================
-    //  DRAWING TRACTOR BEAM
-    // =====================
-    if (AEInputCheckCurr(AEVK_SPACE) && MMplayer.state == PLAYER_ORBIT) {
-        AEGfxTextureSet(MMtexbeam, 0, 0);
-        AEGfxSetTransform(MMplayer.beam_transform.m);
-        AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
-    }
-
-
-    // ====================
-    //  DRAWING DEBRIS 
-    // ====================
-    for (size_t i = 0; i < MMplanet.debris_vector.size(); i++) {
-        if (MMplanet.debris_vector[i].active)
-        {
-            AEGfxTextureSet(MMtexdebris, 0, 0);
-            AEGfxSetTransform(MMplanet.debris_vector[i].transform.m);
+        if (MMplayer.state == PLAYER_ORBIT) {
+            AEGfxTextureSet(MMorbit_halo_tex, 0, 0);
+            AEGfxSetTransform(MMplayer.orbit_halo_transform.m);
             AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
         }
-    }
 
-    // ====================
-    //  DRAWING EXOLOSION
-    // ====================
-    for (size_t i = 0; i < MMplanet.debris_vector.size(); i++) {
+        // ====================
+        //  DRAWING PLANET
+        // ====================
+        AEGfxTextureSet(MMtexplanet, 0, 0);
+        AEGfxSetTransform(MMplanet.transform.m);
+        AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
 
-        Explosion& explosion = MMplanet.debris_vector[i].explosion;
-        if (explosion.is_draw) {
+        // ====================
+        //  DRAWING PLAYER
+        // ====================
+        AEGfxTextureSet(MMtexplayer, 0, 0);
+        AEGfxSetTransform(MMplayer.player_transform.m);
+        AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
 
-            if (explosion.timer <= explosion.total_time) {
-                AEGfxSetTransparency(explosion.total_time - explosion.timer);
+        // =====================
+        //  DRAWING TRACTOR BEAM
+        // =====================
+        if (AEInputCheckCurr(AEVK_SPACE) && MMplayer.state == PLAYER_ORBIT) {
+            AEGfxTextureSet(MMtexbeam, 0, 0);
+            AEGfxSetTransform(MMplayer.beam_transform.m);
+            AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
+        }
 
-                AEGfxTextureSet(MMexplosion_tex, 0, 0);
-                AEGfxSetTransform(explosion.transform.m);
+
+        // ====================
+        //  DRAWING DEBRIS 
+        // ====================
+        for (size_t i = 0; i < MMplanet.debris_vector.size(); i++) {
+            if (MMplanet.debris_vector[i].active)
+            {
+                AEGfxTextureSet(MMtexdebris, 0, 0);
+                AEGfxSetTransform(MMplanet.debris_vector[i].transform.m);
                 AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
             }
-            else {
-                AEGfxSetTransparency(0.f);
+        }
+
+        // ====================
+        //  DRAWING EXOLOSION
+        // ====================
+        for (size_t i = 0; i < MMplanet.debris_vector.size(); i++) {
+
+            Explosion& explosion = MMplanet.debris_vector[i].explosion;
+            if (explosion.is_draw) {
+
+                if (explosion.timer <= explosion.total_time) {
+                    AEGfxSetTransparency(explosion.total_time - explosion.timer);
+
+                    AEGfxTextureSet(MMexplosion_tex, 0, 0);
+                    AEGfxSetTransform(explosion.transform.m);
+                    AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
+                }
+                else {
+                    AEGfxSetTransparency(0.f);
+                }
             }
         }
-    }
 
 
-    // ====================
-    //  DRAWING SHUTTLE
-    // ====================
-    for (size_t i{}; i < MMshuttle_vector.size(); i++)
-    {
-        AEGfxTextureSet(MMshuttle_tex, 0, 0);
-        if (MMshuttle_vector[i].active)
+        // ====================
+        //  DRAWING SHUTTLE
+        // ====================
+        for (size_t i{}; i < MMshuttle_vector.size(); i++)
         {
-            if (MMshuttle_vector[i].lifespan <= SHUTTLE_MAX_LIFESPAN / 2.f)
+            AEGfxTextureSet(MMshuttle_tex, 0, 0);
+            if (MMshuttle_vector[i].active)
             {
-                AEGfxSetTransparency(MMshuttle_vector[i].lifespan / (SHUTTLE_MAX_LIFESPAN / 2.0f));
+                if (MMshuttle_vector[i].lifespan <= SHUTTLE_MAX_LIFESPAN / 2.f)
+                {
+                    AEGfxSetTransparency(MMshuttle_vector[i].lifespan / (SHUTTLE_MAX_LIFESPAN / 2.0f));
+                }
+                else
+                {
+                    AEGfxSetTransparency(1.f);
+                }
+                AEGfxSetTransform(MMshuttle_vector[i].transform.m);
+                // Actually drawing the mesh
+                AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
             }
-            else
-            {
-                AEGfxSetTransparency(1.f);
-            }
-            AEGfxSetTransform(MMshuttle_vector[i].transform.m);
-            // Actually drawing the mesh
-            AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
         }
-    }
 
-    AEGfxSetTransparency(1.0f);
-  
-    // ====================
-    //  DRAWING MENU BUTTONS
-    // ====================
-    menuButtons.draw(pMeshMM);
+        AEGfxSetTransparency(1.0f);
+
+        // ====================
+        //  DRAWING MENU BUTTONS
+        // ====================
+        menuButtons.draw(pMeshMM);
+    }
 }
 
 void main_menu::free()

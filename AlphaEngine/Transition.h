@@ -9,9 +9,9 @@ namespace transition
 	void free();
 	void unload();
 	void resetTimer();
-	void activateTransition();
 
 	extern bool isTransitionActive;
 	extern float transition_alpha;
+	extern float pause_duration;
 
 }

@@ -4,8 +4,6 @@
 #include <math.h>
 #define NATURAL_LOG_OF_2    0.693147181f
 
-
-
 static float EaseOutExpo(float start, float end, float value)
 {
 	end -= start;
@@ -39,7 +37,7 @@ static float easeLinear(f32 t)
 }
 
 // Quadratic easing in
-static float easeInQuad(f32 t)
+static float EaseInQuad(f32 t)
 {
 	return t * t;
 }
