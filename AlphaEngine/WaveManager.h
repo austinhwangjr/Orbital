@@ -4,7 +4,7 @@
 #define SHUTTLE_SPAWN_MAX		8		// Maximum number of shuttles a planet can spawn with
 #define SHUTTLE_SPAWN_MIN		4		// Minimum number of shuttles a planet can spawn with
 #define SHUTTLE_INCREASE_AMOUNT 1		// Number of shuttles added after a wave
-#define WAVE_INTERVAL_TIME		8		// Down time between waves
+#define WAVE_INTERVAL_TIME		15		// Down time between waves
 #define WAVE_ADD_PLANET			4		// Every nth wave planets will be added on
 
 #include "AEEngine.h"
@@ -70,12 +70,15 @@ struct WaveManager
 
 // PLANET VARIABLES--------------------------
 	int		planet_count;				// Number of planets
-	bool	planet_adding;				// Flag for when planet adding transition is playing
 // PLANET VARIABLES--------------------------
 
 
 // OTHER VARIABLES---------------------------
 	bool	gameLost;					// Flag for when the game is lost
+	bool	planet_adding;				// Flag for when planet adding transition is playing
+	bool	first_contact;				// Flag for first time player orbits a planet
+	bool	capacity_full;				// Flag for first time player full capacity
+	bool	station_tutorial;			// Flag for when station tutorial is finished;
 // OTHER VARIABLES---------------------------
 
 	void load();

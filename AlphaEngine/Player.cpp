@@ -41,8 +41,8 @@ void Player::init()
 	//--------------------Player--------------------
 	state					= PLAYER_FLY;
 
-	position.x				= PlayerDataMap["position.x"];
-	position.y				= PlayerDataMap["position.y"];
+	position.x				= 100.f;
+	position.y				= 100.f;
 
 	velocity.x				= PlayerDataMap["velocity.x"];
 	velocity.y				= PlayerDataMap["velocity.y"];
