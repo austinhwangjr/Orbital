@@ -853,6 +853,24 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 				static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) / 4.5f * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2)),
 				static_cast <f32>((tutorial_pos.y - FONT_ID_SIZE) / (AEGetWindowHeight() / 2)),
 				1.5f, 1.f, 1.f, 1.f);
+
+			tutorial = "No more than       can be destroyed!";
+			AEVec2Sub(&tutorial_pos, &planet_vector[0].position, &camera.position);
+
+			// Draw timer at center of planet using position calculated above
+			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+				static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) / 4.5f * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2)),
+				static_cast <f32>((tutorial_pos.y - (FONT_ID_SIZE * 3.5)) / (AEGetWindowHeight() / 2)),
+				1.5f, 1.f, 1.f, 1.f);
+
+			tutorial = std::to_string(LOSE_CONDITION);
+			AEVec2Sub(&tutorial_pos, &planet_vector[0].position, &camera.position);
+
+			// Draw timer at center of planet using position calculated above
+			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+				static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) * 1.25f * FONT_ID_SIZE)) / (AEGetWindowWidth() / 2)),
+				static_cast <f32>((tutorial_pos.y - (FONT_ID_SIZE * 3.5)) / (AEGetWindowHeight() / 2)),
+				2.5f, 1.f, 0.f, 0.f);
 		}
 
 		if (!wave_manager.wave_completed)

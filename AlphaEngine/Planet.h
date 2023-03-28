@@ -1,6 +1,7 @@
 #pragma once
 #define PLANET_SIZE				200.0f		// Planet base size (radius)	
 #define PLANET_ROT_SPEED		0.01f * PI	// Planet rotation speed (radians)
+#define PLANET_SPAWN_BUFFER		2.f			// Planet spawn distance buffer modifier
 #define SHUTTLE_SPAWN_TIME_MAX	12			// Maximum time shuttles will spawn
 #define SHUTTLE_SPAWN_TIME_MIN	7			// Minimum time shuttles will spawn
 #define DEBRIS_MAX				25			// Maximum number of debris on a planet
@@ -74,6 +75,14 @@ struct Planets
 // DRONES VARIABLES------------------
 	int					current_drones = 0;			// Current nubmer of drones on the planet
 // DRONES VARIABLES------------------
+
+
+// ============
+// Planet Halo
+// ============
+	f32						halo_size{};
+	f32						halo_scale_lerp{};
+	AEMtx33					orbit_halo_transform{};
 
 	void load();
 	void init();

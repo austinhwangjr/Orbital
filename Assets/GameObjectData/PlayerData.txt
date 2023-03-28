@@ -1,14 +1,14 @@
 //--------------------Player--------------------
 /-----Variable------------------Value-----------
-position.x 			100
-position.y 			100
-velocity.x 			0
-velocity.y 			0
-size 				50
-mov_speed 			150
-rot_speed 			0.85
-shortest_distance	 	0
-direction 			0
+position.x 				-200
+position.y 				-200
+velocity.x 				0
+velocity.y 				0
+size 					50
+mov_speed 				150
+rot_speed 				0.85
+shortest_distance 		0
+direction 				0
 current_capacity 		0
 max_capacity 			5
 timer 				0
@@ -31,10 +31,5 @@ beam_level 			0
 
 //--------------------Tractor Beam--------------
 /-----Variable------------------Value-----------
-beam_pos.x 			0
-beam_pos.y 			0
-
-
-//--------------------Halo Indicator------------
-/-----Variable------------------Value-----------
-halo_scale_lerp			0
+beam_pos.x 			    0
+beam_pos.y 			    0

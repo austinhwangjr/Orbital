@@ -3,7 +3,7 @@
 #include "Player.h"
 
 // Smaller the number, the faster the camera speed
-#define CAM_PLAYER_SPEED		120.f	// Camera speed for player
+#define CAM_PLAYER_SPEED		100.f	// Camera speed for player
 #define CAM_PLANET_SPEED		1000.f	// Camera speed for planet transition
 #define CAM_STATION_SPEED		1000.f	// Camera speed for station transition
 

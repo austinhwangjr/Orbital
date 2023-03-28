@@ -151,7 +151,7 @@ void main_menu::init()
     MMplayer.beam_height                   = MMplayer.beam_width * 2.f;
 
     //--------------------Planet Halo--------------------
-    MMplayer.halo_scale_lerp               = MMPlayerDataMap["halo_scale_lerp"];
+    MMplanet.halo_scale_lerp               = MMPlayerDataMap["halo_scale_lerp"];
 
 
     //DEBRIS
@@ -453,39 +453,26 @@ void main_menu::update()
     // =============================================
     if (MMplayer.state == PLAYER_ORBIT)
     {
-        // Check if the spaceship just started orbiting a planet
-        if (!isOrbitingPlanet)
-        {
-            MMplayer.halo_scale_lerp = 0; // Reset the Lerp value for halo scale
-            isOrbitingPlanet = true;
-        }
-
-        // Calculate progress based on the elapsed time and animation duration
-        float progress = static_cast<float>(MMframe_time / MManimationDuration);
-        if (progress > 1.0f)
-        {
-            progress = 1.0f; // Clamp progress to 1.0f to prevent overshooting
-        }
-
-        // Use the EaseInOutBack easing function for smooth interpolation
-        float easedProgress = EaseInOutBack(0, 1, progress);
-
         // Update the Lerp value for the halo scale
-        MMplayer.halo_scale_lerp += (1.0f - MMplayer.halo_scale_lerp) * 0.5f;
-
-        f32 val{ MMplanet.size + 100.f };
-
-        // Use the Lerp value to scale the halo
-        AEMtx33Scale(&scale, val * MMplayer.halo_scale_lerp, val * MMplayer.halo_scale_lerp);
-        AEMtx33Trans(&trans, MMplanet.position.x, MMplanet.position.y);
-        AEMtx33Concat(&MMplayer.orbit_halo_transform, &rot, &scale);
-        AEMtx33Concat(&MMplayer.orbit_halo_transform, &trans, &MMplayer.orbit_halo_transform);
+        MMplanet.halo_scale_lerp += (1.0f - MMplanet.halo_scale_lerp) * 0.1f;
     }
     else
     {
-        // The spaceship is not orbiting a planet, so set the flag to false
-        isOrbitingPlanet = false;
+        // Update the Lerp value for the halo scale
+        if (MMplanet.halo_scale_lerp > 0.f)
+        {
+            MMplanet.halo_scale_lerp -= MMplanet.halo_scale_lerp * 0.01f;
+        }
     }
+    
+    MMplanet.halo_size = MMplanet.size + 60.f;
+
+    // Use the Lerp value to scale the halo
+    AEMtx33Scale(&scale, MMplanet.halo_size * MMplanet.halo_scale_lerp, MMplanet.halo_size * MMplanet.halo_scale_lerp);
+    AEMtx33Rot(&rot, 0);
+    AEMtx33Trans(&trans, MMplanet.position.x, MMplanet.position.y);
+    AEMtx33Concat(&MMplanet.orbit_halo_transform, &rot, &scale);
+    AEMtx33Concat(&MMplanet.orbit_halo_transform, &trans, &MMplanet.orbit_halo_transform);
 
 
     // =======================================
@@ -611,11 +598,12 @@ void main_menu::draw()
     AEGfxSetTransform(MMplanet.orbit_transform.m);
     AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
 
-    if (MMplayer.state == PLAYER_ORBIT) {
-        AEGfxTextureSet(MMorbit_halo_tex, 0, 0);
-        AEGfxSetTransform(MMplayer.orbit_halo_transform.m);
-        AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
-    }
+    // ====================
+    //  DRAWING HALO RING
+    // ====================
+    AEGfxTextureSet(MMorbit_halo_tex, 0, 0);
+    AEGfxSetTransform(MMplanet.orbit_halo_transform.m);
+    AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
 
     // ====================
     //  DRAWING PLANET

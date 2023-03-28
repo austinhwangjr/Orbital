@@ -22,11 +22,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 // Textures
 AEGfxTexture* player_tex;
 AEGfxTexture* tractor_beam_tex;
-AEGfxTexture* orbit_halo_tex;
-
-// Variables
-float animationDuration = 1.0f; // Duration of the animation in seconds
-float elapsedTime = 0.0f; // Elapsed time for the animation
 
 // Vectors of planets and debris
 extern std::vector<Planets> 			planet_vector;
@@ -46,7 +41,6 @@ void Player::load()
 	// Load textures
 	player_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_Spaceship2.png");
 	tractor_beam_tex	= AEGfxTextureLoad("Assets/MainLevel/ml_TractorBeam.png");
-	orbit_halo_tex		= AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
 
 	// Import data from file
 	ImportPlayerDataFromFile("Assets/GameObjectData/PlayerData.txt", PlayerData, PlayerDataMap);
@@ -64,8 +58,8 @@ void Player::init()
 	// =======
 	state					= PLAYER_FLY;
 
-	position.x				= 100.f;
-	position.y				= 100.f;
+	position.x				= PlayerDataMap["position.x"];
+	position.y				= PlayerDataMap["position.y"];
 
 	velocity.x				= PlayerDataMap["velocity.x"];
 	velocity.y				= PlayerDataMap["velocity.y"];
@@ -110,12 +104,6 @@ void Player::init()
 
 	beam_width				= size * 0.6f;
 	beam_height				= beam_width * 2.f;
-
-	// ============
-	// Planet Halo
-	// ============
-	halo_scale_lerp			= PlayerDataMap["halo_scale_lerp"];
-
 }
 
 /******************************************************************************/
@@ -125,8 +113,6 @@ void Player::init()
 /******************************************************************************/
 void Player::update(f64 frame_time)
 {
-	elapsedTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
-
 	// Player is in orbit state
 	if (state == PLAYER_ORBIT)
 		orbit_state(frame_time);
@@ -159,44 +145,6 @@ void Player::update(f64 frame_time)
 	AEMtx33Concat(&beam_transform, &rot, &scale);
 	AEMtx33Concat(&beam_transform, &trans, &beam_transform);
 
-static bool isOrbitingPlanet = false; // flag for is orbiting.. pretty sure suppose to be init, but placeholder! :(
-
-	if (state == PLAYER_ORBIT)
-	{
-		// Check if the spaceship just started orbiting a planet
-		if (!isOrbitingPlanet)
-		{
-		halo_scale_lerp = 0; // Reset the Lerp value for halo scale
-		isOrbitingPlanet = true; 
-		}
-
-		// Calculate progress based on the elapsed time and animation duration
-		float progress = elapsedTime / animationDuration;
-		if (progress > 1.0f)
-		{
-			progress = 1.0f; // Clamp progress to 1.0f to prevent overshooting
-		}
-
-		// Use the EaseInOutBack easing function for smooth interpolation
-		float easedProgress = EaseInOutBack(0, 1, progress);
-
-		// Update the Lerp value for the halo scale
-		halo_scale_lerp += (1.0f - halo_scale_lerp) * 0.1f;
-
-		f32 val{ current_planet.size + 60.f };
-
-		// Use the Lerp value to scale the halo
-		AEMtx33Scale(&scale, val * halo_scale_lerp, val * halo_scale_lerp);
-		AEMtx33Trans(&trans, current_planet.position.x, current_planet.position.y);
-		AEMtx33Concat(&orbit_halo_transform, &rot, &scale);
-		AEMtx33Concat(&orbit_halo_transform, &trans, &orbit_halo_transform);
-	}
-	else
-	{
-		// The spaceship is not orbiting a planet, so set the flag to false
-		isOrbitingPlanet = false;
-	}
-
 }
 
 /******************************************************************************/
@@ -217,11 +165,6 @@ void Player::draw(AEGfxVertexList* pMesh)
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 	}
 
-	if (state == PLAYER_ORBIT) {
-		AEGfxTextureSet(orbit_halo_tex, 0, 0);
-		AEGfxSetTransform(orbit_halo_transform.m);
-		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-	}
 }
 
 /******************************************************************************/
@@ -246,7 +189,6 @@ void Player::unload()
 {
 	AEGfxTextureUnload(player_tex);
 	AEGfxTextureUnload(tractor_beam_tex);
-	AEGfxTextureUnload(orbit_halo_tex);
 }
 
 /******************************************************************************/

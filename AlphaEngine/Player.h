@@ -48,7 +48,6 @@ struct Player
 	bool			beam_active;
 	f32				timer;
 	f32 			max_timer;
-	AEMtx33			orbit_halo_transform;
 
 	// ===============
 	// Upgrade Levels
@@ -65,11 +64,6 @@ struct Player
 	f32				beam_str;
 	f32				beam_width;
 	f32				beam_height;
-
-	// ============
-	// Planet Halo
-	// ============
-	f32 halo_scale_lerp;
 
 	// ===========
 	// Transforms

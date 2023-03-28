@@ -16,6 +16,7 @@ Technology is prohibited.
 #include "WaveManager.h"
 #include "LoseMenu.h"
 #include "GameStateManager.h"
+#include "Highscore.h"
 #include "Easing.h"
 #include <iostream>
 #include <string>
@@ -87,6 +88,7 @@ void WaveManager::update(f64 frame_time)
 	// Lose Condition--------------------------------------------------------
 	if (gameLost)
 	{
+		putHighScore(player.score);
 		lose_menu::update();
 	}
 	checkLoseCondition();
@@ -431,6 +433,7 @@ void WaveManager::free()
 
 void WaveManager::unload()
 {
+	putHighScore(player.score);
 	//AEGfxTextureUnload(indicator_tex);
 	AEGfxTextureUnload(arrow_tex);
 	AEGfxTextureUnload(lineTexture);
@@ -525,7 +528,7 @@ void WaveManager::add_indicator()
 
 void WaveManager::checkLoseCondition()
 {
-	if (shuttle_destroyed == 5)
+	if (shuttle_destroyed == LOSE_CONDITION)
 	{
 		gameLost = true;
 	}
