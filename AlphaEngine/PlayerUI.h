@@ -67,7 +67,6 @@ struct PlayerUI
 	AEVec2		upgrade_preview_position;
 	f32			upgrade_preview_size;
 	AEMtx33		upgrade_preview_transform;
-	bool		upgrade_preview_display;
 
 	//--------------------Shop background--------------------
 	AEVec2		shop_bg_position;

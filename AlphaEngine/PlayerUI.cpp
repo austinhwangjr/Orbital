@@ -1,13 +1,27 @@
+/******************************************************************************/
+/*!
+\file		PlayerUI.cpp
+\author 	Hwang Jing Rui, Austin
+\par    	email: jingruiaustin.hwang\@digipen.edu
+\date   	March 28, 2023
+\brief		This file contains the definition of functions for the player 
+			UI (user interface).
+
+Copyright (C) 2023 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+/******************************************************************************/
+#include <iostream>
+#include <vector>
+#include <string>
 #include "AEEngine.h"
 #include "PlayerUI.h"
 #include "SpaceStation.h"
 #include "Global.h"
 #include "Easing.h"
-#include <iostream>
-#include <vector>
-#include <string>
 
-// Textures
+// General UI textures
 extern AEGfxTexture* player_tex;
 AEGfxTexture* shop_icon_tex;
 AEGfxTexture* shop_open_tex;
@@ -33,36 +47,40 @@ AEGfxTexture* drone_button_tex;
 AEGfxTexture* space_station_button_tex;
 
 // Variables for general UI
-std::string		score, credits, capacity;
-extern s8		font_id;
+std::string	  score, credits, capacity;
+extern s8	  font_id;
 
 // Variables for shop
-extern s8		font_id_shop;
+extern s8	  font_id_shop;
 
 // Variables for camera
-f32 cam_x, cam_y;
+f32 		  cam_x, cam_y;
 
 // Mouse coordinates
-AEVec2 mouse_pos_world;
+AEVec2 		  mouse_pos_world;
 
-// Vector of buttons
+// Vector of buttons and space stations
 std::vector<ShopOption> button_vector;
-
 extern std::vector<SpaceStation> space_station_vector;
 
+/******************************************************************************/
+/*!
+	Load Textures and Data
+*/
+/******************************************************************************/
 void PlayerUI::load()
 {
-	// Load textures
-	shop_icon_tex = AEGfxTextureLoad("Assets/MainLevel/ml_YellowButtonBackground.png");
-	shop_open_tex = AEGfxTextureLoad("Assets/MainLevel/ml_ShopOpenButton.png");
-	shop_close_tex = AEGfxTextureLoad("Assets/MainLevel/ml_ShopCloseButton.png");
-	space_station_tex = AEGfxTextureLoad("Assets/MainLevel/ml_SpaceStation.png");
-	shop_background_tex = AEGfxTextureLoad("Assets/MainLevel/ml_ShopBackground.png");
-	tutorial_open_tex = AEGfxTextureLoad("Assets/MainLevel/ml_TutorialBackground.png");
-	tutorial_background_tex = AEGfxTextureLoad("Assets/MainLevel/ml_TutorialBackground.png");
-	upgrade_level_hollow_tex = AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelHollow.png");
-	upgrade_level_solid_tex = AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelSolid.png");
-	player_hud_tex = AEGfxTextureLoad("Assets/MainLevel/ml_HeadsUpDisplay.png");
+	// Load general UI textures
+	shop_icon_tex				= AEGfxTextureLoad("Assets/MainLevel/ml_YellowButtonBackground.png");
+	shop_open_tex				= AEGfxTextureLoad("Assets/MainLevel/ml_ShopOpenButton.png");
+	shop_close_tex				= AEGfxTextureLoad("Assets/MainLevel/ml_ShopCloseButton.png");
+	space_station_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_SpaceStation.png");
+	shop_background_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_ShopBackground.png");
+	tutorial_open_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_TutorialBackground.png");
+	tutorial_background_tex		= AEGfxTextureLoad("Assets/MainLevel/ml_TutorialBackground.png");
+	upgrade_level_hollow_tex	= AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelHollow.png");
+	upgrade_level_solid_tex		= AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelSolid.png");
+	player_hud_tex				= AEGfxTextureLoad("Assets/MainLevel/ml_HeadsUpDisplay.png");
 
 	// Upgrade preview textures
 	speed_hover_tex = AEGfxTextureLoad("Assets/MainLevel/ml_MovSpeedUpgradePreview.png");
@@ -77,6 +95,11 @@ void PlayerUI::load()
 	space_station_button_tex = AEGfxTextureLoad("Assets/MainLevel/ml_SpaceStationButton.png");
 }
 
+/******************************************************************************/
+/*!
+	Initialize Variables
+*/
+/******************************************************************************/
 void PlayerUI::init()
 {
 	// Player UI
@@ -138,9 +161,8 @@ void PlayerUI::init()
 	station_placement_flag = false;
 
 	// Shop is closed initially
-	shop_triggered = false;
-	shop_transition = false;
-	upgrade_preview_display = false;
+	shop_triggered			= false;
+	shop_transition			= false;
 
 	// Shop background
 	shop_bg_width = static_cast<f32>(AEGetWindowWidth()) * 0.85f;
@@ -175,6 +197,11 @@ void PlayerUI::init()
 	tutorial_trans_duration = 1.f;
 }
 
+/******************************************************************************/
+/*!
+	Update Player UI
+*/
+/******************************************************************************/
 void PlayerUI::update(f64 frame_time, Player& player)
 {
 	// Get mouse coordinates (world)
@@ -446,27 +473,22 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 		if (hover_over_button(button)) {
 			if (button.button_type == MOVEMENT_SPEED) {
 				AEGfxTextureSet(speed_hover_tex, 0, 0);
-				upgrade_preview_display = true;
 				break;
 			}
 
 			else if (button.button_type == CAPACITY) {
 				AEGfxTextureSet(capacity_hover_tex, 0, 0);
-				upgrade_preview_display = true;
 				break;
 			}
 
 			else if (button.button_type == TRACTOR_BEAM_STRENGTH) {
 				AEGfxTextureSet(strength_hover_tex, 0, 0);
-				upgrade_preview_display = true;
 				break;
 			}
-
 		}
 		else
 			AEGfxTextureSet(player_tex, 0, 0);
 	}
-
 	AEGfxSetTransform(upgrade_preview_transform.m);
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
@@ -608,30 +630,25 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 	shop_text = "Place in Space";
 	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), 0.3f + shop_offset / static_cast<f32>(AEGetWindowWidth() / 2), -0.65f, 1.f, 1.f, 1.f, 1.f);
 
-
-	for (int i = 1; i < button_vector.size() - 1; ++i) {
+	// Print upgrade name onto buttons
+	for (int i = MOVEMENT_SPEED; i < TUTORIAL_OPEN; ++i) {
 		ShopOption& button = button_vector[i];
 
-		if (button.button_type == MOVEMENT_SPEED) {
-			// Print upgrade name
+		if (button.button_type == MOVEMENT_SPEED)
 			shop_text = "Movement Speed";
-		}
-		else if (button.button_type == CAPACITY) {
-			// Print upgrade name
+		
+		else if (button.button_type == CAPACITY)
 			shop_text = "Increase Capacity";
-		}
-		else if (button.button_type == TRACTOR_BEAM_STRENGTH) {
-			// Print upgrade name
+		
+		else if (button.button_type == TRACTOR_BEAM_STRENGTH)
 			shop_text = "Beam Strength";
-		}
-		else if (button.button_type == CREATE_DRONE) {
-			// Print upgrade name
+		
+		else if (button.button_type == CREATE_DRONE)
 			shop_text = "Drone";
-		}
-		else if (button.button_type == SPACE_STATION) {
-			// Print upgrade name
+		
+		else if (button.button_type == SPACE_STATION)
 			shop_text = "Space Station";
-		}
+		
 		AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()),
 			(button.position.x - button.width / 2.f - cam_x) / static_cast<f32>(AEGetWindowWidth() / 2),
 			(button.position.y - button.height / 2.f - cam_y) / static_cast<f32>(AEGetWindowHeight() / 2),
@@ -646,9 +663,8 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 
 
 	// Tutorial text---------------------------------------------------------------------------------------------------------------------------------------------------
-	std::string tutorial;
 	AEVec2 tutorial_pos;
-
+	std::string tutorial;
 	tutorial = "Controls";
 	AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / static_cast<f32>(AEGetWindowWidth() / 2), 0.75f, 1.5f, 1.f, 1.f, 1.f);
 
@@ -905,11 +921,21 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 
 }
 
+/******************************************************************************/
+/*!
+	Clean Object Instances
+*/
+/******************************************************************************/
 void PlayerUI::free()
 {
 	button_vector.clear();
 }
 
+/******************************************************************************/
+/*!
+	Free Textures
+*/
+/******************************************************************************/
 void PlayerUI::unload()
 {
 	AEGfxTextureUnload(shop_icon_tex);
@@ -932,6 +958,12 @@ void PlayerUI::unload()
 	AEGfxTextureUnload(space_station_button_tex);
 }
 
+/******************************************************************************/
+/*!
+	Custom Functions
+*/
+/******************************************************************************/
+// Shop is open
 void PlayerUI::shop_open(Player& player)
 {
 	// ===================
@@ -983,18 +1015,17 @@ void PlayerUI::shop_open(Player& player)
 	}
 }
 
+// Shop is closed
 void PlayerUI::shop_closed()
 {
-	// ================
-	// Check for input
-	// ================
-
-	if (button_clicked(button_vector[0])) {
+	// Open the shop and start transition
+	if (button_clicked(button_vector[SHOP_OPEN])) {
 		shop_triggered = true;
 		shop_transition = true;
 	}
 }
 
+// Function to close shop
 void PlayerUI::close_shop()
 {
 	// Close shop
@@ -1002,7 +1033,8 @@ void PlayerUI::close_shop()
 	shop_transition = true;
 }
 
-bool PlayerUI::button_clicked(ShopOption button)
+// Check if button is clicked
+bool PlayerUI::button_clicked(ShopOption button) 
 {
 	// Get position of each side of button
 	f32 button_left = button.position.x - button.width / 2.f;
@@ -1021,6 +1053,7 @@ bool PlayerUI::button_clicked(ShopOption button)
 	return false;
 }
 
+// Check if LEFT MOUSE is triggered when cursor is outside shop
 bool PlayerUI::click_outside_shop()
 {
 	// Get position of each side of shop background
@@ -1042,6 +1075,7 @@ bool PlayerUI::click_outside_shop()
 	return false;
 }
 
+// Check if cursor is hovering over button
 bool PlayerUI::hover_over_button(ShopOption button)
 {
 	// Get position of each side of button
@@ -1059,6 +1093,7 @@ bool PlayerUI::hover_over_button(ShopOption button)
 	return false;
 }
 
+// Tutorial box is open
 void PlayerUI::tutorial_open()
 {
 	// ===================
@@ -1070,18 +1105,17 @@ void PlayerUI::tutorial_open()
 		close_tutorial();
 }
 
+// Tutorial box is closed
 void PlayerUI::tutorial_closed()
 {
-	// ================
-	// Check for input
-	// ================
-
+	// Open the tutorial box and start transition
 	if (button_clicked(button_vector[TUTORIAL_OPEN])) {
 		tutorial_triggered = true;
 		tutorial_transition = true;
 	}
 }
 
+// Function to close tutorial box
 void PlayerUI::close_tutorial()
 {
 	// Close tutorial

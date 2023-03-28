@@ -1,3 +1,16 @@
+/******************************************************************************/
+/*!
+\file		Player.cpp
+\author 	Hwang Jing Rui, Austin
+\par    	email: jingruiaustin.hwang\@digipen.edu
+\date   	March 28, 2023
+\brief		This file contains the declaration of functions for the player.
+
+Copyright (C) 2023 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+/******************************************************************************/
 #pragma once
 #define MAX_MOV_SPEED_LVL		5
 #define MAX_CAPACITY_LVL		5
@@ -15,7 +28,9 @@ enum PLAYER_STATES
 
 struct Player
 {
-	//--------------------Player--------------------
+	// =======
+	// Player
+	// =======
 	PLAYER_STATES	state;
 	AEVec2			position;
 	AEVec2			velocity;
@@ -30,28 +45,41 @@ struct Player
 	int				score;
 	int				credits;
 	bool			can_leave_orbit;
+	bool			beam_active;
 	f32				timer;
+	f32 			max_timer;
 	AEMtx33			orbit_halo_transform;
 
-	//--------------------Upgrade Levels--------------------
+	// ===============
+	// Upgrade Levels
+	// ===============
 	int				mov_speed_level;
 	int				capacity_level;
 	int				space_station_count;
 	int				beam_level;
 
-	//--------------------Tractor Beam--------------------
+	// =============
+	// Tractor Beam
+	// =============
 	AEVec2			beam_pos;
 	f32				beam_str;
 	f32				beam_width;
 	f32				beam_height;
 
-	//--------------------Planet Halo--------------------
+	// ============
+	// Planet Halo
+	// ============
 	f32 halo_scale_lerp;
 
-	//--------------------Transforms--------------------
+	// ===========
+	// Transforms
+	// ===========
 	AEMtx33			player_transform;
 	AEMtx33			beam_transform;
 
+	// ==========
+	// Functions
+	// ==========
 	void load();
 	void init();
 	void update(f64);

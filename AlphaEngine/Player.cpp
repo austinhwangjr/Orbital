@@ -1,8 +1,21 @@
+/******************************************************************************/
+/*!
+\file		Player.cpp
+\author 	Hwang Jing Rui, Austin
+\par    	email: jingruiaustin.hwang\@digipen.edu
+\date   	March 28, 2023
+\brief		This file contains the definition of functions for the player.
+
+Copyright (C) 2023 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+/******************************************************************************/
+#include <iostream>
+#include <fstream>
 #include "AEEngine.h"
 #include "Player.h"
 #include "Easing.h"
-#include <iostream>
-#include <fstream>
 #include "Data.h"
 #include "GameStateManager.h"
 
@@ -11,34 +24,44 @@ AEGfxTexture* player_tex;
 AEGfxTexture* tractor_beam_tex;
 AEGfxTexture* orbit_halo_tex;
 
+// Variables
 float animationDuration = 1.0f; // Duration of the animation in seconds
 float elapsedTime = 0.0f; // Elapsed time for the animation
-// Variables
-bool beam_active = false;
 
 // Vectors of planets and debris
-extern std::vector<Planets> planet_vector;
+extern std::vector<Planets> 			planet_vector;
 extern std::vector<std::vector<Debris>> debris_vector_all;
 
+// IMPORT DATA VECTOR
+std::map<std::string, f32> 	PlayerDataMap;
+std::vector<Data> 			PlayerData;
 
-//IMPORT DATA VECTOR
-std::map<std::string, f32> PlayerDataMap;
-std::vector<Data> PlayerData;
-
-
+/******************************************************************************/
+/*!
+	Load Textures and Data
+*/
+/******************************************************************************/
 void Player::load()
 {
 	// Load textures
 	player_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_Spaceship2.png");
 	tractor_beam_tex	= AEGfxTextureLoad("Assets/MainLevel/ml_TractorBeam.png");
 	orbit_halo_tex		= AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
+
+	// Import data from file
 	ImportPlayerDataFromFile("Assets/GameObjectData/PlayerData.txt", PlayerData, PlayerDataMap);
 }
 
+/******************************************************************************/
+/*!
+	Initialize Variables
+*/
+/******************************************************************************/
 void Player::init()
 {
-
-	//--------------------Player--------------------
+	// =======
+	// Player
+	// =======
 	state					= PLAYER_FLY;
 
 	position.x				= 100.f;
@@ -60,31 +83,46 @@ void Player::init()
 	max_capacity			= static_cast<int>(PlayerDataMap["max_capacity"]);
 
 	can_leave_orbit			= true;
+	beam_active 			= false;
 
 	timer					= PlayerDataMap["timer"];
+	max_timer				= PlayerDataMap["max_timer"];
 
-	//--------------------Score-keeping--------------------
-	score					= static_cast<int>(PlayerDataMap["score"]);
-	credits					= static_cast<int>(PlayerDataMap["credits"]);
+	// ==============
+	// Score-keeping
+	// ==============
+	score					= PlayerDataMap["score"];
+	credits					= PlayerDataMap["credits"];
 
-	//--------------------Upgrade Levels--------------------
-	mov_speed_level			= static_cast<int>(PlayerDataMap["mov_speed_level"]);
-	capacity_level			= static_cast<int>(PlayerDataMap["capacity_level"]);
-	space_station_count		= static_cast<int>(PlayerDataMap["space_station_count"]);
-	beam_level				= static_cast<int>(PlayerDataMap["beam_level"]);
+	// ===============
+	// Upgrade Levels
+	// ===============
+	mov_speed_level			= PlayerDataMap["mov_speed_level"];
+	capacity_level			= PlayerDataMap["capacity_level"];
+	space_station_count		= PlayerDataMap["space_station_count"];
+	beam_level				= PlayerDataMap["beam_level"];
 
-	//--------------------Tractor Beam--------------------
+	// =============
+	// Tractor Beam
+	// =============
 	beam_pos.x				= PlayerDataMap["beam_pos.x"];
 	beam_pos.y				= PlayerDataMap["beam_pos.y"];
 
 	beam_width				= size * 0.6f;
 	beam_height				= beam_width * 2.f;
 
-	//--------------------Planet Halo--------------------
+	// ============
+	// Planet Halo
+	// ============
 	halo_scale_lerp			= PlayerDataMap["halo_scale_lerp"];
 
 }
 
+/******************************************************************************/
+/*!
+	Update Player
+*/
+/******************************************************************************/
 void Player::update(f64 frame_time)
 {
 	elapsedTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
@@ -163,7 +201,7 @@ static bool isOrbitingPlanet = false; // flag for is orbiting.. pretty sure supp
 
 /******************************************************************************/
 /*!
-	Draw player and tractor beam
+	Draw Player and Tractor Beam
 */
 /******************************************************************************/
 void Player::draw(AEGfxVertexList* pMesh)
@@ -186,6 +224,11 @@ void Player::draw(AEGfxVertexList* pMesh)
 	}
 }
 
+/******************************************************************************/
+/*!
+	Clean Object Instances
+*/
+/******************************************************************************/
 void Player::free()
 {	
 	if (next_state != GS_RESTART) {
@@ -194,6 +237,11 @@ void Player::free()
 	}
 }
 
+/******************************************************************************/
+/*!
+	Free Textures
+*/
+/******************************************************************************/
 void Player::unload()
 {
 	AEGfxTextureUnload(player_tex);
@@ -201,6 +249,12 @@ void Player::unload()
 	AEGfxTextureUnload(orbit_halo_tex);
 }
 
+/******************************************************************************/
+/*!
+	Custom Functions
+*/
+/******************************************************************************/
+// Orbit State of Player
 void Player::orbit_state(f64 frame_time)
 {
 	// ================
@@ -227,9 +281,6 @@ void Player::orbit_state(f64 frame_time)
 		can_leave_orbit = true;
 
 	if (AEInputCheckCurr(AEVK_W) && can_leave_orbit) {
-		/*AEVec2Zero(&velocity);
-		state = PLAYER_FLY;*/
-
 		AEVec2Zero(&velocity);
 		state = PLAYER_TRANSIT;
 	}
@@ -295,6 +346,7 @@ void Player::orbit_state(f64 frame_time)
 	}
 }
 
+// Transit State of Player
 void Player::transit_state(f64 frame_time)
 {
 	// ================
@@ -315,7 +367,7 @@ void Player::transit_state(f64 frame_time)
 
 		// Add to timer. Change to flying state after 1s
 		timer += static_cast<f32>(frame_time);
-		if (timer >= 1.f) {
+		if (timer >= max_timer) {
 			// Change state and reset timer
 			state = PLAYER_FLY;
 			timer = 0.f;
@@ -348,6 +400,7 @@ void Player::transit_state(f64 frame_time)
 	position.y = position.y + velocity.y * static_cast<f32>(frame_time);
 }
 
+// Flying State of Player
 void Player::flying_state(f64 frame_time)
 {
 	// ================
@@ -434,7 +487,7 @@ void Player::flying_state(f64 frame_time)
 	}
 }
 
-
+// Import data from txt file
 int ImportPlayerDataFromFile(const char* FileName, std::vector<Data> &PlayerData, std::map<std::string, f32> &PlayerDatamap)
 {
 
