@@ -75,7 +75,6 @@ struct WaveManager
 
 
 // OTHER VARIABLES---------------------------
-	bool	gameLost;					// Flag for when the game is lost
 	bool	planet_adding;				// Flag for when planet adding transition is playing
 	bool	first_contact;				// Flag for first time player orbits a planet
 	bool	capacity_full;				// Flag for first time player full capacity
@@ -94,7 +93,6 @@ struct WaveManager
 	int get_current_shuttles() const;
 	bool no_more_shuttles();
 
-	void checkLoseCondition();
 	void add_indicator();
 	//void add_ss_indicator();
 };

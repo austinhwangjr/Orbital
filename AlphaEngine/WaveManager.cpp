@@ -43,14 +43,10 @@ void WaveManager::load()
 	//indicator_tex = AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture.png");
 	arrow_tex = AEGfxTextureLoad("Assets/MainLevel/ml_arrow.png");
 	lineTexture = AEGfxTextureLoad("Assets/MainLevel/line.png");
-
-	lose_menu::load();
 }
 
 void WaveManager::init()
 {
-	lose_menu::init();
-
 	w_width = static_cast<f32>(AEGetWindowWidth());
 	w_height = static_cast<f32>(AEGetWindowHeight());
 
@@ -68,7 +64,6 @@ void WaveManager::init()
 	shuttle_has_escaped = false;
 	shuttle_has_collided = false;
 
-	gameLost = false;
 	first_contact = false;
 	capacity_full = false;
 	station_tutorial = false;
@@ -86,12 +81,11 @@ void WaveManager::init()
 void WaveManager::update(f64 frame_time)
 {
 	// Lose Condition--------------------------------------------------------
-	if (gameLost)
+	if (shuttle_destroyed == LOSE_CONDITION)
 	{
 		putHighScore(player.score);
-		lose_menu::update();
+		next_state = GS_LOSEMENU;
 	}
-	checkLoseCondition();
 
 	
 	// Tutorial - First occurrences------------------------------------------
@@ -257,11 +251,6 @@ void WaveManager::update(f64 frame_time)
 
 void WaveManager::draw(AEGfxVertexList* pMesh)
 {
-	if (gameLost == true)
-	{
-		lose_menu::draw(camera.position);
-	}
-
 	for (size_t i{}; i < indicator_vector.size(); i++)
 	{
 		bool off_screen{ pow(AEVec2Distance(&planet_vector[i].position, &camera.position), 2) > (pow(w_width / 2, 2) + pow(w_height / 2, 2)) };
@@ -428,7 +417,6 @@ void WaveManager::free()
 	//ss_indicator_vector.clear();
 	indicator_vector.clear();
 	arrow_vector.clear();
-	lose_menu::free();
 }
 
 void WaveManager::unload()
@@ -437,9 +425,6 @@ void WaveManager::unload()
 	//AEGfxTextureUnload(indicator_tex);
 	AEGfxTextureUnload(arrow_tex);
 	AEGfxTextureUnload(lineTexture);
-
-	lose_menu::unload();
-
 }
 
 int WaveManager::get_total_shuttles()
@@ -524,12 +509,4 @@ void WaveManager::add_indicator()
 	AEMtx33Concat(&new_arrow.transform, &new_arrow.translate, &new_arrow.transform);
 
 	arrow_vector.push_back(new_arrow);
-}
-
-void WaveManager::checkLoseCondition()
-{
-	if (shuttle_destroyed == LOSE_CONDITION)
-	{
-		gameLost = true;
-	}
 }
