@@ -18,6 +18,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include "AEEngine.h"
 
 struct Data
 {
@@ -25,8 +26,5 @@ struct Data
 	std::string data;
 };
 
-int ImportPlayerDataFromFile(const char* FileName, std::vector<Data>& PlayerData, std::map<std::string, f32>& PlayerDatamap);
-int ImportDroneDataFromFile(const char* FileName, std::vector<Data>& DroneData, std::map<std::string, f32>& DroneDatamap);
-int ImportPlayerProjDataFromFile(const char* FileName, std::vector<Data>& ProjData, std::map<std::string, f32>& ProjDatamap);
-int ImportSpaceStationDataFromFile(const char* FileName, std::vector<Data>& StationData, std::map<std::string, f32>& StationDatamap);
+int ImportDataFromFile(const char* FileName, std::vector<Data>& Data, std::map<std::string, f32>& Datamap);
 int ImportDataFromFileHowToPlay(const char* FileName);

@@ -97,7 +97,7 @@ void main_menu::load()
     MMshuttle_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Shuttle.png");
     MMexplosion_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Explosion.png");
     MMorbit_halo_tex = AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
-    ImportPlayerDataFromFile("Assets/MainLevel/PlayerData.txt", MMPlayerData, MMPlayerDataMap);
+    ImportDataFromFile("Assets/MainLevel/PlayerData.txt", MMPlayerData, MMPlayerDataMap);
 }
 
 void main_menu::init()

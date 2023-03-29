@@ -52,7 +52,7 @@ std::vector<Data> DroneData;
 void Drone::load()
 {
 	drone_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Drone.png");
-	ImportPlayerDataFromFile("Assets/GameObjectData/DroneData.txt", DroneData, DroneDataMap);
+	ImportDataFromFile("Assets/GameObjectData/DroneData.txt", DroneData, DroneDataMap);
 
 }
 
@@ -395,67 +395,3 @@ void Drone::unload()
 
 }
 
-/******************************************************************************/
-/*!
-	Additional Functions
-*/
-/******************************************************************************/
-// Import data from txt file
-int ImportDroneDataFromFile(const char* FileName, std::vector<Data>& DroneData, std::map<std::string, f32>& DroneDatamap)
-{
-
-	std::ifstream ifs{ FileName, std::ios_base::in };
-	if (!ifs.is_open()) {											// Check if file exist/open	
-		std::cout << FileName << "does not exist." << '\n';
-		return 0;
-	}
-
-	std::string line;
-	while (std::getline(ifs, line)) {
-		Data Node;
-		std::string word;
-		int find_word = 1;
-
-		for (char const ch : line) {
-
-			if (find_word) {
-				if (ch == '/') {
-					break;
-				}
-
-				if (ch == '\n') {
-					break;
-				}
-
-				if (ch == ' ' || ch == '\t') {
-					if (!word.empty()) {    // if ch is a whitespace and word contains some letters
-						Node.variable_name = word;
-						find_word = 0;
-						word.clear();
-					}
-				}
-				else {
-					word.push_back(ch);
-
-				}
-			}
-			else if (!find_word) {
-				word.push_back(ch);
-			}
-		}
-
-		if (find_word == 0) {
-			Node.data = word;
-			DroneData.push_back(Node);
-		}
-
-	}
-
-	for (size_t i = 0; i < DroneData.size(); i++) {
-		DroneDatamap[DroneData[i].variable_name] = std::stof(DroneData[i].data);
-	}
-
-	ifs.close();
-
-	return 1;
-}

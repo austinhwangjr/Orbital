@@ -43,7 +43,7 @@ void Player::load()
 	tractor_beam_tex	= AEGfxTextureLoad("Assets/MainLevel/ml_TractorBeam.png");
 
 	// Import data from file
-	ImportPlayerDataFromFile("Assets/GameObjectData/PlayerData.txt", PlayerData, PlayerDataMap);
+	ImportDataFromFile("Assets/GameObjectData/PlayerData.txt", PlayerData, PlayerDataMap);
 }
 
 /******************************************************************************/
@@ -427,64 +427,4 @@ void Player::flying_state(f64 frame_time)
 		if (debris.state == MOVE_TOWARDS_PLAYER)
 			debris.state = MOVE_TOWARDS_PLANET;
 	}
-}
-
-// Import data from txt file
-int ImportPlayerDataFromFile(const char* FileName, std::vector<Data> &PlayerData, std::map<std::string, f32> &PlayerDatamap)
-{
-
-	std::ifstream ifs{ FileName, std::ios_base::in };
-	if (!ifs.is_open()) {											// Check if file exist/open	
-		std::cout << FileName << "does not exist." << '\n';
-		return 0;
-	}
-
-	std::string line;
-	while (std::getline(ifs, line)) {
-		Data Node;
-		std::string word;
-		int find_word = 1;
-
-		for (char const ch : line) {
-
-			if (find_word) {
-				if (ch == '/') {
-					break;
-				}
-
-				if (ch == '\n') {
-					break;
-				}
-
-				if (ch == ' ' || ch == '\t') {
-					if (!word.empty()) {    // if ch is a whitespace and word contains some letters
-						Node.variable_name = word;
-						find_word = 0;
-						word.clear();
-					}
-				}
-				else {
-					word.push_back(ch);
-
-				}
-			}
-			else if (!find_word){
-				word.push_back(ch);
-			}
-		}
-
-		if (find_word == 0) {
-			Node.data = word;
-			PlayerData.push_back(Node);
-		}
-
-	}
-
-	for (size_t i = 0; i < PlayerData.size(); i++) {
-		PlayerDatamap[PlayerData[i].variable_name] = std::stof(PlayerData[i].data);
-	}
-
-	ifs.close();
-
-	return 1;
 }
