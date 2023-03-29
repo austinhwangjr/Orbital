@@ -29,6 +29,7 @@ extern AEGfxTexture* shop_icon_tex;
 // Variables
 bool drone_valid_placement = false;
 bool drone_added;
+static int DRONES_MAX;
 
 // Mouse coordinates
 extern AEVec2 mouse_pos_world;
@@ -43,6 +44,9 @@ extern s8 font_id;
 //IMPORT DATA VECTOR
 std::map<std::string, f32> DroneDataMap;
 std::vector<Data> DroneData;
+
+//PLANET DATA MAP
+extern std::map<std::string, f32> 	PlanetDataMap;
 
 /******************************************************************************/
 /*!
@@ -82,6 +86,8 @@ void Drone::init(Player player)
 
 	current_capacity		= static_cast<int>(DroneDataMap["Current_Capacity"]);
 	max_capacity			= static_cast<int>(DroneDataMap["Max_Capacity"]);
+
+	DRONES_MAX				= static_cast<int>(PlanetDataMap["Maximum_Drones"]);
 
 	// =============
 	// Cooldown Bar

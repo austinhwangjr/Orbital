@@ -12,16 +12,16 @@ prior written consent of DigiPen Institute of Technology is prohibited.
  */
 /******************************************************************************/
 #pragma once
-#define PLANET_SIZE				200.0f		// Planet base size (radius)	
-#define PLANET_ROT_SPEED		0.01f * PI	// Planet rotation speed (radians)
-#define PLANET_SPAWN_BUFFER		2.f			// Planet spawn distance buffer modifier
-#define SHUTTLE_SPAWN_TIME_MAX	12			// Maximum time shuttles will spawn
-#define SHUTTLE_SPAWN_TIME_MIN	7			// Minimum time shuttles will spawn
-#define DEBRIS_MAX				25			// Maximum number of debris on a planet
-#define DEBRIS_MIN				10			// Minimum number of debris on a planet
-#define DRONES_MAX				5			// Maximum number of drones on a planet
-#define RUNWAY_LIFESPAN			1.2f		// Time taken for runway arrow to reset
-#define RUNWAY_MAX_ACCEL		500.f		// Maximum acceleration value for runway arrow
+//#define PLANET_SIZE				200.0f		// Planet base size (radius)	
+//#define PLANET_ROT_SPEED		0.01f * PI	// Planet rotation speed (radians)
+//#define PLANET_SPAWN_BUFFER		2.f			// Planet spawn distance buffer modifier
+//#define SHUTTLE_SPAWN_TIME_MAX	12			// Maximum time shuttles will spawn
+//#define SHUTTLE_SPAWN_TIME_MIN	7			// Minimum time shuttles will spawn
+//#define DEBRIS_MAX				25			// Maximum number of debris on a planet
+//#define DEBRIS_MIN				10			// Minimum number of debris on a planet
+//#define DRONES_MAX				5			// Maximum number of drones on a planet
+//#define RUNWAY_LIFESPAN			1.2f		// Time taken for runway arrow to reset
+//#define RUNWAY_MAX_ACCEL		500.f		// Maximum acceleration value for runway arrow
 
 #include "Debris.h"
 #include <vector>

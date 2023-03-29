@@ -40,6 +40,18 @@ bool MMbeam_active = false;
 AEGfxVertexList* pMeshMMBackground;
 AEGfxVertexList* pMeshMM;
 AEGfxVertexList* pMeshObj;
+static float PLANET_SIZE;						// Planet base size (radius)	
+static float PLANET_ROT_SPEED;					// Planet rotation speed (radians)
+static float PLANET_SPAWN_BUFFER;				// Planet spawn distance buffer modifier
+static int	 SHUTTLE_SPAWN_TIME_MAX;			// Maximum time shuttles will spawn
+static int   SHUTTLE_SPAWN_TIME_MIN;			// Minimum time shuttles will spawn
+static int	 DEBRIS_MAX;						// Maximum number of debris on a planet
+static int	 DEBRIS_MIN;						// Minimum number of debris on a planet
+static int   DRONES_MAX;						// Maximum number of drones on a planet
+static float RUNWAY_LIFESPAN;					// Time taken for runway arrow to reset
+static float RUNWAY_MAX_ACCEL;					// Maximum acceleration value for runway arrow
+
+
 
 Player MMplayer;
 Planets MMplanet;
@@ -65,6 +77,8 @@ Rendering RenderMMBackground;
 //IMPORT DATA VECTOR
 std::map<std::string, f32> MMPlayerDataMap;
 std::vector<Data> MMPlayerData;
+std::map<std::string, f32> 	MMPlanetDataMap;
+std::vector<Data> 			MMPlanetData;
 
 void main_menu::load()
 {
@@ -97,7 +111,8 @@ void main_menu::load()
     MMshuttle_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Shuttle.png");
     MMexplosion_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Explosion.png");
     MMorbit_halo_tex = AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
-    ImportDataFromFile("Assets/MainLevel/PlayerData.txt", MMPlayerData, MMPlayerDataMap);
+    ImportDataFromFile("Assets/GameObjectData/PlayerData.txt", MMPlayerData, MMPlayerDataMap);
+    ImportDataFromFile("Assets/GameObjectData/PlanetData.txt", MMPlanetData, MMPlanetDataMap);
 }
 
 void main_menu::init()
@@ -165,6 +180,19 @@ void main_menu::init()
 
     //--------------------Planet Halo--------------------
     MMplanet.halo_scale_lerp               = MMPlayerDataMap["halo_scale_lerp"];
+
+
+    //--------------------Planet Variables--------------------
+    PLANET_SIZE = MMPlanetDataMap["Planet_Size"];
+    PLANET_ROT_SPEED = MMPlanetDataMap["Planet_Rotation_Speed"];
+    PLANET_SPAWN_BUFFER = MMPlanetDataMap["Planet_Spawn_Buffer"];
+    SHUTTLE_SPAWN_TIME_MAX = static_cast<int>(MMPlanetDataMap["Maximum_Time_Shuttle_Spawn"]);
+    SHUTTLE_SPAWN_TIME_MIN = static_cast<int>(MMPlanetDataMap["Minimum_Time_Shuttle_Spawn"]);
+    DEBRIS_MAX = static_cast<int>(MMPlanetDataMap["Maximum_Debris"]);
+    DEBRIS_MIN = static_cast<int>(MMPlanetDataMap["Minimum_Debris"]);
+    DRONES_MAX = static_cast<int>(MMPlanetDataMap["Maximum_Drones"]);
+    
+
 
 
     //DEBRIS
@@ -714,6 +742,8 @@ void main_menu::free()
     AEGfxMeshFree(pMeshObj);
     MMPlayerData.clear();
     MMPlayerDataMap.clear();
+    MMPlanetData.clear();
+    MMPlanetDataMap.clear();
 
 }
 

@@ -19,7 +19,9 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "SpaceStation.h"
 #include "WaveManager.h"
 #include "Easing.h"
+#include "Data.h"
 
+//Textures
 AEGfxTexture* planet_tex;
 AEGfxTexture* orbit_tex;
 AEGfxTexture* runway_tex;
@@ -35,6 +37,23 @@ extern Debris debris;
 extern std::vector<SpaceStation> space_station_vector;
 extern std::vector<std::vector<Drone>> drone_vector_all;
 
+static float PLANET_SIZE;						// Planet base size (radius)	
+static float PLANET_ROT_SPEED;					// Planet rotation speed (radians)
+static float PLANET_SPAWN_BUFFER;				// Planet spawn distance buffer modifier
+static int	 SHUTTLE_SPAWN_TIME_MAX;			// Maximum time shuttles will spawn
+static int   SHUTTLE_SPAWN_TIME_MIN;			// Minimum time shuttles will spawn
+static int	 DEBRIS_MAX;						// Maximum number of debris on a planet
+static int	 DEBRIS_MIN;						// Minimum number of debris on a planet
+static int   DRONES_MAX;						// Maximum number of drones on a planet
+static float RUNWAY_LIFESPAN;					// Time taken for runway arrow to reset
+static float RUNWAY_MAX_ACCEL;					// Maximum acceleration value for runway arrow
+
+
+// IMPORT DATA VECTOR
+std::map<std::string, f32> 	PlanetDataMap;
+std::vector<Data> 			PlanetData;
+
+
 /******************************************************************************/
 /*!
 	Load Textures and Data
@@ -45,6 +64,7 @@ void Planets::load()
 	orbit_tex = AEGfxTextureLoad("Assets/MainLevel/ml_OrbitRing.png");
 	runway_tex = AEGfxTextureLoad("Assets/MainLevel/ml_arrow.png");
 	orbit_halo_tex = AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
+	ImportDataFromFile("Assets/GameObjectData/PlanetData.txt", PlanetData, PlanetDataMap);
 }
 
 /******************************************************************************/
@@ -64,6 +84,18 @@ void Planets::init()
 	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture7.png"));
 	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture8.png"));
 	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture9.png"));
+
+	PLANET_SIZE					= PlanetDataMap["Planet_Size"];
+	PLANET_ROT_SPEED			= PlanetDataMap["Planet_Rotation_Speed"];
+	PLANET_SPAWN_BUFFER			= PlanetDataMap["Planet_Spawn_Buffer"];
+	SHUTTLE_SPAWN_TIME_MAX		= static_cast<int>(PlanetDataMap["Maximum_Time_Shuttle_Spawn"]);
+	SHUTTLE_SPAWN_TIME_MIN		= static_cast<int>(PlanetDataMap["Minimum_Time_Shuttle_Spawn"]);
+	DEBRIS_MAX					= static_cast<int>(PlanetDataMap["Maximum_Debris"]);
+	DEBRIS_MIN					= static_cast<int>(PlanetDataMap["Minimum_Debris"]);
+	DRONES_MAX					= static_cast<int>(PlanetDataMap["Maximum_Drones"]);
+	RUNWAY_LIFESPAN				= PlanetDataMap["Runway_Lifespan"];
+	RUNWAY_MAX_ACCEL			= PlanetDataMap["Runway_Acceleration"];
+
 
 	// ============
 	// Planet Halo
@@ -249,6 +281,11 @@ void Planets::free()
 	}
 	planet_vector.clear();
 	runway_vector.clear();
+
+	if (next_state != GS_RESTART) {
+		PlanetData.clear();
+		PlanetDataMap.clear();
+	}
 }
 
 /******************************************************************************/

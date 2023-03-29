@@ -22,6 +22,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Shuttle.h"
 #include "WaveManager.h"
 #include <cmath>
+#include "Data.h"
 
 //VARIABLES
 #define SPEED_DEBRIS 30
@@ -34,12 +35,16 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #define EXPLOSION_HEIGHT 40
 
 int OUTERRIM_TO_DEBRIS = 20;
+static int DEBRIS_MAX;
 
 
 extern WaveManager wave_manager;
 extern Player player;
 
 extern Planets MMplanet;
+
+//PLANET DATA MAP
+extern std::map<std::string, f32> 	PlanetDataMap;
 
 //PLANET VECTOR
 extern std::vector<Planets> planet_vector;
@@ -67,7 +72,7 @@ void Debris::load()
 
 void Debris::init()
 {
-	
+	DEBRIS_MAX = static_cast<int>(PlanetDataMap["Maximum_Debris"]);
 
 }
 

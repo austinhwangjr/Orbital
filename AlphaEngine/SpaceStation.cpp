@@ -10,7 +10,8 @@
 
 			Aceson	- Added cooldown bar and coin for space stations.
 					- Added check so that space stations cannot be too close to
-					  each other
+					  each other, to prevent overlap
+					- Added collision check between space station and Nearest planet 
 
 Copyright (C) 2023 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the

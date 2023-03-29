@@ -17,7 +17,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Player.h"
 #include "Easing.h"
 #include "Data.h"
-#include "GameStateManager.h"
+
 
 // Textures
 AEGfxTexture* player_tex;

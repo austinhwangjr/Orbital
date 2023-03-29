@@ -96,6 +96,8 @@ void lose_menu::update()
             std::cout << "Toggling Screen " << std::endl;
         }
     }
+
+
 }
 
 void lose_menu::draw()

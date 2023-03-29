@@ -97,10 +97,10 @@ void WaveManager::update(f64 frame_time)
 	// Lose Condition--------------------------------------------------------
 	if (shuttle_destroyed == LOSE_CONDITION)
 	{
-		putHighScore(player.score);
 		next_state = GS_LOSEMENU;
 	}
 
+	
 	
 	// Tutorial - First occurrences------------------------------------------
 	if (!first_contact && player.state == PLAYER_ORBIT) first_contact = true;
@@ -450,7 +450,7 @@ void WaveManager::free()
 /******************************************************************************/
 void WaveManager::unload()
 {
-	putHighScore(player.score);
+	
 	//AEGfxTextureUnload(indicator_tex);
 	AEGfxTextureUnload(arrow_tex);
 	AEGfxTextureUnload(lineTexture);

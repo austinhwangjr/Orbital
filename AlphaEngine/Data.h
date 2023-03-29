@@ -19,6 +19,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include <fstream>
 #include <iostream>
 #include "AEEngine.h"
+#include "GameStateManager.h"
 
 struct Data
 {
