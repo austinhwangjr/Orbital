@@ -33,6 +33,7 @@ AEGfxTexture* tutorial_background_tex;
 AEGfxTexture* upgrade_level_hollow_tex;
 AEGfxTexture* upgrade_level_solid_tex;
 AEGfxTexture* player_hud_tex;
+AEGfxTexture* shuttle_lost_tex;
 
 // Upgrade preview textures
 AEGfxTexture* speed_hover_tex;
@@ -81,6 +82,7 @@ void PlayerUI::load()
 	upgrade_level_hollow_tex	= AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelHollow.png");
 	upgrade_level_solid_tex		= AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelSolid.png");
 	player_hud_tex				= AEGfxTextureLoad("Assets/MainLevel/ml_HeadsUpDisplay.png");
+	shuttle_lost_tex			= AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
 
 	// Upgrade preview textures
 	speed_hover_tex = AEGfxTextureLoad("Assets/MainLevel/ml_MovSpeedUpgradePreview.png");
@@ -202,7 +204,7 @@ void PlayerUI::init()
 	Update Player UI
 */
 /******************************************************************************/
-void PlayerUI::update(f64 frame_time, Player& player)
+void PlayerUI::update(f64 frame_time, Player& player, WaveManager const& wave_manager)
 {
 	// Get mouse coordinates (world)
 	s32 mouse_x_screen, mouse_y_screen;
@@ -345,11 +347,25 @@ void PlayerUI::update(f64 frame_time, Player& player)
 		}
 	}
 
+	// Shuttle Lost timer start
+	if (wave_manager.shuttle_has_collided)
+	{
+		lost_overlay_timer = LOST_OVERLAY_TIME;
+	}
+	if (lost_overlay_timer > 0.f) lost_overlay_timer -= frame_time;
+
 	// =======================
 	// Calculate the matrices
 	// =======================
 
 	AEMtx33 scale, rot, trans;
+
+	// Shuttle Lost Overlay
+	AEMtx33Scale(&scale, AEGetWindowWidth() * 1.5, AEGetWindowHeight() * 1.5);
+	AEMtx33Rot(&rot, 0.f);
+	AEMtx33Trans(&trans, cam_x, cam_y);
+	AEMtx33Concat(&lost_overlay_transform, &rot, &scale);
+	AEMtx33Concat(&lost_overlay_transform, &trans, &lost_overlay_transform);
 
 	// Player HUD
 	AEMtx33Scale(&scale, player_hud_width, player_hud_height);
@@ -426,6 +442,16 @@ void PlayerUI::update(f64 frame_time, Player& player)
 void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wave_manager)
 {
 	AEGfxSetBlendColor(0.f, 0.f, 0.f, 0.f);
+	
+	// Losing a shuttle
+	if (lost_overlay_timer > 0.f)
+	{
+		AEGfxSetTintColor(1.f, 0.f, 0.f, 0.7f * lost_overlay_timer / static_cast<f32>(LOST_OVERLAY_TIME));
+		AEGfxTextureSet(shuttle_lost_tex, 0, 0);
+		AEGfxSetTransform(lost_overlay_transform.m);
+		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	}
+	AEGfxSetTintColor(1.f, 1.f, 1.f, 1.f);
 
 	// Player HUD
 	AEGfxTextureSet(player_hud_tex, 0, 0);
@@ -974,6 +1000,7 @@ void PlayerUI::unload()
 	AEGfxTextureUnload(strength_button_tex);
 	AEGfxTextureUnload(drone_button_tex);
 	AEGfxTextureUnload(space_station_button_tex);
+	AEGfxTextureUnload(shuttle_lost_tex);
 }
 
 /******************************************************************************/

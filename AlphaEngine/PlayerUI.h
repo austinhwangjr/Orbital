@@ -16,9 +16,10 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Player.h"
 #include "WaveManager.h"
 
-#define DEBRIS_VALUE	10
-#define DEBRIS_SCORE	100
-#define UPGRADE_COUNT	5
+#define DEBRIS_VALUE		10
+#define DEBRIS_SCORE		100
+#define UPGRADE_COUNT		5
+#define LOST_OVERLAY_TIME	2
 
 enum BUTTON_TYPE 
 {
@@ -99,9 +100,13 @@ struct PlayerUI
 	const int drone_cost			= 250;
 	const int space_station_cost	= 500;
 
+	//--------------------Shuttle Lost Overlay--------------------
+	AEMtx33		lost_overlay_transform;
+	f32			lost_overlay_timer;
+
 	void load();
 	void init();
-	void update(f64, Player&);
+	void update(f64, Player&, WaveManager const&);
 	void draw(AEGfxVertexList*, Player, WaveManager const&);
 	void free();
 	void unload();

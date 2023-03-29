@@ -63,6 +63,7 @@ void WaveManager::init()
 
 	wave_completed = false;
 	wave_number = 1;
+	wave_progress = 0;
 	wave_interval_timer = -(WAVE_INTERVAL_TIME * 2); // Increased time for first wave tutorial
 
 	planet_count = 0;
@@ -99,7 +100,6 @@ void WaveManager::update(f64 frame_time)
 	{
 		next_state = GS_LOSEMENU;
 	}
-
 	
 	
 	// Tutorial - First occurrences------------------------------------------
@@ -398,9 +398,25 @@ void WaveManager::draw(AEGfxVertexList* pMesh)
 	}
 
 	// Shuttles Lost counter
-	std::string str_shuttle_lost = "Shuttles Lost: " + std::to_string(shuttle_destroyed);
+	std::string str_shuttle_lost = "Shuttles Lost: ";
 	print_string = str_shuttle_lost.c_str();
-	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.f - (str_shuttle_lost.length() / 2 * static_cast<f32>(FONT_ID_SIZE) / w_width), -0.65f, 1.f, 1.f, 1.f, 1.f);
+	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.f - (str_shuttle_lost.length() / 1.5 * static_cast<f32>(FONT_ID_SIZE) / w_width), -0.9f, 1.5f, 1.f, 1.f, 1.f);
+
+	str_shuttle_lost = std::to_string(shuttle_destroyed);
+	print_string = str_shuttle_lost.c_str();
+	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.f + (str_shuttle_lost.length() * 4.5 * static_cast<f32>(FONT_ID_SIZE) / w_width), -0.9f,
+		1.5f + (0.2f * shuttle_destroyed),
+		1.f,																						// Red
+		static_cast<f32>((LOSE_CONDITION - shuttle_destroyed) / static_cast<f32>(LOSE_CONDITION)),	// Fade blue out the more shuttles destroyed
+		static_cast<f32>((LOSE_CONDITION - shuttle_destroyed) / static_cast<f32>(LOSE_CONDITION)));	// Fade green out the more shuttles destroyed
+
+	str_shuttle_lost = "/";
+	print_string = str_shuttle_lost.c_str();
+	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.f + (str_shuttle_lost.length() * 7 * static_cast<f32>(FONT_ID_SIZE) / w_width), -0.9f, 1.5f, 1.f, 1.f, 1.f);
+
+	str_shuttle_lost = std::to_string(LOSE_CONDITION);
+	print_string = str_shuttle_lost.c_str();
+	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.f + (str_shuttle_lost.length() * 8 * static_cast<f32>(FONT_ID_SIZE) / w_width), -0.9f, 2.5f, 1.f, 0.f, 0.f);
 
 	// WAVE | SHUTTLES | PLANETS -------------------------------------------------------------------------------------------------------------------------------------
 	std::string str_count; std::string str_headers;
