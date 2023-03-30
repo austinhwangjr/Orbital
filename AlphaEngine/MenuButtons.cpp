@@ -164,7 +164,6 @@ void Menu_Button::update()
         if (AEInputCheckTriggered(AEVK_LBUTTON) && hoverStates[i])
         {
             AudioManager::PlayOneShot("Assets/BGM/hyperspace_jumping.mp3", 1.0f);
-
             transition::isTransitionActive = true;
             transition::resetTimer();
             MMtotal_time = 0.f;

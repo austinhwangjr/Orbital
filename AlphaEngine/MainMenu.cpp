@@ -179,6 +179,10 @@ void main_menu::update()
         if (AEInputCheckCurr(AEVK_W))
         {
             wKeyPressed = true;
+            if (MMplayer.state == PLAYER_ORBIT)
+            {
+                wKeyPressed = false;
+            }
             w_ButtonWidth = Lerp(w_ButtonWidth, w_ButtonWidthHover, lerpSpeed);
             w_ButtonHeight = Lerp(w_ButtonHeight, w_ButtonHeightHover, lerpSpeed);
 
@@ -203,6 +207,10 @@ void main_menu::update()
         if (AEInputCheckCurr(AEVK_S))
         {
             sKeyPressed = true;
+            if (MMplayer.state == PLAYER_ORBIT)
+            {
+                sKeyPressed = false;
+            }
             s_ButtonWidth = Lerp(s_ButtonWidth, s_ButtonWidthHover, lerpSpeed);
             s_ButtonHeight = Lerp(s_ButtonHeight, s_ButtonHeightHover, lerpSpeed);
 
@@ -227,6 +235,10 @@ void main_menu::update()
         if (AEInputCheckCurr(AEVK_A))
         {
             aKeyPressed = true;
+            if (MMplayer.state == PLAYER_ORBIT)
+            {
+                aKeyPressed = false;
+            }
             a_ButtonWidth = Lerp(a_ButtonWidth, a_ButtonWidthHover, lerpSpeed);
             a_ButtonHeight = Lerp(a_ButtonHeight, a_ButtonHeightHover, lerpSpeed);
 
@@ -243,6 +255,10 @@ void main_menu::update()
         if (AEInputCheckCurr(AEVK_D))
         {
             dKeyPressed = true;
+            if (MMplayer.state == PLAYER_ORBIT)
+            {
+                dKeyPressed = false;
+            }
             d_ButtonWidth = Lerp(d_ButtonWidth, d_ButtonWidthHover, lerpSpeed);
             d_ButtonHeight = Lerp(d_ButtonHeight, d_ButtonHeightHover, lerpSpeed);
 
@@ -280,24 +296,50 @@ void main_menu::update()
         // ================
         if (AEInputCheckCurr(AEVK_A) && MMplayer.position.y >= AEGfxGetWinMinY() + MMplayer.size)
         {
+            aKeyPressed = true;
+            if (MMplayer.state == PLAYER_FLY)
+            {
+                aKeyPressed = false;
+            }
             MMplayer.direction += (MMplayer.rot_speed / 2) * static_cast<f32>(MMframe_time);
 
             MMplayer.position.x = MMplanet.position.x + (static_cast<f32>(MMplanet.size) / 2 + MMplanet.orbit_range) * AECos(MMplayer.direction);
             MMplayer.position.y = MMplanet.position.y + (static_cast<f32>(MMplanet.size) / 2 + MMplanet.orbit_range) * AESin(MMplayer.direction);
         }
+        else
+        {
+            aKeyPressed = false;
+        }
 
         if (AEInputCheckCurr(AEVK_D) && MMplayer.position.x <= AEGfxGetWinMaxX() - MMplayer.size)
         {
+            dKeyPressed = true;
+            if (MMplayer.state == PLAYER_FLY)
+            {
+                dKeyPressed = false;
+            }
             MMplayer.direction -= (MMplayer.rot_speed / 2) * static_cast<f32>(MMframe_time);
 
             MMplayer.position.x = MMplanet.position.x + (static_cast<f32>(MMplanet.size) / 2 + MMplanet.orbit_range) * AECos(MMplayer.direction);
             MMplayer.position.y = MMplanet.position.y + (static_cast<f32>(MMplanet.size) / 2 + MMplanet.orbit_range) * AESin(MMplayer.direction);
         }
+        else
+        {
+            dKeyPressed = false;
+        }
 
         if (AEInputCheckPrev(AEVK_W))
+        {
+            wKeyPressed = true;
             MMplayer.can_leave_orbit = false;
+        }
         else
+        {
             MMplayer.can_leave_orbit = true;
+            wKeyPressed = false;
+        }
+
+
 
         if (AEInputCheckCurr(AEVK_W) && MMplayer.can_leave_orbit) {
             AEVec2Zero(&MMplayer.velocity);
