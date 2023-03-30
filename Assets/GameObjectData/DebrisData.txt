@@ -1,0 +1,10 @@
+//------------------Debris----------------------
+/-----Variable------------------Value-----------
+Speed_Of_Debris 		         30
+Maximum_Debris_Size 		     42
+Minimum_Debris_Size 		     28
+Maximum_Buffer 			     80
+Minimum_Buffer 			     30
+Explosion_Width 		         40
+Explosion_Height 		         40
+Distance_To_Planet 		     20

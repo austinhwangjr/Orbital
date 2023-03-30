@@ -19,7 +19,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 main_menu::MainMenuState main_menu::currentState = MENU;
 
-#define MM_SHUTTLE_SIZE 20
+
 AEGfxTexture* TexMMBackground = nullptr;
 AEGfxTexture* TexTitle = nullptr;
 
@@ -30,21 +30,27 @@ bool MMbeam_active = false;
 AEGfxVertexList* pMeshMMBackground;
 AEGfxVertexList* pMeshMM;
 AEGfxVertexList* pMeshObj;
-static float PLANET_SIZE;						// Planet base size (radius)	
+static float MMPLANET_SIZE;						// Planet base size (radius)	
 static float PLANET_ROT_SPEED;					// Planet rotation speed (radians)
-static float PLANET_SPAWN_BUFFER;				// Planet spawn distance buffer modifier
 static int	 SHUTTLE_SPAWN_TIME_MAX;			// Maximum time shuttles will spawn
 static int   SHUTTLE_SPAWN_TIME_MIN;			// Minimum time shuttles will spawn
 static int	 DEBRIS_MAX;						// Maximum number of debris on a planet
 static int	 DEBRIS_MIN;						// Minimum number of debris on a planet
-static int   DRONES_MAX;						// Maximum number of drones on a planet
-static float RUNWAY_LIFESPAN;					// Time taken for runway arrow to reset
-static float RUNWAY_MAX_ACCEL;					// Maximum acceleration value for runway arrow
 static float SHUTTLE_MAX_LIFESPAN;		        // Maximum life time for a shuttle before escaping (expiring)
 static float SHUTTLE_MAX_ACCEL;			        // Maximum acceleration for a shuttle
-static int	 SHUTTLE_VALUE;				        // Credit value for a shuttle
-static int	 SHUTTLE_WIDTH;				        // Shuttle Width
-static int	 SHUTTLE_HEIGHT;			        // Shuttle Height
+
+
+
+static float SPEED_DEBRIS;
+static int	 MAX_DEBRIS_SIZE;
+static int	 MIN_DEBRIS_SIZE;
+static float SHUTTLE_HEIGHT;
+static int	 MAX_BUFFER;
+static int	 MIN_BUFFER;
+static float EXPLOSION_WIDTH;
+static float EXPLOSION_HEIGHT;
+static int   OUTERRIM_TO_DEBRIS;
+
 
 Player MMplayer;
 Planets MMplanet;
@@ -143,12 +149,14 @@ Rendering createMesh;
 Rendering RenderMMBackground;
 
 //IMPORT DATA VECTOR
-std::map<std::string, f32> MMPlayerDataMap;
-std::vector<Data> MMPlayerData;
+std::map<std::string, f32>  MMPlayerDataMap;
+std::vector<Data>           MMPlayerData;
 std::map<std::string, f32> 	MMPlanetDataMap;
 std::vector<Data> 			MMPlanetData;
 std::map<std::string, f32> 	MMShuttleDataMap;
 std::vector<Data> 			MMShuttleData;
+std::map<std::string, f32> 	MMDebrisDataMap;
+std::vector<Data> 			MMDebrisData;
 
 void main_menu::load()
 {
@@ -183,7 +191,7 @@ void main_menu::load()
     ImportDataFromFile("Assets/GameObjectData/PlayerData.txt", MMPlayerData, MMPlayerDataMap);
     ImportDataFromFile("Assets/GameObjectData/PlanetData.txt", MMPlanetData, MMPlanetDataMap);
     ImportDataFromFile("Assets/GameObjectData/ShuttleData.txt", MMShuttleData, MMShuttleDataMap);
-
+    ImportDataFromFile("Assets/GameObjectData/DebrisData.txt", MMDebrisData, MMDebrisDataMap);
 
     MM_Keys_W = AEGfxTextureLoad("Assets/MainMenu/mm_W.png");
     MM_Keys_W_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/mm_W_Hover.png");
@@ -196,6 +204,7 @@ void main_menu::load()
 
     MM_Keys_Spacebar = AEGfxTextureLoad("Assets/MainMenu/mm_Spacebar.png");
     MM_Keys_Spacebar_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/mm_SpacebarActivated.png");
+    
 }
 
 void main_menu::init()
@@ -261,37 +270,42 @@ void main_menu::init()
     MMplayer.beam_height                   = MMplayer.beam_width * 2.f;
 
     //--------------------Planet Halo--------------------
-    MMplanet.halo_scale_lerp               = MMPlayerDataMap["halo_scale_lerp"];
+    MMplanet.halo_scale_lerp               = MMPlanetDataMap["Halo_Indicator"];
 
+
+
+    //--------------------Debris Variables--------------------
+    SPEED_DEBRIS = MMDebrisDataMap["Speed_Of_Debris"];
+    MAX_DEBRIS_SIZE = static_cast<int>(MMDebrisDataMap["Maximum_Debris_Size"]);
+    MIN_DEBRIS_SIZE = static_cast<int>(MMDebrisDataMap["Minimum_Debris_Size"]);
+    MAX_BUFFER = static_cast<int>(MMDebrisDataMap["Maximum_Buffer"]);
+    MIN_BUFFER = static_cast<int>(MMDebrisDataMap["Minimum_Buffer"]);
+    EXPLOSION_WIDTH = MMDebrisDataMap["Explosion_Width"];
+    EXPLOSION_HEIGHT = MMDebrisDataMap["Explosion_Height"];
+    OUTERRIM_TO_DEBRIS = MMDebrisDataMap["Distance_To_Planet"];
 
     //--------------------Planet Variables--------------------
-    PLANET_SIZE = MMPlanetDataMap["Planet_Size"];
+   
     PLANET_ROT_SPEED = MMPlanetDataMap["Planet_Rotation_Speed"] * PI;
-    PLANET_SPAWN_BUFFER = MMPlanetDataMap["Planet_Spawn_Buffer"];
+    
     SHUTTLE_SPAWN_TIME_MAX = static_cast<int>(MMPlanetDataMap["Maximum_Time_Shuttle_Spawn"]);
     SHUTTLE_SPAWN_TIME_MIN = static_cast<int>(MMPlanetDataMap["Minimum_Time_Shuttle_Spawn"]);
     DEBRIS_MAX = static_cast<int>(MMPlanetDataMap["Maximum_Debris"]);
     DEBRIS_MIN = static_cast<int>(MMPlanetDataMap["Minimum_Debris"]);
-    DRONES_MAX = static_cast<int>(MMPlanetDataMap["Maximum_Drones"]);
+    
     SHUTTLE_MAX_LIFESPAN = MMShuttleDataMap["Shuttle_Lifespan"];
     SHUTTLE_MAX_ACCEL = MMShuttleDataMap["Shuttle_Acceleration"];
-    SHUTTLE_VALUE = static_cast<int>(MMShuttleDataMap["Shuttle_Value"]);
-    SHUTTLE_WIDTH = MMShuttleDataMap["Shuttle_Width"];
     SHUTTLE_HEIGHT = MMShuttleDataMap["Shuttle_Height"];
     
-
-    //MMplayer.init();
-
-
-    //DEBRIS
     MMplanet.max_debris = rand() % (DEBRIS_MAX - DEBRIS_MIN) + DEBRIS_MIN;												// Randomize debris count on planet spawn
     MMplanet.debris_vector = MM_create_debris(MMplanet.position.x, MMplanet.position.y, MMplanet.size, MMplanet.max_debris);
-
     MMplanet.position.x = static_cast<f32>(AEGetWindowWidth() / 2);
     MMplanet.position.y = static_cast<f32>( - AEGetWindowHeight() / 2);
-    MMplanet.size = 1200;
-    MMplanet.shuttle_timer = 0.0;																													// Zero out shuttle timer on spawn
-    MMplanet.shuttle_time_to_spawn = static_cast<f32>(rand() % (SHUTTLE_SPAWN_TIME_MAX - SHUTTLE_SPAWN_TIME_MIN + 1) + SHUTTLE_SPAWN_TIME_MIN);	// Randomize value for timer to reach before spawning 
+    MMplanet.size = MMPlanetDataMap["MainMenu_Planet_Size"];
+    MMplanet.shuttle_timer = MMShuttleDataMap["Shuttle_Timer"];	
+    MMplanet.shuttle_time_to_spawn = static_cast<f32>(rand() % (SHUTTLE_SPAWN_TIME_MAX - SHUTTLE_SPAWN_TIME_MIN + 1) + SHUTTLE_SPAWN_TIME_MIN);
+
+    
 }
 
 void main_menu::update()
@@ -736,12 +750,12 @@ void main_menu::update()
     for (size_t i{}; i < MMshuttle_vector.size(); i++) {
         for (int k = 0; k < MMplanet.debris_vector.size(); ++k) {
             if (MMshuttle_vector[i].active) {
-                if (AEVec2Distance(&MMshuttle_vector[i].position, &MMplanet.debris_vector[k].position) <= (MM_SHUTTLE_SIZE / 2 + MMplanet.debris_vector[k].size / 2)) { // if collided
+                if (AEVec2Distance(&MMshuttle_vector[i].position, &MMplanet.debris_vector[k].position) <= ((SHUTTLE_HEIGHT-80) / 2 + MMplanet.debris_vector[k].size / 2)) { // if collided
                     MMplanet.debris_vector[k].active = false;
                     MMshuttle_vector[i].active = false;
                     MMplanet.debris_vector[k].explosion.is_draw = 1;
                     MMplanet.debris_vector[k].explosion.position = MMplanet.debris_vector[k].position;
-
+                    MMspawn_debris_shuttle(MMshuttle_vector[i].position, 4);
                     break;
                 }
             }
@@ -1025,6 +1039,8 @@ void main_menu::free()
     MMPlanetDataMap.clear();
     MMShuttleData.clear();
     MMShuttleDataMap.clear();
+    MMDebrisData.clear();
+    MMDebrisDataMap.clear();
 
 }
 
@@ -1080,4 +1096,64 @@ void MMspawn_shuttle()
     AEMtx33Rot(&new_shuttle.rotate, PI / 2 + rand_angle);
 
     MMshuttle_vector.push_back(new_shuttle);
+}
+
+std::vector<Debris> MM_create_debris(f32 planet_x, f32 planet_y, double size, int total_debris) {
+    std::vector<Debris> debris_vector;
+    for (int i = 0; i < total_debris; i++)
+    {
+        Debris new_debris;
+
+        new_debris.id = i + 1;
+        new_debris.angle = i * (2 * PI / static_cast<f32>(total_debris));
+        new_debris.size = static_cast<f32>(rand() % (MAX_DEBRIS_SIZE - MIN_DEBRIS_SIZE) + MIN_DEBRIS_SIZE);
+        new_debris.position.x = static_cast<f32>(planet_x + ((size / 2) + 20) * AECos(AEDegToRad(new_debris.angle)));
+        new_debris.position.y = static_cast<f32>(planet_y + ((size / 2) + 20) * AESin(AEDegToRad(new_debris.angle)));
+        new_debris.turning_speed = SPEED_DEBRIS;
+        new_debris.active = true;
+        new_debris.state = ORBIT_AROUND_PLANET;
+        new_debris.distance = static_cast<int>(OUTERRIM_TO_DEBRIS);
+
+        new_debris.scale = { 0 };
+        new_debris.rotate = { 0 };
+        new_debris.translate = { 0 };
+        new_debris.transform = { 0 };
+
+        new_debris.explosion.height = EXPLOSION_HEIGHT;
+        new_debris.explosion.width = EXPLOSION_WIDTH;
+        new_debris.explosion.transform = { 0 };
+        new_debris.explosion.total_time = 1;
+
+        debris_vector.push_back(new_debris);
+    }
+
+    return debris_vector;
+}
+
+void MMspawn_debris_shuttle(AEVec2 position, int num_of_debris) {
+    for (int i = 0; i < num_of_debris; i++) {
+        Debris new_debris;
+        new_debris.size = static_cast<f32>(rand() % (MAX_DEBRIS_SIZE - MIN_DEBRIS_SIZE) + MIN_DEBRIS_SIZE);
+        new_debris.angle = static_cast<f32>(rand() % static_cast<int>(new_debris.size));
+        new_debris.position.x = position.x + (-(rand() % (MAX_BUFFER - MIN_BUFFER)) + new_debris.size);
+        new_debris.position.y = position.y + (-(rand() % (MAX_BUFFER - MIN_BUFFER)) + new_debris.size);
+        new_debris.id = static_cast<int>(MMplanet.debris_vector.size() + 1);
+        new_debris.turning_speed = SPEED_DEBRIS;
+        new_debris.active = true;
+        new_debris.state = MOVE_TOWARDS_PLANET;
+
+        new_debris.scale = { 0 };
+        new_debris.rotate = { 0 };
+        new_debris.translate = { 0 };
+        new_debris.transform = { 0 };
+        new_debris.distance = static_cast<f32>(OUTERRIM_TO_DEBRIS + (rand() % MIN_BUFFER));
+
+        //EXPLOSION
+        new_debris.explosion.height = EXPLOSION_HEIGHT;
+        new_debris.explosion.width = EXPLOSION_WIDTH;
+        new_debris.explosion.transform = { 0 };
+        new_debris.explosion.total_time = 1;
+        MMplanet.debris_vector.push_back(new_debris);
+    }
+
 }

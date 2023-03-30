@@ -104,7 +104,7 @@ void Planets::init()
 	// ============
 	// Planet Halo
 	// ============
-	halo_scale_lerp = 0.f;
+	halo_scale_lerp				= PlanetDataMap["Halo_Indicator"];
 }
 
 /******************************************************************************/

@@ -1,12 +1,14 @@
 //------------------Planet----------------------
 /-----Variable------------------Value-----------
-Planet_Size 			200
-Planet_Rotation_Speed 		0.01
-Planet_Spawn_Buffer 		2
-Maximum_Time_Shuttle_Spawn	12
-Minimum_Time_Shuttle_Spawn	7
-Maximum_Debris			25
-Minimum_Debris			10
-Maximum_Drones			5
-Runway_Lifespan			1.2
-Runway_Acceleration		500
+MainMenu_Planet_Size		     1200
+Planet_Size 			         200
+Planet_Rotation_Speed 		     0.01
+Planet_Spawn_Buffer 		     2
+Maximum_Time_Shuttle_Spawn	     12
+Minimum_Time_Shuttle_Spawn	     7
+Maximum_Debris			         25
+Minimum_Debris			         10
+Maximum_Drones			         5
+Runway_Lifespan			     1.2
+Runway_Acceleration		     500
+Halo_Indicator			         0

@@ -72,8 +72,6 @@ struct Debris
 
 
 extern std::vector<Debris> debris_vector;
-void spawn_debris(int num_of_debris, int planet_id);
-bool distance_from_radius(AEVec2 planet_radius, AEVec2 position, int planet_id);
 void spawn_debris_shuttle(AEVec2 position, int planet_id, int num_of_debris);
 std::vector<Debris> MM_create_debris(f32 planet_x, f32 planet_y, double size, int total_debris);
 void MMspawn_debris_shuttle(AEVec2 position, int num_of_debris);
