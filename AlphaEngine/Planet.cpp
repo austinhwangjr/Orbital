@@ -86,7 +86,7 @@ void Planets::init()
 	planet_textures.push_back(AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture9.png"));
 
 	PLANET_SIZE					= PlanetDataMap["Planet_Size"];
-	PLANET_ROT_SPEED			= PlanetDataMap["Planet_Rotation_Speed"];
+	PLANET_ROT_SPEED			= PlanetDataMap["Planet_Rotation_Speed"] * PI;
 	PLANET_SPAWN_BUFFER			= PlanetDataMap["Planet_Spawn_Buffer"];
 	SHUTTLE_SPAWN_TIME_MAX		= static_cast<int>(PlanetDataMap["Maximum_Time_Shuttle_Spawn"]);
 	SHUTTLE_SPAWN_TIME_MIN		= static_cast<int>(PlanetDataMap["Minimum_Time_Shuttle_Spawn"]);

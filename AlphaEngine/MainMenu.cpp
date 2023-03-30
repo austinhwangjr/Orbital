@@ -184,7 +184,7 @@ void main_menu::init()
 
     //--------------------Planet Variables--------------------
     PLANET_SIZE = MMPlanetDataMap["Planet_Size"];
-    PLANET_ROT_SPEED = MMPlanetDataMap["Planet_Rotation_Speed"];
+    PLANET_ROT_SPEED = MMPlanetDataMap["Planet_Rotation_Speed"] * PI;
     PLANET_SPAWN_BUFFER = MMPlanetDataMap["Planet_Spawn_Buffer"];
     SHUTTLE_SPAWN_TIME_MAX = static_cast<int>(MMPlanetDataMap["Maximum_Time_Shuttle_Spawn"]);
     SHUTTLE_SPAWN_TIME_MIN = static_cast<int>(MMPlanetDataMap["Minimum_Time_Shuttle_Spawn"]);
