@@ -14,10 +14,8 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 /******************************************************************************/
 #include "pch.h"
 #include "Input.h"
-
 #include "Global.h"
 #include "Graphics.h"
-#include <algorithm>
 #include <iostream>
 
 // This initializes the mouse coordinates to 0.
@@ -106,15 +104,4 @@ int Input::GetMouseWheelDelta()
     }
     return 0;
 }
-
-
-
-//// ----------------------------------------------------------------------------
-//// This member function handles the input in the game loop
-//// ----------------------------------------------------------------------------
-//void Input::handle()
-//{
-//    // Message to show input handling is successfully carried out
-//    //std::cout << "Input:Handle\n";
-//}
 

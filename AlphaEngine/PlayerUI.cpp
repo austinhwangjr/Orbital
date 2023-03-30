@@ -210,12 +210,12 @@ void PlayerUI::init()
 /******************************************************************************/
 void PlayerUI::update(f64 frame_time, Player& player, WaveManager const& wave_manager)
 {
-	// Get mouse coordinates (world)
-	s32 mouse_x_screen, mouse_y_screen;
-	AEInputGetCursorPosition(&mouse_x_screen, &mouse_y_screen);
+	//// Get mouse coordinates (world)
+	//s32 mouse_x_screen, mouse_y_screen;
+	//AEInputGetCursorPosition(&mouse_x_screen, &mouse_y_screen);
 
-	mouse_pos_world.x = cam_x + mouse_x_screen - static_cast<f32>(AEGetWindowWidth() / 2);
-	mouse_pos_world.y = cam_y + static_cast<f32>(AEGetWindowHeight() / 2.f) - mouse_y_screen;
+	//mouse_pos_world.x = cam_x + mouse_x_screen - static_cast<f32>(AEGetWindowWidth() / 2);
+	//mouse_pos_world.y = cam_y + static_cast<f32>(AEGetWindowHeight() / 2.f) - mouse_y_screen;
 
 	// Shop transitions
 	if (shop_triggered) {

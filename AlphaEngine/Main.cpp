@@ -14,13 +14,14 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 // --------------------------------- MAIN GAME LOOP ------------------------------------------
 // includes
 #include "pch.h"
-#include "GameStateManager.h"
+#include "GameStateList.h"
+#include "Global.h"
 #include "Systems.h"
 #include "Input.h"
-#include <iostream>
-#include "MainLevel.h"
+#include "GameStateManager.h"
 #include "AudioManager.h"
 #include "Transition.h"
+#include "MainLevel.h"
 
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -80,14 +81,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			// Handling Input
 			AEInputUpdate();
 
-			float deltaTime1 = AEFrameRateControllerGetFrameTime();
+			// Update global variables
+			Global_UpdateGlobals();
 
 			fpUpdate();         // Update current game state
 
 			// Update transition
 			if (transition::isTransitionActive)
 			{
-				transition::update(deltaTime1);
+				transition::update(g_dt);
 			}
 
 			fpDraw(); // Render current game state

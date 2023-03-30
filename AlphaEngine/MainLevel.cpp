@@ -12,25 +12,8 @@ Reproduction or disclosure of this file or its contents without the
 prior written consent of DigiPen Institute of Technology is prohibited.
  */
 /******************************************************************************/
-#include "pch.h"
-#include "GameStateManager.h"
+
 #include "MainLevel.h"
-#include <cmath>
-#include <iostream>
-#include "Planet.h"
-#include "Player.h"
-#include "PlayerUI.h"
-#include "Drone.h"
-#include "SpaceStation.h"
-#include "PlayerProj.h"
-#include "Shuttle.h"
-#include "Debris.h"
-#include "Camera.h"
-#include "WaveManager.h"
-#include "Global.h"
-#include "Graphics.h"
-#include "PauseMenu.h"
-#include "PauseMenuButtons.h"
 
 //yy debugging and cleaning code
 AEGfxTexture* TexMLBackground = nullptr;
@@ -39,31 +22,27 @@ AEGfxVertexList* pMeshMLBackground;				// Background Mesh
 AEGfxVertexList* pMeshML;						// Object square mesh
 
 // class declaration 
-Rendering RenderMLBackground;
-Rendering createMesh1;
-Player player{};
-Planets planet{};
-PlayerUI player_ui{};
-Drone drone{};
-SpaceStation space_station{};
-PlayerProj player_proj{};
-Camera camera{};
-Debris debris{};
-Shuttles shuttle{};
-WaveManager wave_manager{};
-pause_menu pause{};
+Rendering		RenderMLBackground;
+Rendering		createMesh1;
+Player			player{};
+PlayerUI		player_ui{};
+PlayerProj		player_proj{};
+Planets			planet{};
+Drone			drone{};
+SpaceStation	space_station{};
+Debris			debris{};
+Shuttles		shuttle{};
+Camera			camera{};
+WaveManager		wave_manager{};
+pause_menu		pause{};
 
 //PauseMenu pause_menu;
 //PauseMenuButtons pause_menu_buttons;
-
-// test variables (who did this? -yy)
-f64 frame_time{};
 
 bool is_paused = false;
 
 float backgroundWidth = 7680.f;
 float backgroundHeight = 4320.f;
-
 
 namespace main_level
 {
@@ -142,8 +121,6 @@ void main_level::init()
 
 void main_level::update()
 {
-	frame_time = AEFrameRateControllerGetFrameTime();
-
 	if (AEInputCheckTriggered(AEVK_ESCAPE))
 	{
 		if (!is_paused)

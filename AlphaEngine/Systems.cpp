@@ -14,7 +14,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "pch.h"
 #include "Systems.h"
 #include "Global.h"
-#include <iostream>
 #include "AudioManager.h"
 
 // Fonts
@@ -53,13 +52,3 @@ void system_call::unload()
 	AESysExit();
 }
 
-/**
- * @brief Toggles between full-screen and windowed mode.
- */
-void Global_ToggleWindowed()
-{
-	AESysToggleFullScreen(!g_isFullScreen);  // Toggle full-screen mode
-	if (g_isFullScreen) {}
-	Global_InitWindowSize(!g_isFullScreen);  // Reinitialize game window size
-	Global_UpdateWindowSize();  // Update game window size
-}

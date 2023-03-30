@@ -21,5 +21,3 @@ namespace system_call
 	//void free();
 	void unload();
 }
-
-void Global_ToggleWindowed();

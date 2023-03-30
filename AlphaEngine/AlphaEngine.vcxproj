@@ -123,7 +123,6 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.09\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClCompile Include="Options.cpp" />
     <ClCompile Include="PauseMenu.cpp" />
     <ClCompile Include="PauseMenuButtons.cpp" />
-    <ClCompile Include="pch.cpp" />
     <ClCompile Include="Planet.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerProj.cpp" />
@@ -144,7 +143,9 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.09\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClInclude Include="Debris.h" />
     <ClInclude Include="Drone.h" />
     <ClInclude Include="Easing.h" />
+    <ClInclude Include="GameStateList.h" />
     <ClInclude Include="GameStateManager.h" />
+    <ClInclude Include="gch.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Highscore.h" />

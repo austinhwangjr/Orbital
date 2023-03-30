@@ -12,9 +12,10 @@ prior written consent of DigiPen Institute of Technology is prohibited.
  */
 /******************************************************************************/
 #pragma once
-#include "AEEngine.h"
+#include "pch.h"
+#include "gch.h"
+#include "Global.h"
 #include "Input.h"
-#include "Graphics.h"
 
 class Menu_Button
 {

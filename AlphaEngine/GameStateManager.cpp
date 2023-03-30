@@ -19,6 +19,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
  */
 /******************************************************************************/
 #include "pch.h"
+#include "gch.h"
 #include "GameStateManager.h"
 #include "MainMenu.h"
 #include "MainLevel.h"

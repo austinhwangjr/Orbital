@@ -11,18 +11,7 @@ Reproduction or disclosure of this file or its contents without the
 prior written consent of DigiPen Institute of Technology is prohibited.
  */
 /******************************************************************************/
-#include "AEEngine.h"
-#include "MainMenu.h"
-#include "Global.h"
-#include "GameStateManager.h"
 #include "MenuButtons.h"
-#include <iostream>
-#include "input.h"
-#include "Graphics.h"
-#include "Easing.h"
-#include "AudioManager.h"
-#include <cmath>
-#include "Transition.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846

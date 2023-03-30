@@ -12,24 +12,10 @@ prior written consent of DigiPen Institute of Technology is prohibited.
  */
 /******************************************************************************/
 /*-------------------------------------------------- Main Menu --------------------------------------------------*/
-#include "AEEngine.h"
-#include <iostream>
+#include "pch.h"
+#include "gch.h"
 #include "Global.h"
-#include "GameStateManager.h"
 #include "MainMenu.h"
-#include "MenuButtons.h"
-#include "Graphics.h"
-#include "HowToPlay.h"
-#include "AudioManager.h"
-#include "Player.h"
-#include "Planet.h"
-#include "Debris.h"
-#include "Shuttle.h"
-#include "Easing.h"
-#include "Transition.h"
-
-#include <map>
-#include "Data.h"
 
 main_menu::MainMenuState main_menu::currentState = MENU;
 
@@ -100,6 +86,20 @@ float s_ButtonX = 0.f;
 float s_ButtonY = -210.f;
 float d_ButtonX = 100.f;
 float d_ButtonY = -210.f;
+
+//struct Button
+//{
+//    AEMtx33 scale;
+//    ...
+//
+//        AEMtx33 transform;
+//};
+//
+//AEMtx33Scale(&scale, w_howtoplay_width, w_howtoplay_height);
+//AEMtx33Rot(&rot, 0.f);
+//AEMtx33Trans(&trans, w_howtoplay_x, w_howtoplay.y);
+//AEMtx33Concat(&transform, &rot, &scale);
+//AEMtx33Concat(&transform, &trans, &transform);
 
 float spacebar_ButtonX = 0.f;
 float spacebar_ButtonY = -310.f;

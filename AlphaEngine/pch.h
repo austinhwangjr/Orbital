@@ -15,10 +15,17 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #define PCH_H
 
 #include "AEEngine.h"
-
-//#include <iostream>
-//#include <iomanip>
-//#include <fstream>
-//#include <string>
+#include "Graphics.h"
+#include "Easing.h"
+#include "Transition.h"
+#include "AudioManager.h"
+#include "Data.h"
+#include <Windows.h>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <cmath>
+#include <map>
 
 #endif //PCH_H

@@ -11,9 +11,7 @@ Reproduction or disclosure of this file or its contents without the
 prior written consent of DigiPen Institute of Technology is prohibited.
  */
 /******************************************************************************/
-#include "Global.h"										
-#include "AEEngine.h"
-#include "Systems.h"
+#include "Global.h"	
 
 bool		g_isMute = false;
 
@@ -23,13 +21,21 @@ bool g_consoleOff = false;
 
 // Variables related to game window size
 bool		g_isFullScreen	= false;
-double		g_windowWidth;
-double		g_windowHeight;
-float		g_screenLeft	= 0.0f;												// Left (minimum) X coordinate of the game screen
-float		g_screenRight	= 0.0f;												// Right (maximum) X coordinate of the game screen
-float		g_screenTop		= 0.0f;												// Top (minimum) Y coordinate of the game screen
-float		g_screenBottom	= 0.0f;												// Bottom (maximum) Y coordinate of the game screen
+f32			g_windowWidth;
+f32			g_windowHeight;
+float		g_screenLeft	= 0.0f;			// Left (minimum) X coordinate of the game screen
+float		g_screenRight	= 0.0f;			// Right (maximum) X coordinate of the game screen
+float		g_screenTop		= 0.0f;			// Top (minimum) Y coordinate of the game screen
+float		g_screenBottom	= 0.0f;			// Bottom (maximum) Y coordinate of the game screen
 RECT		g_WindowRect;
+s32			g_mouseScreen_x;				// Mouse X coordinate of the game screen
+s32			g_mouseScreen_y;				// Mouse Y coordinate of the game screen
+AEVec2		g_mouseWorld;					// Mouse coordinates of world
+AEVec2		g_camPos;						// Camera coordinates
+f32			g_dt;							// Game loop delta time
+
+float		backgroundWidth = 7680.f;
+float		backgroundHeight = 4320.f;
 
 // Initializes the game window size based on whether it's full-screen or not
 void Global_InitWindowSize(bool isFullScreen)
@@ -46,9 +52,25 @@ void Global_InitWindowSize(bool isFullScreen)
 	else
 	{
 		g_isFullScreen	= false;
-		g_windowWidth	= 1600;													// Default window width
-		g_windowHeight	= 900;													// Default window height
+		g_windowWidth	= 1600.f;												// Default window width
+		g_windowHeight	= 900.f;												// Default window height
 	}
+}
+
+void Global_UpdateGlobals()
+{
+	// Update global frame time for each loop
+	g_dt = AEFrameRateControllerGetFrameTime();
+
+	// Get camera position
+	AEGfxGetCamPosition(&g_camPos.x, &g_camPos.y);
+
+	// Get mouse coordinates (screen)
+	AEInputGetCursorPosition(&g_mouseScreen_x, &g_mouseScreen_y);
+
+	// Setting mouse coordinates (world)
+	g_mouseWorld.x = g_camPos.x + g_mouseScreen_x - static_cast<f32>(AEGetWindowWidth() / 2);
+	g_mouseWorld.y = g_camPos.y + static_cast<f32>(AEGetWindowHeight() / 2.f) - g_mouseScreen_y;
 }
 
 // Updates the game window size based on the current window size
@@ -62,9 +84,21 @@ void Global_UpdateWindowSize()
 	g_screenRight	= static_cast<float>(g_windowWidth / 2.0f);
 	g_screenTop		= static_cast<float>(g_windowHeight / -2.0f);
 	g_screenBottom	= static_cast<float>(g_windowHeight / 2.0f);
+
 }
 
 void Global_ToggleScreen()
 {
 	Global_ToggleWindowed();
+}
+
+/**
+ * @brief Toggles between full-screen and windowed mode.
+ */
+void Global_ToggleWindowed()
+{
+	AESysToggleFullScreen(!g_isFullScreen);  // Toggle full-screen mode
+	if (g_isFullScreen) {}
+	Global_InitWindowSize(!g_isFullScreen);  // Reinitialize game window size
+	Global_UpdateWindowSize();  // Update game window size
 }
