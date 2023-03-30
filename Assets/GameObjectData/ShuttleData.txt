@@ -1,0 +1,7 @@
+//------------------Shuttle----------------------
+/-----Variable------------------Value-----------
+Shuttle_Lifespan 		5
+Shuttle_Acceleration 		100
+Shuttle_Value 			30
+Shuttle_Width 			50
+Shuttle_Height 			100

@@ -57,7 +57,7 @@ void pause_menu::free()
 
 void pause_menu::unload()
 {
-    putHighScore(player.score);
+
     pauseButtons.unload();
 
 }

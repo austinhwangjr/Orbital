@@ -53,6 +53,11 @@ static int	 DEBRIS_MIN;						// Minimum number of debris on a planet
 static int   DRONES_MAX;						// Maximum number of drones on a planet
 static float RUNWAY_LIFESPAN;					// Time taken for runway arrow to reset
 static float RUNWAY_MAX_ACCEL;					// Maximum acceleration value for runway arrow
+static float SHUTTLE_MAX_LIFESPAN;		        // Maximum life time for a shuttle before escaping (expiring)
+static float SHUTTLE_MAX_ACCEL;			        // Maximum acceleration for a shuttle
+static int	 SHUTTLE_VALUE;				        // Credit value for a shuttle
+static int	 SHUTTLE_WIDTH;				        // Shuttle Width
+static int	 SHUTTLE_HEIGHT;			        // Shuttle Height
 
 
 
@@ -118,6 +123,8 @@ std::map<std::string, f32> MMPlayerDataMap;
 std::vector<Data> MMPlayerData;
 std::map<std::string, f32> 	MMPlanetDataMap;
 std::vector<Data> 			MMPlanetData;
+std::map<std::string, f32> 	MMShuttleDataMap;
+std::vector<Data> 			MMShuttleData;
 
 void main_menu::load()
 {
@@ -161,6 +168,7 @@ void main_menu::load()
     MM_Keys_S_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/mm_S_Hover.png");
     MM_Keys_D = AEGfxTextureLoad("Assets/MainMenu/mm_D.png");
     MM_Keys_D_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/mm_D_Hover.png");
+    ImportDataFromFile("Assets/GameObjectData/ShuttleData.txt", MMShuttleData, MMShuttleDataMap);
 }
 
 void main_menu::init()
@@ -238,7 +246,12 @@ void main_menu::init()
     DEBRIS_MAX = static_cast<int>(MMPlanetDataMap["Maximum_Debris"]);
     DEBRIS_MIN = static_cast<int>(MMPlanetDataMap["Minimum_Debris"]);
     DRONES_MAX = static_cast<int>(MMPlanetDataMap["Maximum_Drones"]);
- 
+    SHUTTLE_MAX_LIFESPAN = MMShuttleDataMap["Shuttle_Lifespan"];
+    SHUTTLE_MAX_ACCEL = MMShuttleDataMap["Shuttle_Acceleration"];
+    SHUTTLE_VALUE = static_cast<int>(MMShuttleDataMap["Shuttle_Value"]);
+    SHUTTLE_WIDTH = MMShuttleDataMap["Shuttle_Width"];
+    SHUTTLE_HEIGHT = MMShuttleDataMap["Shuttle_Height"];
+    
 
     //MMplayer.init();
 
@@ -936,6 +949,8 @@ void main_menu::free()
     MMPlayerDataMap.clear();
     MMPlanetData.clear();
     MMPlanetDataMap.clear();
+    MMShuttleData.clear();
+    MMShuttleDataMap.clear();
 
 }
 

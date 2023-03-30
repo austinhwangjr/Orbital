@@ -15,20 +15,38 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Shuttle.h"
 #include "WaveManager.h"
 #include <cmath>
+#include "Data.h"
+
+static float SHUTTLE_MAX_LIFESPAN;		// Maximum life time for a shuttle before escaping (expiring)
+static float SHUTTLE_MAX_ACCEL;			// Maximum acceleration for a shuttle
+static int	 SHUTTLE_VALUE;				// Credit value for a shuttle
+static int	 SHUTTLE_WIDTH;				// Shuttle Width
+static int	 SHUTTLE_HEIGHT;			// Shuttle Height
 
 AEGfxTexture* shuttle_tex;
 std::vector<Shuttles> shuttle_vector;
+
+
+// IMPORT DATA VECTOR
+std::map<std::string, f32> 	ShuttleDataMap;
+std::vector<Data> 			ShuttleData;
+
 
 extern WaveManager wave_manager;
 
 void Shuttles::load()
 {
 	shuttle_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Shuttle.png");
+	ImportDataFromFile("Assets/GameObjectData/ShuttleData.txt", ShuttleData, ShuttleDataMap);
 }
 
 void Shuttles::init()
 {
-
+	SHUTTLE_MAX_LIFESPAN = ShuttleDataMap["Shuttle_Lifespan"];
+	SHUTTLE_MAX_ACCEL	 = ShuttleDataMap["Shuttle_Acceleration"];
+	SHUTTLE_VALUE		 = static_cast<int>(ShuttleDataMap["Shuttle_Value"]);
+	SHUTTLE_WIDTH		 = ShuttleDataMap["Shuttle_Width"];
+	SHUTTLE_HEIGHT		 = ShuttleDataMap["Shuttle_Height"];
 }
 
 void Shuttles::update(f64 frame_time, Player& player)
@@ -101,6 +119,11 @@ void Shuttles::draw(AEGfxVertexList* pMesh)
 void Shuttles::free()
 {
 	shuttle_vector.clear();
+
+	if (next_state != GS_RESTART) {
+		ShuttleData.clear();
+		ShuttleDataMap.clear();
+	}
 }
 
 void Shuttles::unload()
@@ -127,7 +150,7 @@ void Shuttles::spawn(int const& planet_id, f32 const& rand_angle)
 
 	new_shuttle.planet_id = planet_id;
 
-	AEMtx33Scale(&new_shuttle.scale, 50.f, 100.f);
+	AEMtx33Scale(&new_shuttle.scale, SHUTTLE_WIDTH, SHUTTLE_HEIGHT);
 	AEMtx33Rot(&new_shuttle.rotate, PI / 2 + rand_angle);
 
 	shuttle_vector.push_back(new_shuttle);
