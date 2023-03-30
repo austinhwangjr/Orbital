@@ -793,11 +793,11 @@ void main_menu::draw()
         AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
 
 
-        if (MMplayer.state == PLAYER_ORBIT) {
+        /*if (MMplayer.state == PLAYER_ORBIT) {
             AEGfxTextureSet(MMorbit_halo_tex, 0, 0);
             AEGfxSetTransform(MMplayer.orbit_halo_transform.m);
             AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
-        }
+        }*/
 
         // ====================
         //  DRAWING PLANET
