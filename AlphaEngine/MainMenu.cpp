@@ -26,6 +26,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Debris.h"
 #include "Shuttle.h"
 #include "Easing.h"
+#include "Transition.h"
 
 #include <map>
 #include "Data.h"
@@ -843,6 +844,8 @@ void main_menu::update()
         {
             // If the window close button has been clicked, set the game state to quit
             currentState = MENU;
+            transition::isTransitionActive = true;
+            transition::resetTimer();
         }
     }
 

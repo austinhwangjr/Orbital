@@ -85,6 +85,6 @@ void transition::unload()
 void transition::resetTimer()
 {
     transition_timer = 0.0f;
-    pause_duration = 0.0001f;
+    pause_duration = 0.01f;
 }
 
