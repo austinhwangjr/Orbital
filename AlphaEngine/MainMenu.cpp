@@ -1,3 +1,16 @@
+/******************************************************************************/
+/*!
+\file		MainMenu.cpp
+\author 	
+\par    	email: \@digipen.edu
+\date   	March 28, 2023
+\brief		This file contains the definition of functions for the main menu.
+
+Copyright (C) 2023 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+/******************************************************************************/
 /*-------------------------------------------------- Main Menu --------------------------------------------------*/
 #include "AEEngine.h"
 #include <iostream>
@@ -13,6 +26,10 @@
 #include "Debris.h"
 #include "Shuttle.h"
 #include "Easing.h"
+
+#include <map>
+#include "Data.h"
+
 main_menu::MainMenuState main_menu::currentState = MENU;
 
 #define MM_SHUTTLE_SIZE 20
@@ -26,6 +43,18 @@ bool MMbeam_active = false;
 AEGfxVertexList* pMeshMMBackground;
 AEGfxVertexList* pMeshMM;
 AEGfxVertexList* pMeshObj;
+static float PLANET_SIZE;						// Planet base size (radius)	
+static float PLANET_ROT_SPEED;					// Planet rotation speed (radians)
+static float PLANET_SPAWN_BUFFER;				// Planet spawn distance buffer modifier
+static int	 SHUTTLE_SPAWN_TIME_MAX;			// Maximum time shuttles will spawn
+static int   SHUTTLE_SPAWN_TIME_MIN;			// Minimum time shuttles will spawn
+static int	 DEBRIS_MAX;						// Maximum number of debris on a planet
+static int	 DEBRIS_MIN;						// Minimum number of debris on a planet
+static int   DRONES_MAX;						// Maximum number of drones on a planet
+static float RUNWAY_LIFESPAN;					// Time taken for runway arrow to reset
+static float RUNWAY_MAX_ACCEL;					// Maximum acceleration value for runway arrow
+
+
 
 Player MMplayer;
 Planets MMplanet;
@@ -84,6 +113,12 @@ Menu_Button menuButtons;
 Rendering createMesh;
 Rendering RenderMMBackground;
 
+//IMPORT DATA VECTOR
+std::map<std::string, f32> MMPlayerDataMap;
+std::vector<Data> MMPlayerData;
+std::map<std::string, f32> 	MMPlanetDataMap;
+std::vector<Data> 			MMPlanetData;
+
 void main_menu::load()
 {
     TexMMBackground = AEGfxTextureLoad("Assets/MainMenu/mm_Background.png");
@@ -113,6 +148,10 @@ void main_menu::load()
     MMshuttle_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Shuttle.png");
     MMexplosion_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Explosion.png");
     MMorbit_halo_tex = AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
+
+    ImportDataFromFile("Assets/GameObjectData/PlayerData.txt", MMPlayerData, MMPlayerDataMap);
+    ImportDataFromFile("Assets/GameObjectData/PlanetData.txt", MMPlanetData, MMPlanetDataMap);
+
 
     MM_Keys_W = AEGfxTextureLoad("Assets/MainMenu/mm_W.png");
     MM_Keys_W_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/mm_W_Hover.png");
@@ -144,10 +183,67 @@ void main_menu::init()
     std::cout << std::endl;
     std::cout << "------------------------- MainMenu Initialised -------------------------" << std::endl << std::endl;
 
-    MMplayer.init();
+    AudioManager::PlayBGM("Assets/BGM/cinescifi.wav", 0.25f);
+    
+    //--------------------Player--------------------
+    MMplayer.state = PLAYER_FLY;
 
-    MMplayer.position.x = 0.0f;
-    MMplayer.position.y = 0.0f;
+    MMplayer.position.x                    = MMPlayerDataMap["position.x"];
+    MMplayer.position.y                    = MMPlayerDataMap["position.y"];
+
+    MMplayer.velocity.x                    = MMPlayerDataMap["velocity.x"];
+    MMplayer.velocity.y                    = MMPlayerDataMap["velocity.y"];
+
+    MMplayer.size                          = MMPlayerDataMap["size"];
+
+    MMplayer.mov_speed                     = MMPlayerDataMap["mov_speed"];
+    MMplayer.rot_speed                     = MMPlayerDataMap["rot_speed"] * PI;
+
+    MMplayer.shortest_distance             = MMPlayerDataMap["shortest_distance"];
+
+    MMplayer.direction                     = MMPlayerDataMap["direction"];
+
+    MMplayer.current_capacity              = static_cast<int>(MMPlayerDataMap["current_capacity"]);
+    MMplayer.max_capacity                  = static_cast<int>(MMPlayerDataMap["max_capacity"]);
+
+    MMplayer.can_leave_orbit               = true;
+
+    MMplayer.timer                         = MMPlayerDataMap["timer"];
+
+    //--------------------Score-keeping--------------------
+    MMplayer.score                         = static_cast<int>(MMPlayerDataMap["score"]);
+    MMplayer.credits                       = static_cast<int>(MMPlayerDataMap["credits"]);
+
+    //--------------------Upgrade Levels--------------------
+    MMplayer.mov_speed_level               = static_cast<int>(MMPlayerDataMap["mov_speed_level"]);
+    MMplayer.capacity_level                = static_cast<int>(MMPlayerDataMap["capacity_level"]);
+    MMplayer.space_station_count           = static_cast<int>(MMPlayerDataMap["space_station_count"]);
+    MMplayer.beam_level                    = static_cast<int>(MMPlayerDataMap["beam_level"]);
+
+    //--------------------Tractor Beam--------------------
+    MMplayer.beam_pos.x                    = MMPlayerDataMap["beam_pos.x"];
+    MMplayer.beam_pos.y                    = MMPlayerDataMap["beam_pos.y"];
+
+    MMplayer.beam_width                    = MMplayer.size * 0.6f;
+    MMplayer.beam_height                   = MMplayer.beam_width * 2.f;
+
+    //--------------------Planet Halo--------------------
+    MMplanet.halo_scale_lerp               = MMPlayerDataMap["halo_scale_lerp"];
+
+
+    //--------------------Planet Variables--------------------
+    PLANET_SIZE = MMPlanetDataMap["Planet_Size"];
+    PLANET_ROT_SPEED = MMPlanetDataMap["Planet_Rotation_Speed"] * PI;
+    PLANET_SPAWN_BUFFER = MMPlanetDataMap["Planet_Spawn_Buffer"];
+    SHUTTLE_SPAWN_TIME_MAX = static_cast<int>(MMPlanetDataMap["Maximum_Time_Shuttle_Spawn"]);
+    SHUTTLE_SPAWN_TIME_MIN = static_cast<int>(MMPlanetDataMap["Minimum_Time_Shuttle_Spawn"]);
+    DEBRIS_MAX = static_cast<int>(MMPlanetDataMap["Maximum_Debris"]);
+    DEBRIS_MIN = static_cast<int>(MMPlanetDataMap["Minimum_Debris"]);
+    DRONES_MAX = static_cast<int>(MMPlanetDataMap["Maximum_Drones"]);
+ 
+
+    //MMplayer.init();
+
 
     //DEBRIS
     MMplanet.max_debris = rand() % (DEBRIS_MAX - DEBRIS_MIN) + DEBRIS_MIN;												// Randomize debris count on planet spawn
@@ -536,39 +632,26 @@ void main_menu::update()
     // =============================================
     if (MMplayer.state == PLAYER_ORBIT)
     {
-        // Check if the spaceship just started orbiting a planet
-        if (!isOrbitingPlanet)
-        {
-            MMplayer.halo_scale_lerp = 0; // Reset the Lerp value for halo scale
-            isOrbitingPlanet = true;
-        }
-
-        // Calculate progress based on the elapsed time and animation duration
-        float progress = static_cast<float>(MMframe_time / MManimationDuration);
-        if (progress > 1.0f)
-        {
-            progress = 1.0f; // Clamp progress to 1.0f to prevent overshooting
-        }
-
-        // Use the EaseInOutBack easing function for smooth interpolation
-        float easedProgress = EaseInOutBack(0, 1, progress);
-
         // Update the Lerp value for the halo scale
-        MMplayer.halo_scale_lerp += (1.0f - MMplayer.halo_scale_lerp) * 0.5f;
-
-        f32 val{ MMplanet.size + 100.f };
-
-        // Use the Lerp value to scale the halo
-        AEMtx33Scale(&scale, val * MMplayer.halo_scale_lerp, val * MMplayer.halo_scale_lerp);
-        AEMtx33Trans(&trans, MMplanet.position.x, MMplanet.position.y);
-        AEMtx33Concat(&MMplayer.orbit_halo_transform, &rot, &scale);
-        AEMtx33Concat(&MMplayer.orbit_halo_transform, &trans, &MMplayer.orbit_halo_transform);
+        MMplanet.halo_scale_lerp += (1.0f - MMplanet.halo_scale_lerp) * 0.1f;
     }
     else
     {
-        // The spaceship is not orbiting a planet, so set the flag to false
-        isOrbitingPlanet = false;
+        // Update the Lerp value for the halo scale
+        if (MMplanet.halo_scale_lerp > 0.f)
+        {
+            MMplanet.halo_scale_lerp -= MMplanet.halo_scale_lerp * 0.01f;
+        }
     }
+    
+    MMplanet.halo_size = MMplanet.size + 60.f;
+
+    // Use the Lerp value to scale the halo
+    AEMtx33Scale(&scale, MMplanet.halo_size * MMplanet.halo_scale_lerp, MMplanet.halo_size * MMplanet.halo_scale_lerp);
+    AEMtx33Rot(&rot, 0);
+    AEMtx33Trans(&trans, MMplanet.position.x, MMplanet.position.y);
+    AEMtx33Concat(&MMplanet.orbit_halo_transform, &rot, &scale);
+    AEMtx33Concat(&MMplanet.orbit_halo_transform, &trans, &MMplanet.orbit_halo_transform);
 
 
     // =======================================
@@ -693,6 +776,7 @@ void main_menu::update()
 
 void main_menu::draw()
 {
+
     if (MMtotal_time >= 1.5f)
     {
         // Clear the screen
@@ -707,6 +791,7 @@ void main_menu::draw()
         AEGfxTextureSet(MMorbit_tex, 0, 0);
         AEGfxSetTransform(MMplanet.orbit_transform.m);
         AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
+
 
         if (MMplayer.state == PLAYER_ORBIT) {
             AEGfxTextureSet(MMorbit_halo_tex, 0, 0);
@@ -849,6 +934,10 @@ void main_menu::free()
     AEGfxMeshFree(pMeshMMBackground);
     AEGfxMeshFree(pMeshMM);
     AEGfxMeshFree(pMeshObj);
+    MMPlayerData.clear();
+    MMPlayerDataMap.clear();
+    MMPlanetData.clear();
+    MMPlanetDataMap.clear();
 
 }
 

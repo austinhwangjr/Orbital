@@ -1,7 +1,25 @@
+/******************************************************************************/
+/*!
+\file		PlayerProj.cpp
+\author 	Hwang Jing Rui, Austin
+\par    	email: jingruiaustin.hwang\@digipen.edu
+\date   	March 28, 2023
+\brief		This file contains the definition of functions for the player 
+			projectile.
+
+Copyright (C) 2023 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+/******************************************************************************/
+#include <iostream>
+#include <fstream>
+#include <vector>
 #include "AEEngine.h"
 #include "PlayerProj.h"
-#include <vector>
 #include "SpaceStation.h"
+#include "GameStateManager.h"
+#include "Data.h"
 
 // Textures
 AEGfxTexture* player_proj_tex;
@@ -16,30 +34,51 @@ extern std::vector<ShopOption> button_vector;
 
 extern f32 cam_x, cam_y;
 
+//IMPORT DATA VECTOR
+std::map<std::string, f32> ProjDataMap;
+std::vector<Data> ProjData;
 
-
+/******************************************************************************/
+/*!
+	Load Textures and Data
+*/
+/******************************************************************************/
 void PlayerProj::load()
 {
+	// Load texture
 	player_proj_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Debris.png");
+
+	// Import data from file
+	ImportDataFromFile("Assets/GameObjectData/PlayerProjectileData.txt", ProjData, ProjDataMap);
 }
 
+/******************************************************************************/
+/*!
+	Initialize Variables
+*/
+/******************************************************************************/
 void PlayerProj::init()
 {
-	position.x		= 0.f;
-	position.y		= 0.f;
+	position.x		= ProjDataMap["Position_X"];
+	position.y		= ProjDataMap["Position_Y"];
 
-	velocity.x		= 0.f;
-	velocity.y		= 0.f;
+	velocity.x		= ProjDataMap["Velocity_X"];
+	velocity.y		= ProjDataMap["Velocity_Y"];
 
-	size			= 30.f;
+	size			= ProjDataMap["Size"];
 
-	speed			= 150.f;
+	speed			= ProjDataMap["Speed"];
 
-	direction		= 0.f;
+	direction		= ProjDataMap["Direction"];
 
-	is_delete = 0;
+	is_delete		= static_cast<int>(ProjDataMap["Delete_flag"]);
 }
 
+/******************************************************************************/
+/*!
+	Update Player Projectile
+*/
+/******************************************************************************/
 void PlayerProj::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 {
 	// =========================
@@ -70,7 +109,7 @@ void PlayerProj::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 	}
 
 	// ====================
-	// check for collision
+	// Check for collision
 	// ====================
 
 	for (int i = 0; i < player_proj_vector.size(); ++i) {
@@ -88,11 +127,9 @@ void PlayerProj::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 		}
 	}
 
-
-
-	// =======================================
-	// Delete projectile if go out of screen
-	// =======================================
+	// ======================================================
+	// Delete player projectile if outside screen boundaries
+	// ======================================================
 	for (int i = 0; i < player_proj_vector.size(); ++i) {
 		PlayerProj& player_proj = player_proj_vector[i];
 		if (player_proj.position.x > cam_x + AEGetWindowWidth() / 3 || player_proj.position.x < cam_x - AEGetWindowWidth() / 3) {
@@ -100,10 +137,7 @@ void PlayerProj::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 				player_proj.is_delete = 1;
 			}
 		}
-
 	}
-
-
 
 	// ===================================
 	// Update player projectile instances
@@ -116,9 +150,9 @@ void PlayerProj::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 		}
 	}
 
-	// =======================================
-	// calculate the matrix for space station
-	// =======================================
+	// ===========================================
+	// Calculate the matrix for player projectile
+	// ===========================================
 
 	AEMtx33 scale, rot, trans;
 
@@ -136,7 +170,7 @@ void PlayerProj::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 
 /******************************************************************************/
 /*!
-	Draw space station(s)
+	Draw Player Projectile
 */
 /******************************************************************************/
 void PlayerProj::draw(AEGfxVertexList* pMesh)
@@ -153,12 +187,28 @@ void PlayerProj::draw(AEGfxVertexList* pMesh)
 	}
 }
 
+/******************************************************************************/
+/*!
+	Clean Object Instances
+*/
+/******************************************************************************/
 void PlayerProj::free()
 {
 	player_proj_vector.clear();
+
+	if (next_state != GS_RESTART) {
+		ProjData.clear();
+		ProjDataMap.clear();
+	}
 }
 
+/******************************************************************************/
+/*!
+	Free Textures
+*/
+/******************************************************************************/
 void PlayerProj::unload()
 {
 	AEGfxTextureUnload(player_proj_tex);
 }
+

@@ -1,11 +1,25 @@
+/******************************************************************************/
+/*!
+\file		WaveManager.cpp
+\author		Tan Rui An Ryan
+\par		email: ruianryan.t\@digipen.edu
+\date		March 28, 2023
+\brief		This file contains the behaviour for the WaveManager game object
+
+Copyright (C) 2023 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+/******************************************************************************/
 #pragma once
 #define PLANET_MAX				10		// Maximum number of planets
 #define SHUTTLE_MAX				10		// Maximum number of shuttles per planet
 #define SHUTTLE_SPAWN_MAX		8		// Maximum number of shuttles a planet can spawn with
 #define SHUTTLE_SPAWN_MIN		4		// Minimum number of shuttles a planet can spawn with
 #define SHUTTLE_INCREASE_AMOUNT 1		// Number of shuttles added after a wave
-#define WAVE_INTERVAL_TIME		8		// Down time between waves
+#define WAVE_INTERVAL_TIME		15		// Down time between waves
 #define WAVE_ADD_PLANET			4		// Every nth wave planets will be added on
+#define LOSE_CONDITION			5		// Number of shuttles allowed to be destroyed before failure
 
 #include "AEEngine.h"
 #include "Player.h"
@@ -70,12 +84,14 @@ struct WaveManager
 
 // PLANET VARIABLES--------------------------
 	int		planet_count;				// Number of planets
-	bool	planet_adding;				// Flag for when planet adding transition is playing
 // PLANET VARIABLES--------------------------
 
 
 // OTHER VARIABLES---------------------------
-	bool	gameLost;					// Flag for when the game is lost
+	bool	planet_adding;				// Flag for when planet adding transition is playing
+	bool	first_contact;				// Flag for first time player orbits a planet
+	bool	capacity_full;				// Flag for first time player full capacity
+	bool	station_tutorial;			// Flag for when station tutorial is finished;
 // OTHER VARIABLES---------------------------
 
 	void load();
@@ -90,7 +106,6 @@ struct WaveManager
 	int get_current_shuttles() const;
 	bool no_more_shuttles();
 
-	void checkLoseCondition();
 	void add_indicator();
 	//void add_ss_indicator();
 };

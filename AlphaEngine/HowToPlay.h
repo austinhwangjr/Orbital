@@ -1,3 +1,17 @@
+/******************************************************************************/
+/*!
+\file		HowToPlay.h
+\author 	
+\par    	email: \@digipen.edu
+\date   	March 28, 2023
+\brief		This file contains the declaration of functions for the "How-to-Play" 
+            feature.
+
+Copyright (C) 2023 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+/******************************************************************************/
 #pragma once
 #include "Graphics.h"
 
@@ -18,6 +32,5 @@ struct Button1
     float width;
     float height;
 };
-
 
 }

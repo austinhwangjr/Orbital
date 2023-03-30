@@ -88,6 +88,9 @@
     <ClCompile Include="Highscore.cpp">
       <Filter>Source\InGame\InGameMenus</Filter>
     </ClCompile>
+    <ClCompile Include="Data.cpp">
+      <Filter>Source\Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -176,6 +179,9 @@
     </ClInclude>
     <ClInclude Include="Highscore.h">
       <Filter>Header\InGame\InGameMenus</Filter>
+    </ClInclude>
+    <ClInclude Include="Data.h">
+      <Filter>Header\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

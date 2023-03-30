@@ -1,3 +1,17 @@
+/******************************************************************************/
+/*!
+\file		HowToPlay.cpp
+\author 	
+\par    	email: \@digipen.edu
+\date   	March 28, 2023
+\brief		This file contains the definition of functions for the "How-to-Play" 
+            feature.
+
+Copyright (C) 2023 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+/******************************************************************************/
 #include "AEEngine.h"
 #include "MainMenu.h"
 #include "Global.h"
@@ -7,10 +21,13 @@
 #include "input.h"
 #include "Graphics.h"
 #include "HowToPlay.h"
+#include <iostream>
+#include <fstream>
+#include "data.h"
 
 // Set the dimensions of each button
-static float buttonWidth1 = 200.f;
-static float buttonHeight1 = 50.f;
+static float buttonWidth1;
+static float buttonHeight1;
 
 AEGfxTexture* howToPlayBGTexture = nullptr;
 AEGfxTexture* returnToMMTexture = nullptr;
@@ -21,27 +38,34 @@ AEGfxVertexList* pMeshHTP1;
 Rendering createMeshHTP;
 Rendering renderhtp;
 
-static float howToPlayBGX = 0.0f;
-static float howToPlayBGY = 0.0f;
+static float howToPlayBGX;
+static float howToPlayBGY;
 
-static float returnToMMX = 650.0f;
-static float returnToMMY = -20.0f;
+static float returnToMMX;
+static float returnToMMY;
 
-// Define the positions and dimensions for each button
-how_to_play::Button1 buttons1[] = {
-    {returnToMMX, returnToMMY, buttonWidth1, buttonHeight1},   // Return to main menu button
-};
+how_to_play::Button1 buttons1;
+
 
 void how_to_play::load()
 {
     howToPlayBGTexture = AEGfxTextureLoad("Assets/MainMenu/HowToPlay/htp_HowToPlayBackground.png");
     returnToMMTexture = AEGfxTextureLoad("Assets/MainMenu/HowToPlay/htp_ExitButton.png");
+    ImportDataFromFileHowToPlay("Assets/MainMenu/HowToPlay/HowToPlayData.txt");
+    
 }
 
 void how_to_play::init()
 {
     createMeshHTP.BackgroundMesh(pMeshHTPBackground);
     createMeshHTP.SquareMesh(pMeshHTP1);
+    // Define the positions and dimensions for each button
+    buttons1.x = returnToMMX;
+    buttons1.y = returnToMMY;
+    buttons1.width = buttonWidth1;
+    buttons1.height = buttonHeight1;
+
+  
 }
 
 void how_to_play::update()
@@ -51,7 +75,7 @@ void how_to_play::update()
     {
         // Check which button has been clicked
 
-        if (Input::isButtonClicked(buttons1[0].x, buttons1[0].y, buttons1[0].width, buttons1[0].height))
+        if (Input::isButtonClicked(buttons1.x, buttons1.y, buttons1.width, buttons1.height))
         {
 
             next_state = GS_MAINMENU;
@@ -96,4 +120,31 @@ void how_to_play::unload()
     AEGfxTextureUnload(howToPlayBGTexture);
     AEGfxTextureUnload(returnToMMTexture);
 
+}
+
+int ImportDataFromFileHowToPlay(const char* FileName)
+{
+
+    std::ifstream ifs{ FileName, std::ios_base::in };
+    if (!ifs.is_open()) {											// Check if file exist/open	
+        std::cout << FileName << "does not exist." << '\n';
+        return 0;
+    }
+
+    ifs.ignore(400, ' ');				
+    ifs >> buttonWidth1;
+    ifs.ignore(400, ' ');				
+    ifs >> buttonHeight1;
+    ifs.ignore(400, ' ');
+    ifs >> howToPlayBGX;
+    ifs.ignore(400, ' ');
+    ifs >> howToPlayBGY;
+    ifs.ignore(400, ' ');
+    ifs >> returnToMMX;
+    ifs.ignore(400, ' ');
+    ifs >> returnToMMY;
+    
+    ifs.close();
+
+    return 1;
 }

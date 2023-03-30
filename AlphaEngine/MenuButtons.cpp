@@ -1,3 +1,16 @@
+/******************************************************************************/
+/*!
+\file		MenuButtons.cpp
+\author 	
+\par    	email: \@digipen.edu
+\date   	March 28, 2023
+\brief		This file contains the definition of functions for the menu buttons.
+
+Copyright (C) 2023 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+/******************************************************************************/
 #include "AEEngine.h"
 #include "MainMenu.h"
 #include "Global.h"
@@ -93,6 +106,13 @@ HoverButton hoverButtons[] =
 
 Button currentButtonSizes[6];
 
+
+/******************************************************************************/
+/*!
+	Load Textures and Data
+*/
+/******************************************************************************/
+
 void Menu_Button::load( const char* startButtonFilename,
                         const char* howToPlayButtonFilename,
                         const char* highScoreButtonFilename,
@@ -131,6 +151,11 @@ void Menu_Button::load( const char* startButtonFilename,
 
 }
 
+/******************************************************************************/
+/*!
+	Initialize Variables
+*/
+/******************************************************************************/
 void Menu_Button::init()
 {
     if (!AudioManager::isBGMPlaying)
@@ -155,6 +180,11 @@ void Menu_Button::init()
 }
 
 
+/******************************************************************************/
+/*!
+	Update Menu Buttons
+*/
+/******************************************************************************/
 void Menu_Button::update()
 {
     for (int i = 0; i < 6; ++i)
@@ -268,6 +298,11 @@ void Menu_Button::update()
     }
 }
 
+/******************************************************************************/
+/*!
+	Draw Menu Buttons
+*/
+/******************************************************************************/
 void Menu_Button::draw(AEGfxVertexList* pMesh)
 {
     float squareSize = 23.0f;
@@ -290,6 +325,11 @@ void Menu_Button::free()
 {
 }
 
+/******************************************************************************/
+/*!
+	Free Textures
+*/
+/******************************************************************************/
 void Menu_Button::unload()
 {
     for (int i = 0; i < 6; ++i)
@@ -298,4 +338,5 @@ void Menu_Button::unload()
         AEGfxTextureUnload(hoverButtonTextures[i]);
     }
     AEGfxTextureUnload(squareTexture);
+
 }

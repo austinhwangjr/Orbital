@@ -1,3 +1,20 @@
+/******************************************************************************/
+/*!
+\file		Debris.cpp
+\author 	Leong Wen Bin Aceson
+			Hwang Jing Rui, Austin
+\par    	email: xxx\@digipen.edu
+				   jingruiaustin.hwang\@digipen.edu
+\date   	March 28, 2023
+\brief		This file contains the definition of functions for the Debris.
+
+			Austin - Added debris state and behaviour in each state
+
+Copyright (C) 2023 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+/******************************************************************************/
 #include "AEEngine.h"
 #include "Debris.h"
 #include "Planet.h"
@@ -5,6 +22,7 @@
 #include "Shuttle.h"
 #include "WaveManager.h"
 #include <cmath>
+#include "Data.h"
 
 //VARIABLES
 #define SPEED_DEBRIS 30
@@ -17,12 +35,16 @@
 #define EXPLOSION_HEIGHT 40
 
 int OUTERRIM_TO_DEBRIS = 20;
+static int DEBRIS_MAX;
 
 
 extern WaveManager wave_manager;
 extern Player player;
 
 extern Planets MMplanet;
+
+//PLANET DATA MAP
+extern std::map<std::string, f32> 	PlanetDataMap;
 
 //PLANET VECTOR
 extern std::vector<Planets> planet_vector;
@@ -50,7 +72,7 @@ void Debris::load()
 
 void Debris::init()
 {
-	
+	DEBRIS_MAX = static_cast<int>(PlanetDataMap["Maximum_Debris"]);
 
 }
 

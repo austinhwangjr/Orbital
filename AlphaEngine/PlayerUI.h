@@ -1,10 +1,25 @@
+/******************************************************************************/
+/*!
+\file		PlayerUI.h
+\author 	Hwang Jing Rui, Austin
+\par    	email: jingruiaustin.hwang\@digipen.edu
+\date   	March 28, 2023
+\brief		This file contains the declaration of functions for the player 
+			UI (user interface).
+
+Copyright (C) 2023 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+/******************************************************************************/
 #pragma once
 #include "Player.h"
 #include "WaveManager.h"
 
-#define DEBRIS_VALUE	10
-#define DEBRIS_SCORE	100
-#define UPGRADE_COUNT	5
+#define DEBRIS_VALUE		10
+#define DEBRIS_SCORE		100
+#define UPGRADE_COUNT		5
+#define LOST_OVERLAY_TIME	2
 
 enum BUTTON_TYPE 
 {
@@ -67,7 +82,6 @@ struct PlayerUI
 	AEVec2		upgrade_preview_position;
 	f32			upgrade_preview_size;
 	AEMtx33		upgrade_preview_transform;
-	bool		upgrade_preview_display;
 
 	//--------------------Shop background--------------------
 	AEVec2		shop_bg_position;
@@ -86,9 +100,13 @@ struct PlayerUI
 	const int drone_cost			= 250;
 	const int space_station_cost	= 500;
 
+	//--------------------Shuttle Lost Overlay--------------------
+	AEMtx33		lost_overlay_transform;
+	f32			lost_overlay_timer;
+
 	void load();
 	void init();
-	void update(f64, Player&);
+	void update(f64, Player&, WaveManager const&);
 	void draw(AEGfxVertexList*, Player, WaveManager const&);
 	void free();
 	void unload();

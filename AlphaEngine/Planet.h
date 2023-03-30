@@ -1,13 +1,27 @@
+/******************************************************************************/
+/*!
+\file		Planet.h
+\author 	Tan Rui An Ryan
+\par    	email: ruianryan.t\@digipen.edu
+\date   	March 28, 2023
+\brief		This file contains the declaration of functions for the planet.
+
+Copyright (C) 2023 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+/******************************************************************************/
 #pragma once
-#define PLANET_SIZE				200.0f		// Planet base size (radius)	
-#define PLANET_ROT_SPEED		0.01f * PI	// Planet rotation speed (radians)
-#define SHUTTLE_SPAWN_TIME_MAX	15			// Maximum time shuttles will spawn
-#define SHUTTLE_SPAWN_TIME_MIN	10			// Minimum time shuttles will spawn
-#define DEBRIS_MAX				25			// Maximum number of debris on a planet
-#define DEBRIS_MIN				10			// Minimum number of debris on a planet
-#define DRONES_MAX				5			// Maximum number of drones on a planet
-#define RUNWAY_LIFESPAN			1.2f		// Time taken for runway arrow to reset
-#define RUNWAY_MAX_ACCEL		500.f		// Maximum acceleration value for runway arrow
+//#define PLANET_SIZE				200.0f		// Planet base size (radius)	
+//#define PLANET_ROT_SPEED		0.01f * PI	// Planet rotation speed (radians)
+//#define PLANET_SPAWN_BUFFER		2.f			// Planet spawn distance buffer modifier
+//#define SHUTTLE_SPAWN_TIME_MAX	12			// Maximum time shuttles will spawn
+//#define SHUTTLE_SPAWN_TIME_MIN	7			// Minimum time shuttles will spawn
+//#define DEBRIS_MAX				25			// Maximum number of debris on a planet
+//#define DEBRIS_MIN				10			// Minimum number of debris on a planet
+//#define DRONES_MAX				5			// Maximum number of drones on a planet
+//#define RUNWAY_LIFESPAN			1.2f		// Time taken for runway arrow to reset
+//#define RUNWAY_MAX_ACCEL		500.f		// Maximum acceleration value for runway arrow
 
 #include "Debris.h"
 #include <vector>
@@ -74,6 +88,14 @@ struct Planets
 // DRONES VARIABLES------------------
 	int					current_drones = 0;			// Current nubmer of drones on the planet
 // DRONES VARIABLES------------------
+
+
+// ============
+// Planet Halo
+// ============
+	f32						halo_size{};
+	f32						halo_scale_lerp{};
+	AEMtx33					orbit_halo_transform{};
 
 	void load();
 	void init();

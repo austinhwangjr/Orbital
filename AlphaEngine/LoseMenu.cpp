@@ -1,3 +1,16 @@
+/******************************************************************************/
+/*!
+\file		LoseMenu.cpp
+\author 	
+\par    	email: \@digipen.edu
+\date   	March 28, 2023
+\brief		This file contains the definition of functions for the lose menu.
+
+Copyright (C) 2023 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+/******************************************************************************/
 #include "LoseMenu.h"
 #include "AEEngine.h"
 #include "Graphics.h"
@@ -69,7 +82,7 @@ void lose_menu::update()
         switch (clickedButton)
         {
         case 0:
-            next_state = GS_RESTART;
+            next_state = GS_MAINLEVEL;
             break;
         case 1:
             next_state = GS_MAINMENU;
@@ -83,14 +96,19 @@ void lose_menu::update()
             std::cout << "Toggling Screen " << std::endl;
         }
     }
+
+
 }
 
-void lose_menu::draw(const AEVec2& camPos)
+void lose_menu::draw()
 {
-    float translatedPlayAgainX = lm_PlayAgainX + camPos.x;
-    float translatedPlayAgainY = lm_PlayAgainY + camPos.y;
-    float translatedMainMenuX = lm_MainMenuX + camPos.x;
-    float translatedMainMenuY = lm_MainMenuY + camPos.y;
+    f32 camPos_x{}, camPos_y{};
+    AEGfxGetCamPosition(&camPos_x, &camPos_y);
+
+    float translatedPlayAgainX = lm_PlayAgainX + camPos_x;
+    float translatedPlayAgainY = lm_PlayAgainY + camPos_y;
+    float translatedMainMenuX = lm_MainMenuX + camPos_x;
+    float translatedMainMenuY = lm_MainMenuY + camPos_y;
 
     renderLoseMenu.RenderSprite(TexPlayAgain, translatedPlayAgainX, translatedPlayAgainY, lm_ButtonWidth, lm_ButtonHeight, pMeshLoseMenu);
     renderLoseMenu.RenderSprite(TexMainMenu, translatedMainMenuX, translatedMainMenuY, lm_ButtonWidth, lm_ButtonHeight, pMeshLoseMenu);

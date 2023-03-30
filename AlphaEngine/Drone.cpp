@@ -1,18 +1,35 @@
+/******************************************************************************/
+/*!
+\file		Drone.cpp
+\author 	Hwang Jing Rui, Austin
+\par    	email: jingruiaustin.hwang\@digipen.edu
+\date   	March 28, 2023
+\brief		This file contains the definition of functions for the Drone.
+
+Copyright (C) 2023 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ */
+/******************************************************************************/
 #include "AEEngine.h"
 #include "Drone.h"
 #include "Planet.h"
 #include <vector>
 #include <string>
+#include "Data.h"
+#include <iostream>
+#include <fstream>
+#include "GameStateManager.h"
 
 // Textures
 AEGfxTexture* drone_tex;
 extern AEGfxTexture* tractor_beam_tex;
 extern AEGfxTexture* shop_icon_tex;
 
-
 // Variables
 bool drone_valid_placement = false;
 bool drone_added;
+static int DRONES_MAX;
 
 // Mouse coordinates
 extern AEVec2 mouse_pos_world;
@@ -24,49 +41,80 @@ extern std::vector<std::vector<Debris>> debris_vector_all;
 
 extern s8 font_id;
 
+//IMPORT DATA VECTOR
+std::map<std::string, f32> DroneDataMap;
+std::vector<Data> DroneData;
+
+//PLANET DATA MAP
+extern std::map<std::string, f32> 	PlanetDataMap;
+
+/******************************************************************************/
+/*!
+	Load Textures and Data
+*/
+/******************************************************************************/
 void Drone::load()
 {
 	drone_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Drone.png");
+	ImportDataFromFile("Assets/GameObjectData/DroneData.txt", DroneData, DroneDataMap);
 
 }
 
+/******************************************************************************/
+/*!
+	Initialize Variables
+*/
+/******************************************************************************/
 void Drone::init(Player player)
 {
-	//--------------------Drone--------------------
-	position.x				= 0.f;
-	position.y				= 0.f;
+	// ======
+	// Drone
+	// ======
+	position.x				= DroneDataMap["Position_X"];
+	position.y				= DroneDataMap["Position_Y"];
 
-	velocity.x				= 0.f;
-	velocity.y				= 0.f;
+	velocity.x				= DroneDataMap["Velocity_X"];
+	velocity.y				= DroneDataMap["Velocity_Y"];
 
 	size					= player.size;
 
 	rot_speed				= player.rot_speed / 10.f;
 
-	shortest_distance		= 0.f;
+	shortest_distance		= DroneDataMap["Shortest_Distance"];
 
 	direction				= player.direction;
 
-	current_capacity		= 0;
-	max_capacity			= 3;
+	current_capacity		= static_cast<int>(DroneDataMap["Current_Capacity"]);
+	max_capacity			= static_cast<int>(DroneDataMap["Max_Capacity"]);
 
-	//--------------------Cooldown Bar--------------------
+	DRONES_MAX				= static_cast<int>(PlanetDataMap["Maximum_Drones"]);
+
+	// =============
+	// Cooldown Bar
+	// =============
 	cd_bar.position.x		= position.x;
 	cd_bar.position.y		= position.y - size;
-	cd_bar.height			= 5.f;
-	cd_bar.width			= 0.f;
-	cd_bar.max_width		= 40.f;
-	cd_bar.timer			= 0.f;
-	cd_bar.total_time		= 8.f;
+	cd_bar.height			= DroneDataMap["CoolDownBar_height"];
+	cd_bar.width			= DroneDataMap["CoolDownBar_width"];
+	cd_bar.max_width		= DroneDataMap["CoolDownBar_max_width"];
+	cd_bar.timer			= DroneDataMap["CoolDownBar_timer"];
+	cd_bar.total_time		= DroneDataMap["CoolDownBar_total_time"];
 
-	//--------------------Tractor Beam--------------------
-	beam_pos.x				= 0.f;
-	beam_pos.y				= 0.f;
+	// =============
+	// Tractor Beam
+	// =============
+	beam_pos.x				= DroneDataMap["TractorBeam_position_X"];
+	beam_pos.y				= DroneDataMap["TractorBeam_position_Y"];
 
 	beam_width				= size;
 	beam_height				= beam_width * 3 / 2;
 }
 
+/******************************************************************************/
+/*!
+	Update Drone
+*/
+/******************************************************************************/
 void Drone::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 {
 	// =========================
@@ -288,13 +336,6 @@ void Drone::draw(AEGfxVertexList* pMesh, PlayerUI player_ui)
 {
 	// For UI
 	if (player_ui.placing_drone) {
-
-		////Description for Placeables
-		//std::string	drone_text;
-		//drone_text = "Hover the mouse on a planet to place Space Station";
-		//AEGfxPrint(font_id, const_cast<s8*>(drone_text.c_str()), mouse_pos_world.x, mouse_pos_world.y + 100, 1.f, 1.f, 1.f, 1.f);
-
-
 		if (drone_valid_placement)
 			AEGfxSetTintColor(0.f, 1.f, 0.f, 1.f);
 		else
@@ -331,16 +372,32 @@ void Drone::draw(AEGfxVertexList* pMesh, PlayerUI player_ui)
 	}
 }
 
+/******************************************************************************/
+/*!
+	Clean Object Instances
+*/
+/******************************************************************************/
 void Drone::free()
 {
 	for (int i = 0; i < drone_vector_all.size(); ++i)
 		drone_vector_all[i].clear();
 	
 	drone_vector_all.clear();
+
+	if (next_state != GS_RESTART) {
+		DroneData.clear();
+		DroneDataMap.clear();
+	}
 }
 
+/******************************************************************************/
+/*!
+	Free Textures
+*/
+/******************************************************************************/
 void Drone::unload()
 {
 	AEGfxTextureUnload(drone_tex);
 
 }
+
