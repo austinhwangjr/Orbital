@@ -85,16 +85,16 @@ void PlayerUI::load()
 	shuttle_lost_tex			= AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
 
 	// Upgrade preview textures
-	speed_hover_tex = AEGfxTextureLoad("Assets/MainLevel/ml_MovSpeedUpgradePreview.png");
-	capacity_hover_tex = AEGfxTextureLoad("Assets/MainLevel/ml_CapacityUpgradePreview.png");
-	strength_hover_tex = AEGfxTextureLoad("Assets/MainLevel/ml_BeamStrengthUpgradePreview.png");
+	speed_hover_tex				= AEGfxTextureLoad("Assets/MainLevel/ml_MovSpeedUpgradePreview.png");
+	capacity_hover_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_CapacityUpgradePreview.png");
+	strength_hover_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_BeamStrengthUpgradePreview.png");
 
 	// Shop button textures
-	mov_speed_button_tex = AEGfxTextureLoad("Assets/MainLevel/ml_MovSpeedUpgradeButton.png");
-	capacity_button_tex = AEGfxTextureLoad("Assets/MainLevel/ml_CapacityUpgradeButton.png");
-	strength_button_tex = AEGfxTextureLoad("Assets/MainLevel/ml_BeamStrengthUpgradeButton.png");
-	drone_button_tex = AEGfxTextureLoad("Assets/MainLevel/ml_DroneButton.png");
-	space_station_button_tex = AEGfxTextureLoad("Assets/MainLevel/ml_SpaceStationButton.png");
+	mov_speed_button_tex		= AEGfxTextureLoad("Assets/MainLevel/ml_MovSpeedUpgradeButton.png");
+	capacity_button_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_CapacityUpgradeButton.png");
+	strength_button_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_BeamStrengthUpgradeButton.png");
+	drone_button_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_DroneButton.png");
+	space_station_button_tex	= AEGfxTextureLoad("Assets/MainLevel/ml_SpaceStationButton.png");
 }
 
 /******************************************************************************/
