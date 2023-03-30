@@ -193,11 +193,12 @@ void Menu_Button::update()
 
         if (AEInputCheckTriggered(AEVK_LBUTTON) && hoverStates[i])
         {
+            AudioManager::StopBGMIfPlaying();
+
             AudioManager::PlayOneShot("Assets/BGM/hyperspace_jumping.mp3", 1.0f);
             transition::isTransitionActive = true;
             transition::resetTimer();
             MMtotal_time = 0.f;
-            AudioManager::StopBGMIfPlaying();
 
             // Set the next game state based on the button that was clicked
             switch (i)

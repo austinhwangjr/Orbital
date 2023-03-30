@@ -98,7 +98,6 @@ void credits::load()
     texSliderThumb = AEGfxTextureLoad("Assets/MainMenu/Credits/c_SliderThumb.png");
 
     AudioManager::LoadSound("Assets/BGM/hyperspace_jump.mp3", false);
-
 }
 
 void credits::init()

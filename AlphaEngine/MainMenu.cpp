@@ -59,8 +59,6 @@ static int	 SHUTTLE_VALUE;				        // Credit value for a shuttle
 static int	 SHUTTLE_WIDTH;				        // Shuttle Width
 static int	 SHUTTLE_HEIGHT;			        // Shuttle Height
 
-
-
 Player MMplayer;
 Planets MMplanet;
 Debris MMdebris;
@@ -84,31 +82,56 @@ AEGfxTexture* MM_Keys_S_ACTIVE;
 AEGfxTexture* MM_Keys_D;
 AEGfxTexture* MM_Keys_D_ACTIVE;
 
+AEGfxTexture* MM_Keys_Spacebar;
+AEGfxTexture* MM_Keys_Spacebar_ACTIVE;
+
 bool wKeyPressed = false;
 bool aKeyPressed = false;
 bool sKeyPressed = false;
 bool dKeyPressed = false;
+bool spacebarActivated = false;
 
-float w_ButtonWidth = 150.f;
-float w_ButtonHeight = 150.f;
-float a_ButtonWidth = 150.f;
-float a_ButtonHeight = 150.f;
-float s_ButtonWidth = 150.f;
-float s_ButtonHeight = 150.f;
-float d_ButtonWidth = 150.f;
-float d_ButtonHeight = 150.f;
+float w_ButtonX = 0.f;
+float w_ButtonY = -100.f;
+float a_ButtonX = -100.f;
+float a_ButtonY = -210.f;
+float s_ButtonX = 0.f;
+float s_ButtonY = -210.f;
+float d_ButtonX = 100.f;
+float d_ButtonY = -210.f;
 
-float w_ButtonWidthHover = 170.f;
-float w_ButtonHeightHover = 170.f;
-float a_ButtonWidthHover = 170.f;
-float a_ButtonHeightHover = 170.f;
-float s_ButtonWidthHover = 170.f;
-float s_ButtonHeightHover = 170.f;
-float d_ButtonWidthHover = 170.f;
-float d_ButtonHeightHover = 170.f;
+float spacebar_ButtonX = 0.f;
+float spacebar_ButtonY = -310.f;
 
-float w_OriginalButtonWidth = 150.f;
-float w_OriginalButtonHeight = 150.f;
+float w_ButtonWidth = 75.f;
+float w_ButtonHeight = 75.f;
+float a_ButtonWidth = 75.f;
+float a_ButtonHeight = 75.f;
+float s_ButtonWidth = 75.f;
+float s_ButtonHeight = 75.f;
+float d_ButtonWidth = 75.f;
+float d_ButtonHeight = 75.f;
+
+float w_ButtonWidthHover = 90.f;
+float w_ButtonHeightHover = 90.f;
+float a_ButtonWidthHover = 90.f;
+float a_ButtonHeightHover = 90.f;
+float s_ButtonWidthHover = 90.f;
+float s_ButtonHeightHover = 90.f;
+float d_ButtonWidthHover = 90.f;
+float d_ButtonHeightHover = 90.f;
+
+float spacebar_ButtonWidth = 225.f;
+float spacebar_ButtonHeight = 75.f;
+
+float spacebar_ButtonWidthActivated = 250.f;
+float spacebar_ButtonHeightActivated = 90.f;
+
+float w_OriginalButtonWidth = 75.f;
+float w_OriginalButtonHeight = 75.f;
+
+float spacebar_OriginalWidth = 225.f;
+float spacebar_OriginalHeight = 75.f;
 
 f64 MMframe_time = 0.f;
 f64 MMtotal_time = 0.f;
@@ -158,6 +181,7 @@ void main_menu::load()
 
     ImportDataFromFile("Assets/GameObjectData/PlayerData.txt", MMPlayerData, MMPlayerDataMap);
     ImportDataFromFile("Assets/GameObjectData/PlanetData.txt", MMPlanetData, MMPlanetDataMap);
+    ImportDataFromFile("Assets/GameObjectData/ShuttleData.txt", MMShuttleData, MMShuttleDataMap);
 
 
     MM_Keys_W = AEGfxTextureLoad("Assets/MainMenu/mm_W.png");
@@ -168,7 +192,9 @@ void main_menu::load()
     MM_Keys_S_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/mm_S_Hover.png");
     MM_Keys_D = AEGfxTextureLoad("Assets/MainMenu/mm_D.png");
     MM_Keys_D_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/mm_D_Hover.png");
-    ImportDataFromFile("Assets/GameObjectData/ShuttleData.txt", MMShuttleData, MMShuttleDataMap);
+
+    MM_Keys_Spacebar = AEGfxTextureLoad("Assets/MainMenu/mm_Spacebar.png");
+    MM_Keys_Spacebar_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/mm_SpacebarActivated.png");
 }
 
 void main_menu::init()
@@ -408,6 +434,9 @@ void main_menu::update()
             {
                 aKeyPressed = false;
             }
+            a_ButtonWidth = Lerp(a_ButtonWidth, a_ButtonWidthHover, lerpSpeed);
+            a_ButtonHeight = Lerp(a_ButtonHeight, a_ButtonHeightHover, lerpSpeed);
+
             MMplayer.direction += (MMplayer.rot_speed / 2) * static_cast<f32>(MMframe_time);
 
             MMplayer.position.x = MMplanet.position.x + (static_cast<f32>(MMplanet.size) / 2 + MMplanet.orbit_range) * AECos(MMplayer.direction);
@@ -416,6 +445,8 @@ void main_menu::update()
         else
         {
             aKeyPressed = false;
+            a_ButtonWidth = Lerp(a_ButtonWidth, w_OriginalButtonWidth, lerpSpeed);
+            a_ButtonHeight = Lerp(a_ButtonHeight, w_OriginalButtonHeight, lerpSpeed);
         }
 
         if (AEInputCheckCurr(AEVK_D) && MMplayer.position.x <= AEGfxGetWinMaxX() - MMplayer.size)
@@ -425,6 +456,9 @@ void main_menu::update()
             {
                 dKeyPressed = false;
             }
+            d_ButtonWidth = Lerp(d_ButtonWidth, d_ButtonWidthHover, lerpSpeed);
+            d_ButtonHeight = Lerp(d_ButtonHeight, d_ButtonHeightHover, lerpSpeed);
+
             MMplayer.direction -= (MMplayer.rot_speed / 2) * static_cast<f32>(MMframe_time);
 
             MMplayer.position.x = MMplanet.position.x + (static_cast<f32>(MMplanet.size) / 2 + MMplanet.orbit_range) * AECos(MMplayer.direction);
@@ -433,6 +467,9 @@ void main_menu::update()
         else
         {
             dKeyPressed = false;
+            d_ButtonWidth = Lerp(d_ButtonWidth, w_OriginalButtonWidth, lerpSpeed);
+            d_ButtonHeight = Lerp(d_ButtonHeight, w_OriginalButtonHeight, lerpSpeed);
+
         }
 
         if (AEInputCheckPrev(AEVK_W))
@@ -446,6 +483,19 @@ void main_menu::update()
             wKeyPressed = false;
         }
 
+        if (AEInputCheckPrev(AEVK_S))
+        {
+            sKeyPressed = true;
+            s_ButtonWidth = Lerp(s_ButtonWidth, s_ButtonWidthHover, lerpSpeed);
+            s_ButtonHeight = Lerp(s_ButtonHeight, s_ButtonHeightHover, lerpSpeed);
+        }
+        else
+        {
+            sKeyPressed = false;
+            s_ButtonWidth = Lerp(s_ButtonWidth, w_OriginalButtonWidth, lerpSpeed);
+            s_ButtonHeight = Lerp(s_ButtonHeight, w_OriginalButtonHeight, lerpSpeed);
+        }
+
 
 
         if (AEInputCheckCurr(AEVK_W) && MMplayer.can_leave_orbit) {
@@ -454,11 +504,24 @@ void main_menu::update()
         }
 
 
-        // Draw tractor beam
+        // tractor beam update
         if (AEInputCheckCurr(AEVK_SPACE))
+        {
+            spacebarActivated = true;
             MMbeam_active = true;
+
+            spacebar_ButtonWidth = Lerp(spacebar_ButtonWidth, spacebar_ButtonWidthActivated, lerpSpeed);
+            spacebar_ButtonHeight = Lerp(spacebar_ButtonHeight, spacebar_ButtonHeightActivated, lerpSpeed);
+        }
         else
+        {
+            spacebarActivated = false;
             MMbeam_active = false;
+            spacebar_ButtonWidth = Lerp(spacebar_ButtonWidth, spacebar_OriginalWidth, lerpSpeed);
+            spacebar_ButtonHeight = Lerp(spacebar_ButtonHeight, spacebar_OriginalHeight, lerpSpeed);
+        }
+
+
 
         // ================================
         // Update player and beam position
@@ -827,7 +890,8 @@ void main_menu::draw()
         // =====================
         //  DRAWING TRACTOR BEAM
         // =====================
-        if (AEInputCheckCurr(AEVK_SPACE) && MMplayer.state == PLAYER_ORBIT) {
+        if (AEInputCheckCurr(AEVK_SPACE) && MMplayer.state == PLAYER_ORBIT)
+        {
             AEGfxTextureSet(MMtexbeam, 0, 0);
             AEGfxSetTransform(MMplayer.beam_transform.m);
             AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
@@ -900,40 +964,49 @@ void main_menu::draw()
 
         else if (currentState == HOW_TO_PLAY)
         {
-            if (wKeyPressed == true)
+            if (wKeyPressed)
             {
-                RenderMMBackground.RenderSprite(MM_Keys_W_ACTIVE, 0.f, 0.f, w_ButtonWidth, w_ButtonHeight, pMeshMM);
+                RenderMMBackground.RenderSprite(MM_Keys_W_ACTIVE, w_ButtonX, w_ButtonY, w_ButtonWidth, w_ButtonHeight, pMeshMM);
             }
             else
             {
-                RenderMMBackground.RenderSprite(MM_Keys_W, 0.f, 0.f, w_ButtonWidth, w_ButtonHeight, pMeshMM);
+                RenderMMBackground.RenderSprite(MM_Keys_W, w_ButtonX, w_ButtonY, w_ButtonWidth, w_ButtonHeight, pMeshMM);
             }
 
-            if (aKeyPressed == true)
+            if (aKeyPressed)
             {
-                RenderMMBackground.RenderSprite(MM_Keys_A_ACTIVE, -200.f, -200.f, a_ButtonWidth, a_ButtonHeight, pMeshMM);
+                RenderMMBackground.RenderSprite(MM_Keys_A_ACTIVE, a_ButtonX, a_ButtonY, a_ButtonWidth, a_ButtonHeight, pMeshMM);
             }
             else
             {
-                RenderMMBackground.RenderSprite(MM_Keys_A, -200.f, -200.f, a_ButtonWidth, a_ButtonHeight, pMeshMM);
+                RenderMMBackground.RenderSprite(MM_Keys_A, a_ButtonX, a_ButtonY, a_ButtonWidth, a_ButtonHeight, pMeshMM);
             }
 
-            if (sKeyPressed == true)
+            if (sKeyPressed)
             {
-                RenderMMBackground.RenderSprite(MM_Keys_S_ACTIVE, 0.f, -200.f, s_ButtonWidth, s_ButtonHeight, pMeshMM);
+                RenderMMBackground.RenderSprite(MM_Keys_S_ACTIVE, s_ButtonX, s_ButtonY, s_ButtonWidth, s_ButtonHeight, pMeshMM);
             }
             else
             {
-                RenderMMBackground.RenderSprite(MM_Keys_S, 0.f, -200.f, s_ButtonWidth, s_ButtonHeight, pMeshMM);
+                RenderMMBackground.RenderSprite(MM_Keys_S, s_ButtonX, s_ButtonY, s_ButtonWidth, s_ButtonHeight, pMeshMM);
             }
 
-            if (dKeyPressed == true)
+            if (dKeyPressed)
             {
-                RenderMMBackground.RenderSprite(MM_Keys_D_ACTIVE, 200.f, -200.f, d_ButtonWidth, d_ButtonHeight, pMeshMM);
+                RenderMMBackground.RenderSprite(MM_Keys_D_ACTIVE, d_ButtonX, d_ButtonY, d_ButtonWidth, d_ButtonHeight, pMeshMM);
             }
             else
             {
-                RenderMMBackground.RenderSprite(MM_Keys_D, 200.f, -200.f, d_ButtonWidth, d_ButtonHeight, pMeshMM);
+                RenderMMBackground.RenderSprite(MM_Keys_D, d_ButtonX, d_ButtonY, d_ButtonWidth, d_ButtonHeight, pMeshMM);
+            }
+
+            if (spacebarActivated)
+            {
+                RenderMMBackground.RenderSprite(MM_Keys_Spacebar_ACTIVE, spacebar_ButtonX, spacebar_ButtonY, spacebar_ButtonWidth, spacebar_ButtonHeight, pMeshMM);
+            }
+            else
+            {
+                RenderMMBackground.RenderSprite(MM_Keys_Spacebar, spacebar_ButtonX, spacebar_ButtonY, spacebar_ButtonWidth, spacebar_ButtonHeight, pMeshMM);
             }
         }
     }
@@ -976,6 +1049,9 @@ void main_menu::unload()
     AEGfxTextureUnload(MM_Keys_S);
     AEGfxTextureUnload(MM_Keys_D_ACTIVE);
     AEGfxTextureUnload(MM_Keys_D);
+    AEGfxTextureUnload(MM_Keys_Spacebar);
+    AEGfxTextureUnload(MM_Keys_Spacebar_ACTIVE);
+
 }
 
 // ===========================
