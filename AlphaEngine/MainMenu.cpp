@@ -182,8 +182,6 @@ void main_menu::init()
 
     std::cout << std::endl;
     std::cout << "------------------------- MainMenu Initialised -------------------------" << std::endl << std::endl;
-
-    AudioManager::PlayBGM("Assets/BGM/cinescifi.wav", 0.25f);
     
     //--------------------Player--------------------
     MMplayer.state = PLAYER_FLY;
