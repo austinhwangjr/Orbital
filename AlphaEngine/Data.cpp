@@ -2,7 +2,7 @@
 /*!
 \file		Data.cpp
 \author		Leong Wen Bin, Aceson
-\par    	email: \@digipen.edu
+\par    	email: leong.w\@digipen.edu
 \date   	March 28, 2023
 \brief		This file contains the definition to import data from text file
 

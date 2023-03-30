@@ -1,7 +1,7 @@
 /******************************************************************************/
 /*!
 \file		HowToPlay.cpp
-\author 	
+\author 	Ong You Yang
 \par    	email: \@digipen.edu
 \date   	March 28, 2023
 \brief		This file contains the definition of functions for the "How-to-Play" 

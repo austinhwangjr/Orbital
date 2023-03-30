@@ -1,8 +1,8 @@
 /******************************************************************************/
 /*!
-\file		Credits.h.cpp
-\author 	 
-\par    	email: \@digipen.edu
+\file		Credits.h
+\author 	Ong You Yang
+\par    	email: youyang.o\@digipen.edu
 \date   	March 28, 2023
 \brief		This file contains the declaration of functions for the credits 
             screen.

@@ -1,8 +1,8 @@
 /******************************************************************************/
 /*!
 \file		Options.h
-\author 	
-\par    	email: \@digipen.edu
+\author 	Ong You Yang
+\par    	email: youyang.o\@digipen.edu
 \date   	March 28, 2023
 \brief		This file contains the declaration of functions for the options
             screen.

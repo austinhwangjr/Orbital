@@ -1,9 +1,9 @@
 /******************************************************************************/
 /*!
 \file		Debris.h
-\author 	Leong Wen Bin Aceson
-			Hwang Jing Rui, Austin
-\par    	email: xxx\@digipen.edu
+\author 	Leong Wen Bin, Aceson
+\co_author	Hwang Jing Rui, Austin
+\par    	email: leong.w\@digipen.edu
 				   jingruiaustin.hwang\@digipen.edu
 \date   	March 28, 2023
 \brief		This file contains the declaration of functions for the Debris.

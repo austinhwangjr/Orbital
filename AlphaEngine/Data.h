@@ -1,8 +1,8 @@
 /******************************************************************************/
 /*!
 \file		Data.h
-\author 	 
-\par    	email: \@digipen.edu
+\author 	Leong Wen Bin, Aceson
+\par    	email: leong.w\@digipen.edu
 \date   	March 28, 2023
 \brief		This file contains the declaration of functions to read data 
 			from txt files.

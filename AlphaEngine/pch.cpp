@@ -1,8 +1,8 @@
 /******************************************************************************/
 /*!
 \file		pch.cpp
-\author 	
-\par    	email: \@digipen.edu
+\author 	Hwang Jin Rui, Austin
+\par    	email: jinruiaustin.hwang\@digipen.edu
 \date   	March 28, 2023
 \brief		This file contains a list of pre-compiled header files.
 

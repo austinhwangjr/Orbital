@@ -2,7 +2,9 @@
 /*!
 \file		PlayerProj.cpp
 \author 	Hwang Jing Rui, Austin
+\co-author	Leong Wen Bin, Aceson
 \par    	email: jingruiaustin.hwang\@digipen.edu
+					leong.w\@digipen.edu
 \date   	March 28, 2023
 \brief		This file contains the declaration of functions for the player 
 			projectile.

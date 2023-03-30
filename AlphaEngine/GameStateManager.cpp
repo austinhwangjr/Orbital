@@ -1,10 +1,10 @@
 /******************************************************************************/
 /*!
-\file		GameStateManager.h
+\file		GameStateManager.cpp
 \author 	Hwang Jing Rui, Austin
-			Ong You Yang
+\co-author	Ong You Yang
 \par    	email: jingruiaustin.hwang\@digipen.edu
-				   xxx\@digipen.edu
+				   youyang.o\@digipen.edu
 \date   	March 28, 2023
 \brief		This file contains the definition of functions for the Game State
 			Manager.

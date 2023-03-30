@@ -2,7 +2,7 @@
 /*!
 \file		SpaceStation.cpp
 \author 	Hwang Jing Rui, Austin
-			Leong Wen Bin Aceson
+\co-author	Leong Wen Bin Aceson
 \par    	email: jingruiaustin.hwang\@digipen.edu
 				   leong.w\@digipen.edu
 \date   	March 28, 2023

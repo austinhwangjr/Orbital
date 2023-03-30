@@ -2,9 +2,13 @@
 /*!
 \file		Planet.cpp
 \author		Tan Rui An Ryan
+\co-author	Ong You Yang
 \par		email: ruianryan.t\@digipen.edu
+					youyang.o\@digipen.edu
 \date		March 28, 2023
 \brief		This file contains the definition of functions for the planet.
+
+			Ong You Yang - Random planet textures
 
 Copyright (C) 2023 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the

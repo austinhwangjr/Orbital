@@ -1,8 +1,8 @@
 /******************************************************************************/
 /*!
 \file		Camera.cpp
-\author 	 
-\par    	email: \@digipen.edu
+\author 	Tan Rui An Ryan
+\par    	email: ruianryan.t\@digipen.edu
 \date   	March 28, 2023
 \brief		This file contains the definition of functions for the camera 
 			system.

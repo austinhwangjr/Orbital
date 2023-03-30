@@ -2,10 +2,14 @@
 /*!
 \file		PlayerUI.h
 \author 	Hwang Jing Rui, Austin
+\co-author	Tan Rui An Ryan
 \par    	email: jingruiaustin.hwang\@digipen.edu
+					ruianryan.t\@digipen.edu
 \date   	March 28, 2023
 \brief		This file contains the declaration of functions for the player 
 			UI (user interface).
+
+			Ryan - All tutorial elements
 
 Copyright (C) 2023 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the

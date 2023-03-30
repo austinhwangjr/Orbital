@@ -1,8 +1,8 @@
 /******************************************************************************/
 /*!
 \file		Systems.h
-\author		
-\par		\@digipen.edu
+\author		Ong You Yang
+\par		youyang.o\@digipen.edu
 \date		March 28, 2023
 \brief		This file contains the declaration of functions for the system.
 

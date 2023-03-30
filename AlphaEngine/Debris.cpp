@@ -2,9 +2,9 @@
 /*!
 \file		Debris.cpp
 \author 	Leong Wen Bin Aceson
-			Hwang Jing Rui, Austin
-\par    	email: xxx\@digipen.edu
-				   jingruiaustin.hwang\@digipen.edu
+\co-author	Hwang Jing Rui, Austin
+\par    	email: leong.w\@digipen.edu
+			jingruiaustin.hwang\@digipen.edu
 \date   	March 28, 2023
 \brief		This file contains the definition of functions for the Debris.
 
