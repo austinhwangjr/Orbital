@@ -60,7 +60,7 @@ void Global_InitWindowSize(bool isFullScreen)
 void Global_UpdateGlobals()
 {
 	// Update global frame time for each loop
-	g_dt = AEFrameRateControllerGetFrameTime();
+	g_dt = static_cast<f32>(AEFrameRateControllerGetFrameTime());
 
 	// Get camera position
 	AEGfxGetCamPosition(&g_camPos.x, &g_camPos.y);
@@ -69,8 +69,8 @@ void Global_UpdateGlobals()
 	AEInputGetCursorPosition(&g_mouseScreen_x, &g_mouseScreen_y);
 
 	// Setting mouse coordinates (world)
-	g_mouseWorld.x = g_camPos.x + g_mouseScreen_x - static_cast<f32>(AEGetWindowWidth() / 2);
-	g_mouseWorld.y = g_camPos.y + static_cast<f32>(AEGetWindowHeight() / 2.f) - g_mouseScreen_y;
+	g_mouseWorld.x = g_camPos.x + g_mouseScreen_x - static_cast<f32>(g_windowWidth / 2);
+	g_mouseWorld.y = g_camPos.y + static_cast<f32>(g_windowHeight / 2.f) - g_mouseScreen_y;
 }
 
 // Updates the game window size based on the current window size

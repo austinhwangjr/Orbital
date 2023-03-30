@@ -140,8 +140,8 @@ float w_OriginalButtonHeight = 75.f;
 float spacebar_OriginalWidth = 225.f;
 float spacebar_OriginalHeight = 75.f;
 
-f64 MMframe_time = 0.f;
-f64 MMtotal_time = 0.f;
+f32 MMframe_time = 0.f;
+f32 MMtotal_time = 0.f;
 
 // class declaration 
 Menu_Button menuButtons;
@@ -299,8 +299,8 @@ void main_menu::init()
     
     MMplanet.max_debris = rand() % (DEBRIS_MAX - DEBRIS_MIN) + DEBRIS_MIN;												// Randomize debris count on planet spawn
     MMplanet.debris_vector = MM_create_debris(MMplanet.position.x, MMplanet.position.y, MMplanet.size, MMplanet.max_debris);
-    MMplanet.position.x = static_cast<f32>(AEGetWindowWidth() / 2);
-    MMplanet.position.y = static_cast<f32>( - AEGetWindowHeight() / 2);
+    MMplanet.position.x = g_windowWidth / 2.f;
+    MMplanet.position.y = -g_windowHeight / 2.f;
     MMplanet.size = MMPlanetDataMap["MainMenu_Planet_Size"];
     MMplanet.shuttle_timer = MMShuttleDataMap["Shuttle_Timer"];	
     MMplanet.shuttle_time_to_spawn = static_cast<f32>(rand() % (SHUTTLE_SPAWN_TIME_MAX - SHUTTLE_SPAWN_TIME_MIN + 1) + SHUTTLE_SPAWN_TIME_MIN);

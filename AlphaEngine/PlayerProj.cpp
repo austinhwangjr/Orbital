@@ -20,21 +20,16 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "AEEngine.h"
 #include "PlayerProj.h"
 #include "SpaceStation.h"
-#include "GameStateManager.h"
+#include "GameStateList.h"
 #include "Data.h"
 
 // Textures
 AEGfxTexture* player_proj_tex;
 
-// Mouse coordinates
-extern AEVec2 mouse_pos_world;
-
 // Vector of projectiles, space stations and shop buttons
 std::vector<PlayerProj> player_proj_vector;
 extern std::vector<SpaceStation> space_station_vector;
 extern std::vector<ShopOption> button_vector;
-
-extern f32 cam_x, cam_y;
 
 //IMPORT DATA VECTOR
 std::map<std::string, f32> ProjDataMap;
@@ -81,7 +76,7 @@ void PlayerProj::init()
 	Update Player Projectile
 */
 /******************************************************************************/
-void PlayerProj::update(f64 frame_time, Player& player, PlayerUI& player_ui)
+void PlayerProj::update(f32 frame_time, Player& player, PlayerUI& player_ui)
 {
 	// =========================
 	// Update according to input
@@ -90,7 +85,7 @@ void PlayerProj::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 	if (AEInputCheckTriggered(AEVK_LBUTTON) && !player_ui.shop_triggered && !player_ui.button_clicked(button_vector[0])) {
 		if (player.current_capacity != 0) {
 			position = player.position;
-			AEVec2Sub(&velocity, &mouse_pos_world, &player.position);
+			AEVec2Sub(&velocity, &g_mouseWorld, &player.position);
 			AEVec2Normalize(&velocity, &velocity);
 			AEVec2Scale(&velocity, &velocity, speed);
 
@@ -134,8 +129,8 @@ void PlayerProj::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 	// ======================================================
 	for (int i = 0; i < player_proj_vector.size(); ++i) {
 		PlayerProj& player_proj = player_proj_vector[i];
-		if (player_proj.position.x > cam_x + AEGetWindowWidth() / 3 || player_proj.position.x < cam_x - AEGetWindowWidth() / 3) {
-			if (player_proj.position.y > cam_y + AEGetWindowHeight() / 3 || player_proj.position.y < cam_y - AEGetWindowHeight() / 3) {
+		if (player_proj.position.x > g_camPos.x + g_windowWidth / 3 || player_proj.position.x < g_camPos.x - g_windowWidth / 3) {
+			if (player_proj.position.y > g_camPos.y + g_windowHeight / 3 || player_proj.position.y < g_camPos.y - g_windowHeight / 3) {
 				player_proj.is_delete = 1;
 			}
 		}

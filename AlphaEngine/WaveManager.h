@@ -61,16 +61,16 @@ struct WaveManager
 		AEVec2				position;
 		f32					direction;
 		f32					size;
-		f64					blinking_timer;		// Timer for blinking indicators
+		f32					blinking_timer;		// Timer for blinking indicators
 		float				blinker;			// Alpha value for arrow to simulate flashing effect
-		f64					urgency;			// Timer for speed of arrow indicator flashing
+		f32					urgency;			// Timer for speed of arrow indicator flashing
 	};
 
 // WAVE VARIABLES----------------------------
 	int		wave_number;				// Current wave number
 	int		wave_progress;				// Number of planets that have no more shuttles to escape
 	bool	wave_completed;				// Flag for when the current wave has been completed
-	f64		wave_interval_timer;		// Timer to increment towards WAVE_INTERVAL_TIME
+	f32		wave_interval_timer;		// Timer to increment towards WAVE_INTERVAL_TIME
 // WAVE VARIABLES----------------------------
 
 
@@ -96,7 +96,7 @@ struct WaveManager
 
 	void load();
 	void init();
-	void update(f64 frame_time);
+	void update(f32 frame_time);
 	void draw(AEGfxVertexList* pMesh);
 	void free();
 	void unload();

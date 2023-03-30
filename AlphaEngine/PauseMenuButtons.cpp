@@ -110,8 +110,8 @@ void PauseMenuButtons::update()
 void PauseMenuButtons::draw(AEGfxVertexList* pMeshP, const AEVec2& camPos)
 {
     // Calculate the dimensions of the screen
-    float screenWidth = static_cast<float>(AEGetWindowWidth());
-    float screenHeight = static_cast<float>(AEGetWindowHeight());
+    float screenWidth = static_cast<float>(g_windowWidth);
+    float screenHeight = static_cast<float>(g_windowHeight);
 
     float translatedCentX = camPos.x;
     float translatedCentY = camPos.y;

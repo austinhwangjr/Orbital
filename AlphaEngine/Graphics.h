@@ -13,7 +13,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
  */
 /******************************************************************************/
 #pragma once
-#include "AEEngine.h"
 #include "MainMenu.h"
 
 class Rendering

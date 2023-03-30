@@ -60,16 +60,13 @@ struct Debris
 
 	void load();
 	void init();
-	void update(f64 frame_time);
+	void update(f32 frame_time);
 	void draw(AEGfxVertexList* pMesh);
 	void free();
 	void unload();
 
 	std::vector<Debris> create_debris(f32 planet_x, f32 planet_y, double size, int total_debris);
 };
-
-
-
 
 extern std::vector<Debris> debris_vector;
 void spawn_debris_shuttle(AEVec2 position, int planet_id, int num_of_debris);

@@ -27,7 +27,7 @@ void Camera::init(Player& player)
 	position.y = player.position.y;
 }
 
-void Camera::update(f64 frame_time, Player& player)
+void Camera::update(f32 frame_time, Player& player)
 {
 	if (wave_manager.planet_adding)
 	{
@@ -43,7 +43,7 @@ void Camera::update(f64 frame_time, Player& player)
 	}
 }
 
-void Camera::follow_player(f64 frame_time, Player& player)
+void Camera::follow_player(f32 frame_time, Player& player)
 {
 	f32 t{};
 	t += static_cast<f32>(frame_time) * (AEVec2Distance(&player.position, &position) / CAM_PLAYER_SPEED);
@@ -52,7 +52,7 @@ void Camera::follow_player(f64 frame_time, Player& player)
 	AEGfxSetCamPosition(position.x, position.y);
 }
 
-void Camera::planet_transition(f64 frame_time)
+void Camera::planet_transition(f32 frame_time)
 {
 	transition_time += static_cast<f32>(frame_time);
 	f32 t{};
@@ -68,7 +68,7 @@ void Camera::planet_transition(f64 frame_time)
 	}
 }
 
-void Camera::station_transition(f64 frame_time)
+void Camera::station_transition(f32 frame_time)
 {
 	transition_time += static_cast<f32>(frame_time);
 	f32 t{};

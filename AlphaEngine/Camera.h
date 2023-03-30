@@ -29,8 +29,8 @@ struct Camera
 	f32 transition_time;
 
 	void init(Player& player);
-	void update(f64 frame_time, Player& player);
-	void follow_player(f64 frame_time, Player& player);
-	void planet_transition(f64 frame_time);
-	void station_transition(f64 frame_time);
+	void update(f32 frame_time, Player& player);
+	void follow_player(f32 frame_time, Player& player);
+	void planet_transition(f32 frame_time);
+	void station_transition(f32 frame_time);
 };

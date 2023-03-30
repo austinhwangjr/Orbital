@@ -14,7 +14,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "AEEngine.h"
 #include "WaveManager.h"
 #include "LoseMenu.h"
-#include "GameStateManager.h"
+#include "GameStateList.h"
 #include "Highscore.h"
 #include "Easing.h"
 #include <iostream>
@@ -56,8 +56,8 @@ void WaveManager::load()
 /******************************************************************************/
 void WaveManager::init()
 {
-	w_width = static_cast<f32>(AEGetWindowWidth());
-	w_height = static_cast<f32>(AEGetWindowHeight());
+	w_width = static_cast<f32>(g_windowWidth);
+	w_height = static_cast<f32>(g_windowHeight);
 
 	std::cout << '\n' << "Wave Manager Initialized." << '\n' << '\n';
 
@@ -93,7 +93,7 @@ void WaveManager::init()
 	Update Wave Manager
 */
 /******************************************************************************/
-void WaveManager::update(f64 frame_time)
+void WaveManager::update(f32 frame_time)
 {
 	// Lose Condition--------------------------------------------------------
 	if (shuttle_destroyed == LOSE_CONDITION)
@@ -243,7 +243,7 @@ void WaveManager::update(f64 frame_time)
 		AEMtx33Concat(&arrow_vector[i].transform, &arrow_vector[i].rotate, &arrow_vector[i].scale);
 		AEMtx33Concat(&arrow_vector[i].transform, &arrow_vector[i].translate, &arrow_vector[i].transform);
 
-		arrow_vector[i].urgency = static_cast<f64>(planet_vector[i].shuttle_timer / planet_vector[i].shuttle_time_to_spawn);
+		arrow_vector[i].urgency = static_cast<f32>(planet_vector[i].shuttle_timer / planet_vector[i].shuttle_time_to_spawn);
 
 		if (arrow_vector[i].blinking_timer >= (1 - arrow_vector[i].urgency))
 		{

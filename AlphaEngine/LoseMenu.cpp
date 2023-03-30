@@ -15,7 +15,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "AEEngine.h"
 #include "Graphics.h"
 #include "Input.h"
-#include "GameStateManager.h"
+#include "GameStateList.h"
 #include "Global.h"
 #include <iostream>
 

@@ -21,7 +21,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 /******************************************************************************/
 #pragma once
 
-
 #include "Debris.h"
 #include <vector>
 
@@ -98,7 +97,7 @@ struct Planets
 
 	void load();
 	void init();
-	void update(f64 frame_time);
+	void update(f32 frame_time);
 	void draw(AEGfxVertexList* pMesh);
 	void free();
 	void unload();

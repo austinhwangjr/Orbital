@@ -11,13 +11,11 @@ Reproduction or disclosure of this file or its contents without the
 prior written consent of DigiPen Institute of Technology is prohibited.
  */
 /******************************************************************************/
-#include <iostream>
-#include <fstream>
 #include "AEEngine.h"
 #include "Player.h"
 #include "Easing.h"
 #include "Data.h"
-
+#include "GameStateList.h"
 
 // Textures
 AEGfxTexture* player_tex;
@@ -111,7 +109,7 @@ void Player::init()
 	Update Player
 */
 /******************************************************************************/
-void Player::update(f64 frame_time)
+void Player::update(f32 frame_time)
 {
 	// Player is in orbit state
 	if (state == PLAYER_ORBIT)
@@ -197,7 +195,7 @@ void Player::unload()
 */
 /******************************************************************************/
 // Orbit State of Player
-void Player::orbit_state(f64 frame_time)
+void Player::orbit_state(f32 frame_time)
 {
 	// ================
 	// Check for input
@@ -289,7 +287,7 @@ void Player::orbit_state(f64 frame_time)
 }
 
 // Transit State of Player
-void Player::transit_state(f64 frame_time)
+void Player::transit_state(f32 frame_time)
 {
 	// ================
 	// Check for input
@@ -343,7 +341,7 @@ void Player::transit_state(f64 frame_time)
 }
 
 // Flying State of Player
-void Player::flying_state(f64 frame_time)
+void Player::flying_state(f32 frame_time)
 {
 	// ================
 	// Check for input

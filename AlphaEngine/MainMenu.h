@@ -13,6 +13,9 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 /******************************************************************************/
 #pragma once
 
+#include "pch.h"
+#include "Global.h"
+
 namespace main_menu
 {
     enum MainMenuState
@@ -31,6 +34,6 @@ namespace main_menu
     void unload();
 }
 
-extern f64 MMframe_time;
-extern f64 MMtotal_time;
+extern f32 MMframe_time;
+extern f32 MMtotal_time;
 
