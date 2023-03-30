@@ -12,7 +12,6 @@ Reproduction or disclosure of this file or its contents without the
 prior written consent of DigiPen Institute of Technology is prohibited.
  */
 /******************************************************************************/
-
 #include "MainLevel.h"
 
 //yy debugging and cleaning code
@@ -40,16 +39,6 @@ pause_menu		pause{};
 //PauseMenuButtons pause_menu_buttons;
 
 bool is_paused = false;
-
-float backgroundWidth = 7680.f;
-float backgroundHeight = 4320.f;
-
-namespace main_level
-{
-	// Keep track of the previous and current game states
-	GS_STATES previous_state = GS_MAINLEVEL;
-	GS_STATES current_state = GS_MAINLEVEL;
-}
 
 // ----------------------------------------------------------------------------
 // This function loads all necessary assets in Level1
@@ -136,17 +125,17 @@ void main_level::update()
 
 	if (!is_paused)
 	{
-		planet.update(frame_time);
-		player.update(frame_time);
-		space_station.update(frame_time, player, player_ui);
-		player_proj.update(frame_time, player, player_ui);
-		camera.update(frame_time, player);
-		drone.update(frame_time, player, player_ui);
+		planet.update(g_dt);
+		player.update(g_dt);
+		space_station.update(g_dt, player, player_ui);
+		player_proj.update(g_dt, player, player_ui);
+		camera.update(g_dt, player);
+		drone.update(g_dt, player, player_ui);
 
-		shuttle.update(frame_time, player);
-		debris.update(frame_time);
-		player_ui.update(frame_time, player, wave_manager);
-		wave_manager.update(frame_time);
+		shuttle.update(g_dt, player);
+		debris.update(g_dt);
+		player_ui.update(g_dt, player, wave_manager);
+		wave_manager.update(g_dt);
 	}
 	else if (is_paused)
 	{
