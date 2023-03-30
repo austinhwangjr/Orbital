@@ -26,8 +26,11 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Debris.h"
 #include "Shuttle.h"
 #include "Easing.h"
+
 #include <map>
 #include "Data.h"
+
+main_menu::MainMenuState main_menu::currentState = MENU;
 
 #define MM_SHUTTLE_SIZE 20
 AEGfxTexture* TexMMBackground = nullptr;
@@ -67,7 +70,43 @@ AEGfxTexture* MMshuttle_tex;
 AEGfxTexture* MMexplosion_tex;
 AEGfxTexture* MMorbit_halo_tex;
 
-f64 MMframe_time{}, MMtotal_time{};
+AEGfxTexture* MM_Keys_W;
+AEGfxTexture* MM_Keys_W_ACTIVE;
+AEGfxTexture* MM_Keys_A;
+AEGfxTexture* MM_Keys_A_ACTIVE;
+AEGfxTexture* MM_Keys_S;
+AEGfxTexture* MM_Keys_S_ACTIVE;
+AEGfxTexture* MM_Keys_D;
+AEGfxTexture* MM_Keys_D_ACTIVE;
+
+bool wKeyPressed = false;
+bool aKeyPressed = false;
+bool sKeyPressed = false;
+bool dKeyPressed = false;
+
+float w_ButtonWidth = 150.f;
+float w_ButtonHeight = 150.f;
+float a_ButtonWidth = 150.f;
+float a_ButtonHeight = 150.f;
+float s_ButtonWidth = 150.f;
+float s_ButtonHeight = 150.f;
+float d_ButtonWidth = 150.f;
+float d_ButtonHeight = 150.f;
+
+float w_ButtonWidthHover = 170.f;
+float w_ButtonHeightHover = 170.f;
+float a_ButtonWidthHover = 170.f;
+float a_ButtonHeightHover = 170.f;
+float s_ButtonWidthHover = 170.f;
+float s_ButtonHeightHover = 170.f;
+float d_ButtonWidthHover = 170.f;
+float d_ButtonHeightHover = 170.f;
+
+float w_OriginalButtonWidth = 150.f;
+float w_OriginalButtonHeight = 150.f;
+
+f64 MMframe_time = 0.f;
+f64 MMtotal_time = 0.f;
 
 // class declaration 
 Menu_Button menuButtons;
@@ -92,7 +131,6 @@ void main_menu::load()
                         "Assets/MainMenu/mm_CreditsButton.png",
                         "Assets/MainMenu/mm_ExitButton.png",
 
-
                         "Assets/MainMenu/mm_StartButtonHover.png",
                         "Assets/MainMenu/mm_HowToPlayButtonHover.png",
                         "Assets/MainMenu/mm_HighScoreHover.png",
@@ -101,7 +139,6 @@ void main_menu::load()
                         "Assets/MainMenu/mm_ExitButtonHover.png",
                         "Assets/MainMenu/squareTexture.png");
 
-    AudioManager::LoadSound("Assets/BGM/cinescifi.wav", true);
 
     MMtexplayer = AEGfxTextureLoad("Assets/MainLevel/ml_Spaceship2.png");
     MMtexplanet = AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture4.png");
@@ -111,8 +148,19 @@ void main_menu::load()
     MMshuttle_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Shuttle.png");
     MMexplosion_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Explosion.png");
     MMorbit_halo_tex = AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
+
     ImportDataFromFile("Assets/GameObjectData/PlayerData.txt", MMPlayerData, MMPlayerDataMap);
     ImportDataFromFile("Assets/GameObjectData/PlanetData.txt", MMPlanetData, MMPlanetDataMap);
+
+
+    MM_Keys_W = AEGfxTextureLoad("Assets/MainMenu/mm_W.png");
+    MM_Keys_W_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/mm_W_Hover.png");
+    MM_Keys_A = AEGfxTextureLoad("Assets/MainMenu/mm_A.png");
+    MM_Keys_A_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/mm_A_Hover.png");
+    MM_Keys_S = AEGfxTextureLoad("Assets/MainMenu/mm_S.png");
+    MM_Keys_S_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/mm_S_Hover.png");
+    MM_Keys_D = AEGfxTextureLoad("Assets/MainMenu/mm_D.png");
+    MM_Keys_D_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/mm_D_Hover.png");
 }
 
 void main_menu::init()
@@ -134,6 +182,7 @@ void main_menu::init()
 
     std::cout << std::endl;
     std::cout << "------------------------- MainMenu Initialised -------------------------" << std::endl << std::endl;
+
     AudioManager::PlayBGM("Assets/BGM/cinescifi.wav", 0.25f);
     
     //--------------------Player--------------------
@@ -191,8 +240,9 @@ void main_menu::init()
     DEBRIS_MAX = static_cast<int>(MMPlanetDataMap["Maximum_Debris"]);
     DEBRIS_MIN = static_cast<int>(MMPlanetDataMap["Minimum_Debris"]);
     DRONES_MAX = static_cast<int>(MMPlanetDataMap["Maximum_Drones"]);
-    
+ 
 
+    //MMplayer.init();
 
 
     //DEBRIS
@@ -203,18 +253,15 @@ void main_menu::init()
     MMplanet.position.y = static_cast<f32>( - AEGetWindowHeight() / 2);
     MMplanet.size = 1200;
     MMplanet.shuttle_timer = 0.0;																													// Zero out shuttle timer on spawn
-    MMplanet.shuttle_time_to_spawn = static_cast<f32>(rand() % (SHUTTLE_SPAWN_TIME_MAX - SHUTTLE_SPAWN_TIME_MIN + 1) + SHUTTLE_SPAWN_TIME_MIN);	// Randomize value for timer to reach before spawning
-    
+    MMplanet.shuttle_time_to_spawn = static_cast<f32>(rand() % (SHUTTLE_SPAWN_TIME_MAX - SHUTTLE_SPAWN_TIME_MIN + 1) + SHUTTLE_SPAWN_TIME_MIN);	// Randomize value for timer to reach before spawning 
 }
 
 void main_menu::update()
 {
-    //std::cout << "GameState: " << current_state << std::endl;
-
     MMframe_time = AEFrameRateControllerGetFrameTime();
     MMtotal_time += MMframe_time;
 
-    
+
     // =======================
     //  PLAYER MOVEMENT
     // =======================
@@ -222,8 +269,19 @@ void main_menu::update()
     // =======================
     //  FREE FLYING MODE
     // =======================
-    if (MMplayer.state == PLAYER_FLY) {
-        if (AEInputCheckCurr(AEVK_W)) {
+    float lerpSpeed = 0.15f;
+    if (MMplayer.state == PLAYER_FLY)
+    {
+        if (AEInputCheckCurr(AEVK_W))
+        {
+            wKeyPressed = true;
+            if (MMplayer.state == PLAYER_ORBIT)
+            {
+                wKeyPressed = false;
+            }
+            w_ButtonWidth = Lerp(w_ButtonWidth, w_ButtonWidthHover, lerpSpeed);
+            w_ButtonHeight = Lerp(w_ButtonHeight, w_ButtonHeightHover, lerpSpeed);
+
             AEVec2 added;
             AEVec2Set(&added, AECos(MMplayer.direction), AESin(MMplayer.direction));
 
@@ -235,8 +293,23 @@ void main_menu::update()
             // Limit player's speed
             AEVec2Scale(&MMplayer.velocity, &MMplayer.velocity, 0.99f);
         }
+        else
+        {
+            wKeyPressed = false;
+            w_ButtonWidth = Lerp(w_ButtonWidth, w_OriginalButtonWidth, lerpSpeed);
+            w_ButtonHeight = Lerp(w_ButtonHeight, w_OriginalButtonHeight, lerpSpeed);
+        }
 
-        if (AEInputCheckCurr(AEVK_S)) {
+        if (AEInputCheckCurr(AEVK_S))
+        {
+            sKeyPressed = true;
+            if (MMplayer.state == PLAYER_ORBIT)
+            {
+                sKeyPressed = false;
+            }
+            s_ButtonWidth = Lerp(s_ButtonWidth, s_ButtonWidthHover, lerpSpeed);
+            s_ButtonHeight = Lerp(s_ButtonHeight, s_ButtonHeightHover, lerpSpeed);
+
             AEVec2 added;
             AEVec2Set(&added, -AECos(MMplayer.direction), -AESin(MMplayer.direction));
 
@@ -248,18 +321,55 @@ void main_menu::update()
             // Limit player's speed
             AEVec2Scale(&MMplayer.velocity, &MMplayer.velocity, 0.99f);
         }
+        else
+        {
+            sKeyPressed = false;
+            s_ButtonWidth = Lerp(s_ButtonWidth, w_OriginalButtonWidth, lerpSpeed);
+            s_ButtonHeight = Lerp(s_ButtonHeight, w_OriginalButtonHeight, lerpSpeed);
+        }
 
-        if (AEInputCheckCurr(AEVK_A)) {
+        if (AEInputCheckCurr(AEVK_A))
+        {
+            aKeyPressed = true;
+            if (MMplayer.state == PLAYER_ORBIT)
+            {
+                aKeyPressed = false;
+            }
+            a_ButtonWidth = Lerp(a_ButtonWidth, a_ButtonWidthHover, lerpSpeed);
+            a_ButtonHeight = Lerp(a_ButtonHeight, a_ButtonHeightHover, lerpSpeed);
+
             MMplayer.direction += MMplayer.rot_speed * static_cast<f32>(MMframe_time);
             MMplayer.direction = AEWrap(MMplayer.direction, -PI, PI);
         }
+        else
+        {
+            aKeyPressed = false;
+            a_ButtonWidth = Lerp(a_ButtonWidth, w_OriginalButtonWidth, lerpSpeed);
+            a_ButtonHeight = Lerp(a_ButtonHeight, w_OriginalButtonHeight, lerpSpeed);
+        }
 
-        if (AEInputCheckCurr(AEVK_D)) {
+        if (AEInputCheckCurr(AEVK_D))
+        {
+            dKeyPressed = true;
+            if (MMplayer.state == PLAYER_ORBIT)
+            {
+                dKeyPressed = false;
+            }
+            d_ButtonWidth = Lerp(d_ButtonWidth, d_ButtonWidthHover, lerpSpeed);
+            d_ButtonHeight = Lerp(d_ButtonHeight, d_ButtonHeightHover, lerpSpeed);
+
             MMplayer.direction -= MMplayer.rot_speed * static_cast<f32>(MMframe_time);
             MMplayer.direction = AEWrap(MMplayer.direction, -PI, PI);
         }
+        else
+        {
+            dKeyPressed = false;
+            d_ButtonWidth = Lerp(d_ButtonWidth, w_OriginalButtonWidth, lerpSpeed);
+            d_ButtonHeight = Lerp(d_ButtonHeight, w_OriginalButtonHeight, lerpSpeed);
+        }
 
-        if (AEVec2Distance(&MMplanet.position, &MMplayer.position) <= (MMplanet.size / 2 + MMplanet.orbit_range)) {
+        if (AEVec2Distance(&MMplanet.position, &MMplayer.position) <= (MMplanet.size / 2 + MMplanet.orbit_range))
+        {
             MMplayer.direction = static_cast<f32>(atan2(MMplayer.position.y - MMplanet.position.y, MMplayer.position.x - MMplanet.position.x));
             MMplayer.state = PLAYER_ORBIT;
         }
@@ -270,34 +380,62 @@ void main_menu::update()
 
         MMplayer.position.x = MMplayer.position.x + MMplayer.velocity.x * static_cast<f32>(MMframe_time);
         MMplayer.position.y = MMplayer.position.y + MMplayer.velocity.y * static_cast<f32>(MMframe_time);
-
     }
 
     // =======================
     //  ORBIT MODE
     // =======================
-    if (MMplayer.state == PLAYER_ORBIT) {
+    if (MMplayer.state == PLAYER_ORBIT)
+    {
         // ================
         // Check for Input
         // ================
-        if (AEInputCheckCurr(AEVK_A) && MMplayer.position.y >= AEGfxGetWinMinY() + MMplayer.size) {
+        if (AEInputCheckCurr(AEVK_A) && MMplayer.position.y >= AEGfxGetWinMinY() + MMplayer.size)
+        {
+            aKeyPressed = true;
+            if (MMplayer.state == PLAYER_FLY)
+            {
+                aKeyPressed = false;
+            }
             MMplayer.direction += (MMplayer.rot_speed / 2) * static_cast<f32>(MMframe_time);
 
             MMplayer.position.x = MMplanet.position.x + (static_cast<f32>(MMplanet.size) / 2 + MMplanet.orbit_range) * AECos(MMplayer.direction);
             MMplayer.position.y = MMplanet.position.y + (static_cast<f32>(MMplanet.size) / 2 + MMplanet.orbit_range) * AESin(MMplayer.direction);
         }
+        else
+        {
+            aKeyPressed = false;
+        }
 
-        if (AEInputCheckCurr(AEVK_D) && MMplayer.position.x <= AEGfxGetWinMaxX() - MMplayer.size) {
+        if (AEInputCheckCurr(AEVK_D) && MMplayer.position.x <= AEGfxGetWinMaxX() - MMplayer.size)
+        {
+            dKeyPressed = true;
+            if (MMplayer.state == PLAYER_FLY)
+            {
+                dKeyPressed = false;
+            }
             MMplayer.direction -= (MMplayer.rot_speed / 2) * static_cast<f32>(MMframe_time);
 
             MMplayer.position.x = MMplanet.position.x + (static_cast<f32>(MMplanet.size) / 2 + MMplanet.orbit_range) * AECos(MMplayer.direction);
             MMplayer.position.y = MMplanet.position.y + (static_cast<f32>(MMplanet.size) / 2 + MMplanet.orbit_range) * AESin(MMplayer.direction);
         }
+        else
+        {
+            dKeyPressed = false;
+        }
 
         if (AEInputCheckPrev(AEVK_W))
+        {
+            wKeyPressed = true;
             MMplayer.can_leave_orbit = false;
+        }
         else
+        {
             MMplayer.can_leave_orbit = true;
+            wKeyPressed = false;
+        }
+
+
 
         if (AEInputCheckCurr(AEVK_W) && MMplayer.can_leave_orbit) {
             AEVec2Zero(&MMplayer.velocity);
@@ -311,9 +449,9 @@ void main_menu::update()
         else
             MMbeam_active = false;
 
-    // ================================
-    // Update player and beam position
-    // ================================
+        // ================================
+        // Update player and beam position
+        // ================================
 
         if (AEInputCheckCurr(AEVK_W) && MMplayer.can_leave_orbit) {
             MMplayer.position.x += AECos(MMplayer.direction);
@@ -389,7 +527,7 @@ void main_menu::update()
     //  UPDATE SHUTTLE TIMER AND DIRECTION
     // ===================================
     MMplanet.shuttle_timer += static_cast<f32>(MMframe_time);
-   
+
     MMplanet.direction += PLANET_ROT_SPEED * static_cast<f32>(MMframe_time);
 
 
@@ -397,7 +535,7 @@ void main_menu::update()
     // Calculate the matrix for Planet
     // =========================================
     AEMtx33Scale(&MMplanet.scale, MMplanet.size, MMplanet.size);
-    
+
     AEMtx33Rot(&MMplanet.rotate, MMplanet.direction);
     AEMtx33Trans(&MMplanet.translate, MMplanet.position.x, MMplanet.position.y);
     AEMtx33Concat(&MMplanet.transform, &MMplanet.rotate, &MMplanet.scale);
@@ -441,7 +579,7 @@ void main_menu::update()
     AEMtx33Concat(&MMplayer.beam_transform, &rot, &scale);
     AEMtx33Concat(&MMplayer.beam_transform, &trans, &MMplayer.beam_transform);
 
-    
+
     // =========================================
     // ERASE DEBRIS IF IT IS NOT ACTIVE
     // =========================================
@@ -466,7 +604,7 @@ void main_menu::update()
             AEVec2Scale(&diff, &diff, (MMplayer.beam_level + 1) * 0.4f);
             AEVec2Add(&debris.position, &debris.position, &diff);
         }
-       
+
         if (debris.state == MOVE_TOWARDS_PLANET) {
             // Move debris back to orbit
             AEVec2 diff;
@@ -519,7 +657,7 @@ void main_menu::update()
     // =======================================
     // COLLISION CHECK WITH SHUTTLE AND DEBRIS
     // =======================================
-    
+
     for (size_t i{}; i < MMshuttle_vector.size(); i++) {
         for (int k = 0; k < MMplanet.debris_vector.size(); ++k) {
             if (MMshuttle_vector[i].active) {
@@ -528,7 +666,7 @@ void main_menu::update()
                     MMshuttle_vector[i].active = false;
                     MMplanet.debris_vector[k].explosion.is_draw = 1;
                     MMplanet.debris_vector[k].explosion.position = MMplanet.debris_vector[k].position;
-                    
+
                     break;
                 }
             }
@@ -565,7 +703,7 @@ void main_menu::update()
     // =======================================
     // calculate the matrix for DEBRIS
     // =======================================
-    
+
     for (size_t i = 0; i < MMplanet.debris_vector.size(); i++) {
         if (MMplanet.debris_vector[i].active)
         {
@@ -580,7 +718,7 @@ void main_menu::update()
 
         }
     }
-    
+
 
     // =======================================
     // GAME LOGIC FOR SHUTTLE AND ITS MATRIX
@@ -620,118 +758,174 @@ void main_menu::update()
     // ================
     //  MENU BUTTONS
     // ================
-    menuButtons.update();
+    if (currentState == MENU)
+    {
+        menuButtons.update();
+    }
+    else if (currentState == HOW_TO_PLAY)
+    {
+        // Check if the window close button has been clicked
+        if (AEInputCheckTriggered(AEVK_Q) || 0 == AESysDoesWindowExist())
+        {
+            // If the window close button has been clicked, set the game state to quit
+            currentState = MENU;
+        }
+    }
+
 }
 
 void main_menu::draw()
 {
-    // Clear the screen
-    AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
-    // Draw the background mesh
-    RenderMMBackground.RenderSprite(TexMMBackground, 0.f, 0.f, 800.f, 450.f, pMeshMMBackground);
-    RenderMMBackground.RenderSprite(TexTitle, -250.f, 50.f, 800.f, 450.f, pMeshMMBackground);
+    if (MMtotal_time >= 1.5f)
+    {
+        // Clear the screen
+        AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
-    // ====================
-    //  DRAWING ORBIT RING
-    // ====================
-    AEGfxTextureSet(MMorbit_tex, 0, 0);
-    AEGfxSetTransform(MMplanet.orbit_transform.m);
-    AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
-
-    // ====================
-    //  DRAWING HALO RING
-    // ====================
-    AEGfxTextureSet(MMorbit_halo_tex, 0, 0);
-    AEGfxSetTransform(MMplanet.orbit_halo_transform.m);
-    AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
-
-    // ====================
-    //  DRAWING PLANET
-    // ====================
-    AEGfxTextureSet(MMtexplanet, 0, 0);
-    AEGfxSetTransform(MMplanet.transform.m);
-    AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
-
-    // ====================
-    //  DRAWING PLAYER
-    // ====================
-    AEGfxTextureSet(MMtexplayer, 0, 0);
-    AEGfxSetTransform(MMplayer.player_transform.m);
-    AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
-
-    // =====================
-    //  DRAWING TRACTOR BEAM
-    // =====================
-    if (AEInputCheckCurr(AEVK_SPACE) && MMplayer.state == PLAYER_ORBIT) {
-        AEGfxTextureSet(MMtexbeam, 0, 0);
-        AEGfxSetTransform(MMplayer.beam_transform.m);
+        // Draw the background mesh
+        RenderMMBackground.RenderSprite(TexMMBackground, 0.f, 0.f, 800.f, 450.f, pMeshMMBackground);
+        RenderMMBackground.RenderSprite(TexTitle, -250.f, 50.f, 800.f, 450.f, pMeshMMBackground);
+        // ====================
+        //  DRAWING ORBIT RING
+        // ====================
+        AEGfxTextureSet(MMorbit_tex, 0, 0);
+        AEGfxSetTransform(MMplanet.orbit_transform.m);
         AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
-    }
 
 
-    // ====================
-    //  DRAWING DEBRIS 
-    // ====================
-    for (size_t i = 0; i < MMplanet.debris_vector.size(); i++) {
-        if (MMplanet.debris_vector[i].active)
-        {
-            AEGfxTextureSet(MMtexdebris, 0, 0);
-            AEGfxSetTransform(MMplanet.debris_vector[i].transform.m);
+        if (MMplayer.state == PLAYER_ORBIT) {
+            AEGfxTextureSet(MMorbit_halo_tex, 0, 0);
+            AEGfxSetTransform(MMplayer.orbit_halo_transform.m);
             AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
         }
-    }
 
-    // ====================
-    //  DRAWING EXOLOSION
-    // ====================
-    for (size_t i = 0; i < MMplanet.debris_vector.size(); i++) {
+        // ====================
+        //  DRAWING PLANET
+        // ====================
+        AEGfxTextureSet(MMtexplanet, 0, 0);
+        AEGfxSetTransform(MMplanet.transform.m);
+        AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
 
-        Explosion& explosion = MMplanet.debris_vector[i].explosion;
-        if (explosion.is_draw) {
+        // ====================
+        //  DRAWING PLAYER
+        // ====================
+        AEGfxTextureSet(MMtexplayer, 0, 0);
+        AEGfxSetTransform(MMplayer.player_transform.m);
+        AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
 
-            if (explosion.timer <= explosion.total_time) {
-                AEGfxSetTransparency(explosion.total_time - explosion.timer);
+        // =====================
+        //  DRAWING TRACTOR BEAM
+        // =====================
+        if (AEInputCheckCurr(AEVK_SPACE) && MMplayer.state == PLAYER_ORBIT) {
+            AEGfxTextureSet(MMtexbeam, 0, 0);
+            AEGfxSetTransform(MMplayer.beam_transform.m);
+            AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
+        }
 
-                AEGfxTextureSet(MMexplosion_tex, 0, 0);
-                AEGfxSetTransform(explosion.transform.m);
+        // ====================
+        //  DRAWING DEBRIS 
+        // ====================
+        for (size_t i = 0; i < MMplanet.debris_vector.size(); i++) {
+            if (MMplanet.debris_vector[i].active)
+            {
+                AEGfxTextureSet(MMtexdebris, 0, 0);
+                AEGfxSetTransform(MMplanet.debris_vector[i].transform.m);
                 AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
             }
-            else {
-                AEGfxSetTransparency(0.f);
+        }
+
+        // ====================
+        //  DRAWING EXOLOSION
+        // ====================
+        for (size_t i = 0; i < MMplanet.debris_vector.size(); i++) {
+
+            Explosion& explosion = MMplanet.debris_vector[i].explosion;
+            if (explosion.is_draw) {
+
+                if (explosion.timer <= explosion.total_time) {
+                    AEGfxSetTransparency(explosion.total_time - explosion.timer);
+
+                    AEGfxTextureSet(MMexplosion_tex, 0, 0);
+                    AEGfxSetTransform(explosion.transform.m);
+                    AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
+                }
+                else {
+                    AEGfxSetTransparency(0.f);
+                }
             }
         }
-    }
 
-
-    // ====================
-    //  DRAWING SHUTTLE
-    // ====================
-    for (size_t i{}; i < MMshuttle_vector.size(); i++)
-    {
-        AEGfxTextureSet(MMshuttle_tex, 0, 0);
-        if (MMshuttle_vector[i].active)
+        // ====================
+        //  DRAWING SHUTTLE
+        // ====================
+        for (size_t i{}; i < MMshuttle_vector.size(); i++)
         {
-            if (MMshuttle_vector[i].lifespan <= SHUTTLE_MAX_LIFESPAN / 2.f)
+            AEGfxTextureSet(MMshuttle_tex, 0, 0);
+            if (MMshuttle_vector[i].active)
             {
-                AEGfxSetTransparency(MMshuttle_vector[i].lifespan / (SHUTTLE_MAX_LIFESPAN / 2.0f));
+                if (MMshuttle_vector[i].lifespan <= SHUTTLE_MAX_LIFESPAN / 2.f)
+                {
+                    AEGfxSetTransparency(MMshuttle_vector[i].lifespan / (SHUTTLE_MAX_LIFESPAN / 2.0f));
+                }
+                else
+                {
+                    AEGfxSetTransparency(1.f);
+                }
+                AEGfxSetTransform(MMshuttle_vector[i].transform.m);
+                // Actually drawing the mesh
+                AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
+            }
+        }
+
+        AEGfxSetTransparency(1.0f);
+
+        if (currentState == MENU)
+        {
+            // ====================
+            //  DRAWING MENU BUTTONS
+            // ====================
+            menuButtons.draw(pMeshMM);
+        }
+
+        else if (currentState == HOW_TO_PLAY)
+        {
+            if (wKeyPressed == true)
+            {
+                RenderMMBackground.RenderSprite(MM_Keys_W_ACTIVE, 0.f, 0.f, w_ButtonWidth, w_ButtonHeight, pMeshMM);
             }
             else
             {
-                AEGfxSetTransparency(1.f);
+                RenderMMBackground.RenderSprite(MM_Keys_W, 0.f, 0.f, w_ButtonWidth, w_ButtonHeight, pMeshMM);
             }
-            AEGfxSetTransform(MMshuttle_vector[i].transform.m);
-            // Actually drawing the mesh
-            AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
+
+            if (aKeyPressed == true)
+            {
+                RenderMMBackground.RenderSprite(MM_Keys_A_ACTIVE, -200.f, -200.f, a_ButtonWidth, a_ButtonHeight, pMeshMM);
+            }
+            else
+            {
+                RenderMMBackground.RenderSprite(MM_Keys_A, -200.f, -200.f, a_ButtonWidth, a_ButtonHeight, pMeshMM);
+            }
+
+            if (sKeyPressed == true)
+            {
+                RenderMMBackground.RenderSprite(MM_Keys_S_ACTIVE, 0.f, -200.f, s_ButtonWidth, s_ButtonHeight, pMeshMM);
+            }
+            else
+            {
+                RenderMMBackground.RenderSprite(MM_Keys_S, 0.f, -200.f, s_ButtonWidth, s_ButtonHeight, pMeshMM);
+            }
+
+            if (dKeyPressed == true)
+            {
+                RenderMMBackground.RenderSprite(MM_Keys_D_ACTIVE, 200.f, -200.f, d_ButtonWidth, d_ButtonHeight, pMeshMM);
+            }
+            else
+            {
+                RenderMMBackground.RenderSprite(MM_Keys_D, 200.f, -200.f, d_ButtonWidth, d_ButtonHeight, pMeshMM);
+            }
         }
     }
-
-    AEGfxSetTransparency(1.0f);
-  
-    // ====================
-    //  DRAWING MENU BUTTONS
-    // ====================
-    menuButtons.draw(pMeshMM);
 }
 
 void main_menu::free()
@@ -761,8 +955,14 @@ void main_menu::unload()
     AEGfxTextureUnload(MMorbit_halo_tex);
     AEGfxTextureUnload(TexMMBackground); // unload the texture for the background image
 
-    AudioManager::UnloadSound("Assets/BGM/cinescifi.wav");
-
+    AEGfxTextureUnload(MM_Keys_W_ACTIVE);
+    AEGfxTextureUnload(MM_Keys_W);
+    AEGfxTextureUnload(MM_Keys_A_ACTIVE);
+    AEGfxTextureUnload(MM_Keys_A);
+    AEGfxTextureUnload(MM_Keys_S_ACTIVE);
+    AEGfxTextureUnload(MM_Keys_S);
+    AEGfxTextureUnload(MM_Keys_D_ACTIVE);
+    AEGfxTextureUnload(MM_Keys_D);
 }
 
 // ===========================

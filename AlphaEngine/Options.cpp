@@ -20,6 +20,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Global.h"
 #include "Easing.h"
 #include <iostream>
+#include "Transition.h"
 
 AEGfxTexture* o_RoundedRectangle_ACTIVE = nullptr;
 AEGfxTexture* o_RoundedRectangle_NOT_ACTIVE = nullptr;
@@ -35,6 +36,8 @@ AEGfxTexture* returnToMMTexture11 = nullptr;
 AEGfxVertexList* optionsMesh;
 
 Rendering optionsMenu;
+
+static float timer3 = 0.f;
 
 static float returnToMMX11 = 0.0f;
 static float returnToMMY11 = -400.0f;
@@ -55,6 +58,8 @@ namespace Options
     bool muted = false;
     bool muteHoverState = false;
     bool draggingSlider = false;
+
+    float targetVolume = 0.5f;
 
     // mute button
     float muteButtonX = 0.0f;
@@ -93,6 +98,7 @@ void Options::load()
     o_VolumeSliderThumb         = AEGfxTextureLoad("Assets/MainMenu/Options/o_SliderThumb.png");
 
     returnToMMTexture11 = AEGfxTextureLoad("Assets/MainMenu/Options/o_ExitButtonCredits.png");
+    AudioManager::LoadSound("Assets/BGM/one-last-time-141289.mp3", true);
 
 }
 
@@ -100,10 +106,16 @@ void Options::init()
 {
     optionsMenu.SquareMesh(optionsMesh);
 
+    if (!AudioManager::isBGMPlaying)
+    {
+        AudioManager::PlayBGM("Assets/BGM/one-last-time-141289.mp3", 0.25f);
+    }
+
 }
 
 void Options::update(float* volume, bool* muted)
 {
+    timer3 += AEFrameRateControllerGetFrameTime();
     // Check if the left mouse button has been clicked
     if (AEInputCheckTriggered(AEVK_LBUTTON))
     {
@@ -111,8 +123,14 @@ void Options::update(float* volume, bool* muted)
 
         if (Input::isButtonClicked(buttons11[0].x, buttons11[0].y, buttons11[0].width, buttons11[0].height))
         {
+            AudioManager::PlayOneShot("Assets/BGM/hyperspace_jump.mp3", 1.0f);
 
+            AudioManager::StopBGMIfPlaying();
             next_state = GS_MAINMENU;
+            transition::isTransitionActive = true;
+            transition::resetTimer();
+
+            timer3 = 0.f;
         }
     }
 
@@ -151,15 +169,19 @@ void Options::update(float* volume, bool* muted)
     if (draggingSlider)
     {
         sliderThumbX = mouseX - AEGetWindowWidth() / 2.0f - 10;
-        if (sliderThumbX < sliderX - 50) 
+        if (sliderThumbX < sliderX - 50)
         {
-            sliderThumbX = sliderX - 50; 
+            sliderThumbX = sliderX - 50;
         }
-        if (sliderThumbX > sliderX + 50) 
+        if (sliderThumbX > sliderX + 50)
         {
-            sliderThumbX = sliderX + 50; 
+            sliderThumbX = sliderX + 50;
         }
-        *volume = (sliderThumbX - (sliderX - 50)) / 100; 
+        targetVolume = (sliderThumbX - (sliderX - 50)) / 100;
+    }
+    else if (next_state != GS_MAINMENU) // Add this condition to prevent updating the volume after switching states
+    {
+        *volume = EaseAudioVolume(*volume, targetVolume, 0.05f);
         AudioManager::setVolume(*volume);
     }
 
@@ -178,30 +200,34 @@ void Options::update(float* volume, bool* muted)
 
 void Options::draw()
 {
-    AEGfxSetBackgroundColor(0.5f, 0.0f, 0.0f);
+    if (timer3 >= 1.f)
+    {
 
-    Rendering::RenderSprite(returnToMMTexture11, returnToMMX11, returnToMMY11, buttonWidth11, buttonHeight11, optionsMesh);
+        Rendering::RenderSprite(returnToMMTexture11, returnToMMX11, returnToMMY11, buttonWidth11, buttonHeight11, optionsMesh);
 
+        Rendering::RenderSprite(o_VolumeSlider, sliderX, sliderY, sliderWidth, sliderHeight, optionsMesh);
+        Rendering::RenderSprite(o_VolumeSliderThumb, sliderThumbX, sliderThumbY, sliderThumbWidth, sliderThumbHeight, optionsMesh);
 
-    Rendering::RenderSprite(o_VolumeSlider, sliderX, sliderY, sliderWidth, sliderHeight, optionsMesh);
-    Rendering::RenderSprite(o_VolumeSliderThumb, sliderThumbX, sliderThumbY, sliderThumbWidth, sliderThumbHeight, optionsMesh);
+        // Render the stationary rounded rectangle
+        if (muted)
+        {
+            Rendering::RenderSprite(o_RoundedRectangle_ACTIVE, muteButtonX, muteButtonY, muteButtonWidth, muteButtonHeight, optionsMesh);
+        }
+        else
+        {
+            Rendering::RenderSprite(o_RoundedRectangle_NOT_ACTIVE, muteButtonX, muteButtonY, muteButtonWidth, muteButtonHeight, optionsMesh);
+        }
 
-    // Render the stationary rounded rectangle
-    if (muted) {
-        Rendering::RenderSprite(o_RoundedRectangle_ACTIVE, muteButtonX, muteButtonY, muteButtonWidth, muteButtonHeight, optionsMesh);
+        // Render the muteSliderThumb
+        Rendering::RenderSprite(o_MuteSliderThumb_NOT_ACTIVE, muteSliderThumbX, muteSliderThumbY, muteSliderThumbWidth, muteSliderThumbHeight, optionsMesh);
     }
-    else {
-        Rendering::RenderSprite(o_RoundedRectangle_NOT_ACTIVE, muteButtonX, muteButtonY, muteButtonWidth, muteButtonHeight, optionsMesh);
-    }
-
-    // Render the muteSliderThumb
-    Rendering::RenderSprite(o_MuteSliderThumb_NOT_ACTIVE, muteSliderThumbX, muteSliderThumbY, muteSliderThumbWidth, muteSliderThumbHeight, optionsMesh);
 }
 
 
 void Options::free()
 {
     AEGfxMeshFree(optionsMesh);
+
 }
 
 void Options::unload()

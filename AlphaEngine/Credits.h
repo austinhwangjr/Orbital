@@ -31,4 +31,10 @@ namespace credits
         float width;
         float height;
     };
+    
+    struct HoverButton2
+    {
+        float width;
+        float height;
+    };
 }

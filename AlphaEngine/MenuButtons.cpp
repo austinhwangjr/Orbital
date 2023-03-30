@@ -20,15 +20,17 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "input.h"
 #include "Graphics.h"
 #include "Easing.h"
+#include "AudioManager.h"
 #include <cmath>
+#include "Transition.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
+float buttonClickDelay = 0.0f; 
 
 static float normalTint[4] = { 1.0f, 1.0f, 1.0f, 1.0f }; // white
 static float hoverTint[4] = { 0.196f, 0.874f, 0.812f, 1.0f }; // #32dfcf
-
 static float currentTints[6][4];
 
 static float normalSquareSize = 15.0f;
@@ -36,9 +38,7 @@ static float hoverSquareSize = 25.0f;
 static float currentSquareSizes[6];
 static float currentXPositions[6];
 
-
 static float hoverOffsetX = 30.0f; 
-
 
 // Set the dimensions of each button
 static float buttonWidth = 300.f;
@@ -65,6 +65,8 @@ static float creditsY = -270.f;
 
 static float quitX = -530.0f;
 static float quitY = -345.f;
+
+
 // checking input area stuff
 struct Button
 {
@@ -81,7 +83,8 @@ struct HoverButton
 };
 
 // Define the positions and dimensions for each button
-Button buttons[] = {
+Button buttons[] =
+{
     {startX, startY, buttonWidth, buttonHeight},   // Start button
     {howToPlayX, howToPlayY, buttonWidth, buttonHeight},  // How to play button
     {highScoreX, highScoreY, buttonWidth, buttonHeight},    // high score button
@@ -91,7 +94,8 @@ Button buttons[] = {
 };
 
 // Define the hover dimensions for each button
-HoverButton hoverButtons[] = {
+HoverButton hoverButtons[] =
+{
     {hoverButtonWidth, hoverButtonHeight}, // Start button
     {hoverButtonWidth, hoverButtonHeight}, // How to play button
     {hoverButtonWidth, hoverButtonHeight}, // High score button
@@ -102,11 +106,13 @@ HoverButton hoverButtons[] = {
 
 Button currentButtonSizes[6];
 
+
 /******************************************************************************/
 /*!
 	Load Textures and Data
 */
 /******************************************************************************/
+
 void Menu_Button::load( const char* startButtonFilename,
                         const char* howToPlayButtonFilename,
                         const char* highScoreButtonFilename,
@@ -139,6 +145,10 @@ void Menu_Button::load( const char* startButtonFilename,
     hoverButtonTextures[5]      = AEGfxTextureLoad(exitButtonHoverFilename);
     squareTexture = AEGfxTextureLoad(squareTextureFilename);
 
+    AudioManager::LoadSound("Assets/BGM/one-last-time-141289.mp3", true);
+    AudioManager::LoadSound("Assets/BGM/hyperspace_jumping.mp3", false);
+
+
 }
 
 /******************************************************************************/
@@ -148,10 +158,15 @@ void Menu_Button::load( const char* startButtonFilename,
 /******************************************************************************/
 void Menu_Button::init()
 {
+    if (!AudioManager::isBGMPlaying)
+    {
+        AudioManager::PlayBGM("Assets/BGM/one-last-time-141289.mp3", 0.5f);
+    }
+
     for (int i = 0; i < 6; ++i)
     {
         hoverStates[i] = false;
-        currentXPositions[i] = buttons[i].x; 
+        currentXPositions[i] = buttons[i].x;
         currentButtonSizes[i].width = buttons[i].width;
         currentButtonSizes[i].height = buttons[i].height;
         squareRotations[i] = 0.0f;
@@ -164,6 +179,7 @@ void Menu_Button::init()
     }
 }
 
+
 /******************************************************************************/
 /*!
 	Update Menu Buttons
@@ -174,15 +190,23 @@ void Menu_Button::update()
     for (int i = 0; i < 6; ++i)
     {
         hoverStates[i] = Input::isMouseHover(buttons[i].x, buttons[i].y, buttons[i].width, buttons[i].height, hoverButtons[i].width, hoverButtons[i].height);
+
         if (AEInputCheckTriggered(AEVK_LBUTTON) && hoverStates[i])
         {
+            AudioManager::PlayOneShot("Assets/BGM/hyperspace_jumping.mp3", 1.0f);
+            transition::isTransitionActive = true;
+            transition::resetTimer();
+            MMtotal_time = 0.f;
+            AudioManager::StopBGMIfPlaying();
+
+            // Set the next game state based on the button that was clicked
             switch (i)
             {
             case 0: // Start button
                 next_state = GS_MAINLEVEL;
                 break;
             case 1: // How to play button
-                next_state = GS_HOWTOPLAY;
+                main_menu::currentState = main_menu::HOW_TO_PLAY;
                 break;
             case 2: // High Score button
                 next_state = GS_HIGHSCORE;
@@ -288,24 +312,17 @@ void Menu_Button::draw(AEGfxVertexList* pMesh)
     {
         if (hoverStates[i])
         {
-            tint[0] = 0.0f; // red
-            tint[1] = 0.0f; // green
-            tint[2] = 1.0f; // blue
-            tint[3] = 1.0f; // alpha
-
             Rendering::RenderSprite(hoverButtonTextures[i], currentXPositions[i], buttons[i].y, currentButtonSizes[i].width, currentButtonSizes[i].height, pMesh);
         }
         else
         {
-            tint[0] = 1.0f; // red
-            tint[1] = 1.0f; // green
-            tint[2] = 1.0f; // blue
-            tint[3] = 1.0f; // alpha
             Rendering::RenderSprite(normalButtonTextures[i], currentXPositions[i], buttons[i].y, currentButtonSizes[i].width, currentButtonSizes[i].height, pMesh);
         }
-
         Rendering::RenderSpriteWithRotations(squareTexture, buttons[i].x + offsetX, buttons[i].y, currentSquareSizes[i], currentSquareSizes[i], pMesh, squareRotations[i], currentTints[i][0], currentTints[i][1], currentTints[i][2], currentTints[i][3]);
     }
+}
+void Menu_Button::free()
+{
 }
 
 /******************************************************************************/
@@ -321,4 +338,5 @@ void Menu_Button::unload()
         AEGfxTextureUnload(hoverButtonTextures[i]);
     }
     AEGfxTextureUnload(squareTexture);
+
 }

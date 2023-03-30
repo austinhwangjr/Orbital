@@ -56,7 +56,6 @@ struct gsm
 	static void update();
 	//void restart();
 	//void quit();
-	void changeGameState(int next_gamestate);
 	//void draw();
 	//void free();
 	//void unload();

@@ -20,6 +20,8 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include <iostream>
 #include "MainLevel.h"
 #include "AudioManager.h"
+#include "Transition.h"
+
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -42,10 +44,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	AudioManager::Init();
 
 	// Initialize the game state manager with the starting state
-	//gsm::init(GS_SPLASHSCREEN);
-	gsm::init(GS_MAINMENU);
+	gsm::init(GS_SPLASHSCREEN);
+	//gsm::init(GS_MAINMENU);																					// Initialize the Game State Manager (GSM) with Level1 as the initial game state
 	//gsm::init(GS_MAINLEVEL);																					// Initialize the Game State Manager (GSM) with Level1 as the initial game state
 	//gsm::init(GS_PAUSEMENU);
+
+	transition::load();
+	transition::init();
 
 	// While the current game state is not equal to the quit state
 	while (current_state != GS_QUIT)
@@ -75,12 +80,27 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			// Handling Input
 			AEInputUpdate();
 
+			float deltaTime1 = AEFrameRateControllerGetFrameTime();
+
 			fpUpdate();         // Update current game state
 
-			fpDraw();           // Render current game state
+			// Update transition
+			if (transition::isTransitionActive)
+			{
+				transition::update(deltaTime1);
+			}
+
+			fpDraw(); // Render current game state
+
+			// Draw transition
+			if (transition::isTransitionActive)
+			{
+				transition::draw();
+			}
 
 			AESysFrameEnd();
 		}
+
 
 		// debugging log for mainmenu -yy
 		AEGfxReset();				// Reset graphics context
@@ -96,8 +116,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		previous_state = current_state;     // Set previous game state to be equal to current game state
 		current_state = next_state;         // Set current game state to be equal to next game state
 	}
+	transition::free();
+	transition::unload();
 
-	
 	system_call::unload();              // Systems exit (terminate)
 	
 }

@@ -11,171 +11,106 @@ Reproduction or disclosure of this file or its contents without the
 prior written consent of DigiPen Institute of Technology is prohibited.
  */
 /******************************************************************************/
-#include <string>
-#include "pch.h"
-#include "GameStateManager.h"
+#include "AEEngine.h"
 #include "SplashScreen.h"
 #include "Global.h"
+#include "GameStateManager.h"
+#include "Graphics.h"
+#include "Transition.h"
+#include "AudioManager.h"
 
-// Textures
-AEGfxTexture* digipen_tex;
+AEGfxTexture* ss_DigiPen_Logo;
+AEGfxTexture* ss_TeamNameANDLogo;
+AEGfxVertexList* ss_Mesh;
 
-// Mesh
-AEGfxVertexList* pMeshSC;
+Rendering ss_createMesh;
 
-// Font
-extern s8	  font_id_splashscreen;
-std::string	  copyright;
+float timer;
 
-// Temp variables
-// =============
-// Splashscreen
-// =============
+float splashScreenCenterX;
+float splashScreenCenterY;
 
-AEVec2			ss_position;
-f32				ss_width;
-f32				ss_height;
-f32				ss_timer;
-f32 			ss_max_timer;
-f32				ss_flag;
-f32				ss_max_alpha;
-f32				ss_alpha_multiplier;
-f64				ss_frame_time{};
+float splashScreenWidth;
+float splashScreenHeight;
 
-// ==========
-// Transform
-// ==========
-AEMtx33			ss_transform;
+bool hyperspacePlayed;
 
-/******************************************************************************/
-/*!
-	Load Textures and Data
-*/
-/******************************************************************************/
-void splashscreen::load()
+
+void SplashScreen::load()
 {
-	// Load textures
-	digipen_tex = AEGfxTextureLoad("Assets/DigiPen_BLACK.png");
+    ss_DigiPen_Logo = AEGfxTextureLoad("Assets/SplashScreen/ss_DigiPenSplashScreen.png");
+    ss_TeamNameANDLogo = AEGfxTextureLoad("Assets/SplashScreen/ss_TeamNameANDLogo.png");
 
-	// Create mesh
-	AEGfxMeshStart();
-	AEGfxTriAdd(
-		-0.5f, -0.5f, 0xFFFFFFFF, 0.0f, 0.0f,
-		0.5f, -0.5f, 0xFFFFFFFF, 1.0f, 0.0f,
-		-0.5f, 0.5f, 0xFFFFFFFF, 0.0f, 1.0f);
-	AEGfxTriAdd(
-		0.5f, -0.5f, 0xFFFFFFFF, 1.0f, 0.0f,
-		0.5f, 0.5f, 0xFFFFFFFF, 1.0f, 1.0f,
-		-0.5f, 0.5f, 0xFFFFFFFF, 0.0f, 1.0f);
-
-	pMeshSC = AEGfxMeshEnd();
-	AE_ASSERT_MESG(pMeshSC, "fail to create object!!");
+    AudioManager::LoadSound("Assets/BGM/hyperspace_jump.mp3", false);
 }
 
-/******************************************************************************/
-/*!
-	Initialize Variables
-*/
-/******************************************************************************/
-void splashscreen::init()
+void SplashScreen::init()
 {
-	// =============
-	// Splashscreen
-	// =============
+    ss_createMesh.SquareMesh(ss_Mesh);
 
-	ss_position.x			= 0.f;
-	ss_position.y			= 0.f;
+    timer = 0.0f;
 
-	ss_width				= static_cast<f32>(AEGetWindowWidth()) * 0.8f;
-	ss_height				= static_cast<f32>(AEGetWindowWidth()) * 0.4f;
-
-	ss_timer				= 0.f;
-	ss_max_timer			= 2.f;
-
-	ss_flag				= 1;
-
-	ss_max_alpha			= 255.f;
-	ss_alpha_multiplier	= 0.f;
+    splashScreenCenterX = 0.f;
+    splashScreenCenterY = 0.f;
+    hyperspacePlayed = false;
 }
 
-/******************************************************************************/
-/*!
-	Update Splashscreen
-*/
-/******************************************************************************/
-void splashscreen::update()
+void SplashScreen::update()
 {
-	ss_frame_time = AEFrameRateControllerGetFrameTime();
+    timer += (float)AEFrameRateControllerGetFrameTime();
 
-	ss_timer += ss_frame_time;
-
-	if (ss_alpha_multiplier <= 255 && ss_flag)
-	{
-		ss_alpha_multiplier += ss_timer * (ss_max_alpha / ss_max_timer);
-	}
-	else
-	{
-		if (ss_flag)
-		{
-			ss_flag = 0;
-		}
-		ss_alpha_multiplier -= ss_timer * (ss_max_alpha / ss_max_timer);
-	}
-
-	if (ss_alpha_multiplier < 0)
-	{
-		next_state = GS_MAINLEVEL;
-	}
-
-	// ======================================
-	// Calculate the matrix for DigiPen Logo
-	// ======================================
-
-	AEMtx33 scale, rot, trans;
-
-	AEMtx33Scale(&scale, ss_width, ss_height);
-	AEMtx33Rot(&rot, 0.f);
-	AEMtx33Trans(&trans, ss_position.x, ss_position.y);
-	AEMtx33Concat(&ss_transform, &rot, &scale);
-	AEMtx33Concat(&ss_transform, &trans, &ss_transform);
+    if (timer > 6.0f || AEInputCheckTriggered(AEVK_LBUTTON) || AEInputCheckTriggered(AEVK_RBUTTON))
+    {
+        AudioManager::PlayOneShot("Assets/BGM/hyperspace_jump.mp3", 1.0f);
+        transition::isTransitionActive = true;
+        transition::resetTimer();
+        next_state = GS_MAINMENU;
+    }
 }
 
-/******************************************************************************/
-/*!
-	Draw Splashscreen
-*/
-/******************************************************************************/
-void splashscreen::draw()
+void SplashScreen::draw()
 {
-	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-	AEGfxSetTransparency(1.0f);
+    AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
-	AEGfxTextureSet(digipen_tex, 0, 0);
-	AEGfxSetTransform(ss_transform.m);
-	AEGfxMeshDraw(pMeshSC, AE_GFX_MDM_TRIANGLES);
+    float r = 1.0f, g = 1.0f, b = 1.0f, a = 1.0f;
 
-	copyright = "All content (C) 2023 DigiPen Institute of Technology Singapore. All Rights Reserved";
-	AEGfxPrint(font_id_splashscreen, const_cast<s8*>(copyright.c_str()), -0.45f, -0.8f, 1.f, 1.f, 1.f, 1.f);
+    // Fade in and fade out DigiPen_Logo
+    if (timer < 3.0f)
+    {
+        if (timer < 1.0f)
+        {
+            a = timer / 1.0f;
+        }
+        else if (timer > 2.0f)
+        {
+            a = (3.0f - timer) / 1.0f;
+        }
+        Rendering::RenderSpriteWithRotations(ss_DigiPen_Logo, splashScreenCenterX, splashScreenCenterY, g_windowWidth, g_windowHeight, ss_Mesh, 0, r, g, b, a);
+    }
+    // Fade in and fade out TeamNameANDLogo
+    else if (timer >= 3.0f)
+    {
+        float localTimer = timer - 3.0f;
+        if (localTimer < 1.0f)
+        {
+            a = localTimer / 1.0f;
+        }
+        else if (localTimer > 2.0f)
+        {
+            a = (3.0f - localTimer) / 1.0f;
+        }
+        Rendering::RenderSpriteWithRotations(ss_TeamNameANDLogo, splashScreenCenterX, splashScreenCenterY, g_windowWidth, g_windowHeight, ss_Mesh, 0, r, g, b, a);
+    }
 }
 
-/******************************************************************************/
-/*!
-	Clean Object Instances
-*/
-/******************************************************************************/
-void splashscreen::free()
+void SplashScreen::free()
 {
-	AEGfxMeshFree(pMeshSC);
+    AEGfxMeshFree(ss_Mesh);
 }
 
-/******************************************************************************/
-/*!
-	Free Textures
-*/
-/******************************************************************************/
-void splashscreen::unload()
+void SplashScreen::unload()
 {
-	AEGfxTextureUnload(digipen_tex);
+    AEGfxTextureUnload(ss_DigiPen_Logo);
+    AEGfxTextureUnload(ss_TeamNameANDLogo);
+
 }

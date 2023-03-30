@@ -31,6 +31,8 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "SplashScreen.h"
 #include <functional>
 #include <iostream>
+#include "Transition.h"
+
 
 using FP = std::function<void()>;
 
@@ -58,12 +60,12 @@ void gsm::update()
 	switch (current_state)
 	{
 	case GS_SPLASHSCREEN:
-		fpLoad		= splashscreen::load;
-		fpInit		= splashscreen::init;
-		fpUpdate	= splashscreen::update;
-		fpDraw		= splashscreen::draw;
-		fpFree		= splashscreen::free;
-		fpUnload	= splashscreen::unload;
+		fpLoad		= SplashScreen::load;
+		fpInit		= SplashScreen::init;
+		fpUpdate	= SplashScreen::update;
+		fpDraw		= SplashScreen::draw;
+		fpFree		= SplashScreen::free;
+		fpUnload	= SplashScreen::unload;
 		break;
 	case GS_MAINMENU:
 		fpLoad		= main_menu::load;
@@ -113,17 +115,6 @@ void gsm::update()
 		fpFree = Options::free;
 		fpUnload = Options::unload;
 		break;
-	case GS_LOSEMENU:
-		fpLoad = lose_menu::load;
-		fpInit = lose_menu::init;
-		fpUpdate = lose_menu::update;
-		fpDraw = lose_menu::draw;
-		fpFree = lose_menu::free;
-		fpUnload = lose_menu::unload;
-		break;
-
-
-
 	case GS_RESTART:
 		break;
 	case GS_QUIT:
@@ -138,9 +129,4 @@ void gsm::update()
 void GSM_RestartLevel()
 {
 	next_state = GS_RESTART;
-}
-
-void gsm::changeGameState(int next_gamestate)
-{
-	next_state = next_gamestate;
 }

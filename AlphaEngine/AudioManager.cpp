@@ -18,8 +18,11 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include <map>
 #include "Global.h"
 
+bool isBGMPlaying = false;
+
 namespace AudioManager
 {
+
     // The FMOD system and error result
     static FMOD::System* _system;
     static FMOD_RESULT _result;
@@ -55,6 +58,9 @@ namespace AudioManager
 
         // Clean up.
         ErrorCheck(_system->release());
+
+        isBGMPlaying = false;
+
     }
 
     // Helper function to check for FMOD errors
@@ -112,6 +118,8 @@ namespace AudioManager
     // Plays a background music file
     void PlayBGM(const std::string& path, float volume)
     {
+        isBGMPlaying = true;
+
         // Clamp the volume of the background music
         if (volume < 0.0f || volume > 1.0f)
             volume = 1.0f;
@@ -206,5 +214,13 @@ namespace AudioManager
         }
     }
 
+    void AudioManager::StopBGMIfPlaying()
+    {
+        if (isBGMPlaying)
+        {
+            ErrorCheck(bgm->stop());
+            isBGMPlaying = false;
+        }
+    }
 
 }

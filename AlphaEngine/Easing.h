@@ -53,7 +53,7 @@ static float easeLinear(f32 t)
 }
 
 // Quadratic easing in
-static float easeInQuad(f32 t)
+static float EaseInQuad(f32 t)
 {
 	return t * t;
 }
@@ -67,4 +67,10 @@ static float easeOutQuad(f32 t)
 static float easeInOutQuad(f32 t)
 {
 	return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+}
+
+static float EaseAudioVolume(float startVolume, float targetVolume, float progress)
+{
+	float easedProgress = EaseOutExpo(0, 1, progress);
+	return Lerp(startVolume, targetVolume, easedProgress);
 }

@@ -12,15 +12,16 @@ prior written consent of DigiPen Institute of Technology is prohibited.
  */
 /******************************************************************************/
 #pragma once
-namespace splashscreen
+
+#include "AEEngine.h"
+
+namespace SplashScreen
 {
-	// ==========
-	// Functions
-	// ==========
-	void load();
-	void init();
-	void update();
-	void draw();
-	void free();
-	void unload();
+    void load();
+    void init();
+    void update();
+    void draw();
+    void free();
+    void unload();
 }
+
