@@ -1,0 +1,6 @@
+Button_Width 200
+Button_Height 50
+Background_X_position 0
+Background_Y_position 0
+MainMenu_X_position 650
+MainMenu_Y_position -20

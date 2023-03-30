@@ -177,7 +177,7 @@ void Menu_Button::update()
                 next_state = GS_MAINLEVEL;
                 break;
             case 1: // How to play button
-                next_state = GS_HOWTOPLAY;
+                main_menu::currentState = main_menu::HOW_TO_PLAY;
                 break;
             case 2: // High Score button
                 next_state = GS_HIGHSCORE;

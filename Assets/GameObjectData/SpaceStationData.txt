@@ -1,0 +1,22 @@
+//--------------Space Station--------------------
+/-----Variable------------------Value------------
+Position_X 			0
+Position_Y 			0
+Size 				100
+Current_Capacity 		0
+Max_Capacity 			10
+Initial_spawn 			0
+Buffer_safe_distance 		250
+
+
+//---------------Cooldown Bar--------------------
+/-----Variable------------------Value------------
+CoolDownBar_height 		5
+CoolDownBar_width 		0
+CoolDownBar_time 		3
+
+
+//--------------------Coin-----------------------
+/-----Variable------------------Value------------
+Coin_height 			50
+Coin_width 			50

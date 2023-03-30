@@ -100,7 +100,6 @@ void credits::init()
 
     AE_ASSERT_MESG(pMeshCreditsBackground, "Error: Failed to create pMeshCreditsBackground in Credits.cpp!");
     AE_ASSERT_MESG(pMeshCredits, "Error: Failed to create pMeshCredits in Credits.cpp!");
-
 }
 
 void credits::update()
@@ -198,7 +197,6 @@ void credits::update()
 
 void credits::draw()
 {
-
     if (timer2 >= 1.f)
     {
         for (int i = 0; i < buttonCount; ++i)

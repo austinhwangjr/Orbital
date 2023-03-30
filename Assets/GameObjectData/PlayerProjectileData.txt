@@ -1,0 +1,10 @@
+//--------------------Player Projectile--------------------
+/-----Variable------------------Value----------------------
+Position_X			0
+Position_Y			0
+Velocity_X			0
+Velocity_Y			0
+Size				30
+Speed				150
+Direction			0
+Delete_flag			0
