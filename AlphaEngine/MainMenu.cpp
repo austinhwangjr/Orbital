@@ -72,11 +72,15 @@ AEGfxTexture* MM_Keys_D_ACTIVE;
 AEGfxTexture* MM_Keys_Spacebar;
 AEGfxTexture* MM_Keys_Spacebar_ACTIVE;
 
+AEGfxTexture* MM_LMB;
+AEGfxTexture* MM_LMB_ACTIVE;
+
 bool wKeyPressed = false;
 bool aKeyPressed = false;
 bool sKeyPressed = false;
 bool dKeyPressed = false;
 bool spacebarActivated = false;
+bool LMB_KeyPressed = false;
 
 float w_ButtonX = 0.f;
 float w_ButtonY = -100.f;
@@ -194,8 +198,8 @@ void main_menu::load()
     MM_Keys_D = AEGfxTextureLoad("Assets/MainMenu/mm_D.png");
     MM_Keys_D_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/mm_D_Hover.png");
 
-    MM_Keys_Spacebar = AEGfxTextureLoad("Assets/MainMenu/mm_Spacebar.png");
-    MM_Keys_Spacebar_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/mm_SpacebarActivated.png");
+    MM_Keys_Spacebar = AEGfxTextureLoad("Assets/MainMenu/mm_Mouse.png");
+    MM_Keys_Spacebar_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/mm_MouseActivated.png");
 }
 
 void main_menu::init()
@@ -406,6 +410,16 @@ void main_menu::update()
             d_ButtonHeight = Lerp(d_ButtonHeight, w_OriginalButtonHeight, lerpSpeed);
         }
 
+        // Mouse click update tentative
+        if (AEInputCheckTriggered(AEVK_LBUTTON))
+        {
+            LMB_KeyPressed = true;
+        }
+        else
+        {
+            LMB_KeyPressed = false;
+        }
+
         if (AEVec2Distance(&MMplanet.position, &MMplayer.position) <= (MMplanet.size / 2 + MMplanet.orbit_range))
         {
             MMplayer.direction = static_cast<f32>(atan2(MMplayer.position.y - MMplanet.position.y, MMplayer.position.x - MMplanet.position.x));
@@ -522,7 +536,15 @@ void main_menu::update()
             spacebar_ButtonHeight = Lerp(spacebar_ButtonHeight, spacebar_OriginalHeight, lerpSpeed);
         }
 
-
+        // Mouse click update tentative
+        if (AEInputCheckTriggered(AEVK_LBUTTON))
+        {
+            LMB_KeyPressed = true;
+        }
+        else
+        {
+            LMB_KeyPressed = false;
+        }
 
         // ================================
         // Update player and beam position
@@ -1009,6 +1031,15 @@ void main_menu::draw()
             {
                 RenderMMBackground.RenderSprite(MM_Keys_Spacebar, spacebar_ButtonX, spacebar_ButtonY, spacebar_ButtonWidth, spacebar_ButtonHeight, pMeshMM);
             }
+
+            if (LMB_KeyPressed)
+            {
+                RenderMMBackground.RenderSprite(MM_LMB_ACTIVE, spacebar_ButtonX+100.f, spacebar_ButtonY+100.f, spacebar_ButtonWidth, spacebar_ButtonHeight, pMeshMM);
+            }
+            else
+            {
+                RenderMMBackground.RenderSprite(MM_LMB, spacebar_ButtonX, spacebar_ButtonY, spacebar_ButtonWidth, spacebar_ButtonHeight, pMeshMM);
+            }
         }
     }
 }
@@ -1052,6 +1083,8 @@ void main_menu::unload()
     AEGfxTextureUnload(MM_Keys_D);
     AEGfxTextureUnload(MM_Keys_Spacebar);
     AEGfxTextureUnload(MM_Keys_Spacebar_ACTIVE);
+    AEGfxTextureUnload(MM_LMB_ACTIVE);
+    AEGfxTextureUnload(MM_LMB);
 
 }
 
