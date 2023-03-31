@@ -126,11 +126,11 @@ void main_level::update()
 
 	if (!is_paused)
 	{
+		camera.update(g_dt, player);
 		planet.update(g_dt);
 		player.update(g_dt);
 		space_station.update(g_dt, player, player_ui);
 		player_proj.update(g_dt, player, player_ui);
-		camera.update(g_dt, player);
 		drone.update(g_dt, player, player_ui);
 
 		shuttle.update(g_dt, player);

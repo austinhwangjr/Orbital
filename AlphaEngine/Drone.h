@@ -38,6 +38,7 @@ struct Drone
 	f32				direction;
 	int				current_capacity;
 	int				max_capacity;
+	bool			first_drone;
 
 	// =============
 	// Cooldown Bar

@@ -24,6 +24,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #define DEBRIS_SCORE		100
 #define UPGRADE_COUNT		5
 #define LOST_OVERLAY_TIME	2
+#define HUD_BUFFER			50
 
 enum BUTTON_TYPE 
 {
@@ -108,6 +109,13 @@ struct PlayerUI
 	AEMtx33		lost_overlay_transform;
 	f32			lost_overlay_timer;
 
+	//--------------------Shop Indicator--------------------
+	AEMtx33		shop_indicator_transform;
+	f32			shop_indicator_width, shop_indicator_height;
+	f32			shop_indicator_timer;
+	f32			shop_indicator_speed;
+	bool		clicked_on_shop;
+
 	void load();
 	void init();
 	void update(f32, Player&, WaveManager const&);
@@ -125,4 +133,5 @@ struct PlayerUI
 	void tutorial_open();
 	void tutorial_closed();
 	void close_tutorial();
+	void tutorial(WaveManager const&);
 };

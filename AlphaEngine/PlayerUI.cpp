@@ -6,7 +6,7 @@
 \par    	email: jingruiaustin.hwang\@digipen.edu
 					ruianryan.t\@digipen.edu
 \date   	March 28, 2023
-\brief		This file contains the definition of functions for the player 
+\brief		This file contains the definition of functions for the player
 			UI (user interface).
 
 			Ryan - All tutorial elements
@@ -15,7 +15,7 @@ Copyright (C) 2023 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
 prior written consent of DigiPen Institute of Technology is prohibited.
  */
-/******************************************************************************/
+ /******************************************************************************/
 #include <iostream>
 #include <vector>
 #include <string>
@@ -38,6 +38,7 @@ AEGfxTexture* upgrade_level_hollow_tex;
 AEGfxTexture* upgrade_level_solid_tex;
 AEGfxTexture* player_hud_tex;
 AEGfxTexture* shuttle_lost_tex;
+AEGfxTexture* shop_indicator_tex;
 
 // Upgrade preview textures
 AEGfxTexture* speed_hover_tex;
@@ -54,8 +55,6 @@ AEGfxTexture* space_station_button_tex;
 // Variables for general UI
 std::string	  score, credits, capacity;
 extern s8	  font_id;
-static int	  LOSE_CONDITION;			// Number of shuttles allowed to be destroyed before failure
-
 
 // Variables for shop
 extern s8	  font_id_shop;
@@ -63,9 +62,6 @@ extern s8	  font_id_shop;
 // Vector of buttons and space stations
 std::vector<ShopOption> button_vector;
 extern std::vector<SpaceStation> space_station_vector;
-
-//WaveManager DATA MAP
-extern std::map<std::string, f32> 	WaveManagerDataMap;
 
 /******************************************************************************/
 /*!
@@ -75,31 +71,30 @@ extern std::map<std::string, f32> 	WaveManagerDataMap;
 void PlayerUI::load()
 {
 	// Load general UI textures
-	shop_icon_tex				= AEGfxTextureLoad("Assets/MainLevel/ml_YellowButtonBackground.png");
-	shop_open_tex				= AEGfxTextureLoad("Assets/MainLevel/ml_ShopOpenButton.png");
-	shop_close_tex				= AEGfxTextureLoad("Assets/MainLevel/ml_ShopCloseButton.png");
-	space_station_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_SpaceStation.png");
-	shop_background_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_ShopBackground.png");
-	tutorial_open_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_TutorialBackground.png");
-	tutorial_background_tex		= AEGfxTextureLoad("Assets/MainLevel/ml_TutorialBackground.png");
-	upgrade_level_hollow_tex	= AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelHollow.png");
-	upgrade_level_solid_tex		= AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelSolid.png");
-	player_hud_tex				= AEGfxTextureLoad("Assets/MainLevel/ml_HeadsUpDisplay.png");
-	shuttle_lost_tex			= AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
+	shop_icon_tex = AEGfxTextureLoad("Assets/MainLevel/ml_YellowButtonBackground.png");
+	shop_open_tex = AEGfxTextureLoad("Assets/MainLevel/ml_ShopOpenButton.png");
+	shop_close_tex = AEGfxTextureLoad("Assets/MainLevel/ml_ShopCloseButton.png");
+	space_station_tex = AEGfxTextureLoad("Assets/MainLevel/ml_SpaceStation.png");
+	shop_background_tex = AEGfxTextureLoad("Assets/MainLevel/ml_ShopBackground.png");
+	tutorial_open_tex = AEGfxTextureLoad("Assets/MainLevel/ml_TutorialBackground.png");
+	tutorial_background_tex = AEGfxTextureLoad("Assets/MainLevel/ml_TutorialBackground.png");
+	upgrade_level_hollow_tex = AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelHollow.png");
+	upgrade_level_solid_tex = AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelSolid.png");
+	player_hud_tex = AEGfxTextureLoad("Assets/MainLevel/ml_HeadsUpDisplay.png");
+	shuttle_lost_tex = AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
+	shop_indicator_tex = AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
 
 	// Upgrade preview textures
-	speed_hover_tex				= AEGfxTextureLoad("Assets/MainLevel/ml_MovSpeedUpgradePreview.png");
-	capacity_hover_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_CapacityUpgradePreview.png");
-	strength_hover_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_BeamStrengthUpgradePreview.png");
+	speed_hover_tex = AEGfxTextureLoad("Assets/MainLevel/ml_MovSpeedUpgradePreview.png");
+	capacity_hover_tex = AEGfxTextureLoad("Assets/MainLevel/ml_CapacityUpgradePreview.png");
+	strength_hover_tex = AEGfxTextureLoad("Assets/MainLevel/ml_BeamStrengthUpgradePreview.png");
 
 	// Shop button textures
-	mov_speed_button_tex		= AEGfxTextureLoad("Assets/MainLevel/ml_MovSpeedUpgradeButton.png");
-	capacity_button_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_CapacityUpgradeButton.png");
-	strength_button_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_BeamStrengthUpgradeButton.png");
-	drone_button_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_DroneButton.png");
-	space_station_button_tex	= AEGfxTextureLoad("Assets/MainLevel/ml_SpaceStationButton.png");
-
-	LOSE_CONDITION = WaveManagerDataMap["Lose_Condition"];
+	mov_speed_button_tex = AEGfxTextureLoad("Assets/MainLevel/ml_MovSpeedUpgradeButton.png");
+	capacity_button_tex = AEGfxTextureLoad("Assets/MainLevel/ml_CapacityUpgradeButton.png");
+	strength_button_tex = AEGfxTextureLoad("Assets/MainLevel/ml_BeamStrengthUpgradeButton.png");
+	drone_button_tex = AEGfxTextureLoad("Assets/MainLevel/ml_DroneButton.png");
+	space_station_button_tex = AEGfxTextureLoad("Assets/MainLevel/ml_SpaceStationButton.png");
 }
 
 /******************************************************************************/
@@ -110,12 +105,12 @@ void PlayerUI::load()
 void PlayerUI::init()
 {
 	// Player UI
-	player_hud_width	= g_windowWidth;
-	player_hud_height	= g_windowHeight;
+	player_hud_width = g_windowWidth + HUD_BUFFER;
+	player_hud_height = g_windowHeight + HUD_BUFFER;
 
 	// Add buttons to vector
 	ShopOption shop_open_button{};
-	shop_open_button.width	= 70.f;
+	shop_open_button.width = 70.f;
 	shop_open_button.height = 70.f;
 	shop_open_button.button_type = SHOP_OPEN;
 	button_vector.push_back(shop_open_button);
@@ -156,32 +151,32 @@ void PlayerUI::init()
 	}
 
 	ShopOption tutorial_button{};
-	tutorial_button.width		= 70.f;
-	tutorial_button.height		= 70.f;
+	tutorial_button.width = 70.f;
+	tutorial_button.height = 70.f;
 	tutorial_button.button_type = TUTORIAL_OPEN;
 	button_vector.push_back(tutorial_button);
 
 	// Not in placing mode initially
-	placing_drone			= false;
-	placing_station			= false;
-	drone_placement_flag	= false;
-	station_placement_flag	= false;
+	placing_drone = false;
+	placing_station = false;
+	drone_placement_flag = false;
+	station_placement_flag = false;
 
 	// Shop is closed initially
-	shop_triggered			= false;
-	shop_transition			= false;
+	shop_triggered = false;
+	shop_transition = false;
 
 	// Shop background
-	shop_bg_width	= g_windowWidth * 0.85f;
-	shop_bg_height	= g_windowHeight * 0.85f;
+	shop_bg_width = g_windowWidth * 0.85f;
+	shop_bg_height = g_windowHeight * 0.85f;
 
 	// Tutorial is opened initially
-	tutorial_triggered	= true;
+	tutorial_triggered = true;
 	tutorial_transition = false;
 
 	// Tutorial background
-	tutorial_bg_width	= static_cast<f32>(12 * FONT_ID_SIZE);
-	tutorial_bg_height	= static_cast<f32>(10 * FONT_ID_SIZE);
+	tutorial_bg_width = static_cast<f32>(12 * FONT_ID_SIZE);
+	tutorial_bg_height = static_cast<f32>(10 * FONT_ID_SIZE);
 
 	// Set the offset of the shop
 	shop_offset = g_windowWidth;
@@ -196,12 +191,22 @@ void PlayerUI::init()
 	upgrade_preview_size = 400.f;
 
 	// Timer for shop transition
-	shop_trans_timer		= 0.f;
-	shop_trans_duration		= 1.f;
+	shop_trans_timer = 0.f;
+	shop_trans_duration = 1.f;
 
 	// Timer for tutorial transition
-	tutorial_trans_timer	= 0.f;
+	tutorial_trans_timer = 0.f;
 	tutorial_trans_duration = 1.f;
+
+	// Timer for shuttle lost overlay
+	lost_overlay_timer = 0.f;
+
+	// Shop Indicator
+	shop_indicator_width = 70.f;
+	shop_indicator_height = 70.f;
+	shop_indicator_timer = 0.f;
+	shop_indicator_speed = 3.f;
+	clicked_on_shop = false;
 }
 
 /******************************************************************************/
@@ -213,6 +218,7 @@ void PlayerUI::update(f32 frame_time, Player& player, WaveManager const& wave_ma
 {
 	// Shop transitions
 	if (shop_triggered) {
+		clicked_on_shop = true;
 		// Start transition
 		if (shop_transition) {
 			// Adjust shop offset
@@ -350,6 +356,17 @@ void PlayerUI::update(f32 frame_time, Player& player, WaveManager const& wave_ma
 	}
 	if (lost_overlay_timer > 0.f) lost_overlay_timer -= frame_time;
 
+	// Blinking indicator for shop icon
+	if (wave_manager.wave_completed)
+	{
+		// Expanding indicator if not clicked on shop yet
+		// When shop clicked removed indicator
+		shop_indicator_timer = (!clicked_on_shop) ? shop_indicator_timer + frame_time : 0.f;
+
+		// If player skips the wave interval
+		if (AEInputCheckTriggered(AEVK_R)) shop_indicator_timer = 0.f;
+	}
+
 	// =======================
 	// Calculate the matrices
 	// =======================
@@ -362,6 +379,14 @@ void PlayerUI::update(f32 frame_time, Player& player, WaveManager const& wave_ma
 	AEMtx33Trans(&trans, g_camPos.x, g_camPos.y);
 	AEMtx33Concat(&lost_overlay_transform, &rot, &scale);
 	AEMtx33Concat(&lost_overlay_transform, &trans, &lost_overlay_transform);
+
+	// Shop Indicator
+	// Use AESin() to produce oscillating effect, multiply by 3 to speed up effect
+	AEMtx33Scale(&scale, shop_indicator_width * (1 + AESin(shop_indicator_timer * shop_indicator_speed)), shop_indicator_height * (1 + AESin(shop_indicator_timer * shop_indicator_speed)));
+	AEMtx33Rot(&rot, 0.f);
+	AEMtx33Trans(&trans, button_vector[SHOP_OPEN].position.x, button_vector[SHOP_OPEN].position.y);
+	AEMtx33Concat(&shop_indicator_transform, &rot, &scale);
+	AEMtx33Concat(&shop_indicator_transform, &trans, &shop_indicator_transform);
 
 	// Player HUD
 	AEMtx33Scale(&scale, player_hud_width, player_hud_height);
@@ -438,7 +463,7 @@ void PlayerUI::update(f32 frame_time, Player& player, WaveManager const& wave_ma
 void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wave_manager)
 {
 	AEGfxSetBlendColor(0.f, 0.f, 0.f, 0.f);
-	
+
 	// Losing a shuttle
 	if (lost_overlay_timer > 0.f)
 	{
@@ -448,6 +473,11 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 	}
 	AEGfxSetTintColor(1.f, 1.f, 1.f, 1.f);
+
+	// Shop Indicator
+	AEGfxTextureSet(shop_indicator_tex, 0, 0);
+	AEGfxSetTransform(shop_indicator_transform.m);
+	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
 	// Player HUD
 	AEGfxTextureSet(player_hud_tex, 0, 0);
@@ -469,7 +499,7 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 
 	// Capacity to fade to red when close to max capacity
 	AEGfxPrint(font_id, const_cast<s8*>(capacity.c_str()),
-		static_cast<f32>((capacity_pos.x - (0.5f * FONT_ID_SIZE)) / ( g_windowWidth/ 2.f)),
+		static_cast<f32>((capacity_pos.x - (0.5f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
 		static_cast<f32>((capacity_pos.y + (0.5f * FONT_ID_SIZE)) / (g_windowHeight / 2.f)),
 		0.8f, 1.f, static_cast<f32>((player.max_capacity + player.capacity_level - player.current_capacity)) / static_cast<f32>((player.max_capacity + player.capacity_level)),
 		static_cast<f32>((player.max_capacity + player.capacity_level - player.current_capacity)) / static_cast<f32>((player.max_capacity + player.capacity_level)));
@@ -658,19 +688,19 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 
 		if (button.button_type == MOVEMENT_SPEED)
 			shop_text = "Movement Speed";
-		
+
 		else if (button.button_type == CAPACITY)
 			shop_text = "Increase Capacity";
-		
+
 		else if (button.button_type == TRACTOR_BEAM_STRENGTH)
 			shop_text = "Beam Strength";
-		
+
 		else if (button.button_type == CREATE_DRONE)
 			shop_text = "Drone";
-		
+
 		else if (button.button_type == SPACE_STATION)
 			shop_text = "Space Station";
-		
+
 		AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()),
 			(button.position.x - button.width / 2.f - g_camPos.x) / (g_windowWidth / 2.f),
 			(button.position.y - button.height / 2.f - g_camPos.y) / (g_windowHeight / 2.f),
@@ -683,7 +713,216 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 	shop_text = "PLACEABLES";
 	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), 0.28f + shop_offset / (g_windowWidth / 2.f), 0.7f, 3.f, 0.f, 0.f, 0.f);
 
+	// Placed into function to avoid cluttering draw
+	tutorial(wave_manager);
+}
 
+/******************************************************************************/
+/*!
+	Clean Object Instances
+*/
+/******************************************************************************/
+void PlayerUI::free()
+{
+	button_vector.clear();
+}
+
+/******************************************************************************/
+/*!
+	Free Textures
+*/
+/******************************************************************************/
+void PlayerUI::unload()
+{
+	AEGfxTextureUnload(shop_icon_tex);
+	AEGfxTextureUnload(shop_open_tex);
+	AEGfxTextureUnload(shop_close_tex);
+	AEGfxTextureUnload(space_station_tex);
+	AEGfxTextureUnload(shop_background_tex);
+	AEGfxTextureUnload(tutorial_open_tex);
+	AEGfxTextureUnload(tutorial_background_tex);
+	AEGfxTextureUnload(upgrade_level_hollow_tex);
+	AEGfxTextureUnload(upgrade_level_solid_tex);
+	AEGfxTextureUnload(player_hud_tex);
+	AEGfxTextureUnload(speed_hover_tex);
+	AEGfxTextureUnload(capacity_hover_tex);
+	AEGfxTextureUnload(strength_hover_tex);
+	AEGfxTextureUnload(mov_speed_button_tex);
+	AEGfxTextureUnload(capacity_button_tex);
+	AEGfxTextureUnload(strength_button_tex);
+	AEGfxTextureUnload(drone_button_tex);
+	AEGfxTextureUnload(space_station_button_tex);
+	AEGfxTextureUnload(shuttle_lost_tex);
+	AEGfxTextureUnload(shop_indicator_tex);
+}
+
+/******************************************************************************/
+/*!
+	Additional Functions
+*/
+/******************************************************************************/
+// Shop is open
+void PlayerUI::shop_open(Player& player)
+{
+	// ===================
+	// Check player input
+	// ===================
+
+	// Player clicks outside shop
+	if (click_outside_shop() || AEInputCheckTriggered(AEVK_ESCAPE))
+		close_shop();
+
+	else {
+		// =================
+		// Shop interaction
+		// =================
+
+		for (int i = 0; i < button_vector.size(); ++i) {
+			ShopOption& button = button_vector[i];
+
+			if (button_clicked(button)) {
+				if (button.button_type == MOVEMENT_SPEED) {
+					if (player.credits >= mov_speed_cost && player.mov_speed_level < MAX_MOV_SPEED_LVL) {
+						player.credits -= mov_speed_cost;
+						player.mov_speed_level++;
+					}
+				}
+				else if (button.button_type == CAPACITY) {
+					if (player.credits >= capacity_cost && player.capacity_level < MAX_CAPACITY_LVL) {
+						player.credits -= capacity_cost;
+						player.capacity_level++;
+					}
+				}
+				else if (button.button_type == TRACTOR_BEAM_STRENGTH) {
+					if (player.credits >= beam_strength_cost && player.beam_level < MAX_BEAM_STRENGTH_LVL) {
+						player.credits -= beam_strength_cost;
+						player.beam_level++;
+					}
+				}
+				else if (button.button_type == CREATE_DRONE || button.button_type == SPACE_STATION) {
+					if (button.button_type == CREATE_DRONE && !placing_drone && player.credits >= drone_cost)
+						placing_drone = true;
+
+					else if (button.button_type == SPACE_STATION && !placing_station && player.credits >= space_station_cost)
+						placing_station = true;
+
+					close_shop();
+				}
+			}
+		}
+	}
+}
+
+// Shop is closed
+void PlayerUI::shop_closed()
+{
+	// Open the shop and start transition
+	if (button_clicked(button_vector[SHOP_OPEN])) {
+		shop_triggered = true;
+		shop_transition = true;
+	}
+}
+
+// Function to close shop
+void PlayerUI::close_shop()
+{
+	// Close shop
+	shop_triggered = false;
+	shop_transition = true;
+}
+
+// Check if button is clicked
+bool PlayerUI::button_clicked(ShopOption button)
+{
+	// Get position of each side of button
+	f32 button_left = button.position.x - button.width / 2.f;
+	f32 button_right = button.position.x + button.width / 2.f;
+	f32 button_top = button.position.y + button.height / 2.f;
+	f32 button_bottom = button.position.y - button.height / 2.f;
+
+	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+		if ((button_left < g_mouseWorld.x) && (button_right > g_mouseWorld.x)) {
+			if ((button_bottom < g_mouseWorld.y) && (button_top > g_mouseWorld.y)) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+// Check if LEFT MOUSE is triggered when cursor is outside shop
+bool PlayerUI::click_outside_shop()
+{
+	// Get position of each side of shop background
+	f32 shop_background_left = g_camPos.x - shop_bg_width / 2.f;
+	f32 shop_background_right = g_camPos.x + shop_bg_width / 2.f;
+	f32 shop_background_top = g_camPos.y + shop_bg_height / 2.f;
+	f32 shop_background_bottom = g_camPos.y - shop_bg_height / 2.f;
+
+	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+		// Left/right/top/bottom border
+		if ((g_mouseWorld.x > (g_camPos.x - static_cast<f32>(g_windowWidth) / 2.f) && g_mouseWorld.x < shop_background_left) ||
+			(g_mouseWorld.x > shop_background_right && g_mouseWorld.x < (g_camPos.x + static_cast<f32>(g_windowWidth) / 2.f)) ||
+			(g_mouseWorld.y > (g_camPos.y - static_cast<f32>(g_windowHeight) / 2.f) && g_mouseWorld.y < shop_background_bottom) ||
+			(g_mouseWorld.y > shop_background_top && g_mouseWorld.y < (g_camPos.y + static_cast<f32>(g_windowHeight) / 2.f)))
+
+			return true;
+	}
+
+	return false;
+}
+
+// Check if cursor is hovering over button
+bool PlayerUI::hover_over_button(ShopOption button)
+{
+	// Get position of each side of button
+	f32 button_left = button.position.x - button.width / 2.f;
+	f32 button_right = button.position.x + button.width / 2.f;
+	f32 button_top = button.position.y + button.height / 2.f;
+	f32 button_bottom = button.position.y - button.height / 2.f;
+
+	if ((button_left < g_mouseWorld.x) && (button_right > g_mouseWorld.x)) {
+		if ((button_bottom < g_mouseWorld.y) && (button_top > g_mouseWorld.y)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+// Tutorial box is open
+void PlayerUI::tutorial_open()
+{
+	// ===================
+	// Check player input
+	// ===================
+
+	// Player clicks outside tutorial
+	if (button_clicked(button_vector[TUTORIAL_OPEN]) || AEInputCheckTriggered(AEVK_ESCAPE))
+		close_tutorial();
+}
+
+// Tutorial box is closed
+void PlayerUI::tutorial_closed()
+{
+	// Open the tutorial box and start transition
+	if (button_clicked(button_vector[TUTORIAL_OPEN])) {
+		tutorial_triggered = true;
+		tutorial_transition = true;
+	}
+}
+
+// Function to close tutorial box
+void PlayerUI::close_tutorial()
+{
+	// Close tutorial
+	tutorial_triggered = false;
+	tutorial_transition = true;
+}
+
+void PlayerUI::tutorial(WaveManager const& wave_manager)
+{
 	// Tutorial text---------------------------------------------------------------------------------------------------------------------------------------------------
 	AEVec2 tutorial_pos;
 	std::string tutorial;
@@ -820,9 +1059,17 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 			1.2f, 1.f, 1.f, 1.f);
 	}
 
-	// Text for first wave
-	if (1 == wave_manager.wave_number)
+	// Guide for first few waves
+	if (wave_manager.wave_number < 4)
 	{
+		tutorial = "You can purchase more at the shop!";
+		AEVec2Sub(&tutorial_pos, &space_station_vector[0].position, &camera.position);
+
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+			static_cast<f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) / 6.f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
+			static_cast<f32>((tutorial_pos.y + (5 * FONT_ID_SIZE)) / (g_windowHeight / 2)),
+			1.f, 1.f, 1.f, 1.f);
+
 		tutorial = "LMB     Unload Debris Here!";
 		AEVec2Sub(&tutorial_pos, &space_station_vector[0].position, &camera.position);
 
@@ -849,14 +1096,37 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 				static_cast<f32>((tutorial_pos.y + FONT_ID_SIZE) / (g_windowHeight / 2.f)),
 				1.f, 1.f, 1.f, 1.f);
 
-			tutorial = "Good Job!";
-			AEVec2Sub(&tutorial_pos, &planet_vector[0].position, &camera.position);
+			if (wave_manager.shuttle_destroyed)
+			{
+				tutorial = "Oh no! A shuttle has crashed!";
+				AEVec2Sub(&tutorial_pos, &planet_vector[0].position, &camera.position);
 
-			// Draw timer at center of planet using position calculated above
-			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
-				static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) / 4.5f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
-				static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 2) / (g_windowHeight / 2.f)),
-				1.5f, 1.f, 1.f, 1.f);
+				// Draw timer at center of planet using position calculated above
+				AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+					static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) / 4.5f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
+					static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 4.5) / (g_windowHeight / 2.f)),
+					1.5f, 1.f, 1.f, 1.f);
+
+				tutorial = "Clear debris to help them leave!";
+				AEVec2Sub(&tutorial_pos, &planet_vector[0].position, &camera.position);
+
+				// Draw timer at center of planet using position calculated above
+				AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+					static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) / 4.5f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
+					static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 3.5) / (g_windowHeight / 2.f)),
+					1.5f, 1.f, 1.f, 1.f);
+			}
+			else
+			{
+				tutorial = "Good Job!";
+				AEVec2Sub(&tutorial_pos, &planet_vector[0].position, &camera.position);
+
+				// Draw timer at center of planet using position calculated above
+				AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+					static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) / 4.5f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
+					static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 4.f) / (g_windowHeight / 2.f)),
+					1.5f, 1.f, 1.f, 1.f);
+			}
 
 			tutorial = "Shuttles that escape reward you with credits!";
 			AEVec2Sub(&tutorial_pos, &planet_vector[0].position, &camera.position);
@@ -876,7 +1146,7 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 				static_cast <f32>((tutorial_pos.y - FONT_ID_SIZE) / (g_windowHeight / 2.f)),
 				1.5f, 1.f, 1.f, 1.f);
 
-			tutorial = "No more than       can be destroyed!";
+			tutorial = "No more than       can be destroyed per wave!";
 			AEVec2Sub(&tutorial_pos, &planet_vector[0].position, &camera.position);
 
 			// Draw timer at center of planet using position calculated above
@@ -885,13 +1155,14 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 				static_cast <f32>((tutorial_pos.y - (FONT_ID_SIZE * 3.5)) / (g_windowHeight / 2.f)),
 				1.5f, 1.f, 1.f, 1.f);
 
+			extern int LOSE_CONDITION;
 			tutorial = std::to_string(LOSE_CONDITION);
 			AEVec2Sub(&tutorial_pos, &planet_vector[0].position, &camera.position);
 
 			// Draw timer at center of planet using position calculated above
 			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
-				static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) * 1.25f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
-				static_cast <f32>((tutorial_pos.y - (FONT_ID_SIZE * 3.5)) / (g_windowHeight / 2.f)),
+				static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) * 3.f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
+				static_cast <f32>((tutorial_pos.y - (FONT_ID_SIZE * 4)) / (g_windowHeight / 2.f)),
 				2.5f, 1.f, 0.f, 0.f);
 		}
 
@@ -905,7 +1176,7 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 
 				// Shuttle Tutorial on Planet
 				tutorial = "Shuttles are leaving soon. They can crash into debris!";
-				
+
 				// Draw timer at center of planet using position calculated above
 				AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
 					static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) / 4.5f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
@@ -919,7 +1190,7 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 					static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) / 4.5f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
 					static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 4.25) / (g_windowHeight / 2.f)),
 					1.5f, 1.f, 1.f, 1.f);
-				
+
 				tutorial = "Do not let them crash!";
 
 				// Draw timer at center of planet using position calculated above
@@ -959,207 +1230,43 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 		}
 	}
 
-}
+	// Tutorial for Planets being added
+	if (2 == wave_manager.planet_count && wave_manager.wave_number < 5 && wave_manager.wave_completed)
+	{
+		tutorial = "A new planet is added every         waves!";
+		AEVec2Sub(&tutorial_pos, &planet_vector[1].position, &camera.position);
 
-/******************************************************************************/
-/*!
-	Clean Object Instances
-*/
-/******************************************************************************/
-void PlayerUI::free()
-{
-	button_vector.clear();
-}
+		// Draw timer at center of planet using position calculated above
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+			static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) / 4.5f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
+			static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 5.5) / (g_windowHeight / 2.f)),
+			1.5f, 1.f, 1.f, 1.f);
 
-/******************************************************************************/
-/*!
-	Free Textures
-*/
-/******************************************************************************/
-void PlayerUI::unload()
-{
-	AEGfxTextureUnload(shop_icon_tex);
-	AEGfxTextureUnload(shop_open_tex);
-	AEGfxTextureUnload(shop_close_tex);
-	AEGfxTextureUnload(space_station_tex);
-	AEGfxTextureUnload(shop_background_tex);
-	AEGfxTextureUnload(tutorial_open_tex);
-	AEGfxTextureUnload(tutorial_background_tex);
-	AEGfxTextureUnload(upgrade_level_hollow_tex);
-	AEGfxTextureUnload(upgrade_level_solid_tex);
-	AEGfxTextureUnload(player_hud_tex);
-	AEGfxTextureUnload(speed_hover_tex);
-	AEGfxTextureUnload(capacity_hover_tex);
-	AEGfxTextureUnload(strength_hover_tex);
-	AEGfxTextureUnload(mov_speed_button_tex);
-	AEGfxTextureUnload(capacity_button_tex);
-	AEGfxTextureUnload(strength_button_tex);
-	AEGfxTextureUnload(drone_button_tex);
-	AEGfxTextureUnload(space_station_button_tex);
-	AEGfxTextureUnload(shuttle_lost_tex);
-}
+		tutorial = "4";
+		AEVec2Sub(&tutorial_pos, &planet_vector[1].position, &camera.position);
 
-/******************************************************************************/
-/*!
-	Additional Functions
-*/
-/******************************************************************************/
-// Shop is open
-void PlayerUI::shop_open(Player& player)
-{
-	// ===================
-	// Check player input
-	// ===================
+		// Draw timer at center of planet using position calculated above
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+			static_cast <f32>((tutorial_pos.x + (static_cast<f32>(tutorial.length()) * 4.5f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
+			static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 5.25) / (g_windowHeight / 2.f)),
+			2.5f, 1.f, 0.f, 0.f);
 
-	// Player clicks outside shop
-	if (click_outside_shop() || AEInputCheckTriggered(AEVK_ESCAPE))
-		close_shop();
+		tutorial = "Notice the drone here? It auto collects debris for you!";
+		AEVec2Sub(&tutorial_pos, &planet_vector[1].position, &camera.position);
 
-	else {
-		// =================
-		// Shop interaction
-		// =================
+		// Draw timer at center of planet using position calculated above
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+			static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) / 4.5f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
+			static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 4) / (g_windowHeight / 2.f)),
+			1.5f, 1.f, 1.f, 1.f);
 
-		for (int i = 0; i < button_vector.size(); ++i) {
-			ShopOption& button = button_vector[i];
+		tutorial = "You can purchase more from the shop!";
+		AEVec2Sub(&tutorial_pos, &planet_vector[1].position, &camera.position);
 
-			if (button_clicked(button)) {
-				if (button.button_type == MOVEMENT_SPEED) {
-					if (player.credits >= mov_speed_cost && player.mov_speed_level < MAX_MOV_SPEED_LVL) {
-						player.credits -= mov_speed_cost;
-						player.mov_speed_level++;
-					}
-				}
-				else if (button.button_type == CAPACITY) {
-					if (player.credits >= capacity_cost && player.capacity_level < MAX_CAPACITY_LVL) {
-						player.credits -= capacity_cost;
-						player.capacity_level++;
-					}
-				}
-				else if (button.button_type == TRACTOR_BEAM_STRENGTH) {
-					if (player.credits >= beam_strength_cost && player.beam_level < MAX_BEAM_STRENGTH_LVL) {
-						player.credits -= beam_strength_cost;
-						player.beam_level++;
-					}
-				}
-				else if (button.button_type == CREATE_DRONE || button.button_type == SPACE_STATION) {
-					if (button.button_type == CREATE_DRONE && !placing_drone && player.credits >= drone_cost)
-						placing_drone = true;
-
-					else if (button.button_type == SPACE_STATION && !placing_station && player.credits >= space_station_cost)
-						placing_station = true;
-
-					close_shop();
-				}
-			}
-		}
+		// Draw timer at center of planet using position calculated above
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+			static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) / 4.5f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
+			static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 2.5f) / (g_windowHeight / 2.f)),
+			1.5f, 1.f, 1.f, 1.f);
 	}
-}
-
-// Shop is closed
-void PlayerUI::shop_closed()
-{
-	// Open the shop and start transition
-	if (button_clicked(button_vector[SHOP_OPEN])) {
-		shop_triggered = true;
-		shop_transition = true;
-	}
-}
-
-// Function to close shop
-void PlayerUI::close_shop()
-{
-	// Close shop
-	shop_triggered = false;
-	shop_transition = true;
-}
-
-// Check if button is clicked
-bool PlayerUI::button_clicked(ShopOption button) 
-{
-	// Get position of each side of button
-	f32 button_left = button.position.x - button.width / 2.f;
-	f32 button_right = button.position.x + button.width / 2.f;
-	f32 button_top = button.position.y + button.height / 2.f;
-	f32 button_bottom = button.position.y - button.height / 2.f;
-
-	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-		if ((button_left < g_mouseWorld.x) && (button_right > g_mouseWorld.x)) {
-			if ((button_bottom < g_mouseWorld.y) && (button_top > g_mouseWorld.y)) {
-				return true;
-			}
-		}
-	}
-
-	return false;
-}
-
-// Check if LEFT MOUSE is triggered when cursor is outside shop
-bool PlayerUI::click_outside_shop()
-{
-	// Get position of each side of shop background
-	f32 shop_background_left = g_camPos.x - shop_bg_width / 2.f;
-	f32 shop_background_right = g_camPos.x + shop_bg_width / 2.f;
-	f32 shop_background_top = g_camPos.y + shop_bg_height / 2.f;
-	f32 shop_background_bottom = g_camPos.y - shop_bg_height / 2.f;
-
-	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-		// Left/right/top/bottom border
-		if ((g_mouseWorld.x > (g_camPos.x - g_windowWidth / 2.f) && g_mouseWorld.x < shop_background_left) ||
-			(g_mouseWorld.x > shop_background_right && g_mouseWorld.x < (g_camPos.x + g_windowWidth / 2.f)) ||
-			(g_mouseWorld.y > (g_camPos.y - g_windowHeight / 2.f) && g_mouseWorld.y < shop_background_bottom) ||
-			(g_mouseWorld.y > shop_background_top && g_mouseWorld.y < (g_camPos.y + g_windowHeight / 2.f)))
-
-			return true;
-	}
-
-	return false;
-}
-
-// Check if cursor is hovering over button
-bool PlayerUI::hover_over_button(ShopOption button)
-{
-	// Get position of each side of button
-	f32 button_left		= button.position.x - button.width / 2.f;
-	f32 button_right	= button.position.x + button.width / 2.f;
-	f32 button_top		= button.position.y + button.height / 2.f;
-	f32 button_bottom	= button.position.y - button.height / 2.f;
-
-	if ((button_left < g_mouseWorld.x) && (button_right > g_mouseWorld.x)) {
-		if ((button_bottom < g_mouseWorld.y) && (button_top > g_mouseWorld.y)) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
-// Tutorial box is open
-void PlayerUI::tutorial_open()
-{
-	// ===================
-	// Check player input
-	// ===================
-
-	// Player clicks outside tutorial
-	if (button_clicked(button_vector[TUTORIAL_OPEN]) || AEInputCheckTriggered(AEVK_ESCAPE))
-		close_tutorial();
-}
-
-// Tutorial box is closed
-void PlayerUI::tutorial_closed()
-{
-	// Open the tutorial box and start transition
-	if (button_clicked(button_vector[TUTORIAL_OPEN])) {
-		tutorial_triggered = true;
-		tutorial_transition = true;
-	}
-}
-
-// Function to close tutorial box
-void PlayerUI::close_tutorial()
-{
-	// Close tutorial
-	tutorial_triggered = false;
-	tutorial_transition = true;
 }

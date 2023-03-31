@@ -122,46 +122,82 @@ void Planets::init()
 /******************************************************************************/
 void Planets::update(f32 frame_time)
 {
+	// FOR EACH PLANET----------------------------------------------------------------------------------------------------------------------------
 	for (size_t i{}; i < planet_vector.size(); i++)
 	{
-		// Only spawn shuttle if wave is completed and planet is not being added (camera transition) and player has orbitted at least once
-		if (!planet_vector[i].wave_complete && !wave_manager.planet_adding && wave_manager.first_contact)
+		if (!wave_manager.wave_completed)
 		{
-			if (planet_vector[i].shuttle_timer <= 0.0)
+			// SHUTTLE SPAWNING-----------------------------------------------------------------------------------------------------------------------
+			// Only spawn shuttle if wave is completed and planet is not being added (camera transition) and player has orbitted at least once
+			if (!planet_vector[i].wave_complete && !wave_manager.planet_adding && wave_manager.first_contact)
 			{
-				AEVec2Zero(&runway_vector[i].velocity);
-				planet_vector[i].shuttle_direction = AERandFloat() * (2 * PI);	// Randomize shuttle direction
+				if (planet_vector[i].shuttle_timer <= 0.0)
+				{
+					AEVec2Zero(&runway_vector[i].velocity);
+					planet_vector[i].shuttle_direction = AERandFloat() * (2 * PI);	// Randomize shuttle direction
+				}
+
+				// Update shuttle timer
+				if (!wave_manager.capacity_full)
+				{
+					planet_vector[i].shuttle_timer += static_cast<f32>(frame_time);
+				}
+
+				// Spawn shuttle when timer exceeds time_to_spawn, next shuttle will have randomized time_to_spawn
+				if (planet_vector[i].shuttle_timer >= planet_vector[i].shuttle_time_to_spawn)
+				{
+					shuttle.spawn(planet_vector[i].id, planet_vector[i].shuttle_direction);	// Spawn shuttle
+					planet_vector[i].current_shuttle--;										// Decrement current_shuttle
+					planet_vector[i].shuttle_timer = 0.0;									// Reset shuttle timer
+					planet_vector[i].shuttle_time_to_spawn = static_cast<f32>(rand() % (SHUTTLE_SPAWN_TIME_MAX - SHUTTLE_SPAWN_TIME_MIN) + SHUTTLE_SPAWN_TIME_MIN);	// Randomize time_to_spawn
+
+					// Resetting runway
+					runway_vector[i].position = planet_vector[i].position;
+					AEVec2Zero(&runway_vector[i].velocity);
+					runway_vector[i].lifespan = RUNWAY_LIFESPAN;
+				}
 			}
 
-			// Update shuttle timer
-			if (!wave_manager.capacity_full)
-			{
-				planet_vector[i].shuttle_timer += static_cast<f32>(frame_time);
-			}
-
+			// RUNWAY STUFF---------------------------------------------------------------------------------------------------------------------------------
 			// Update runway timer
 			runway_vector[i].lifespan -= static_cast<f32>(frame_time);
+			AEVec2 added;
+			AEVec2Zero(&added);
+			// Runway accelerating
+			AEVec2Set(&added, AECos(planet_vector[i].shuttle_direction), AESin(planet_vector[i].shuttle_direction));
+			AEVec2Scale(&added, &added, RUNWAY_MAX_ACCEL * static_cast<f32>(frame_time));
+			AEVec2Add(&runway_vector[i].velocity, &added, &runway_vector[i].velocity);
 
-			// Spawn shuttle when timer exceeds time_to_spawn, next shuttle will have randomized time_to_spawn
-			if (planet_vector[i].shuttle_timer >= planet_vector[i].shuttle_time_to_spawn)
+			// Limiting runway velocity
+			AEVec2Scale(&runway_vector[i].velocity, &runway_vector[i].velocity, 0.99f);
+
+			if (wave_manager.planet_adding)
 			{
-				shuttle.spawn(planet_vector[i].id, planet_vector[i].shuttle_direction);	// Spawn shuttle
-				planet_vector[i].current_shuttle--;										// Decrement current_shuttle
-				planet_vector[i].shuttle_timer = 0.0;									// Reset shuttle timer
-				planet_vector[i].shuttle_time_to_spawn = static_cast<f32>(rand() % (SHUTTLE_SPAWN_TIME_MAX - SHUTTLE_SPAWN_TIME_MIN) + SHUTTLE_SPAWN_TIME_MIN);	// Randomize time_to_spawn
+				// Do not move if transitioning
+				runway_vector[i].position = planet_vector[i].position;
+			}
+			else
+			{
+				// Update runway position
+				runway_vector[i].position.x += runway_vector[i].velocity.x * static_cast<f32>(frame_time);
+				runway_vector[i].position.y += runway_vector[i].velocity.y * static_cast<f32>(frame_time);
+			}
 
-				// Resetting runway
+			// Resetting runway
+			if (runway_vector[i].lifespan <= 0)
+			{
 				runway_vector[i].position = planet_vector[i].position;
 				AEVec2Zero(&runway_vector[i].velocity);
 				runway_vector[i].lifespan = RUNWAY_LIFESPAN;
 			}
 		}
 
+		// PLANET STUFF---------------------------------------------------------------------------------------------------------------------------------
 		// Rotate the planet
 		planet_vector[i].direction += PLANET_ROT_SPEED * static_cast<f32>(frame_time);
 
-		// Update the transform matrix with new direction
 		AEVec2 added;
+		// Update the transform matrix with new direction
 		AEVec2Set(&added, AECos(planet_vector[i].direction), AESin(planet_vector[i].direction));
 		AEMtx33Rot(&planet_vector[i].rotate, planet_vector[i].direction);
 		AEMtx33Concat(&planet_vector[i].transform, &planet_vector[i].rotate, &planet_vector[i].scale);
@@ -175,42 +211,13 @@ void Planets::update(f32 frame_time)
 		AEMtx33Concat(&planet_vector[i].orbit_transform, &planet_vector[i].orbit_translate, &planet_vector[i].orbit_transform);
 
 
-		AEVec2Zero(&added);
-		// Runway accelerating
-		AEVec2Set(&added, AECos(planet_vector[i].shuttle_direction), AESin(planet_vector[i].shuttle_direction));
-		AEVec2Scale(&added, &added, RUNWAY_MAX_ACCEL * static_cast<f32>(frame_time));
-		AEVec2Add(&runway_vector[i].velocity, &added, &runway_vector[i].velocity);
-
-		// Limiting runway velocity
-		AEVec2Scale(&runway_vector[i].velocity, &runway_vector[i].velocity, 0.99f);
-
-		if (wave_manager.planet_adding)
-		{
-			// Do not move if transitioning
-			runway_vector[i].position = planet_vector[i].position;
-		}
-		else
-		{
-			// Update runway position
-			runway_vector[i].position.x += runway_vector[i].velocity.x * static_cast<f32>(frame_time);
-			runway_vector[i].position.y += runway_vector[i].velocity.y * static_cast<f32>(frame_time);
-		}
-
-		// Resetting runway
-		if (runway_vector[i].lifespan <= 0)
-		{
-			runway_vector[i].position = planet_vector[i].position;
-			AEVec2Zero(&runway_vector[i].velocity);
-			runway_vector[i].lifespan = RUNWAY_LIFESPAN;
-		}
-
 		AEMtx33Rot(&runway_vector[i].rotate, planet_vector[i].shuttle_direction - PI);
 		AEMtx33Trans(&runway_vector[i].translate, runway_vector[i].position.x, runway_vector[i].position.y);
 		AEMtx33Concat(&runway_vector[i].transform, &runway_vector[i].rotate, &runway_vector[i].scale);
 		AEMtx33Concat(&runway_vector[i].transform, &runway_vector[i].translate, &runway_vector[i].transform);
 	}
-
-
+	
+	// PLANET GLOW EFFECT--------------------------------------------------------------------------------------------------------------------------------
 	if (player.state == PLAYER_ORBIT)
 	{
 		// Update the Lerp value for the halo scale
@@ -262,7 +269,8 @@ void Planets::draw(AEGfxVertexList* pMesh)
 		AEGfxSetTransform(planet_vector[i].transform.m);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
-		if (!wave_manager.planet_adding && wave_manager.first_contact)
+		// Not Transitioning, Not between Wave Intervals and Planets have shuttles leaving
+		if (!wave_manager.planet_adding && wave_manager.first_contact && !wave_manager.wave_completed && planet_vector[i].current_shuttle)
 		{
 			// Draw runway sprite
 			AEGfxTextureSet(runway_tex, 0, 0);

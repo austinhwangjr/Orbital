@@ -44,7 +44,7 @@ struct WaveManager
 		f32					size;
 	};
 
-	struct Arrow
+	struct iShuttle
 	{
 		AEMtx33				scale;
 		AEMtx33				rotate;

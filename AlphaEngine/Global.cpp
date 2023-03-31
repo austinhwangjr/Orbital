@@ -63,7 +63,7 @@ void Global_UpdateGlobals()
 	g_dt = static_cast<f32>(AEFrameRateControllerGetFrameTime());
 
 	// Get camera position
-	AEGfxGetCamPosition(&g_camPos.x, &g_camPos.y);
+	//AEGfxGetCamPosition(&g_camPos.x, &g_camPos.y);
 
 	// Get mouse coordinates (screen)
 	AEInputGetCursorPosition(&g_mouseScreen_x, &g_mouseScreen_y);

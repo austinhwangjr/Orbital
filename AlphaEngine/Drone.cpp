@@ -86,6 +86,8 @@ void Drone::init(Player player)
 
 	DRONES_MAX				= static_cast<int>(PlanetDataMap["Maximum_Drones"]);
 
+	first_drone				= false;
+
 	// =============
 	// Cooldown Bar
 	// =============
@@ -242,6 +244,15 @@ void Drone::update(f32 frame_time, Player& player, PlayerUI& player_ui)
 		drone_vector_all[current_planet.id].push_back(*this);
 		player.credits -= player_ui.drone_cost;
 		drone_added = true;
+	}
+
+	// Introducing a drone to the player on the second planet
+	if (!first_drone && 2 == planet_vector.size())
+	{
+		current_planet = planet_vector[1];
+		planet_vector[1].current_drones++;
+		drone_vector_all[1].push_back(*this);
+		first_drone = true;
 	}
 
 	// ===================

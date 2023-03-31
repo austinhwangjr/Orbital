@@ -61,6 +61,8 @@ void Camera::update(f32 frame_time, Player& player)
 		follow_player(frame_time, player);
 	}
 
+	AEGfxGetCamPosition(&g_camPos.x, &g_camPos.y);
+	
 	if (next_state != GS_RESTART) {
 		CameraData.clear();
 		CameraDataMap.clear();
