@@ -42,8 +42,8 @@ bool Input::isButtonClicked(float center_x, float center_y, float width, float h
     AEInputGetCursorPosition(&mouseX, &mouseY);
 
     // Get the window width and height
-    int windowWidth = AEGetWindowWidth();
-    int windowHeight = AEGetWindowHeight();
+    int windowWidth = g_windowWidth;
+    int windowHeight = g_windowHeight;
 
     // Convert the click coordinates to normalized device coordinates
     float screen_x = mouseX - (float)windowWidth / 2.0f;
@@ -72,8 +72,8 @@ bool Input::isMouseHover(float center_x, float center_y, float width, float heig
     AEInputGetCursorPosition(&mouseX, &mouseY);
 
     // Get the window width and height
-    int windowWidth = AEGetWindowWidth();
-    int windowHeight = AEGetWindowHeight();
+    int windowWidth = g_windowWidth;
+    int windowHeight = g_windowHeight;
 
     // Convert the mouse coordinates to normalized device coordinates
     float screen_x = mouseX - (float)windowWidth / 2.0f;

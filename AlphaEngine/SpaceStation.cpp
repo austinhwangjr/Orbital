@@ -25,8 +25,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include <string>
 #include "Camera.h"
 #include "Data.h"
-#include "GameStateManager.h"
-
+#include "GameStateList.h"
 
 //VARIABLES FOR COIN AND COOLDOWN BAR
 static float COOLDOWN_HEIGHT;
@@ -34,7 +33,6 @@ static float COOLDOWN_WIDTH;
 static float COOLDOWN_TIME;
 static float COIN_HEIGHT;
 static float COIN_WIDTH;
-
 
 // Textures
 extern AEGfxTexture* space_station_tex;
@@ -44,9 +42,6 @@ extern AEGfxTexture* shop_icon_tex;
 bool space_station_valid_placement = false;
 bool space_station_added;
 static int BUFFER_SAFE_DISTANCE;
-
-// Mouse coordinates
-extern AEVec2 mouse_pos_world;
 
 // Vector of space stations, planets and debris
 std::vector<SpaceStation> space_station_vector;
@@ -58,10 +53,8 @@ std::string capacity_spacestation;
 extern s8 font_id;
 extern Camera camera;
 
-
 // Vector of cooldown bar
 std::vector<Cooldown_Bar> cooldown_vector;
-
 
 //Coin Sprite
 AEGfxTexture* coin_tex;
@@ -70,8 +63,6 @@ std::vector<Coin> coin_vector;
 //IMPORT DATA VECTOR
 std::map<std::string, f32> SpaceStationDataMap;
 std::vector<Data> SpaceStationData;
-
-
 
 void SpaceStation::load()
 {
@@ -97,7 +88,7 @@ void SpaceStation::init()
 	BUFFER_SAFE_DISTANCE	= static_cast<int>(SpaceStationDataMap["Buffer_safe_distance"]);
 }
 
-void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
+void SpaceStation::update(f32 frame_time, Player& player, PlayerUI& player_ui)
 {
 	int safe_position = 0;
 
@@ -126,8 +117,8 @@ void SpaceStation::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 	// if placing space station
 	if (player_ui.placing_station) {
 		// drone follow mouse pos
-		position.x = mouse_pos_world.x;
-		position.y = mouse_pos_world.y;
+		position.x = g_mouseWorld.x;
+		position.y = g_mouseWorld.y;
 
 
 		// =================================
@@ -349,8 +340,8 @@ void SpaceStation::draw(AEGfxVertexList* pMesh, PlayerUI player_ui)
 		AEVec2Sub(&pos, &space_station_vector[i].position, &camera.position);
 		capacity_spacestation = std::to_string(space_station_vector[i].current_capacity) + " / " + std::to_string(space_station_vector[i].max_capacity);
 		AEGfxPrint(font_id, const_cast<s8*>(capacity_spacestation.c_str()),
-			2 * (pos.x - FONT_ID_SIZE) / AEGetWindowWidth(),
-			2 * (pos.y + (3 * FONT_ID_SIZE)) / AEGetWindowHeight(), 1.f, 1.f, 1.f, 1.f);
+			2 * (pos.x - FONT_ID_SIZE) / g_windowWidth,
+			2 * (pos.y + (3 * FONT_ID_SIZE)) / g_windowHeight, 1.f, 1.f, 1.f, 1.f);
 	}
 
 	// ===========

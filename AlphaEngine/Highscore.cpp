@@ -19,7 +19,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include <algorithm>
 #include <string>
 #include "Input.h"
-#include "GameStateManager.h"
+#include "GameStateList.h"
 #include "Graphics.h"
 #include "Highscore.h"
 #include "Global.h"

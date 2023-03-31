@@ -1,0 +1,26 @@
+//---------------Wave Manager--------------------
+/-----Variable------------------Value------------
+Maximum_Planet_To_Be_Spawn	10
+Maximum_Shuttle_Per_Planet	10
+Maximum_Shuttle_Spawn		8
+Minimum_Shuttle_Spawn		4
+Shuttle_Increase_Amount		1
+Wave_Interval_Time		15
+Wave_Add_Planet			4
+Lose_Condition			5
+Starting_Wave_Number		1
+Wave_Progress			0
+Planet_Count			0
+Shuttle_Left_Planet		0
+Shuttle_Destroyed		0
+
+
+
+//--------Planet Distance Indicator--------------
+/-----Variable------------------Value------------
+Indicator_Size			60
+Arrow_Blinker			1
+Blinker_Timer			0
+Blinker_Urgency			0
+Arrow_Size			25
+Arrow_Direction			0

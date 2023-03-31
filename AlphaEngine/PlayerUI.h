@@ -110,7 +110,7 @@ struct PlayerUI
 
 	void load();
 	void init();
-	void update(f64, Player&, WaveManager const&);
+	void update(f32, Player&, WaveManager const&);
 	void draw(AEGfxVertexList*, Player, WaveManager const&);
 	void free();
 	void unload();

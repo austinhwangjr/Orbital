@@ -24,6 +24,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "WaveManager.h"
 #include "Easing.h"
 #include "Data.h"
+#include "GameStateList.h"
 
 //Textures
 AEGfxTexture* planet_tex;
@@ -52,11 +53,16 @@ static int   DRONES_MAX;						// Maximum number of drones on a planet
 static float RUNWAY_LIFESPAN;					// Time taken for runway arrow to reset
 static float RUNWAY_MAX_ACCEL;					// Maximum acceleration value for runway arrow
 
+static int SHUTTLE_SPAWN_MAX;		// Maximum number of shuttles a planet can spawn with
+static int SHUTTLE_SPAWN_MIN;		// Minimum number of shuttles a planet can spawn with
+
 
 // IMPORT DATA VECTOR
 std::map<std::string, f32> 	PlanetDataMap;
 std::vector<Data> 			PlanetData;
 
+//WaveManager DATA MAP
+extern std::map<std::string, f32> 	WaveManagerDataMap;
 
 /******************************************************************************/
 /*!
@@ -99,12 +105,14 @@ void Planets::init()
 	DRONES_MAX					= static_cast<int>(PlanetDataMap["Maximum_Drones"]);
 	RUNWAY_LIFESPAN				= PlanetDataMap["Runway_Lifespan"];
 	RUNWAY_MAX_ACCEL			= PlanetDataMap["Runway_Acceleration"];
+	SHUTTLE_SPAWN_MAX			= WaveManagerDataMap["Maximum_Shuttle_Spawn"];
+	SHUTTLE_SPAWN_MIN			= WaveManagerDataMap["Minimum_Shuttle_Spawn"];
 
 
 	// ============
 	// Planet Halo
 	// ============
-	halo_scale_lerp = 0.f;
+	halo_scale_lerp				= PlanetDataMap["Halo_Indicator"];
 }
 
 /******************************************************************************/
@@ -112,7 +120,7 @@ void Planets::init()
 	Update Planet
 */
 /******************************************************************************/
-void Planets::update(f64 frame_time)
+void Planets::update(f32 frame_time)
 {
 	for (size_t i{}; i < planet_vector.size(); i++)
 	{
@@ -334,8 +342,8 @@ void Planets::spawn(int shuttle_randomize_amount)
 
 	// rand()%(max-min) + min;
 	AEVec2Set(&new_planet.position,
-		static_cast<f32>(rand() % static_cast<int>(get_max_x() - get_min_x() + AEGetWindowWidth()) + (get_min_x() - AEGetWindowWidth())),
-		static_cast<f32>(rand() % static_cast<int>(get_max_y() - get_min_y() + AEGetWindowHeight()) + (get_min_y() - AEGetWindowHeight())));
+		static_cast<f32>(rand() % static_cast<int>(get_max_x() - get_min_x() + g_windowWidth) + (get_min_x() - g_windowWidth)),
+		static_cast<f32>(rand() % static_cast<int>(get_max_y() - get_min_y() + g_windowHeight) + (get_min_y() - g_windowHeight)));
 	check_spawn(new_planet);
 
 	AEMtx33Trans(&new_planet.translate, new_planet.position.x, new_planet.position.y);
@@ -386,8 +394,8 @@ void Planets::check_spawn(Planets& new_planet)
 			if (AEVec2Distance(&planet_vector[i].position, &new_planet.position) < PLANET_SPAWN_BUFFER * (planet_vector[i].size + new_planet.size))
 			{
 				AEVec2Set(&new_planet.position,
-					static_cast<f32>(rand() % static_cast<int>(get_max_x() - get_min_x() + AEGetWindowWidth() + new_planet.size) + (get_min_x() - AEGetWindowWidth() - new_planet.size)),
-					static_cast<f32>(rand() % static_cast<int>(get_max_y() - get_min_y() + AEGetWindowHeight() + new_planet.size) + (get_min_y() - AEGetWindowHeight() - new_planet.size)));
+					static_cast<f32>(rand() % static_cast<int>(get_max_x() - get_min_x() + g_windowWidth + new_planet.size) + (get_min_x() - g_windowWidth - new_planet.size)),
+					static_cast<f32>(rand() % static_cast<int>(get_max_y() - get_min_y() + g_windowHeight + new_planet.size) + (get_min_y() - g_windowHeight - new_planet.size)));
 				(1 == wave_manager.planet_count) ? i-- : i = 0;
 			}
 		}
@@ -399,8 +407,8 @@ void Planets::check_spawn(Planets& new_planet)
 			if (AEVec2Distance(&space_station_vector[i].position, &new_planet.position) < PLANET_SPAWN_BUFFER * (new_planet.orbit_range + new_planet.size))
 			{
 				AEVec2Set(&new_planet.position,
-					static_cast<f32>(rand() % static_cast<int>(get_max_x() - get_min_x() + AEGetWindowWidth() + new_planet.size) + (get_min_x() - AEGetWindowWidth() - new_planet.size)),
-					static_cast<f32>(rand() % static_cast<int>(get_max_y() - get_min_y() + AEGetWindowHeight() + new_planet.size) + (get_min_y() - AEGetWindowHeight() - new_planet.size)));
+					static_cast<f32>(rand() % static_cast<int>(get_max_x() - get_min_x() + g_windowWidth + new_planet.size) + (get_min_x() - g_windowWidth - new_planet.size)),
+					static_cast<f32>(rand() % static_cast<int>(get_max_y() - get_min_y() + g_windowHeight + new_planet.size) + (get_min_y() - g_windowHeight - new_planet.size)));
 				(1 == static_cast<int>(space_station_vector.size())) ? i-- : i = 0;
 
 				planet_check = false;

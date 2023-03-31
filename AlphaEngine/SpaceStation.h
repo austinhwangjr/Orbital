@@ -38,7 +38,7 @@ struct SpaceStation
 
 	void load();
 	void init();
-	void update(f64, Player&, PlayerUI&);
+	void update(f32, Player&, PlayerUI&);
 	void draw(AEGfxVertexList*, PlayerUI);
 	void free();
 	void unload();

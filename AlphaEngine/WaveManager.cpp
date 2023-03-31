@@ -14,12 +14,23 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "AEEngine.h"
 #include "WaveManager.h"
 #include "LoseMenu.h"
-#include "GameStateManager.h"
+#include "GameStateList.h"
 #include "Highscore.h"
 #include "Easing.h"
 #include <iostream>
 #include <string>
 #include <vector>
+#include"Data.h"
+
+//Variables
+static int PLANET_MAX;				// Maximum number of planets
+static int SHUTTLE_MAX;				// Maximum number of shuttles per planet
+static int SHUTTLE_SPAWN_MAX;		// Maximum number of shuttles a planet can spawn with
+static int SHUTTLE_SPAWN_MIN;		// Minimum number of shuttles a planet can spawn with
+static int SHUTTLE_INCREASE_AMOUNT;	// Number of shuttles added after a wave
+static int WAVE_INTERVAL_TIME;		// Down time between waves
+static int WAVE_ADD_PLANET;			// Every nth wave planets will be added on
+static int LOSE_CONDITION;			// Number of shuttles allowed to be destroyed before failure
 
 // Text
 extern s8 font_id;
@@ -28,6 +39,10 @@ const char* print_string;
 AEGfxTexture* indicator_tex;
 AEGfxTexture* arrow_tex;
 AEGfxTexture* lineTexture;
+
+// IMPORT DATA VECTOR
+std::map<std::string, f32> 	WaveManagerDataMap;
+std::vector<Data> 			WaveManagerData;
 
 //extern AEGfxTexture* space_station_tex;
 
@@ -47,6 +62,7 @@ void WaveManager::load()
 	//indicator_tex = AEGfxTextureLoad("Assets/MainLevel/ml_PlanetTexture.png");
 	arrow_tex = AEGfxTextureLoad("Assets/MainLevel/ml_arrow.png");
 	lineTexture = AEGfxTextureLoad("Assets/MainLevel/line.png");
+	ImportDataFromFile("Assets/GameObjectData/WaveManagerData.txt", WaveManagerData, WaveManagerDataMap);
 }
 
 /******************************************************************************/
@@ -56,27 +72,38 @@ void WaveManager::load()
 /******************************************************************************/
 void WaveManager::init()
 {
-	w_width = static_cast<f32>(AEGetWindowWidth());
-	w_height = static_cast<f32>(AEGetWindowHeight());
+
+	PLANET_MAX				= WaveManagerDataMap["Maximum_Planet_To_Be_Spawn"];
+	SHUTTLE_MAX				= WaveManagerDataMap["Maximum_Shuttle_Per_Planet"];
+	SHUTTLE_SPAWN_MAX		= WaveManagerDataMap["Maximum_Shuttle_Spawn"];
+	SHUTTLE_SPAWN_MIN		= WaveManagerDataMap["Minimum_Shuttle_Spawn"];
+	SHUTTLE_INCREASE_AMOUNT = WaveManagerDataMap["Shuttle_Increase_Amount"];
+	WAVE_INTERVAL_TIME		= WaveManagerDataMap["Wave_Interval_Time"];
+	WAVE_ADD_PLANET			= WaveManagerDataMap["Wave_Add_Planet"];
+	LOSE_CONDITION			= WaveManagerDataMap["Lose_Condition"];
+
+
+	w_width = static_cast<f32>(g_windowWidth);
+	w_height = static_cast<f32>(g_windowHeight);
 
 	std::cout << '\n' << "Wave Manager Initialized." << '\n' << '\n';
 
-	wave_completed = false;
-	wave_number = 1;
-	wave_progress = 0;
-	wave_interval_timer = -(WAVE_INTERVAL_TIME * 2); // Increased time for first wave tutorial
+	wave_completed			= false;
+	wave_number				= WaveManagerDataMap["Starting_Wave_Number"];
+	wave_progress			= WaveManagerDataMap["Wave_Progress"];
+	wave_interval_timer		= -(WAVE_INTERVAL_TIME * 2); // Increased time for first wave tutorial
 
-	planet_count = 0;
-	planet_adding = true;
+	planet_count			= WaveManagerDataMap["Planet_Count"];
+	planet_adding			= true;
 
-	shuttle_left_planet = 0;
-	shuttle_destroyed = 0;
-	shuttle_has_escaped = false;
-	shuttle_has_collided = false;
+	shuttle_left_planet		= WaveManagerDataMap["Shuttle_Left_Planet"];
+	shuttle_destroyed		= WaveManagerDataMap["Shuttle_Destroyed"];
+	shuttle_has_escaped		= false;
+	shuttle_has_collided	= false;
 
-	first_contact = false;
-	capacity_full = false;
-	station_tutorial = false;
+	first_contact			= false;
+	capacity_full			= false;
+	station_tutorial		= false;
 
 	planet.spawn(rand() % (SHUTTLE_SPAWN_MAX - SHUTTLE_SPAWN_MIN) + SHUTTLE_SPAWN_MIN);
 	planet.add_runway(planet_vector[0].position);
@@ -93,7 +120,7 @@ void WaveManager::init()
 	Update Wave Manager
 */
 /******************************************************************************/
-void WaveManager::update(f64 frame_time)
+void WaveManager::update(f32 frame_time)
 {
 	// Lose Condition--------------------------------------------------------
 	if (shuttle_destroyed == LOSE_CONDITION)
@@ -189,12 +216,12 @@ void WaveManager::update(f64 frame_time)
 			planet_vector[i].wave_complete = false;								// Reset planet wave complete flag
 		}
 
-		shuttle_left_planet = 0;	// Reset number of shuttles successfully escaped during wave
-		shuttle_destroyed = 0;		// Reset number of shuttles that have been destroyed
-		wave_completed = false;		// Reset wave complete flag
-		wave_progress = 0;			// Reset wave progress to 0
-		wave_number++;				// Increment wave number
-		wave_interval_timer = 0;	// Reset wave interval timer
+		shuttle_left_planet = WaveManagerDataMap["Shuttle_Left_Planet"];	// Reset number of shuttles successfully escaped during wave
+		shuttle_destroyed	= WaveManagerDataMap["Shuttle_Destroyed"];		// Reset number of shuttles that have been destroyed
+		wave_completed		= false;										// Reset wave complete flag
+		wave_progress		= WaveManagerDataMap["Wave_Progress"];			// Reset wave progress to 0
+		wave_number++;														// Increment wave number
+		wave_interval_timer = 0;											// Reset wave interval timer
 
 		std::cout << "----------------------------------------" << std::endl;
 		std::cout << '\n' << "Wave " << wave_number << " has begun." << '\t';
@@ -243,7 +270,7 @@ void WaveManager::update(f64 frame_time)
 		AEMtx33Concat(&arrow_vector[i].transform, &arrow_vector[i].rotate, &arrow_vector[i].scale);
 		AEMtx33Concat(&arrow_vector[i].transform, &arrow_vector[i].translate, &arrow_vector[i].transform);
 
-		arrow_vector[i].urgency = static_cast<f64>(planet_vector[i].shuttle_timer / planet_vector[i].shuttle_time_to_spawn);
+		arrow_vector[i].urgency = static_cast<f32>(planet_vector[i].shuttle_timer / planet_vector[i].shuttle_time_to_spawn);
 
 		if (arrow_vector[i].blinking_timer >= (1 - arrow_vector[i].urgency))
 		{
@@ -457,6 +484,11 @@ void WaveManager::free()
 	//ss_indicator_vector.clear();
 	indicator_vector.clear();
 	arrow_vector.clear();
+
+	if (next_state != GS_RESTART) {
+		WaveManagerData.clear();
+		WaveManagerDataMap.clear();
+	}
 }
 
 /******************************************************************************/
@@ -533,7 +565,7 @@ void WaveManager::add_indicator()
 {
 	WaveManager::Indicator new_indicator;
 
-	new_indicator.size = 60.f;
+	new_indicator.size = WaveManagerDataMap["Indicator_Size"];
 	AEVec2Set(&new_indicator.position, 0.f, 0.f);
 
 	AEMtx33Scale(&new_indicator.scale, new_indicator.size, new_indicator.size);
@@ -549,11 +581,11 @@ void WaveManager::add_indicator()
 
 	WaveManager::Arrow new_arrow;
 
-	new_arrow.blinker = 1.f;
-	new_arrow.blinking_timer = 0.f;
-	new_arrow.urgency = 0.f;
-	new_arrow.size = 25.f;
-	new_arrow.direction = 0.f;
+	new_arrow.blinker				= WaveManagerDataMap["Arrow_Blinker"];
+	new_arrow.blinking_timer		= WaveManagerDataMap["Blinker_Timer"];
+	new_arrow.urgency				= WaveManagerDataMap["Blinker_Urgency"];
+	new_arrow.size					= WaveManagerDataMap["Arrow_Size"];
+	new_arrow.direction				= WaveManagerDataMap["Arrow_Direction"];
 	AEVec2Set(&new_arrow.position, 0.f, 0.f);
 
 	AEMtx33Scale(&new_arrow.scale, new_arrow.size, new_arrow.size);

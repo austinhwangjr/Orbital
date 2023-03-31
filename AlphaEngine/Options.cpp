@@ -16,7 +16,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Input.h"
 #include "Graphics.h"
 #include "AudioManager.h"
-#include "GameStateManager.h"
+#include "GameStateList.h"
 #include "Global.h"
 #include "Easing.h"
 #include <iostream>
@@ -168,7 +168,7 @@ void Options::update(float* volume, bool* muted)
 
     if (draggingSlider)
     {
-        sliderThumbX = mouseX - AEGetWindowWidth() / 2.0f - 10;
+        sliderThumbX = mouseX - g_windowWidth / 2.0f - 10;
         if (sliderThumbX < sliderX - 50)
         {
             sliderThumbX = sliderX - 50;

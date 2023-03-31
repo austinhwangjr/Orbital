@@ -12,14 +12,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
  */
 /******************************************************************************/
 #pragma once
-#define PLANET_MAX				10		// Maximum number of planets
-#define SHUTTLE_MAX				10		// Maximum number of shuttles per planet
-#define SHUTTLE_SPAWN_MAX		8		// Maximum number of shuttles a planet can spawn with
-#define SHUTTLE_SPAWN_MIN		4		// Minimum number of shuttles a planet can spawn with
-#define SHUTTLE_INCREASE_AMOUNT 1		// Number of shuttles added after a wave
-#define WAVE_INTERVAL_TIME		15		// Down time between waves
-#define WAVE_ADD_PLANET			4		// Every nth wave planets will be added on
-#define LOSE_CONDITION			5		// Number of shuttles allowed to be destroyed before failure
 
 #include "AEEngine.h"
 #include "Player.h"
@@ -61,16 +53,16 @@ struct WaveManager
 		AEVec2				position;
 		f32					direction;
 		f32					size;
-		f64					blinking_timer;		// Timer for blinking indicators
+		f32					blinking_timer;		// Timer for blinking indicators
 		float				blinker;			// Alpha value for arrow to simulate flashing effect
-		f64					urgency;			// Timer for speed of arrow indicator flashing
+		f32					urgency;			// Timer for speed of arrow indicator flashing
 	};
 
 // WAVE VARIABLES----------------------------
 	int		wave_number;				// Current wave number
 	int		wave_progress;				// Number of planets that have no more shuttles to escape
 	bool	wave_completed;				// Flag for when the current wave has been completed
-	f64		wave_interval_timer;		// Timer to increment towards WAVE_INTERVAL_TIME
+	f32		wave_interval_timer;		// Timer to increment towards WAVE_INTERVAL_TIME
 // WAVE VARIABLES----------------------------
 
 
@@ -96,7 +88,7 @@ struct WaveManager
 
 	void load();
 	void init();
-	void update(f64 frame_time);
+	void update(f32 frame_time);
 	void draw(AEGfxVertexList* pMesh);
 	void free();
 	void unload();

@@ -14,6 +14,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "AEEngine.h"
 #include "Shuttle.h"
 #include "WaveManager.h"
+#include "GameStateList.h"
 #include <cmath>
 #include "Data.h"
 

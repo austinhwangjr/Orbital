@@ -19,7 +19,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Data.h"
 #include <iostream>
 #include <fstream>
-#include "GameStateManager.h"
+#include "GameStateList.h"
 
 // Textures
 AEGfxTexture* drone_tex;
@@ -30,9 +30,6 @@ extern AEGfxTexture* shop_icon_tex;
 bool drone_valid_placement = false;
 bool drone_added;
 static int DRONES_MAX;
-
-// Mouse coordinates
-extern AEVec2 mouse_pos_world;
 
 // Vectors of drones, planets and debris
 std::vector<std::vector<Drone>> drone_vector_all;
@@ -115,7 +112,7 @@ void Drone::init(Player player)
 	Update Drone
 */
 /******************************************************************************/
-void Drone::update(f64 frame_time, Player& player, PlayerUI& player_ui)
+void Drone::update(f32 frame_time, Player& player, PlayerUI& player_ui)
 {
 	// =========================
 	// Update according to input
@@ -145,8 +142,8 @@ void Drone::update(f64 frame_time, Player& player, PlayerUI& player_ui)
 		drone_added = false;
 
 		// Drone to follow mouse position
-		position.x = mouse_pos_world.x;
-		position.y = mouse_pos_world.y;
+		position.x = g_mouseWorld.x;
+		position.y = g_mouseWorld.y;
 
 		// if within planet's orbit, drone can be placed
 		if (AEVec2Distance(&current_planet.position, &position) <= (static_cast<f32>(current_planet.size) / 2.f + current_planet.orbit_range)) {
