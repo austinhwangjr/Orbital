@@ -49,7 +49,9 @@ static int	 SHUTTLE_HEIGHT;			        // Shuttle Height
 Player MMplayer;
 Planets MMplanet;
 Debris MMdebris;
+PlayerProj MMplayer_proj;
 std::vector<Shuttles> MMshuttle_vector;
+std::vector<PlayerProj> MMProj_vector;
 
 AEGfxTexture* MMtexplayer;
 AEGfxTexture* MMtexplanet;
@@ -59,6 +61,7 @@ AEGfxTexture* MMtexbeam;
 AEGfxTexture* MMshuttle_tex;
 AEGfxTexture* MMexplosion_tex;
 AEGfxTexture* MMorbit_halo_tex;
+AEGfxTexture* MMplayer_proj_tex;
 
 AEGfxTexture* MM_Keys_W;
 AEGfxTexture* MM_Keys_W_ACTIVE;
@@ -162,6 +165,8 @@ std::map<std::string, f32> 	MMPlanetDataMap;
 std::vector<Data> 			MMPlanetData;
 std::map<std::string, f32> 	MMShuttleDataMap;
 std::vector<Data> 			MMShuttleData;
+std::map<std::string, f32> 	MMProjDataMap;
+std::vector<Data> 			MMProjData;
 
 void main_menu::load()
 {
@@ -192,11 +197,12 @@ void main_menu::load()
     MMshuttle_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Shuttle.png");
     MMexplosion_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Explosion.png");
     MMorbit_halo_tex = AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
+    MMplayer_proj_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Debris.png");
 
     ImportDataFromFile("Assets/GameObjectData/PlayerData.txt", MMPlayerData, MMPlayerDataMap);
     ImportDataFromFile("Assets/GameObjectData/PlanetData.txt", MMPlanetData, MMPlanetDataMap);
     ImportDataFromFile("Assets/GameObjectData/ShuttleData.txt", MMShuttleData, MMShuttleDataMap);
-
+    ImportDataFromFile("Assets/GameObjectData/PlayerProjectileData.txt", MMProjData, MMProjDataMap);
 
     MM_Keys_W = AEGfxTextureLoad("Assets/MainMenu/mm_W.png");
     MM_Keys_W_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/mm_W_Hover.png");
@@ -257,6 +263,7 @@ void main_menu::init()
     MMplayer.can_leave_orbit               = true;
 
     MMplayer.timer                         = MMPlayerDataMap["timer"];
+    MMplayer.max_timer                     = MMPlayerDataMap["max_timer"];
 
     //--------------------Score-keeping--------------------
     MMplayer.score                         = static_cast<int>(MMPlayerDataMap["score"]);
@@ -295,8 +302,9 @@ void main_menu::init()
     SHUTTLE_HEIGHT = MMShuttleDataMap["Shuttle_Height"];
     
 
-    //MMplayer.init();
-
+    //--------------------Projectile--------------------
+    MMplayer_proj.position.x = MMProjDataMap["Position_X"];
+    MMplayer_proj.position.y = MMProjDataMap["Position_Y"];
 
     //DEBRIS
     MMplanet.max_debris = rand() % (DEBRIS_MAX - DEBRIS_MIN) + DEBRIS_MIN;												// Randomize debris count on planet spawn
@@ -446,6 +454,59 @@ void main_menu::update()
         MMplayer.position.y = MMplayer.position.y + MMplayer.velocity.y * static_cast<f32>(MMframe_time);
     }
 
+
+    if (MMplayer.state == PLAYER_TRANSIT) {
+        // ================
+    // Check for input
+    // ================
+
+        if (AEInputCheckCurr(AEVK_W)) {
+            AEVec2 added;
+            AEVec2Set(&added, AECos(MMplayer.direction), AESin(MMplayer.direction));
+
+            // Find the velocity according to the acceleration
+            AEVec2Scale(&added, &added, MMplayer.mov_speed / 2.f);
+            MMplayer.velocity.x = MMplayer.velocity.x + added.x * static_cast<f32>(MMframe_time);
+            MMplayer.velocity.y = MMplayer.velocity.y + added.y * static_cast<f32>(MMframe_time);
+
+            // Limit player's speed
+            AEVec2Scale(&MMplayer.velocity, &MMplayer.velocity, 0.99f);
+
+            // Add to timer. Change to flying state after 1s
+            MMplayer.timer += static_cast<f32>(MMframe_time);
+            if (MMplayer.timer >= MMplayer.max_timer) {
+                // Change state and reset timer
+                MMplayer.state = PLAYER_FLY;
+                MMplayer.timer = 0.f;
+            }
+        }
+
+        else {
+            // Move player back to orbit
+            AEVec2 diff;
+            AEVec2Sub(&diff, &MMplanet.position, &MMplayer.position);
+            AEVec2Normalize(&diff, &diff);
+            AEVec2Scale(&diff, &diff, MMplayer.mov_speed * static_cast<f32>(MMframe_time));
+            AEVec2Add(&MMplayer.position, &MMplayer.position, &diff);
+
+            MMplayer.timer -= static_cast<f32>(MMframe_time);
+
+            // Debris to rotate around planet when in orbit range
+            if (AEVec2Distance(&MMplanet.position, &MMplayer.position) <= (MMplanet.size / 2 + MMplanet.orbit_range)) {
+                // Change state and reset timer
+                MMplayer.state = PLAYER_ORBIT;
+                MMplayer.timer = 0.f;
+            }
+        }
+
+        // =======================
+        // Update player position
+        // =======================
+
+        MMplayer.position.x = MMplayer.position.x + MMplayer.velocity.x * static_cast<f32>(MMframe_time);
+        MMplayer.position.y = MMplayer.position.y + MMplayer.velocity.y * static_cast<f32>(MMframe_time);
+    }
+
     // =======================
     //  ORBIT MODE
     // =======================
@@ -527,7 +588,7 @@ void main_menu::update()
 
         if (AEInputCheckCurr(AEVK_W) && MMplayer.can_leave_orbit) {
             AEVec2Zero(&MMplayer.velocity);
-            MMplayer.state = PLAYER_FLY;
+            MMplayer.state = PLAYER_TRANSIT;
         }
 
 
@@ -620,6 +681,84 @@ void main_menu::update()
     // ============================
     MMplayer.position.x = AEWrap(MMplayer.position.x, AEGfxGetWinMinX(), AEGfxGetWinMaxX());
     MMplayer.position.y = AEWrap(MMplayer.position.y, AEGfxGetWinMinY(), AEGfxGetWinMaxY());
+
+
+    // =========================
+    // PROJECTILE
+    // =========================
+
+    if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+
+        MMplayer_proj.size = MMProjDataMap["Size"];
+        MMplayer_proj.speed = MMProjDataMap["Speed"];
+        MMplayer_proj.velocity.x = MMProjDataMap["Velocity_X"];
+        MMplayer_proj.velocity.y = MMProjDataMap["Velocity_Y"];
+        MMplayer_proj.position = MMplayer.position;
+        AEVec2Sub(&MMplayer_proj.velocity, &g_mouseWorld, &MMplayer.position);
+        AEVec2Normalize(&MMplayer_proj.velocity, &MMplayer_proj.velocity);
+        AEVec2Scale(&MMplayer_proj.velocity, &MMplayer_proj.velocity, MMplayer_proj.speed);
+
+       
+
+        MMplayer_proj.is_delete = static_cast<int>(MMProjDataMap["Delete_flag"]);
+
+        MMProj_vector.push_back(MMplayer_proj);
+        
+        
+    }
+
+    // =====================================
+    // Update position of player projectile
+    // =====================================
+
+    for (int i = 0; i < MMProj_vector.size(); ++i) {
+        PlayerProj& player_proj = MMProj_vector[i];
+
+        player_proj.position.x += player_proj.velocity.x * static_cast<f32>(MMframe_time);
+        player_proj.position.y += player_proj.velocity.y * static_cast<f32>(MMframe_time);
+    }
+
+
+    // ======================================================
+    // Delete player projectile if outside screen boundaries
+    // ======================================================
+    for (int i = 0; i < MMProj_vector.size(); ++i) {
+        PlayerProj& player_proj = MMProj_vector[i];
+        if (player_proj.position.x > AEGfxGetWinMaxX() || player_proj.position.x < AEGfxGetWinMinX()) {
+            if (player_proj.position.y > AEGfxGetWinMaxY() || player_proj.position.y < AEGfxGetWinMinY()) {
+                player_proj.is_delete = 1;
+            }
+        }
+    }
+
+    // ===================================
+    // Update player projectile instances
+    // ===================================
+
+    //Erase projectile upon collision
+    for (int i = 0; i < MMProj_vector.size(); i++) {
+        if (MMProj_vector[i].is_delete == 1) {
+            MMProj_vector.erase(MMProj_vector.begin() + i);
+        }
+    }
+
+    // ===========================================
+    // Calculate the matrix for player projectile
+    // ===========================================
+
+    AEMtx33 projscale, projrot, projtrans;
+
+    for (int i = 0; i < MMProj_vector.size(); ++i) {
+        PlayerProj& player_proj = MMProj_vector[i];
+
+        // Space station
+        AEMtx33Scale(&projscale, player_proj.size, player_proj.size);
+        AEMtx33Rot(&projrot, 0);
+        AEMtx33Trans(&projtrans, player_proj.position.x, player_proj.position.y);
+        AEMtx33Concat(&player_proj.transform, &projrot, &projscale);
+        AEMtx33Concat(&player_proj.transform, &projtrans, &player_proj.transform);
+    }
+
 
 
     // ============================
@@ -922,6 +1061,20 @@ void main_menu::draw()
         AEGfxSetTransform(MMplayer.player_transform.m);
         AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
 
+        // ====================
+        //  DRAWING PROJECTILE
+        // ====================
+        for (int i = 0; i < MMProj_vector.size(); ++i) {
+
+            PlayerProj& player_proj = MMProj_vector[i];
+
+            AEGfxSetTintColor(1.f, 1.f, 1.f, 1.f);
+
+            AEGfxTextureSet(MMplayer_proj_tex, 0, 0);
+            AEGfxSetTransform(player_proj.transform.m);
+            AEGfxMeshDraw(pMeshObj, AE_GFX_MDM_TRIANGLES);
+        }
+
         // =====================
         //  DRAWING TRACTOR BEAM
         // =====================
@@ -1068,7 +1221,8 @@ void main_menu::free()
     MMPlanetDataMap.clear();
     MMShuttleData.clear();
     MMShuttleDataMap.clear();
-
+    MMProjData.clear();
+    MMProjDataMap.clear();
 }
 
 void main_menu::unload()
@@ -1084,6 +1238,7 @@ void main_menu::unload()
     AEGfxTextureUnload(MMexplosion_tex);
     AEGfxTextureUnload(MMorbit_halo_tex);
     AEGfxTextureUnload(TexMMBackground); // unload the texture for the background image
+    AEGfxTextureUnload(MMplayer_proj_tex);
 
     AEGfxTextureUnload(MM_Keys_W_ACTIVE);
     AEGfxTextureUnload(MM_Keys_W);
