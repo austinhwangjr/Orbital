@@ -88,7 +88,7 @@ void SpaceStation::init()
 	BUFFER_SAFE_DISTANCE	= static_cast<int>(SpaceStationDataMap["Buffer_safe_distance"]);
 }
 
-void SpaceStation::update(f32 frame_time, Player& player, PlayerUI& player_ui)
+void SpaceStation::update(Player& current_player, PlayerUI& player_ui)
 {
 	int safe_position = 0;
 
@@ -134,7 +134,7 @@ void SpaceStation::update(f32 frame_time, Player& player, PlayerUI& player_ui)
 		// COLLISION CHECK BETWEEN NEAREST PLANET
 		// ======================================
 		if ((AEVec2Distance(&current_planet.position, &position) > (current_planet.size)/2 + BUFFER_SAFE_DISTANCE) && safe_position == space_station_vector.size()) {
-			if (player.space_station_count < MAX_SPACE_STATION_CNT) {
+			if (current_player.space_station_count < MAX_SPACE_STATION_CNT) {
 				space_station_valid_placement = true;
 				space_station_added = false;
 			}
@@ -177,7 +177,7 @@ void SpaceStation::update(f32 frame_time, Player& player, PlayerUI& player_ui)
 
 	// If no longer placing space station
 	if (!player_ui.placing_station) {
-		if (space_station_valid_placement && !space_station_added && player.credits >= player_ui.space_station_cost) {
+		if (space_station_valid_placement && !space_station_added && current_player.credits >= player_ui.space_station_cost) {
 			// Add space station to vector
 			space_station_vector.push_back(*this);
 
@@ -198,8 +198,8 @@ void SpaceStation::update(f32 frame_time, Player& player, PlayerUI& player_ui)
 			coin.position.y = this->position.y + 60;
 			coin_vector.push_back(coin);
 
-			player.credits -= player_ui.space_station_cost;
-			player.space_station_count++;
+			current_player.credits -= player_ui.space_station_cost;
+			current_player.space_station_count++;
 			space_station_added = true;
 
 			//wave_manager.add_ss_indicator();
@@ -231,7 +231,7 @@ void SpaceStation::update(f32 frame_time, Player& player, PlayerUI& player_ui)
 				cooldown_vector[i].width = 0;
 			}
 			
-			cooldown_vector[i].timer += static_cast<f32>(frame_time);
+			cooldown_vector[i].timer += g_dt;
 			
 			coin_vector[i].lifespan = cooldown_vector[i].timer;
 
@@ -248,8 +248,8 @@ void SpaceStation::update(f32 frame_time, Player& player, PlayerUI& player_ui)
 			//After finsishing draw coin
 			if (cooldown_vector[i].timer > 3 && space_station_vector[i].current_capacity >= 0) {
 				space_station_vector[i].current_capacity--;
-				player.credits += DEBRIS_VALUE;
-				player.score += DEBRIS_SCORE;
+				current_player.credits += DEBRIS_VALUE;
+				current_player.score += DEBRIS_SCORE;
 				coin_vector[i].is_draw = 1;
 				cooldown_vector[i].timer = 0;
 				coin_vector[i].lifespan = 0;
@@ -294,7 +294,6 @@ void SpaceStation::update(f32 frame_time, Player& player, PlayerUI& player_ui)
 			AEMtx33Trans(&trans, coin.position.x, coin.position.y);
 			AEMtx33Concat(&coin.transform, &rot, &scale);
 			AEMtx33Concat(&coin.transform, &trans, &coin.transform);
-
 		}
 	}
 

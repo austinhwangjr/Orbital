@@ -31,12 +31,12 @@ struct Shuttles
 
 	void load();
 	void init();
-	void update(f64 frame_time, Player& player);
+	void update(Player& player);
 	void draw(AEGfxVertexList* pMesh);
 	void free();
 	void unload();
 	
-	void spawn(int const& planet_id, f32 const& rand_angle);
+	void spawn(int const& current_planet_id, f32 const& rand_angle);
 };
 
 void MMspawn_shuttle();

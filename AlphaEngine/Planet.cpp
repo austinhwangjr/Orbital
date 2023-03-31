@@ -105,8 +105,8 @@ void Planets::init()
 	DRONES_MAX					= static_cast<int>(PlanetDataMap["Maximum_Drones"]);
 	RUNWAY_LIFESPAN				= PlanetDataMap["Runway_Lifespan"];
 	RUNWAY_MAX_ACCEL			= PlanetDataMap["Runway_Acceleration"];
-	SHUTTLE_SPAWN_MAX			= WaveManagerDataMap["Maximum_Shuttle_Spawn"];
-	SHUTTLE_SPAWN_MIN			= WaveManagerDataMap["Minimum_Shuttle_Spawn"];
+	SHUTTLE_SPAWN_MAX			= static_cast<int>(WaveManagerDataMap["Maximum_Shuttle_Spawn"]);
+	SHUTTLE_SPAWN_MIN			= static_cast<int>(WaveManagerDataMap["Minimum_Shuttle_Spawn"]);
 
 
 	// ============
@@ -120,7 +120,7 @@ void Planets::init()
 	Update Planet
 */
 /******************************************************************************/
-void Planets::update(f32 frame_time)
+void Planets::update()
 {
 	// FOR EACH PLANET----------------------------------------------------------------------------------------------------------------------------
 	for (size_t i{}; i < planet_vector.size(); i++)
@@ -140,7 +140,7 @@ void Planets::update(f32 frame_time)
 				// Update shuttle timer
 				if (!wave_manager.capacity_full)
 				{
-					planet_vector[i].shuttle_timer += static_cast<f32>(frame_time);
+					planet_vector[i].shuttle_timer += g_dt;
 				}
 
 				// Spawn shuttle when timer exceeds time_to_spawn, next shuttle will have randomized time_to_spawn
@@ -160,12 +160,12 @@ void Planets::update(f32 frame_time)
 
 			// RUNWAY STUFF---------------------------------------------------------------------------------------------------------------------------------
 			// Update runway timer
-			runway_vector[i].lifespan -= static_cast<f32>(frame_time);
+			runway_vector[i].lifespan -= g_dt;
 			AEVec2 added;
 			AEVec2Zero(&added);
 			// Runway accelerating
 			AEVec2Set(&added, AECos(planet_vector[i].shuttle_direction), AESin(planet_vector[i].shuttle_direction));
-			AEVec2Scale(&added, &added, RUNWAY_MAX_ACCEL * static_cast<f32>(frame_time));
+			AEVec2Scale(&added, &added, RUNWAY_MAX_ACCEL * g_dt);
 			AEVec2Add(&runway_vector[i].velocity, &added, &runway_vector[i].velocity);
 
 			// Limiting runway velocity
@@ -179,8 +179,8 @@ void Planets::update(f32 frame_time)
 			else
 			{
 				// Update runway position
-				runway_vector[i].position.x += runway_vector[i].velocity.x * static_cast<f32>(frame_time);
-				runway_vector[i].position.y += runway_vector[i].velocity.y * static_cast<f32>(frame_time);
+				runway_vector[i].position.x += runway_vector[i].velocity.x * g_dt;
+				runway_vector[i].position.y += runway_vector[i].velocity.y * g_dt;
 			}
 
 			// Resetting runway
@@ -194,7 +194,7 @@ void Planets::update(f32 frame_time)
 
 		// PLANET STUFF---------------------------------------------------------------------------------------------------------------------------------
 		// Rotate the planet
-		planet_vector[i].direction += PLANET_ROT_SPEED * static_cast<f32>(frame_time);
+		planet_vector[i].direction += PLANET_ROT_SPEED * g_dt;
 
 		AEVec2 added;
 		// Update the transform matrix with new direction
@@ -221,25 +221,25 @@ void Planets::update(f32 frame_time)
 	if (player.state == PLAYER_ORBIT)
 	{
 		// Update the Lerp value for the halo scale
-		halo_scale_lerp += (1.0f - halo_scale_lerp) * 0.1f;
+		halo_scale_lerp += (1.0f - halo_scale_lerp) * 10.f * g_dt;
 	}
 	else
 	{
 		// Update the Lerp value for the halo scale
 		if (halo_scale_lerp > 0.f)
 		{
-			halo_scale_lerp -= halo_scale_lerp * 0.01f;
+			halo_scale_lerp -= halo_scale_lerp * g_dt;
 		}
 	}
 
-	AEMtx33 scale, rot, trans;
+	AEMtx33 sc, rot, trans;
 	halo_size = player.current_planet.size + 60.f;
 
 	// Use the Lerp value to scale the halo
-	AEMtx33Scale(&scale, halo_size* halo_scale_lerp, halo_size* halo_scale_lerp);
+	AEMtx33Scale(&sc, halo_size* halo_scale_lerp, halo_size* halo_scale_lerp);
 	AEMtx33Rot(&rot, 0);
 	AEMtx33Trans(&trans, player.current_planet.position.x, player.current_planet.position.y);
-	AEMtx33Concat(&orbit_halo_transform, &rot, &scale);
+	AEMtx33Concat(&orbit_halo_transform, &rot, &sc);
 	AEMtx33Concat(&orbit_halo_transform, &trans, &orbit_halo_transform);
 
 }

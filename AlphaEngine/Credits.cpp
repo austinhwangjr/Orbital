@@ -39,7 +39,7 @@ AEGfxVertexList* pMeshCredits;
 Rendering createMeshCredits;
 Rendering renderCredits;
 
-static float timer2 = 0.0f;
+static f32 timer2 = 0.0f;
 
 const int buttonCount = 1;
 
@@ -117,7 +117,7 @@ void credits::init()
 
 void credits::update()
 {
-    timer2 += AEFrameRateControllerGetFrameTime();
+    timer2 += g_dt;
 
     for (int i = 0; i < buttonCount; ++i)
     {

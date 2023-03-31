@@ -46,11 +46,9 @@ private:
     float squareRotations[6];
     float tint[4];
 
-
     AEGfxTexture* normalButtonTextures[6];
     AEGfxTexture* hoverButtonTextures[6];
     bool hoverStates[6];
     Input input;
     Rendering rendering;
-
 };

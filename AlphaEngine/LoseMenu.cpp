@@ -96,19 +96,17 @@ void lose_menu::update()
             std::cout << "Toggling Screen " << std::endl;
         }
     }
-
-
 }
 
 void lose_menu::draw()
 {
-    f32 camPos_x{}, camPos_y{};
-    AEGfxGetCamPosition(&camPos_x, &camPos_y);
+    /*f32 camPos_x{}, camPos_y{};
+    AEGfxGetCamPosition(&camPos_x, &camPos_y);*/
 
-    float translatedPlayAgainX = lm_PlayAgainX + camPos_x;
-    float translatedPlayAgainY = lm_PlayAgainY + camPos_y;
-    float translatedMainMenuX = lm_MainMenuX + camPos_x;
-    float translatedMainMenuY = lm_MainMenuY + camPos_y;
+    float translatedPlayAgainX = lm_PlayAgainX + g_camPos.x;
+    float translatedPlayAgainY = lm_PlayAgainY + g_camPos.y;
+    float translatedMainMenuX = lm_MainMenuX + g_camPos.x;
+    float translatedMainMenuY = lm_MainMenuY + g_camPos.y;
 
     renderLoseMenu.RenderSprite(TexPlayAgain, translatedPlayAgainX, translatedPlayAgainY, lm_ButtonWidth, lm_ButtonHeight, pMeshLoseMenu);
     renderLoseMenu.RenderSprite(TexMainMenu, translatedMainMenuX, translatedMainMenuY, lm_ButtonWidth, lm_ButtonHeight, pMeshLoseMenu);

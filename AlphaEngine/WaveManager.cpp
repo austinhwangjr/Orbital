@@ -28,9 +28,9 @@ static int SHUTTLE_MAX;				// Maximum number of shuttles per planet
 static int SHUTTLE_SPAWN_MAX;		// Maximum number of shuttles a planet can spawn with
 static int SHUTTLE_SPAWN_MIN;		// Minimum number of shuttles a planet can spawn with
 static int SHUTTLE_INCREASE_AMOUNT;	// Number of shuttles added after a wave
-static int WAVE_INTERVAL_TIME;		// Down time between waves
+static f32 WAVE_INTERVAL_TIME;		// Down time between waves
 static int WAVE_ADD_PLANET;			// Every nth wave planets will be added on
-int LOSE_CONDITION;			// Number of shuttles allowed to be destroyed before failure
+int LOSE_CONDITION;					// Number of shuttles allowed to be destroyed before failure
 
 // Text
 extern s8 font_id;
@@ -70,28 +70,27 @@ void WaveManager::load()
 /******************************************************************************/
 void WaveManager::init()
 {
-
-	PLANET_MAX				= WaveManagerDataMap["Maximum_Planet_To_Be_Spawn"];
-	SHUTTLE_MAX				= WaveManagerDataMap["Maximum_Shuttle_Per_Planet"];
-	SHUTTLE_SPAWN_MAX		= WaveManagerDataMap["Maximum_Shuttle_Spawn"];
-	SHUTTLE_SPAWN_MIN		= WaveManagerDataMap["Minimum_Shuttle_Spawn"];
-	SHUTTLE_INCREASE_AMOUNT = WaveManagerDataMap["Shuttle_Increase_Amount"];
+	PLANET_MAX				= static_cast<int>(WaveManagerDataMap["Maximum_Planet_To_Be_Spawn"]);
+	SHUTTLE_MAX				= static_cast<int>(WaveManagerDataMap["Maximum_Shuttle_Per_Planet"]);
+	SHUTTLE_SPAWN_MAX		= static_cast<int>(WaveManagerDataMap["Maximum_Shuttle_Spawn"]);
+	SHUTTLE_SPAWN_MIN		= static_cast<int>(WaveManagerDataMap["Minimum_Shuttle_Spawn"]);
+	SHUTTLE_INCREASE_AMOUNT = static_cast<int>(WaveManagerDataMap["Shuttle_Increase_Amount"]);
 	WAVE_INTERVAL_TIME		= WaveManagerDataMap["Wave_Interval_Time"];
-	WAVE_ADD_PLANET			= WaveManagerDataMap["Wave_Add_Planet"];
-	LOSE_CONDITION			= WaveManagerDataMap["Lose_Condition"];
+	WAVE_ADD_PLANET			= static_cast<int>(WaveManagerDataMap["Wave_Add_Planet"]);
+	LOSE_CONDITION			= static_cast<int>(WaveManagerDataMap["Lose_Condition"]);
 
 	std::cout << '\n' << "Wave Manager Initialized." << '\n' << '\n';
 
 	wave_completed			= false;
-	wave_number				= WaveManagerDataMap["Starting_Wave_Number"];
-	wave_progress			= WaveManagerDataMap["Wave_Progress"];
+	wave_number				= static_cast<int>(WaveManagerDataMap["Starting_Wave_Number"]);
+	wave_progress			= static_cast<int>(WaveManagerDataMap["Wave_Progress"]);
 	wave_interval_timer		= WAVE_INTERVAL_TIME * 3; // Increased time for first wave tutorial
 
-	planet_count			= WaveManagerDataMap["Planet_Count"];
+	planet_count			= static_cast<int>(WaveManagerDataMap["Planet_Count"]);
 	planet_adding			= true;
 
-	shuttle_left_planet		= WaveManagerDataMap["Shuttle_Left_Planet"];
-	shuttle_destroyed		= WaveManagerDataMap["Shuttle_Destroyed"];
+	shuttle_left_planet		= static_cast<int>(WaveManagerDataMap["Shuttle_Left_Planet"]);
+	shuttle_destroyed		= static_cast<int>(WaveManagerDataMap["Shuttle_Destroyed"]);
 	shuttle_has_escaped		= false;
 	shuttle_has_collided	= false;
 
@@ -114,7 +113,7 @@ void WaveManager::init()
 	Update Wave Manager
 */
 /******************************************************************************/
-void WaveManager::update(f32 frame_time)
+void WaveManager::update()
 {
 	// Lose Condition--------------------------------------------------------
 	if (shuttle_destroyed == LOSE_CONDITION)
@@ -191,7 +190,7 @@ void WaveManager::update(f32 frame_time)
 	// Wave interval timer---------------------------------------------------
 	if (wave_completed && !planet_adding)
 	{
-		wave_interval_timer -= frame_time;
+		wave_interval_timer -= g_dt;
 		if (AEInputCheckTriggered(AEVK_R))
 		{
 			wave_interval_timer = 0.f;
@@ -241,28 +240,28 @@ void WaveManager::update(f32 frame_time)
 		// Update position of Planet image in the distance indicator
 		// Clamp the image to the screen
 		AEVec2Sub(&indicator_vector[i].position, &planet_vector[i].position, &camera.position);
-		AEMtx33Trans(&indicator_vector[i].translate, AEClamp(indicator_vector[i].position.x * 0.5 + g_camPos.x,
+		AEMtx33Trans(&indicator_vector[i].translate, AEClamp(indicator_vector[i].position.x * 0.5f + g_camPos.x,
 																-((g_windowWidth - indicator_vector[i].size) / 2) * 0.8f + g_camPos.x,
 																 ((g_windowWidth - indicator_vector[i].size) / 2) * 0.8f + g_camPos.x),
-													 AEClamp(indicator_vector[i].position.y * 0.5 + g_camPos.y,
+													 AEClamp(indicator_vector[i].position.y * 0.5f + g_camPos.y,
 																-(g_windowHeight / 2) * 0.8f + g_camPos.y,
 																 (g_windowHeight / 2) * 0.7f + g_camPos.y));
 		AEMtx33Concat(&indicator_vector[i].transform, &indicator_vector[i].rotate, &indicator_vector[i].scale);
 		AEMtx33Concat(&indicator_vector[i].transform, &indicator_vector[i].translate, &indicator_vector[i].transform);
 
 		
-		AEMtx33Rot(&ishuttle_vector[i].rotate, planet_vector[i].shuttle_direction + PI / 2);// Update the rotation accordingly
+		AEMtx33Rot(&ishuttle_vector[i].rotate, planet_vector[i].shuttle_direction + PI / 2.f);// Update the rotation accordingly
 		AEVec2Sub(&ishuttle_vector[i].position, &camera.position, &planet_vector[i].position);
-		AEMtx33Trans(&ishuttle_vector[i].translate, AEClamp(ishuttle_vector[i].position.x * -0.5 + g_camPos.x,
-															-((g_windowWidth - indicator_vector[i].size) / 2) * 0.8f + g_camPos.x,
-															 ((g_windowWidth - indicator_vector[i].size) / 2) * 0.8f + g_camPos.x),
-												 AEClamp(ishuttle_vector[i].position.y * -0.5 + g_camPos.y,
-															-(g_windowHeight / 2) * 0.8f + g_camPos.y,
-															 (g_windowHeight / 2) * 0.7f + g_camPos.y));
+		AEMtx33Trans(&ishuttle_vector[i].translate, AEClamp(ishuttle_vector[i].position.x * -0.5f + g_camPos.x,
+															-((g_windowWidth - indicator_vector[i].size) / 2.f) * 0.8f + g_camPos.x,
+															 ((g_windowWidth - indicator_vector[i].size) / 2.f) * 0.8f + g_camPos.x),
+												 AEClamp(ishuttle_vector[i].position.y * -0.5f + g_camPos.y,
+															-(g_windowHeight / 2.f) * 0.8f + g_camPos.y,
+															 (g_windowHeight / 2.f) * 0.7f + g_camPos.y));
 		AEMtx33Concat(&ishuttle_vector[i].transform, &ishuttle_vector[i].rotate, &ishuttle_vector[i].scale);
 		AEMtx33Concat(&ishuttle_vector[i].transform, &ishuttle_vector[i].translate, &ishuttle_vector[i].transform);
 
-		ishuttle_vector[i].urgency = static_cast<f32>(planet_vector[i].shuttle_timer / planet_vector[i].shuttle_time_to_spawn);
+		ishuttle_vector[i].urgency = planet_vector[i].shuttle_timer / planet_vector[i].shuttle_time_to_spawn;
 
 		if (ishuttle_vector[i].blinking_timer >= (1 - ishuttle_vector[i].urgency))
 		{
@@ -272,7 +271,7 @@ void WaveManager::update(f32 frame_time)
 
 		if (ishuttle_vector[i].urgency > 0.5 && ishuttle_vector[i].urgency < 0.9)
 		{
-			ishuttle_vector[i].blinking_timer += frame_time;
+			ishuttle_vector[i].blinking_timer += g_dt;
 		}
 		else
 		{
@@ -419,11 +418,11 @@ void WaveManager::draw(AEGfxVertexList* pMesh)
 	// Shuttles Lost counter
 	std::string str_shuttle_lost = "Shuttles Lost: ";
 	print_string = str_shuttle_lost.c_str();
-	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.f - (str_shuttle_lost.length() / 1.5 * static_cast<f32>(FONT_ID_SIZE) / g_windowWidth), -0.9f, 1.5f, 1.f, 1.f, 1.f);
+	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.f - (str_shuttle_lost.length() / 1.5f * static_cast<f32>(FONT_ID_SIZE) / g_windowWidth), -0.9f, 1.5f, 1.f, 1.f, 1.f);
 
 	str_shuttle_lost = std::to_string(shuttle_destroyed);
 	print_string = str_shuttle_lost.c_str();
-	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.f + (str_shuttle_lost.length() * 4.5 * static_cast<f32>(FONT_ID_SIZE) / g_windowWidth), -0.9f,
+	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.f + (str_shuttle_lost.length() * 4.5f * static_cast<f32>(FONT_ID_SIZE) / g_windowWidth), -0.9f,
 		1.5f + (0.2f * shuttle_destroyed),
 		1.f,																						// Red
 		static_cast<f32>((LOSE_CONDITION - shuttle_destroyed) / static_cast<f32>(LOSE_CONDITION)),	// Fade blue out the more shuttles destroyed
@@ -442,11 +441,11 @@ void WaveManager::draw(AEGfxVertexList* pMesh)
 
 	str_headers = "WAVE";
 	print_string = str_headers.c_str();
-	AEGfxPrint(font_id, const_cast<s8*>(print_string), -0.2f - (static_cast<f32>(str_headers.length()) * 1.5 * static_cast<f32>(FONT_ID_SIZE) / g_windowWidth), 0.9f, 1.f, 1.f, 1.f, 1.f);
+	AEGfxPrint(font_id, const_cast<s8*>(print_string), -0.2f - (static_cast<f32>(str_headers.length()) * 1.5f * static_cast<f32>(FONT_ID_SIZE) / g_windowWidth), 0.9f, 1.f, 1.f, 1.f, 1.f);
 
 	str_count = std::to_string(wave_number);
 	print_string = str_count.c_str();
-	AEGfxPrint(font_id, const_cast<s8*>(print_string), -0.2f - (static_cast<f32>(str_headers.length()) * 1.2 * static_cast<f32>(FONT_ID_SIZE) / g_windowWidth), 0.86f, 1.f, 1.f, 1.f, 1.f);
+	AEGfxPrint(font_id, const_cast<s8*>(print_string), -0.2f - (static_cast<f32>(str_headers.length()) * 1.2f * static_cast<f32>(FONT_ID_SIZE) / g_windowWidth), 0.86f, 1.f, 1.f, 1.f, 1.f);
 
 	str_headers = "SHUTTLE";
 	print_string = str_headers.c_str();

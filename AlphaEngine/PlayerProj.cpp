@@ -76,21 +76,21 @@ void PlayerProj::init()
 	Update Player Projectile
 */
 /******************************************************************************/
-void PlayerProj::update(f32 frame_time, Player& player, PlayerUI& player_ui)
+void PlayerProj::update(Player& current_player, PlayerUI& player_ui)
 {
 	// =========================
 	// Update according to input
 	// =========================
 
 	if (AEInputCheckTriggered(AEVK_LBUTTON) && !player_ui.shop_triggered && !player_ui.button_clicked(button_vector[0])) {
-		if (player.current_capacity != 0) {
-			position = player.position;
-			AEVec2Sub(&velocity, &g_mouseWorld, &player.position);
+		if (current_player.current_capacity != 0) {
+			position = current_player.position;
+			AEVec2Sub(&velocity, &g_mouseWorld, &current_player.position);
 			AEVec2Normalize(&velocity, &velocity);
 			AEVec2Scale(&velocity, &velocity, speed);
 
 			player_proj_vector.push_back(*this);
-			player.current_capacity--;
+			current_player.current_capacity--;
 		}
 	}
 
@@ -101,8 +101,8 @@ void PlayerProj::update(f32 frame_time, Player& player, PlayerUI& player_ui)
 	for (int i = 0; i < player_proj_vector.size(); ++i) {
 		PlayerProj& player_proj = player_proj_vector[i];
 
-		player_proj.position.x += player_proj.velocity.x * static_cast<f32>(frame_time);
-		player_proj.position.y += player_proj.velocity.y * static_cast<f32>(frame_time);
+		player_proj.position.x += player_proj.velocity.x * g_dt;
+		player_proj.position.y += player_proj.velocity.y * g_dt;
 	}
 
 	// ====================

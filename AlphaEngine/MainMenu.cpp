@@ -10,8 +10,8 @@ Copyright (C) 2023 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
 prior written consent of DigiPen Institute of Technology is prohibited.
  */
-/******************************************************************************/
-/*-------------------------------------------------- Main Menu --------------------------------------------------*/
+ /******************************************************************************/
+ /*-------------------------------------------------- Main Menu --------------------------------------------------*/
 #include "pch.h"
 #include "gch.h"
 #include "Global.h"
@@ -91,19 +91,6 @@ bool dKeyPressed = false;
 bool spacebarActivated = false;
 bool LMB_KeyPressed = false;
 
-//struct Button
-//{
-//    AEMtx33 scale;
-//    ...
-//
-//        AEMtx33 transform;
-//};
-//
-//AEMtx33Scale(&scale, w_howtoplay_width, w_howtoplay_height);
-//AEMtx33Rot(&rot, 0.f);
-//AEMtx33Trans(&trans, w_howtoplay_x, w_howtoplay.y);
-//AEMtx33Concat(&transform, &rot, &scale);
-//AEMtx33Concat(&transform, &trans, &transform);
 
 float w_ButtonWidth = 75.f;
 float w_ButtonHeight = 75.f;
@@ -115,13 +102,13 @@ float d_ButtonWidth = 75.f;
 float d_ButtonHeight = 75.f;
 
 // WASD
-float w_ButtonX = -655.f; 
+float w_ButtonX = -655.f;
 float w_ButtonY = -180.f;
-float a_ButtonX = -750.f; 
+float a_ButtonX = -750.f;
 float a_ButtonY = -275.f;
-float s_ButtonX = -655.f; 
+float s_ButtonX = -655.f;
 float s_ButtonY = -275.f;
-float d_ButtonX = -560.f; 
+float d_ButtonX = -560.f;
 float d_ButtonY = -275.f;
 
 //WASD ACTIVATED
@@ -138,7 +125,7 @@ float w_OriginalButtonWidth = 75.f;
 float w_OriginalButtonHeight = 75.f;
 
 // SPACEBAR
-float spacebar_ButtonX = -655.f; 
+float spacebar_ButtonX = -655.f;
 float spacebar_ButtonY = -375.f;
 float spacebar_ButtonWidth = 225.f;
 float spacebar_ButtonHeight = 75.f;
@@ -151,11 +138,11 @@ float spacebar_OriginalWidth = 225.f;
 float spacebar_OriginalHeight = 75.f;
 
 
-f32 MMframe_time = 0.f;
+f32 MMg_dt = 0.f;
 f32 MMtotal_time = 0.f;
 
 // MOUSE
-float mouseTexX = -380.f; 
+float mouseTexX = -380.f;
 float mouseTexY = -275.f;
 float mouseWidth = 200.f;
 float mouseHeight = 300.f;
@@ -180,22 +167,22 @@ std::vector<Data> 			MMProjData;
 void main_menu::load()
 {
     TexMMBackground = AEGfxTextureLoad("Assets/MainMenu/mm_Background.png");
-    TexTitle =  AEGfxTextureLoad("Assets/MainMenu/mm_Title.png");
+    TexTitle = AEGfxTextureLoad("Assets/MainMenu/mm_Title.png");
 
-    menuButtons.load(   "Assets/MainMenu/mm_StartButton.png",
-                        "Assets/MainMenu/mm_HowToPlayButton.png",
-                        "Assets/MainMenu/mm_HighScore.png",
-                        "Assets/MainMenu/mm_OptionsButton.png",
-                        "Assets/MainMenu/mm_CreditsButton.png",
-                        "Assets/MainMenu/mm_ExitButton.png",
+    menuButtons.load("Assets/MainMenu/mm_StartButton.png",
+        "Assets/MainMenu/mm_HowToPlayButton.png",
+        "Assets/MainMenu/mm_HighScore.png",
+        "Assets/MainMenu/mm_OptionsButton.png",
+        "Assets/MainMenu/mm_CreditsButton.png",
+        "Assets/MainMenu/mm_ExitButton.png",
 
-                        "Assets/MainMenu/mm_StartButtonHover.png",
-                        "Assets/MainMenu/mm_HowToPlayButtonHover.png",
-                        "Assets/MainMenu/mm_HighScoreHover.png",
-                        "Assets/MainMenu/mm_OptionsButtonHover.png",
-                        "Assets/MainMenu/mm_CreditsButtonHover.png",
-                        "Assets/MainMenu/mm_ExitButtonHover.png",
-                        "Assets/MainMenu/squareTexture.png");
+        "Assets/MainMenu/mm_StartButtonHover.png",
+        "Assets/MainMenu/mm_HowToPlayButtonHover.png",
+        "Assets/MainMenu/mm_HighScoreHover.png",
+        "Assets/MainMenu/mm_OptionsButtonHover.png",
+        "Assets/MainMenu/mm_CreditsButtonHover.png",
+        "Assets/MainMenu/mm_ExitButtonHover.png",
+        "Assets/MainMenu/squareTexture.png");
 
 
     MMtexplayer = AEGfxTextureLoad("Assets/MainLevel/ml_Spaceship2.png");
@@ -253,54 +240,52 @@ void main_menu::init()
 
     std::cout << std::endl;
     std::cout << "------------------------- MainMenu Initialised -------------------------" << std::endl << std::endl;
-    
+
     //--------------------Player--------------------
     MMplayer.state = PLAYER_FLY;
 
-    MMplayer.position.x                    = MMPlayerDataMap["position.x"];
-    MMplayer.position.y                    = MMPlayerDataMap["position.y"];
+    MMplayer.position.x = MMPlayerDataMap["position.x"];
+    MMplayer.position.y = MMPlayerDataMap["position.y"];
 
-    MMplayer.velocity.x                    = MMPlayerDataMap["velocity.x"];
-    MMplayer.velocity.y                    = MMPlayerDataMap["velocity.y"];
+    MMplayer.velocity.x = MMPlayerDataMap["velocity.x"];
+    MMplayer.velocity.y = MMPlayerDataMap["velocity.y"];
 
-    MMplayer.size                          = MMPlayerDataMap["size"];
+    MMplayer.size = MMPlayerDataMap["size"];
 
-    MMplayer.mov_speed                     = MMPlayerDataMap["mov_speed"];
-    MMplayer.rot_speed                     = MMPlayerDataMap["rot_speed"] * PI;
+    MMplayer.mov_speed = MMPlayerDataMap["mov_speed"];
+    MMplayer.rot_speed = MMPlayerDataMap["rot_speed"] * PI;
 
-    MMplayer.shortest_distance             = MMPlayerDataMap["shortest_distance"];
+    MMplayer.shortest_distance = MMPlayerDataMap["shortest_distance"];
 
-    MMplayer.direction                     = MMPlayerDataMap["direction"];
+    MMplayer.direction = MMPlayerDataMap["direction"];
 
-    MMplayer.current_capacity              = static_cast<int>(MMPlayerDataMap["current_capacity"]);
-    MMplayer.max_capacity                  = static_cast<int>(MMPlayerDataMap["max_capacity"]);
+    MMplayer.current_capacity = static_cast<int>(MMPlayerDataMap["current_capacity"]);
+    MMplayer.max_capacity = static_cast<int>(MMPlayerDataMap["max_capacity"]);
 
-    MMplayer.can_leave_orbit               = true;
+    MMplayer.can_leave_orbit = true;
 
-    MMplayer.timer                         = MMPlayerDataMap["timer"];
-    MMplayer.max_timer                     = MMPlayerDataMap["max_timer"];
+    MMplayer.timer = MMPlayerDataMap["timer"];
+    MMplayer.max_timer = MMPlayerDataMap["max_timer"];
 
     //--------------------Score-keeping--------------------
-    MMplayer.score                         = static_cast<int>(MMPlayerDataMap["score"]);
-    MMplayer.credits                       = static_cast<int>(MMPlayerDataMap["credits"]);
+    MMplayer.score = static_cast<int>(MMPlayerDataMap["score"]);
+    MMplayer.credits = static_cast<int>(MMPlayerDataMap["credits"]);
 
     //--------------------Upgrade Levels--------------------
-    MMplayer.mov_speed_level               = static_cast<int>(MMPlayerDataMap["mov_speed_level"]);
-    MMplayer.capacity_level                = static_cast<int>(MMPlayerDataMap["capacity_level"]);
-    MMplayer.space_station_count           = static_cast<int>(MMPlayerDataMap["space_station_count"]);
-    MMplayer.beam_level                    = static_cast<int>(MMPlayerDataMap["beam_level"]);
+    MMplayer.mov_speed_level = static_cast<int>(MMPlayerDataMap["mov_speed_level"]);
+    MMplayer.capacity_level = static_cast<int>(MMPlayerDataMap["capacity_level"]);
+    MMplayer.space_station_count = static_cast<int>(MMPlayerDataMap["space_station_count"]);
+    MMplayer.beam_level = static_cast<int>(MMPlayerDataMap["beam_level"]);
 
     //--------------------Tractor Beam--------------------
-    MMplayer.beam_pos.x                    = MMPlayerDataMap["beam_pos.x"];
-    MMplayer.beam_pos.y                    = MMPlayerDataMap["beam_pos.y"];
+    MMplayer.beam_pos.x = MMPlayerDataMap["beam_pos.x"];
+    MMplayer.beam_pos.y = MMPlayerDataMap["beam_pos.y"];
 
-    MMplayer.beam_width                    = MMplayer.size * 0.6f;
-    MMplayer.beam_height                   = MMplayer.beam_width * 2.f;
+    MMplayer.beam_width = MMplayer.size * 0.6f;
+    MMplayer.beam_height = MMplayer.beam_width * 2.f;
 
     //--------------------Planet Halo--------------------
-    MMplanet.halo_scale_lerp               = MMPlanetDataMap["Halo_Indicator"];
-
-
+    MMplanet.halo_scale_lerp = MMPlanetDataMap["Halo_Indicator"];
 
     //--------------------Debris Variables--------------------
     SPEED_DEBRIS = MMDebrisDataMap["Speed_Of_Debris"];
@@ -310,45 +295,40 @@ void main_menu::init()
     MIN_BUFFER = static_cast<int>(MMDebrisDataMap["Minimum_Buffer"]);
     EXPLOSION_WIDTH = MMDebrisDataMap["Explosion_Width"];
     EXPLOSION_HEIGHT = MMDebrisDataMap["Explosion_Height"];
-    OUTERRIM_TO_DEBRIS = MMDebrisDataMap["Distance_To_Planet"];
+    OUTERRIM_TO_DEBRIS = static_cast<int>(MMDebrisDataMap["Distance_To_Planet"]);
 
     //--------------------Planet Variables--------------------
-   
+
     PLANET_ROT_SPEED = MMPlanetDataMap["Planet_Rotation_Speed"] * PI;
-    
+
     SHUTTLE_SPAWN_TIME_MAX = static_cast<int>(MMPlanetDataMap["Maximum_Time_Shuttle_Spawn"]);
     SHUTTLE_SPAWN_TIME_MIN = static_cast<int>(MMPlanetDataMap["Minimum_Time_Shuttle_Spawn"]);
     DEBRIS_MAX = static_cast<int>(MMPlanetDataMap["Maximum_Debris"]);
     DEBRIS_MIN = static_cast<int>(MMPlanetDataMap["Minimum_Debris"]);
-    
+
     SHUTTLE_MAX_LIFESPAN = MMShuttleDataMap["Shuttle_Lifespan"];
     SHUTTLE_MAX_ACCEL = MMShuttleDataMap["Shuttle_Acceleration"];
     SHUTTLE_HEIGHT = MMShuttleDataMap["Shuttle_Height"];
-    
-
 
     //--------------------Projectile--------------------
     MMplayer_proj.position.x = MMProjDataMap["Position_X"];
     MMplayer_proj.position.y = MMProjDataMap["Position_Y"];
 
-    //DEBRIS
+    //--------------------Debris--------------------
 
-    MMplanet.max_debris = rand() % (DEBRIS_MAX - DEBRIS_MIN) + DEBRIS_MIN;												// Randomize debris count on planet spawn
+    MMplanet.max_debris = rand() % (DEBRIS_MAX - DEBRIS_MIN) + DEBRIS_MIN;      // Randomize debris count on planet spawn
     MMplanet.debris_vector = MM_create_debris(MMplanet.position.x, MMplanet.position.y, MMplanet.size, MMplanet.max_debris);
     MMplanet.position.x = g_windowWidth / 2.f;
     MMplanet.position.y = -g_windowHeight / 2.f;
     MMplanet.size = MMPlanetDataMap["MainMenu_Planet_Size"];
-    MMplanet.shuttle_timer = MMShuttleDataMap["Shuttle_Timer"];	
+    MMplanet.shuttle_timer = MMShuttleDataMap["Shuttle_Timer"];
     MMplanet.shuttle_time_to_spawn = static_cast<f32>(rand() % (SHUTTLE_SPAWN_TIME_MAX - SHUTTLE_SPAWN_TIME_MIN + 1) + SHUTTLE_SPAWN_TIME_MIN);
-
-    
 }
 
 void main_menu::update()
 {
-    MMframe_time = AEFrameRateControllerGetFrameTime();
-    MMtotal_time += MMframe_time;
-
+    MMg_dt = g_dt;
+    MMtotal_time += MMg_dt;
 
     // =======================
     //  PLAYER MOVEMENT
@@ -370,13 +350,13 @@ void main_menu::update()
             w_ButtonWidth = Lerp(w_ButtonWidth, w_ButtonWidthHover, lerpSpeed);
             w_ButtonHeight = Lerp(w_ButtonHeight, w_ButtonHeightHover, lerpSpeed);
 
-            AEVec2 added;
-            AEVec2Set(&added, AECos(MMplayer.direction), AESin(MMplayer.direction));
+            AEVec2 acceleration;
+            AEVec2Set(&acceleration, AECos(MMplayer.direction), AESin(MMplayer.direction));
 
             // Find the velocity according to the acceleration
-            AEVec2Scale(&added, &added, MMplayer.mov_speed * static_cast<f32>(MMplayer.mov_speed_level + 3) / 2.f);
-            MMplayer.velocity.x = MMplayer.velocity.x + added.x * static_cast<f32>(MMframe_time);
-            MMplayer.velocity.y = MMplayer.velocity.y + added.y * static_cast<f32>(MMframe_time);
+            AEVec2Scale(&acceleration, &acceleration, MMplayer.mov_speed * static_cast<f32>(MMplayer.mov_speed_level + 3) / 2.f);
+            MMplayer.velocity.x = MMplayer.velocity.x + acceleration.x * static_cast<f32>(MMg_dt);
+            MMplayer.velocity.y = MMplayer.velocity.y + acceleration.y * static_cast<f32>(MMg_dt);
 
             // Limit player's speed
             AEVec2Scale(&MMplayer.velocity, &MMplayer.velocity, 0.99f);
@@ -398,13 +378,13 @@ void main_menu::update()
             s_ButtonWidth = Lerp(s_ButtonWidth, s_ButtonWidthHover, lerpSpeed);
             s_ButtonHeight = Lerp(s_ButtonHeight, s_ButtonHeightHover, lerpSpeed);
 
-            AEVec2 added;
-            AEVec2Set(&added, -AECos(MMplayer.direction), -AESin(MMplayer.direction));
+            AEVec2 acceleration;
+            AEVec2Set(&acceleration, -AECos(MMplayer.direction), -AESin(MMplayer.direction));
 
             // Find the velocity according to the decceleration
-            AEVec2Scale(&added, &added, MMplayer.mov_speed * static_cast<f32>(MMplayer.mov_speed_level + 1) / 2.f);
-            MMplayer.velocity.x = MMplayer.velocity.x + added.x * static_cast<f32>(MMframe_time);
-            MMplayer.velocity.y = MMplayer.velocity.y + added.y * static_cast<f32>(MMframe_time);
+            AEVec2Scale(&acceleration, &acceleration, MMplayer.mov_speed * (MMplayer.mov_speed_level + 1) / 2.f);
+            MMplayer.velocity.x = MMplayer.velocity.x + acceleration.x * MMg_dt;
+            MMplayer.velocity.y = MMplayer.velocity.y + acceleration.y * MMg_dt;
 
             // Limit player's speed
             AEVec2Scale(&MMplayer.velocity, &MMplayer.velocity, 0.99f);
@@ -426,7 +406,7 @@ void main_menu::update()
             a_ButtonWidth = Lerp(a_ButtonWidth, a_ButtonWidthHover, lerpSpeed);
             a_ButtonHeight = Lerp(a_ButtonHeight, a_ButtonHeightHover, lerpSpeed);
 
-            MMplayer.direction += MMplayer.rot_speed * static_cast<f32>(MMframe_time);
+            MMplayer.direction += MMplayer.rot_speed * static_cast<f32>(MMg_dt);
             MMplayer.direction = AEWrap(MMplayer.direction, -PI, PI);
         }
         else
@@ -446,7 +426,7 @@ void main_menu::update()
             d_ButtonWidth = Lerp(d_ButtonWidth, d_ButtonWidthHover, lerpSpeed);
             d_ButtonHeight = Lerp(d_ButtonHeight, d_ButtonHeightHover, lerpSpeed);
 
-            MMplayer.direction -= MMplayer.rot_speed * static_cast<f32>(MMframe_time);
+            MMplayer.direction -= MMplayer.rot_speed * static_cast<f32>(MMg_dt);
             MMplayer.direction = AEWrap(MMplayer.direction, -PI, PI);
         }
         else
@@ -460,7 +440,7 @@ void main_menu::update()
         if (AEInputCheckCurr(AEVK_LBUTTON))
         {
             LMB_KeyPressed = true;
-            
+
         }
         else
         {
@@ -477,15 +457,15 @@ void main_menu::update()
         // Update Player Position
         // =======================
 
-        MMplayer.position.x = MMplayer.position.x + MMplayer.velocity.x * static_cast<f32>(MMframe_time);
-        MMplayer.position.y = MMplayer.position.y + MMplayer.velocity.y * static_cast<f32>(MMframe_time);
+        MMplayer.position.x = MMplayer.position.x + MMplayer.velocity.x * static_cast<f32>(MMg_dt);
+        MMplayer.position.y = MMplayer.position.y + MMplayer.velocity.y * static_cast<f32>(MMg_dt);
     }
 
 
     if (MMplayer.state == PLAYER_TRANSIT) {
         // ================
-    // Check for input
-    // ================
+        // Check for input
+        // ================
 
         if (AEInputCheckCurr(AEVK_W)) {
             AEVec2 added;
@@ -493,14 +473,14 @@ void main_menu::update()
 
             // Find the velocity according to the acceleration
             AEVec2Scale(&added, &added, MMplayer.mov_speed / 2.f);
-            MMplayer.velocity.x = MMplayer.velocity.x + added.x * static_cast<f32>(MMframe_time);
-            MMplayer.velocity.y = MMplayer.velocity.y + added.y * static_cast<f32>(MMframe_time);
+            MMplayer.velocity.x = MMplayer.velocity.x + added.x * static_cast<f32>(MMg_dt);
+            MMplayer.velocity.y = MMplayer.velocity.y + added.y * static_cast<f32>(MMg_dt);
 
             // Limit player's speed
             AEVec2Scale(&MMplayer.velocity, &MMplayer.velocity, 0.99f);
 
             // Add to timer. Change to flying state after 1s
-            MMplayer.timer += static_cast<f32>(MMframe_time);
+            MMplayer.timer += static_cast<f32>(MMg_dt);
             if (MMplayer.timer >= MMplayer.max_timer) {
                 // Change state and reset timer
                 MMplayer.state = PLAYER_FLY;
@@ -513,10 +493,10 @@ void main_menu::update()
             AEVec2 diff;
             AEVec2Sub(&diff, &MMplanet.position, &MMplayer.position);
             AEVec2Normalize(&diff, &diff);
-            AEVec2Scale(&diff, &diff, MMplayer.mov_speed * static_cast<f32>(MMframe_time));
+            AEVec2Scale(&diff, &diff, MMplayer.mov_speed * static_cast<f32>(MMg_dt));
             AEVec2Add(&MMplayer.position, &MMplayer.position, &diff);
 
-            MMplayer.timer -= static_cast<f32>(MMframe_time);
+            MMplayer.timer -= static_cast<f32>(MMg_dt);
 
             // Debris to rotate around planet when in orbit range
             if (AEVec2Distance(&MMplanet.position, &MMplayer.position) <= (MMplanet.size / 2 + MMplanet.orbit_range)) {
@@ -530,8 +510,8 @@ void main_menu::update()
         // Update player position
         // =======================
 
-        MMplayer.position.x = MMplayer.position.x + MMplayer.velocity.x * static_cast<f32>(MMframe_time);
-        MMplayer.position.y = MMplayer.position.y + MMplayer.velocity.y * static_cast<f32>(MMframe_time);
+        MMplayer.position.x = MMplayer.position.x + MMplayer.velocity.x * static_cast<f32>(MMg_dt);
+        MMplayer.position.y = MMplayer.position.y + MMplayer.velocity.y * static_cast<f32>(MMg_dt);
     }
 
     // =======================
@@ -552,7 +532,7 @@ void main_menu::update()
             a_ButtonWidth = Lerp(a_ButtonWidth, a_ButtonWidthHover, lerpSpeed);
             a_ButtonHeight = Lerp(a_ButtonHeight, a_ButtonHeightHover, lerpSpeed);
 
-            MMplayer.direction += (MMplayer.rot_speed / 2) * static_cast<f32>(MMframe_time);
+            MMplayer.direction += (MMplayer.rot_speed / 2) * static_cast<f32>(MMg_dt);
 
             MMplayer.position.x = MMplanet.position.x + (static_cast<f32>(MMplanet.size) / 2 + MMplanet.orbit_range) * AECos(MMplayer.direction);
             MMplayer.position.y = MMplanet.position.y + (static_cast<f32>(MMplanet.size) / 2 + MMplanet.orbit_range) * AESin(MMplayer.direction);
@@ -574,7 +554,7 @@ void main_menu::update()
             d_ButtonWidth = Lerp(d_ButtonWidth, d_ButtonWidthHover, lerpSpeed);
             d_ButtonHeight = Lerp(d_ButtonHeight, d_ButtonHeightHover, lerpSpeed);
 
-            MMplayer.direction -= (MMplayer.rot_speed / 2) * static_cast<f32>(MMframe_time);
+            MMplayer.direction -= (MMplayer.rot_speed / 2) * static_cast<f32>(MMg_dt);
 
             MMplayer.position.x = MMplanet.position.x + (static_cast<f32>(MMplanet.size) / 2 + MMplanet.orbit_range) * AECos(MMplayer.direction);
             MMplayer.position.y = MMplanet.position.y + (static_cast<f32>(MMplanet.size) / 2 + MMplanet.orbit_range) * AESin(MMplayer.direction);
@@ -726,14 +706,14 @@ void main_menu::update()
         AEVec2Normalize(&MMplayer_proj.velocity, &MMplayer_proj.velocity);
         AEVec2Scale(&MMplayer_proj.velocity, &MMplayer_proj.velocity, MMplayer_proj.speed);
 
-       
+
 
         MMplayer_proj.is_delete = static_cast<int>(MMProjDataMap["Delete_flag"]);
 
         MMProj_vector.push_back(MMplayer_proj);
-        
-        AudioManager::PlayOneShot("Assets/BGM/9mm-pistol-shot-6349.mp3",0.2f);
-        
+
+        AudioManager::PlayOneShot("Assets/BGM/9mm-pistol-shot-6349.mp3", 0.2f);
+
     }
 
     // =====================================
@@ -743,8 +723,8 @@ void main_menu::update()
     for (int i = 0; i < MMProj_vector.size(); ++i) {
         PlayerProj& player_proj = MMProj_vector[i];
 
-        player_proj.position.x += player_proj.velocity.x * static_cast<f32>(MMframe_time);
-        player_proj.position.y += player_proj.velocity.y * static_cast<f32>(MMframe_time);
+        player_proj.position.x += player_proj.velocity.x * static_cast<f32>(MMg_dt);
+        player_proj.position.y += player_proj.velocity.y * static_cast<f32>(MMg_dt);
     }
 
 
@@ -803,9 +783,9 @@ void main_menu::update()
     // ===================================
     //  UPDATE SHUTTLE TIMER AND DIRECTION
     // ===================================
-    MMplanet.shuttle_timer += static_cast<f32>(MMframe_time);
+    MMplanet.shuttle_timer += static_cast<f32>(MMg_dt);
 
-    MMplanet.direction += PLANET_ROT_SPEED * static_cast<f32>(MMframe_time);
+    MMplanet.direction += PLANET_ROT_SPEED * static_cast<f32>(MMg_dt);
 
 
     // =========================================
@@ -898,7 +878,7 @@ void main_menu::update()
 
         if (debris.state == ORBIT_AROUND_PLANET) {
             // Orbit around planet
-            debris.angle -= AEDegToRad(0.125f) * debris.turning_speed * static_cast<f32>(MMframe_time);
+            debris.angle -= AEDegToRad(0.125f) * debris.turning_speed * static_cast<f32>(MMg_dt);
             debris.position.x = MMplanet.position.x + ((MMplanet.size / 2) + debris.distance) * AECos(debris.angle);
             debris.position.y = MMplanet.position.y + ((MMplanet.size / 2) + debris.distance) * AESin(debris.angle);
         }
@@ -910,17 +890,17 @@ void main_menu::update()
     if (MMplayer.state == PLAYER_ORBIT)
     {
         // Update the Lerp value for the halo scale
-        MMplanet.halo_scale_lerp += (1.0f - MMplanet.halo_scale_lerp) * 0.1f;
+        MMplanet.halo_scale_lerp += (1.0f - MMplanet.halo_scale_lerp) * 10.f * g_dt;
     }
     else
     {
         // Update the Lerp value for the halo scale
         if (MMplanet.halo_scale_lerp > 0.f)
         {
-            MMplanet.halo_scale_lerp -= MMplanet.halo_scale_lerp * 0.01f;
+            MMplanet.halo_scale_lerp -= MMplanet.halo_scale_lerp * g_dt;
         }
     }
-    
+
     MMplanet.halo_size = MMplanet.size + 60.f;
 
     // Use the Lerp value to scale the halo
@@ -938,7 +918,7 @@ void main_menu::update()
     for (size_t i{}; i < MMshuttle_vector.size(); i++) {
         for (int k = 0; k < MMplanet.debris_vector.size(); ++k) {
             if (MMshuttle_vector[i].active) {
-                if (AEVec2Distance(&MMshuttle_vector[i].position, &MMplanet.debris_vector[k].position) <= ((SHUTTLE_HEIGHT-80) / 2 + MMplanet.debris_vector[k].size / 2)) { // if collided
+                if (AEVec2Distance(&MMshuttle_vector[i].position, &MMplanet.debris_vector[k].position) <= ((SHUTTLE_HEIGHT - 80) / 2 + MMplanet.debris_vector[k].size / 2)) { // if collided
                     MMplanet.debris_vector[k].active = false;
                     MMshuttle_vector[i].active = false;
                     MMplanet.debris_vector[k].explosion.is_draw = 1;
@@ -962,7 +942,7 @@ void main_menu::update()
         if (explosion.is_draw == 1) {
 
             if (explosion.timer <= explosion.total_time) {
-                explosion.timer += static_cast<f32>(MMframe_time);
+                explosion.timer += static_cast<f32>(MMg_dt);
                 AEMtx33Scale(&scale, explosion.width, explosion.height);
                 AEMtx33Rot(&rot, 0);
                 AEMtx33Trans(&trans, explosion.position.x, explosion.position.y);
@@ -1004,19 +984,19 @@ void main_menu::update()
     {
         if (MMshuttle_vector[i].active)
         {
-            AEVec2 added{};
+            AEVec2 acceleration{};
 
             // Shuttle accelerating
-            AEVec2Add(&added, &added, &MMshuttle_vector[i].direction);
-            AEVec2Scale(&added, &added, MMshuttle_vector[i].acceleration * static_cast<f32>(MMframe_time));
-            AEVec2Add(&MMshuttle_vector[i].velocity, &added, &MMshuttle_vector[i].velocity);
+            AEVec2Add(&acceleration, &acceleration, &MMshuttle_vector[i].direction);
+            AEVec2Scale(&acceleration, &acceleration, MMshuttle_vector[i].acceleration * static_cast<f32>(MMg_dt));
+            AEVec2Add(&MMshuttle_vector[i].velocity, &acceleration, &MMshuttle_vector[i].velocity);
 
             // Limiting shuttle velocity
             AEVec2Scale(&MMshuttle_vector[i].velocity, &MMshuttle_vector[i].velocity, 0.99f);
 
             // Update shuttle position
-            MMshuttle_vector[i].position.x += MMshuttle_vector[i].velocity.x * static_cast<f32>(MMframe_time);
-            MMshuttle_vector[i].position.y += MMshuttle_vector[i].velocity.y * static_cast<f32>(MMframe_time);
+            MMshuttle_vector[i].position.x += MMshuttle_vector[i].velocity.x * static_cast<f32>(MMg_dt);
+            MMshuttle_vector[i].position.y += MMshuttle_vector[i].velocity.y * static_cast<f32>(MMg_dt);
 
             AEMtx33Trans(&MMshuttle_vector[i].translate, MMshuttle_vector[i].position.x, MMshuttle_vector[i].position.y);
             AEMtx33Concat(&MMshuttle_vector[i].transform, &MMshuttle_vector[i].rotate, &MMshuttle_vector[i].scale);
@@ -1028,7 +1008,7 @@ void main_menu::update()
                 MMshuttle_vector[i].active = false;
                 MMspawn_debris_shuttle(MMshuttle_vector[i].position, 3);
             }
-            MMshuttle_vector[i].lifespan -= static_cast<f32>(MMframe_time);
+            MMshuttle_vector[i].lifespan -= static_cast<f32>(MMg_dt);
         }
     }
 
@@ -1321,7 +1301,7 @@ void MMspawn_shuttle()
 }
 
 std::vector<Debris> MM_create_debris(f32 planet_x, f32 planet_y, double size, int total_debris) {
-    std::vector<Debris> debris_vector;
+    std::vector<Debris> new_debris_vector;
     for (int i = 0; i < total_debris; i++)
     {
         Debris new_debris;
@@ -1334,7 +1314,7 @@ std::vector<Debris> MM_create_debris(f32 planet_x, f32 planet_y, double size, in
         new_debris.turning_speed = SPEED_DEBRIS;
         new_debris.active = true;
         new_debris.state = ORBIT_AROUND_PLANET;
-        new_debris.distance = static_cast<int>(OUTERRIM_TO_DEBRIS);
+        new_debris.distance = static_cast<f32>(OUTERRIM_TO_DEBRIS);
 
         new_debris.scale = { 0 };
         new_debris.rotate = { 0 };
@@ -1346,10 +1326,10 @@ std::vector<Debris> MM_create_debris(f32 planet_x, f32 planet_y, double size, in
         new_debris.explosion.transform = { 0 };
         new_debris.explosion.total_time = 1;
 
-        debris_vector.push_back(new_debris);
+        new_debris_vector.push_back(new_debris);
     }
 
-    return debris_vector;
+    return new_debris_vector;
 }
 
 void MMspawn_debris_shuttle(AEVec2 position, int num_of_debris) {

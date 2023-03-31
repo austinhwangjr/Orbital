@@ -20,37 +20,50 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 static float SHUTTLE_MAX_LIFESPAN;		// Maximum life time for a shuttle before escaping (expiring)
 static float SHUTTLE_MAX_ACCEL;			// Maximum acceleration for a shuttle
-static int	 SHUTTLE_VALUE;				// Credit value for a shuttle
-static int	 SHUTTLE_WIDTH;				// Shuttle Width
-static int	 SHUTTLE_HEIGHT;			// Shuttle Height
+static f32	 SHUTTLE_VALUE;				// Credit value for a shuttle
+static f32	 SHUTTLE_WIDTH;				// Shuttle Width
+static f32	 SHUTTLE_HEIGHT;			// Shuttle Height
 
 AEGfxTexture* shuttle_tex;
 std::vector<Shuttles> shuttle_vector;
-
 
 // IMPORT DATA VECTOR
 std::map<std::string, f32> 	ShuttleDataMap;
 std::vector<Data> 			ShuttleData;
 
-
 extern WaveManager wave_manager;
 
+/******************************************************************************/
+/*!
+	Load Textures and Data
+*/
+/******************************************************************************/
 void Shuttles::load()
 {
 	shuttle_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Shuttle.png");
 	ImportDataFromFile("Assets/GameObjectData/ShuttleData.txt", ShuttleData, ShuttleDataMap);
 }
 
+/******************************************************************************/
+/*!
+	Initialize Variables
+*/
+/******************************************************************************/
 void Shuttles::init()
 {
 	SHUTTLE_MAX_LIFESPAN = ShuttleDataMap["Shuttle_Lifespan"];
 	SHUTTLE_MAX_ACCEL	 = ShuttleDataMap["Shuttle_Acceleration"];
-	SHUTTLE_VALUE		 = static_cast<int>(ShuttleDataMap["Shuttle_Value"]);
+	SHUTTLE_VALUE		 = ShuttleDataMap["Shuttle_Value"];
 	SHUTTLE_WIDTH		 = ShuttleDataMap["Shuttle_Width"];
 	SHUTTLE_HEIGHT		 = ShuttleDataMap["Shuttle_Height"];
 }
 
-void Shuttles::update(f64 frame_time, Player& player)
+/******************************************************************************/
+/*!
+	Update Shuttle
+*/
+/******************************************************************************/
+void Shuttles::update(Player& current_player)
 {
 	for (size_t i{}; i < shuttle_vector.size(); i++)
 	{
@@ -60,15 +73,15 @@ void Shuttles::update(f64 frame_time, Player& player)
 
 			// Shuttle accelerating
 			AEVec2Add(&added, &added, &shuttle_vector[i].direction);
-			AEVec2Scale(&added, &added, shuttle_vector[i].acceleration * static_cast<f32>(frame_time));
+			AEVec2Scale(&added, &added, shuttle_vector[i].acceleration * g_dt);
 			AEVec2Add(&shuttle_vector[i].velocity, &added, &shuttle_vector[i].velocity);
 
 			// Limiting shuttle velocity
 			AEVec2Scale(&shuttle_vector[i].velocity, &shuttle_vector[i].velocity, 0.99f);
 
 			// Update shuttle position
-			shuttle_vector[i].position.x += shuttle_vector[i].velocity.x * static_cast<f32>(frame_time);
-			shuttle_vector[i].position.y += shuttle_vector[i].velocity.y * static_cast<f32>(frame_time);
+			shuttle_vector[i].position.x += shuttle_vector[i].velocity.x * g_dt;
+			shuttle_vector[i].position.y += shuttle_vector[i].velocity.y * g_dt;
 			
 			AEMtx33Trans(&shuttle_vector[i].translate, shuttle_vector[i].position.x, shuttle_vector[i].position.y);
 			AEMtx33Concat(&shuttle_vector[i].transform, &shuttle_vector[i].rotate, &shuttle_vector[i].scale);
@@ -79,18 +92,21 @@ void Shuttles::update(f64 frame_time, Player& player)
 			{
 				wave_manager.shuttle_has_escaped = true;
 				wave_manager.shuttle_left_planet++;
-				player.credits += SHUTTLE_VALUE;
+				current_player.credits += static_cast<int>(SHUTTLE_VALUE);
 				shuttle_vector[i].active = false;
 				//spawn_debris(2, shuttle_vector[i].planet_id);
 				spawn_debris_shuttle(shuttle_vector[i].position, shuttle_vector[i].planet_id, 3);
 			}
-			shuttle_vector[i].lifespan -= static_cast<f32>(frame_time);
+			shuttle_vector[i].lifespan -= g_dt;
 		}
 	}
-
-	
 }
 
+/******************************************************************************/
+/*!
+	Draw Shuttle
+*/
+/******************************************************************************/
 void Shuttles::draw(AEGfxVertexList* pMesh)
 {
 	// Set the texture to pTex 
@@ -117,6 +133,11 @@ void Shuttles::draw(AEGfxVertexList* pMesh)
 	AEGfxSetTransparency(1.0f);
 }
 
+/******************************************************************************/
+/*!
+	Clean Object Instances
+*/
+/******************************************************************************/
 void Shuttles::free()
 {
 	shuttle_vector.clear();
@@ -127,12 +148,22 @@ void Shuttles::free()
 	}
 }
 
+/******************************************************************************/
+/*!
+	Free Textures
+*/
+/******************************************************************************/
 void Shuttles::unload()
 {
 	AEGfxTextureUnload(shuttle_tex);
 }
 
-void Shuttles::spawn(int const& planet_id, f32 const& rand_angle)
+/******************************************************************************/
+/*!
+	Spawn Shuttle
+*/
+/******************************************************************************/
+void Shuttles::spawn(int const& current_planet_id, f32 const& rand_angle)
 {
 	Shuttles new_shuttle;
 
@@ -143,13 +174,13 @@ void Shuttles::spawn(int const& planet_id, f32 const& rand_angle)
 
 	AEVec2Zero(&new_shuttle.velocity);
 
-	new_shuttle.position.x = planet_vector[planet_id].shuttle_spawn_pos.x;
-	new_shuttle.position.y = planet_vector[planet_id].shuttle_spawn_pos.y;
+	new_shuttle.position.x = planet_vector[current_planet_id].shuttle_spawn_pos.x;
+	new_shuttle.position.y = planet_vector[current_planet_id].shuttle_spawn_pos.y;
 
 	new_shuttle.direction.x = AECos(rand_angle);
 	new_shuttle.direction.y = AESin(rand_angle);
 
-	new_shuttle.planet_id = planet_id;
+	new_shuttle.planet_id = current_planet_id;
 
 	AEMtx33Scale(&new_shuttle.scale, SHUTTLE_WIDTH, SHUTTLE_HEIGHT);
 	AEMtx33Rot(&new_shuttle.rotate, PI / 2 + rand_angle);

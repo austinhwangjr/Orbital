@@ -63,8 +63,8 @@ struct Drone
 	// Functions
 	// ==========
 	void load();
-	void init(Player);
-	void update(f32, Player&, PlayerUI&);
+	void init(Player const&);
+	void update(Player&, PlayerUI&);
 	void draw(AEGfxVertexList*, PlayerUI);
 	void free();
 	void unload();

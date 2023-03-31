@@ -37,7 +37,7 @@ AEGfxVertexList* pMeshHighScore1;
 
 Rendering renderScoreboard;
 
-static float timer4 = 0.f;
+static f32 timer4 = 0.f;
 
 static float buttonWidth3 = 200.f;
 static float buttonHeight3 = 50.f;
@@ -68,7 +68,7 @@ void HighScore::init()
 
 void HighScore::update()
 {
-    timer4 += AEFrameRateControllerGetFrameTime();
+    timer4 += g_dt;
 
     // Check if the left mouse button has been clicked
     if (AEInputCheckTriggered(AEVK_LBUTTON))

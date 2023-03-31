@@ -25,7 +25,9 @@ s8 font_id, font_id_shop, font_id_splashscreen;
 void system_call::init(_In_ HINSTANCE hInstance, _In_ int nCmdShow)
 {
 	Global_InitWindowSize(false);																	// Initialize game window size (yy added)
-	AESysInit(hInstance, nCmdShow, g_windowWidth, g_windowHeight, g_consoleOn, 60, true, NULL);		// Initialize the system
+	AESysInit(hInstance, static_cast<s32>(nCmdShow), 
+		static_cast<s32>(g_windowWidth), static_cast<s32>(g_windowHeight), 
+		g_consoleOn, 60, true, NULL);																// Initialize the system
 	AESysSetWindowTitle("Orbital");																	// Set the window title
 	AESysReset();																					// Reset the system modules
 

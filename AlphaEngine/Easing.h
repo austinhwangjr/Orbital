@@ -20,13 +20,15 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include <math.h>
 #define NATURAL_LOG_OF_2    0.693147181f
 
-static float EaseOutExpo(float start, float end, float value)
+namespace {
+
+float EaseOutExpo(float start, float end, float value)
 {
 	end -= start;
 	return end * (-powf(2, -10 * value) + 1) + start;
 }
 
-static float EaseInOutBack(float start, float end, float value)
+float EaseInOutBack(float start, float end, float value)
 {
 	float s = 1.70158f;
 	end -= start;
@@ -41,36 +43,38 @@ static float EaseInOutBack(float start, float end, float value)
 	return end * 0.5f * ((value)*value * (((s)+1) * value + s) + 2) + start;
 }
 
-static float Lerp(float a, float b, float t)
+float Lerp(float a, float b, float t)
 {
 	return a + (b - a) * t;
 }
 
 // Linear easing
-static float easeLinear(f32 t)
+float easeLinear(f32 t)
 {
 	return t;
 }
 
 // Quadratic easing in
-static float EaseInQuad(f32 t)
+float EaseInQuad(f32 t)
 {
 	return t * t;
 }
 
 // Quadratic easing out
-static float easeOutQuad(f32 t)
+float easeOutQuad(f32 t)
 {
 	return -(t * (t - 2));
 }
 
-static float easeInOutQuad(f32 t)
+float easeInOutQuad(f32 t)
 {
 	return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 }
 
-static float EaseAudioVolume(float startVolume, float targetVolume, float progress)
+float EaseAudioVolume(float startVolume, float targetVolume, float progress)
 {
 	float easedProgress = EaseOutExpo(0, 1, progress);
 	return Lerp(startVolume, targetVolume, easedProgress);
+}
+
 }

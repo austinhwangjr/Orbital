@@ -76,12 +76,12 @@ struct Player
 	// ==========
 	void load();
 	void init();
-	void update(f32);
+	void update();
 	void draw(AEGfxVertexList*);
 	void free();
 	void unload();
 
-	void orbit_state(f32);
-	void transit_state(f32);
-	void flying_state(f32);
+	void orbit_state();
+	void transit_state();
+	void flying_state();
 };

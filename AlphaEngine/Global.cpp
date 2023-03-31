@@ -46,8 +46,8 @@ void Global_InitWindowSize(bool isFullScreen)
 	if (isFullScreen)
 	{
 		g_isFullScreen	= true;
-		g_windowWidth	= desktopRect.right - desktopRect.left;
-		g_windowHeight	= desktopRect.bottom - desktopRect.top;
+		g_windowWidth	= static_cast<f32>(desktopRect.right - desktopRect.left);
+		g_windowHeight	= static_cast<f32>(desktopRect.bottom - desktopRect.top);
 	}
 	else
 	{
@@ -77,8 +77,10 @@ void Global_UpdateGlobals()
 void Global_UpdateWindowSize()
 {
 	GetWindowRect(AESysGetWindowHandle(), &g_WindowRect);						// Get size of the game window display
-	g_windowWidth	= g_WindowRect.right - g_WindowRect.left;						// Calculate window width
-	g_windowHeight	= g_WindowRect.bottom - g_WindowRect.top;					// Calculate window height
+	//g_windowWidth	= static_cast<f32>(g_WindowRect.right - g_WindowRect.left);					// Calculate window width
+	g_windowWidth	= static_cast<f32>(AEGetWindowWidth());					// Calculate window width
+	//g_windowHeight	= static_cast<f32>(g_WindowRect.bottom - g_WindowRect.top);					// Calculate window height
+	g_windowHeight	= static_cast<f32>(AEGetWindowHeight());					// Calculate window height
 
 	g_screenLeft	= static_cast<float>(g_windowWidth / -2.0f);
 	g_screenRight	= static_cast<float>(g_windowWidth / 2.0f);

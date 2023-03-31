@@ -34,6 +34,6 @@ namespace main_menu
     void unload();
 }
 
-extern f32 MMframe_time;
+extern f32 MMg_dt;
 extern f32 MMtotal_time;
 

@@ -32,7 +32,7 @@ extern std::vector<SpaceStation> space_station_vector;
 std::map<std::string, f32> 	CameraDataMap;
 std::vector<Data> 			CameraData;
 
-void Camera::init(Player& player)
+void Camera::init(Player& current_player)
 {
 	ImportDataFromFile("Assets/GameObjectData/CameraData.txt", CameraData, CameraDataMap);
 	CAM_PLAYER_SPEED	= CameraDataMap["Camera_Player_Speed"];
@@ -42,23 +42,23 @@ void Camera::init(Player& player)
 
 	AEVec2Zero(&velocity);
 	transition_time = 0.f;
-	position.x = player.position.x;
-	position.y = player.position.y;
+	position.x = current_player.position.x;
+	position.y = current_player.position.y;
 }
 
-void Camera::update(f32 frame_time, Player& player)
+void Camera::update(Player& current_player)
 {
 	if (wave_manager.planet_adding)
 	{
-		planet_transition(frame_time);
+		planet_transition();
 	}
 	else if (wave_manager.capacity_full)
 	{
-		station_transition(frame_time);
+		station_transition();
 	}
 	else
 	{
-		follow_player(frame_time, player);
+		follow_player(current_player);
 	}
 
 	AEGfxGetCamPosition(&g_camPos.x, &g_camPos.y);
@@ -69,20 +69,20 @@ void Camera::update(f32 frame_time, Player& player)
 	}
 }
 
-void Camera::follow_player(f32 frame_time, Player& player)
+void Camera::follow_player(Player& current_player)
 {
 	f32 t{};
-	t += static_cast<f32>(frame_time) * (AEVec2Distance(&player.position, &position) / CAM_PLAYER_SPEED);
-	AEVec2Lerp(&position, &position, &player.position, t);
+	t += g_dt * (AEVec2Distance(&current_player.position, &position) / CAM_PLAYER_SPEED);
+	AEVec2Lerp(&position, &position, &current_player.position, t);
 
 	AEGfxSetCamPosition(position.x, position.y);
 }
 
-void Camera::planet_transition(f32 frame_time)
+void Camera::planet_transition()
 {
-	transition_time += static_cast<f32>(frame_time);
+	transition_time += g_dt;
 	f32 t{};
-	t += static_cast<f32>(frame_time) * (AEVec2Distance(&planet_vector[planet_vector.size() - 1].position, &position) / CAM_PLANET_SPEED);
+	t += g_dt * (AEVec2Distance(&planet_vector[planet_vector.size() - 1].position, &position) / CAM_PLANET_SPEED);
 	AEVec2Lerp(&position, &position, &planet_vector[planet_vector.size() - 1].position, t);
 
 	AEGfxSetCamPosition(position.x, position.y);
@@ -94,11 +94,11 @@ void Camera::planet_transition(f32 frame_time)
 	}
 }
 
-void Camera::station_transition(f32 frame_time)
+void Camera::station_transition()
 {
-	transition_time += static_cast<f32>(frame_time);
+	transition_time += g_dt;
 	f32 t{};
-	t += static_cast<f32>(frame_time) * (AEVec2Distance(&space_station_vector[0].position, &position) / CAM_STATION_SPEED);
+	t += g_dt * (AEVec2Distance(&space_station_vector[0].position, &position) / CAM_STATION_SPEED);
 	AEVec2Lerp(&position, &position, &space_station_vector[0].position, t);
 
 	AEGfxSetCamPosition(position.x, position.y);

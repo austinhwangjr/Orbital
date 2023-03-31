@@ -37,7 +37,7 @@ AEGfxVertexList* optionsMesh;
 
 Rendering optionsMenu;
 
-static float timer3 = 0.f;
+static f32 timer3 = 0.f;
 
 static float returnToMMX11 = 0.0f;
 static float returnToMMY11 = -400.0f;
@@ -113,9 +113,10 @@ void Options::init()
 
 }
 
-void Options::update(float* volume, bool* muted)
+void Options::update(float* options_volume, bool* options_muted)
 {
-    timer3 += AEFrameRateControllerGetFrameTime();
+    timer3 += g_dt;
+
     // Check if the left mouse button has been clicked
     if (AEInputCheckTriggered(AEVK_LBUTTON))
     {
@@ -137,14 +138,14 @@ void Options::update(float* volume, bool* muted)
     static float animationProgress = 0.0f;
     static bool lastMuteState = false;
 
-    if (*muted != lastMuteState) {
+    if (*options_muted != lastMuteState) {
         animationProgress = 0.0f;
-        lastMuteState = *muted;
+        lastMuteState = *options_muted;
     }
 
     if (animationProgress < 1.0f) {
         animationProgress += 0.03f;
-        muteSliderThumbX = *muted ? EaseOutExpo(muteButtonX, muteButtonX + muteButtonWidth * 0.5f, animationProgress)
+        muteSliderThumbX = *options_muted ? EaseOutExpo(muteButtonX, muteButtonX + muteButtonWidth * 0.5f, animationProgress)
             : EaseOutExpo(muteButtonX + muteButtonWidth * 0.5f, muteButtonX, animationProgress);
     }
 
@@ -153,8 +154,8 @@ void Options::update(float* volume, bool* muted)
     {
         if (AEInputCheckTriggered(AEVK_LBUTTON))
         {
-            *muted = !*muted;
-            AudioManager::ToggleMute(*muted);
+            *options_muted = !*options_muted;
+            AudioManager::ToggleMute(*options_muted);
         }
     }
 
@@ -181,8 +182,8 @@ void Options::update(float* volume, bool* muted)
     }
     else if (next_state != GS_MAINMENU) // Add this condition to prevent updating the volume after switching states
     {
-        *volume = EaseAudioVolume(*volume, targetVolume, 0.05f);
-        AudioManager::setVolume(*volume);
+        *options_volume = EaseAudioVolume(*options_volume, targetVolume, 0.05f);
+        AudioManager::setVolume(*options_volume);
     }
 
     if (AEInputCheckReleased(AEVK_LBUTTON))

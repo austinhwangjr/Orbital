@@ -39,7 +39,7 @@ struct PlayerProj
 	// ==========
 	void load();
 	void init();
-	void update(f32, Player&, PlayerUI&);
+	void update(Player&, PlayerUI&);
 	void draw(AEGfxVertexList*);
 	void free();
 	void unload();

@@ -4,9 +4,6 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="pch.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="SplashScreen.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -91,6 +88,7 @@
     <ClCompile Include="Data.cpp">
       <Filter>Source\Utilities</Filter>
     </ClCompile>
+    <ClCompile Include="Transition.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -183,6 +181,9 @@
     <ClInclude Include="Data.h">
       <Filter>Header\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="GameStateList.h" />
+    <ClInclude Include="gch.h" />
+    <ClInclude Include="Transition.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header">

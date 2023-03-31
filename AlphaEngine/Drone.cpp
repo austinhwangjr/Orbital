@@ -62,7 +62,7 @@ void Drone::load()
 	Initialize Variables
 */
 /******************************************************************************/
-void Drone::init(Player player)
+void Drone::init(Player const& current_player)
 {
 	// ======
 	// Drone
@@ -73,13 +73,13 @@ void Drone::init(Player player)
 	velocity.x				= DroneDataMap["Velocity_X"];
 	velocity.y				= DroneDataMap["Velocity_Y"];
 
-	size					= player.size;
+	size					= current_player.size;
 
-	rot_speed				= player.rot_speed / 10.f;
+	rot_speed				= current_player.rot_speed / 10.f;
 
 	shortest_distance		= DroneDataMap["Shortest_Distance"];
 
-	direction				= player.direction;
+	direction				= current_player.direction;
 
 	current_capacity		= static_cast<int>(DroneDataMap["Current_Capacity"]);
 	max_capacity			= static_cast<int>(DroneDataMap["Max_Capacity"]);
@@ -114,7 +114,7 @@ void Drone::init(Player player)
 	Update Drone
 */
 /******************************************************************************/
-void Drone::update(f32 frame_time, Player& player, PlayerUI& player_ui)
+void Drone::update(Player& current_player, PlayerUI& player_ui)
 {
 	// =========================
 	// Update according to input
@@ -148,12 +148,12 @@ void Drone::update(f32 frame_time, Player& player, PlayerUI& player_ui)
 		position.y = g_mouseWorld.y;
 
 		// if within planet's orbit, drone can be placed
-		if (AEVec2Distance(&current_planet.position, &position) <= (static_cast<f32>(current_planet.size) / 2.f + current_planet.orbit_range)) {
+		if (AEVec2Distance(&current_planet.position, &position) <= (current_planet.size / 2.f + current_planet.orbit_range)) {
 			if (current_planet.current_drones < DRONES_MAX) {
 				direction = static_cast<f32>(atan2(static_cast<double>(position.y - current_planet.position.y),
 					static_cast<double>(position.x - current_planet.position.x)));
-				position.x = current_planet.position.x + (static_cast<f32>(current_planet.size) / 2.f + current_planet.orbit_range) * AECos(direction);
-				position.y = current_planet.position.y + (static_cast<f32>(current_planet.size) / 2.f + current_planet.orbit_range) * AESin(direction);
+				position.x = current_planet.position.x + (current_planet.size / 2.f + current_planet.orbit_range) * AECos(direction);
+				position.y = current_planet.position.y + (current_planet.size / 2.f + current_planet.orbit_range) * AESin(direction);
 				beam_pos.x = position.x - AECos(direction) * ((beam_height + size) / 2);
 				beam_pos.y = position.y - AESin(direction) * ((beam_height + size) / 2);
 
@@ -173,12 +173,12 @@ void Drone::update(f32 frame_time, Player& player, PlayerUI& player_ui)
 
 			// Set drone position
 			drone.position.x = drone.current_planet.position.x +
-				(static_cast<f32>(drone.current_planet.size) / 2.f + drone.current_planet.orbit_range) * AECos(drone.direction);
+				(drone.current_planet.size / 2.f + drone.current_planet.orbit_range) * AECos(drone.direction);
 			drone.position.y = drone.current_planet.position.y +
-				(static_cast<f32>(drone.current_planet.size) / 2.f + drone.current_planet.orbit_range) * AESin(drone.direction);
+				(drone.current_planet.size / 2.f + drone.current_planet.orbit_range) * AESin(drone.direction);
 
 			// Set drone direction
-			drone.direction += drone.rot_speed * static_cast<f32>(frame_time);
+			drone.direction += drone.rot_speed * g_dt;
 
 			// Drone's tractor beam
 			drone.beam_pos.x = drone.position.x - AECos(drone.direction) * ((drone.beam_height + drone.size) / 2);
@@ -238,11 +238,11 @@ void Drone::update(f32 frame_time, Player& player, PlayerUI& player_ui)
 		}
 	}
 
-	else if (drone_valid_placement && !drone_added && player.credits >= player_ui.drone_cost) {
+	else if (drone_valid_placement && !drone_added && current_player.credits >= player_ui.drone_cost) {
 		// Add drone to vector
 		planet_vector[current_planet.id].current_drones++;
 		drone_vector_all[current_planet.id].push_back(*this);
-		player.credits -= player_ui.drone_cost;
+		current_player.credits -= player_ui.drone_cost;
 		drone_added = true;
 	}
 
@@ -266,7 +266,7 @@ void Drone::update(f32 frame_time, Player& player, PlayerUI& player_ui)
 			// Drone to process debris only when it has at least 1 debris
 			if (drone.current_capacity > 0) {
 
-				drone.cd_bar.timer += static_cast<f32>(frame_time);
+				drone.cd_bar.timer += g_dt;
 
 				f32 speed = drone.cd_bar.max_width / drone.cd_bar.total_time;
 				if (drone.current_capacity > 0) {
@@ -277,8 +277,8 @@ void Drone::update(f32 frame_time, Player& player, PlayerUI& player_ui)
 				if (drone.cd_bar.timer > drone.cd_bar.total_time && drone.current_capacity >= 0) {
 					drone.current_capacity--;
 					drone.cd_bar.timer = 0;
-					player.credits += DEBRIS_VALUE / 2;
-					player.score += DEBRIS_SCORE / 2;
+					current_player.credits += DEBRIS_VALUE / 2;
+					current_player.score += DEBRIS_SCORE / 2;
 				}
 			}
 			else {
@@ -406,6 +406,4 @@ void Drone::free()
 void Drone::unload()
 {
 	AEGfxTextureUnload(drone_tex);
-
 }
-

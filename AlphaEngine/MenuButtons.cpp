@@ -179,7 +179,7 @@ void Menu_Button::init()
 /******************************************************************************/
 void Menu_Button::update()
 {
-    hoverSoundDelay += AEFrameRateControllerGetFrameTime();
+    hoverSoundDelay += static_cast<float>(g_dt);
 
     for (int i = 0; i < 6; ++i)
     {
@@ -309,7 +309,6 @@ void Menu_Button::update()
 /******************************************************************************/
 void Menu_Button::draw(AEGfxVertexList* pMesh)
 {
-    float squareSize = 23.0f;
     float offsetX = -180.0f;
 
     for (int i = 0; i < 6; ++i)

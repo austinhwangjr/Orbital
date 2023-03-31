@@ -12,6 +12,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
  */
 /******************************************************************************/
 #include "AEEngine.h"
+#include "Global.h"
 #include "Player.h"
 #include "Easing.h"
 #include "Data.h"
@@ -83,16 +84,16 @@ void Player::init()
 	// ==============
 	// Score-keeping
 	// ==============
-	score					= PlayerDataMap["score"];
-	credits					= PlayerDataMap["credits"];
+	score					= static_cast<int>(PlayerDataMap["score"]);
+	credits					= static_cast<int>(PlayerDataMap["credits"]);
 
 	// ===============
 	// Upgrade Levels
 	// ===============
-	mov_speed_level			= PlayerDataMap["mov_speed_level"];
-	capacity_level			= PlayerDataMap["capacity_level"];
-	space_station_count		= PlayerDataMap["space_station_count"];
-	beam_level				= PlayerDataMap["beam_level"];
+	mov_speed_level			= static_cast<int>(PlayerDataMap["mov_speed_level"]);
+	capacity_level			= static_cast<int>(PlayerDataMap["capacity_level"]);
+	space_station_count		= static_cast<int>(PlayerDataMap["space_station_count"]);
+	beam_level				= static_cast<int>(PlayerDataMap["beam_level"]);
 
 	// =============
 	// Tractor Beam
@@ -109,19 +110,19 @@ void Player::init()
 	Update Player
 */
 /******************************************************************************/
-void Player::update(f32 frame_time)
+void Player::update()
 {
 	// Player is in orbit state
 	if (state == PLAYER_ORBIT)
-		orbit_state(frame_time);
+		orbit_state();
 
 	// Player is in transit state
 	if (state == PLAYER_TRANSIT)
-		transit_state(frame_time);
+		transit_state();
 
 	// Player is in free-flying state
 	if (state == PLAYER_FLY)
-		flying_state(frame_time);
+		flying_state();
 
 	// =========================================
 	// Calculate the matrix for player and beam
@@ -195,21 +196,21 @@ void Player::unload()
 */
 /******************************************************************************/
 // Orbit State of Player
-void Player::orbit_state(f32 frame_time)
+void Player::orbit_state()
 {
 	// ================
 	// Check for input
 	// ================
 
 	if (AEInputCheckCurr(AEVK_A)) {
-		direction += (rot_speed / 2) * static_cast<f32>(frame_time);
+		direction += (rot_speed / 2) * g_dt;
 
 		position.x = current_planet.position.x + (static_cast<f32>(current_planet.size) / 2 + current_planet.orbit_range) * AECos(direction);
 		position.y = current_planet.position.y + (static_cast<f32>(current_planet.size) / 2 + current_planet.orbit_range) * AESin(direction);
 	}
 
 	if (AEInputCheckCurr(AEVK_D)) {
-		direction -= (rot_speed / 2) * static_cast<f32>(frame_time);
+		direction -= (rot_speed / 2) * g_dt;
 
 		position.x = current_planet.position.x + (static_cast<f32>(current_planet.size) / 2 + current_planet.orbit_range) * AECos(direction);
 		position.y = current_planet.position.y + (static_cast<f32>(current_planet.size) / 2 + current_planet.orbit_range) * AESin(direction);
@@ -287,7 +288,7 @@ void Player::orbit_state(f32 frame_time)
 }
 
 // Transit State of Player
-void Player::transit_state(f32 frame_time)
+void Player::transit_state()
 {
 	// ================
 	// Check for input
@@ -299,14 +300,14 @@ void Player::transit_state(f32 frame_time)
 
 		// Find the velocity according to the acceleration
 		AEVec2Scale(&added, &added, mov_speed / 2.f);
-		velocity.x = velocity.x + added.x * static_cast<f32>(frame_time);
-		velocity.y = velocity.y + added.y * static_cast<f32>(frame_time);
+		velocity.x = velocity.x + added.x * g_dt;
+		velocity.y = velocity.y + added.y * g_dt;
 
 		// Limit player's speed
 		AEVec2Scale(&velocity, &velocity, 0.99f);
 
 		// Add to timer. Change to flying state after 1s
-		timer += static_cast<f32>(frame_time);
+		timer += g_dt;
 		if (timer >= max_timer) {
 			// Change state and reset timer
 			state = PLAYER_FLY;
@@ -319,10 +320,10 @@ void Player::transit_state(f32 frame_time)
 		AEVec2 diff;
 		AEVec2Sub(&diff, &current_planet.position, &position);
 		AEVec2Normalize(&diff, &diff);
-		AEVec2Scale(&diff, &diff, mov_speed * static_cast<f32>(frame_time));
+		AEVec2Scale(&diff, &diff, mov_speed * g_dt);
 		AEVec2Add(&position, &position, &diff);
 
-		timer -= static_cast<f32>(frame_time);
+		timer -= g_dt;
 
 		// Debris to rotate around planet when in orbit range
 		if (AEVec2Distance(&current_planet.position, &position) <= (current_planet.size / 2 + current_planet.orbit_range)) {
@@ -336,12 +337,12 @@ void Player::transit_state(f32 frame_time)
 	// Update player position
 	// =======================
 
-	position.x = position.x + velocity.x * static_cast<f32>(frame_time);
-	position.y = position.y + velocity.y * static_cast<f32>(frame_time);
+	position.x = position.x + velocity.x * g_dt;
+	position.y = position.y + velocity.y * g_dt;
 }
 
 // Flying State of Player
-void Player::flying_state(f32 frame_time)
+void Player::flying_state()
 {
 	// ================
 	// Check for input
@@ -353,7 +354,7 @@ void Player::flying_state(f32 frame_time)
 		AEVec2Set(&added, AECos(direction), AESin(direction));
 
 		// Find the velocity according to the acceleration
-		f32 easing = easeOutQuad(static_cast<f32>(frame_time));
+		f32 easing = easeOutQuad(g_dt);
 		AEVec2Scale(&added, &added, mov_speed * static_cast<f32>(mov_speed_level + 1) / 2.f * easing);
 		velocity.x = velocity.x + added.x;
 		velocity.y = velocity.y + added.y;
@@ -368,7 +369,7 @@ void Player::flying_state(f32 frame_time)
 		AEVec2Set(&added, -AECos(direction), -AESin(direction));
 
 		// Find the velocity according to the decceleration
-		f32 easing = easeOutQuad(static_cast<f32>(frame_time));
+		f32 easing = easeOutQuad(g_dt);
 		AEVec2Scale(&added, &added, mov_speed * static_cast<f32>(mov_speed_level + 1) / 2.f * easing);
 		velocity.x = velocity.x + added.x;
 		velocity.y = velocity.y + added.y;
@@ -378,12 +379,12 @@ void Player::flying_state(f32 frame_time)
 	}
 
 	if (AEInputCheckCurr(AEVK_A)) {
-		direction += rot_speed * static_cast<f32>(frame_time);
+		direction += rot_speed * g_dt;
 		direction = AEWrap(direction, -PI, PI);
 	}
 
 	if (AEInputCheckCurr(AEVK_D)) {
-		direction -= rot_speed * static_cast<f32>(frame_time);
+		direction -= rot_speed * g_dt;
 		direction = AEWrap(direction, -PI, PI);
 	}
 
@@ -396,8 +397,8 @@ void Player::flying_state(f32 frame_time)
 	// Update player position
 	// =======================
 
-	position.x = position.x + velocity.x * static_cast<f32>(frame_time);
-	position.y = position.y + velocity.y * static_cast<f32>(frame_time);	
+	position.x = position.x + velocity.x * g_dt;
+	position.y = position.y + velocity.y * g_dt;	
 
 	// ===================================
 	// Update active game object instances
@@ -405,7 +406,7 @@ void Player::flying_state(f32 frame_time)
 
 	/* if (0 <= Halo_Timer)
 	{
-		Halo_Timer -= frame_time;
+		Halo_Timer -= g_dt;
 	}*/
 
 	// Determine planet closest to player

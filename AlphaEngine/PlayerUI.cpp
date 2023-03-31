@@ -71,18 +71,18 @@ extern std::vector<SpaceStation> space_station_vector;
 void PlayerUI::load()
 {
 	// Load general UI textures
-	shop_icon_tex = AEGfxTextureLoad("Assets/MainLevel/ml_YellowButtonBackground.png");
-	shop_open_tex = AEGfxTextureLoad("Assets/MainLevel/ml_ShopOpenButton.png");
-	shop_close_tex = AEGfxTextureLoad("Assets/MainLevel/ml_ShopCloseButton.png");
-	space_station_tex = AEGfxTextureLoad("Assets/MainLevel/ml_SpaceStation.png");
-	shop_background_tex = AEGfxTextureLoad("Assets/MainLevel/ml_ShopBackground.png");
-	tutorial_open_tex = AEGfxTextureLoad("Assets/MainLevel/ml_TutorialBackground.png");
-	tutorial_background_tex = AEGfxTextureLoad("Assets/MainLevel/ml_TutorialBackground.png");
+	shop_icon_tex			 = AEGfxTextureLoad("Assets/MainLevel/ml_YellowButtonBackground.png");
+	shop_open_tex			 = AEGfxTextureLoad("Assets/MainLevel/ml_ShopOpenButton.png");
+	shop_close_tex			 = AEGfxTextureLoad("Assets/MainLevel/ml_ShopCloseButton.png");
+	space_station_tex		 = AEGfxTextureLoad("Assets/MainLevel/ml_SpaceStation.png");
+	shop_background_tex		 = AEGfxTextureLoad("Assets/MainLevel/ml_ShopBackground.png");
+	tutorial_open_tex		 = AEGfxTextureLoad("Assets/MainLevel/ml_TutorialBackground.png");
+	tutorial_background_tex  = AEGfxTextureLoad("Assets/MainLevel/ml_TutorialBackground.png");
 	upgrade_level_hollow_tex = AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelHollow.png");
-	upgrade_level_solid_tex = AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelSolid.png");
-	player_hud_tex = AEGfxTextureLoad("Assets/MainLevel/ml_HeadsUpDisplay.png");
-	shuttle_lost_tex = AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
-	shop_indicator_tex = AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
+	upgrade_level_solid_tex	 = AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelSolid.png");
+	player_hud_tex			 = AEGfxTextureLoad("Assets/MainLevel/ml_HeadsUpDisplay.png");
+	shuttle_lost_tex		 = AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
+	shop_indicator_tex		 = AEGfxTextureLoad("Assets/MainLevel/neonCircle.png");
 
 	// Upgrade preview textures
 	speed_hover_tex = AEGfxTextureLoad("Assets/MainLevel/ml_MovSpeedUpgradePreview.png");
@@ -214,7 +214,7 @@ void PlayerUI::init()
 	Update Player UI
 */
 /******************************************************************************/
-void PlayerUI::update(f32 frame_time, Player& player, WaveManager const& wave_manager)
+void PlayerUI::update(Player& current_player, WaveManager const& wave_manager)
 {
 	// Shop transitions
 	if (shop_triggered) {
@@ -222,7 +222,7 @@ void PlayerUI::update(f32 frame_time, Player& player, WaveManager const& wave_ma
 		// Start transition
 		if (shop_transition) {
 			// Adjust shop offset
-			shop_trans_timer += static_cast<f32>(frame_time);
+			shop_trans_timer += g_dt;
 			shop_offset = EaseOutExpo(static_cast<f32>(g_windowWidth), 0, shop_trans_timer / shop_trans_duration);
 
 			// Stop transition once duration is met
@@ -234,13 +234,13 @@ void PlayerUI::update(f32 frame_time, Player& player, WaveManager const& wave_ma
 
 		// Transition done
 		else
-			shop_open(player);
+			shop_open(current_player);
 	}
 	else {
 		// Start transition
 		if (shop_transition) {
 			// Adjust shop offset
-			shop_trans_timer += static_cast<f32>(frame_time);
+			shop_trans_timer += g_dt;
 			shop_offset = EaseInOutBack(0, static_cast<f32>(g_windowWidth), shop_trans_timer / shop_trans_duration);
 
 			// Stop transition once duration is met
@@ -260,7 +260,7 @@ void PlayerUI::update(f32 frame_time, Player& player, WaveManager const& wave_ma
 		// Start transition
 		if (tutorial_transition) {
 			// Adjust shop offset
-			tutorial_trans_timer += static_cast<f32>(frame_time);
+			tutorial_trans_timer += g_dt;
 			tutorial_offset = EaseOutExpo(-tutorial_bg_width, 0, tutorial_trans_timer / tutorial_trans_duration);
 
 			// Stop transition once duration is met
@@ -278,7 +278,7 @@ void PlayerUI::update(f32 frame_time, Player& player, WaveManager const& wave_ma
 		// Start transition
 		if (tutorial_transition) {
 			// Adjust tutorial offset
-			tutorial_trans_timer += static_cast<f32>(frame_time);
+			tutorial_trans_timer += g_dt;
 			tutorial_offset = EaseInOutBack(0, -tutorial_bg_width, tutorial_trans_timer / tutorial_trans_duration);
 
 			// Stop transition once duration is met
@@ -306,16 +306,16 @@ void PlayerUI::update(f32 frame_time, Player& player, WaveManager const& wave_ma
 	shop_bg_position.y = g_camPos.y;
 
 	// Tutorial background
-	tutorial_bg_position.x = g_camPos.x - static_cast<f32>(g_windowWidth) / 2.f + tutorial_bg_width / 2 + tutorial_offset;
-	tutorial_bg_position.y = g_camPos.y + static_cast<f32>(g_windowHeight) / 2.f - button_vector[TUTORIAL_OPEN].height * 3.f;
+	tutorial_bg_position.x = g_camPos.x - (g_windowWidth - tutorial_bg_width) / 2.f + tutorial_offset;
+	tutorial_bg_position.y = g_camPos.y + g_windowHeight / 2.f - button_vector[TUTORIAL_OPEN].height * 3.f;
 
 	// Button to open shop
-	button_vector[SHOP_OPEN].position.x = g_camPos.x + static_cast<f32>(g_windowWidth) / 2.f - button_vector[SHOP_OPEN].width / 2.f;
-	button_vector[SHOP_OPEN].position.y = g_camPos.y + static_cast<f32>(g_windowHeight) / 2.f - button_vector[SHOP_OPEN].height * 3.f;
+	button_vector[SHOP_OPEN].position.x = g_camPos.x + g_windowWidth / 2.f - button_vector[SHOP_OPEN].width / 2.f;
+	button_vector[SHOP_OPEN].position.y = g_camPos.y + g_windowHeight / 2.f - button_vector[SHOP_OPEN].height * 3.f;
 
 	// Button to open tutorial
-	button_vector[TUTORIAL_OPEN].position.x = g_camPos.x - (static_cast<f32>(g_windowWidth) - button_vector[TUTORIAL_OPEN].width) / 2.f + tutorial_bg_width + tutorial_offset;
-	button_vector[TUTORIAL_OPEN].position.y = g_camPos.y + static_cast<f32>(g_windowHeight) / 2.f - button_vector[TUTORIAL_OPEN].height * 3.f;
+	button_vector[TUTORIAL_OPEN].position.x = g_camPos.x - (g_windowWidth - button_vector[TUTORIAL_OPEN].width) / 2.f + tutorial_bg_width + tutorial_offset;
+	button_vector[TUTORIAL_OPEN].position.y = g_camPos.y + g_windowHeight / 2.f - button_vector[TUTORIAL_OPEN].height * 3.f;
 
 	// Upgrade preview on left half of shop
 	upgrade_preview_position.x = g_camPos.x - shop_bg_width / 4.f + shop_offset;
@@ -354,14 +354,14 @@ void PlayerUI::update(f32 frame_time, Player& player, WaveManager const& wave_ma
 	{
 		lost_overlay_timer = LOST_OVERLAY_TIME;
 	}
-	if (lost_overlay_timer > 0.f) lost_overlay_timer -= frame_time;
+	if (lost_overlay_timer > 0.f) lost_overlay_timer -= g_dt;
 
 	// Blinking indicator for shop icon
 	if (wave_manager.wave_completed)
 	{
 		// Expanding indicator if not clicked on shop yet
 		// When shop clicked removed indicator
-		shop_indicator_timer = (!clicked_on_shop) ? shop_indicator_timer + frame_time : 0.f;
+		shop_indicator_timer = (!clicked_on_shop) ? shop_indicator_timer + g_dt : 0.f;
 
 		// If player skips the wave interval
 		if (AEInputCheckTriggered(AEVK_R)) shop_indicator_timer = 0.f;
@@ -374,7 +374,7 @@ void PlayerUI::update(f32 frame_time, Player& player, WaveManager const& wave_ma
 	AEMtx33 scale, rot, trans;
 
 	// Shuttle Lost Overlay
-	AEMtx33Scale(&scale, g_windowWidth * 1.5, g_windowHeight * 1.5);
+	AEMtx33Scale(&scale, g_windowWidth * 1.5f, g_windowHeight * 1.5f);
 	AEMtx33Rot(&rot, 0.f);
 	AEMtx33Trans(&trans, g_camPos.x, g_camPos.y);
 	AEMtx33Concat(&lost_overlay_transform, &rot, &scale);
@@ -460,7 +460,7 @@ void PlayerUI::update(f32 frame_time, Player& player, WaveManager const& wave_ma
 	Draw Player UI
 */
 /******************************************************************************/
-void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wave_manager)
+void PlayerUI::draw(AEGfxVertexList* pMesh, WaveManager const& wave_manager)
 {
 	AEGfxSetBlendColor(0.f, 0.f, 0.f, 0.f);
 
@@ -495,7 +495,7 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 	// Print capacity
 	capacity = std::to_string(player.current_capacity) + " / " + std::to_string(player.max_capacity + player.capacity_level);
 	AEVec2 capacity_pos;
-	AEVec2Sub(&capacity_pos, &player.position, &camera.position);
+	AEVec2Sub(&capacity_pos, &player.position, &g_camPos);
 
 	// Capacity to fade to red when close to max capacity
 	AEGfxPrint(font_id, const_cast<s8*>(capacity.c_str()),
@@ -572,7 +572,7 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 					AEGfxSetTransform(indicator.transform.m);
 					AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 				}
-				for (int j = player.mov_speed_level; j < MAX_MOV_SPEED_LVL; ++j) {
+				for (int j = static_cast<int>(player.mov_speed_level); j < MAX_MOV_SPEED_LVL; ++j) {
 					AEGfxTextureSet(upgrade_level_hollow_tex, 0, 0);
 					UpgradeLevelIndicator& indicator = button.indicator_vector[j];
 					AEGfxSetTransform(indicator.transform.m);
@@ -591,7 +591,7 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 					AEGfxSetTransform(indicator.transform.m);
 					AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 				}
-				for (int j = player.capacity_level; j < MAX_CAPACITY_LVL; ++j) {
+				for (int j = static_cast<int>(player.capacity_level); j < MAX_CAPACITY_LVL; ++j) {
 					AEGfxTextureSet(upgrade_level_hollow_tex, 0, 0);
 					UpgradeLevelIndicator& indicator = button.indicator_vector[j];
 					AEGfxSetTransform(indicator.transform.m);
@@ -610,7 +610,7 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 					AEGfxSetTransform(indicator.transform.m);
 					AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 				}
-				for (int j = player.beam_level; j < MAX_BEAM_STRENGTH_LVL; ++j) {
+				for (int j = static_cast<int>(player.beam_level); j < MAX_BEAM_STRENGTH_LVL; ++j) {
 					AEGfxTextureSet(upgrade_level_hollow_tex, 0, 0);
 					UpgradeLevelIndicator& indicator = button.indicator_vector[j];
 					AEGfxSetTransform(indicator.transform.m);
@@ -635,7 +635,7 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, Player player, WaveManager const& wa
 					AEGfxSetTransform(indicator.transform.m);
 					AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 				}
-				for (int j = player.space_station_count; j < MAX_SPACE_STATION_CNT; ++j) {
+				for (int j = static_cast<int>(player.space_station_count); j < MAX_SPACE_STATION_CNT; ++j) {
 					AEGfxTextureSet(upgrade_level_hollow_tex, 0, 0);
 					UpgradeLevelIndicator& indicator = button.indicator_vector[j];
 					AEGfxSetTransform(indicator.transform.m);
@@ -762,7 +762,7 @@ void PlayerUI::unload()
 */
 /******************************************************************************/
 // Shop is open
-void PlayerUI::shop_open(Player& player)
+void PlayerUI::shop_open(Player& current_player)
 {
 	// ===================
 	// Check player input
@@ -782,28 +782,28 @@ void PlayerUI::shop_open(Player& player)
 
 			if (button_clicked(button)) {
 				if (button.button_type == MOVEMENT_SPEED) {
-					if (player.credits >= mov_speed_cost && player.mov_speed_level < MAX_MOV_SPEED_LVL) {
-						player.credits -= mov_speed_cost;
-						player.mov_speed_level++;
+					if (current_player.credits >= mov_speed_cost && current_player.mov_speed_level < MAX_MOV_SPEED_LVL) {
+						current_player.credits -= mov_speed_cost;
+						current_player.mov_speed_level++;
 					}
 				}
 				else if (button.button_type == CAPACITY) {
-					if (player.credits >= capacity_cost && player.capacity_level < MAX_CAPACITY_LVL) {
-						player.credits -= capacity_cost;
-						player.capacity_level++;
+					if (current_player.credits >= capacity_cost && current_player.capacity_level < MAX_CAPACITY_LVL) {
+						current_player.credits -= capacity_cost;
+						current_player.capacity_level++;
 					}
 				}
 				else if (button.button_type == TRACTOR_BEAM_STRENGTH) {
-					if (player.credits >= beam_strength_cost && player.beam_level < MAX_BEAM_STRENGTH_LVL) {
-						player.credits -= beam_strength_cost;
-						player.beam_level++;
+					if (current_player.credits >= beam_strength_cost && current_player.beam_level < MAX_BEAM_STRENGTH_LVL) {
+						current_player.credits -= beam_strength_cost;
+						current_player.beam_level++;
 					}
 				}
 				else if (button.button_type == CREATE_DRONE || button.button_type == SPACE_STATION) {
-					if (button.button_type == CREATE_DRONE && !placing_drone && player.credits >= drone_cost)
+					if (button.button_type == CREATE_DRONE && !placing_drone && current_player.credits >= drone_cost)
 						placing_drone = true;
 
-					else if (button.button_type == SPACE_STATION && !placing_station && player.credits >= space_station_cost)
+					else if (button.button_type == SPACE_STATION && !placing_station && current_player.credits >= space_station_cost)
 						placing_station = true;
 
 					close_shop();
@@ -955,8 +955,8 @@ void PlayerUI::tutorial(WaveManager const& wave_manager)
 
 			// Draw timer at center of planet using position calculated above
 			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
-				(tutorial_pos.x - (1.5 * FONT_ID_SIZE)) / (g_windowWidth / 2.f),
-				(tutorial_pos.y + (3 * FONT_ID_SIZE)) / (g_windowHeight / 2.f),
+				(tutorial_pos.x - (1.5f * FONT_ID_SIZE)) / (g_windowWidth / 2.f),
+				(tutorial_pos.y + (3.f * FONT_ID_SIZE)) / (g_windowHeight / 2.f),
 				1.5f, 1.f, 1.f, 1.f);
 
 			tutorial = "Move to a Planet!";
@@ -979,21 +979,20 @@ void PlayerUI::tutorial(WaveManager const& wave_manager)
 		if (1 == wave_manager.wave_number && !wave_manager.planet_adding && !wave_manager.wave_completed && player.current_capacity != player.max_capacity + player.capacity_level)
 		{
 			tutorial = "Hold W";
-			AEVec2 tutorial_pos;
 			AEVec2Sub(&tutorial_pos, &player.position, &camera.position);
 
 			// Draw timer at center of planet using position calculated above
 			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
-				(tutorial_pos.x - (1.5 * FONT_ID_SIZE)) / (g_windowWidth / 2),
-				(tutorial_pos.y + (3 * FONT_ID_SIZE)) / (g_windowHeight / 2),
+				(tutorial_pos.x - (1.5f * FONT_ID_SIZE)) / (g_windowWidth / 2.f),
+				(tutorial_pos.y + (3.f * FONT_ID_SIZE)) / (g_windowHeight / 2.f),
 				1.5f, 1.f, 1.f, 1.f);
 
 			tutorial = "Leaving Planet...";
 			AEVec2Sub(&tutorial_pos, &player.position, &camera.position);
 
 			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
-				(tutorial_pos.x - (3 * FONT_ID_SIZE)) / (g_windowWidth / 2),
-				(tutorial_pos.y + (1.5 * FONT_ID_SIZE)) / (g_windowHeight / 2),
+				(tutorial_pos.x - (3.f * FONT_ID_SIZE)) / (g_windowWidth / 2.f),
+				(tutorial_pos.y + (1.5f * FONT_ID_SIZE)) / (g_windowHeight / 2.f),
 				1.2f, 1.f, 1.f, 1.f);
 		}
 	}
@@ -1054,8 +1053,8 @@ void PlayerUI::tutorial(WaveManager const& wave_manager)
 
 		// Draw timer at center of planet using position calculated above
 		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
-			(tutorial_pos.x - (3 * FONT_ID_SIZE)) / (g_windowWidth / 2.f),
-			(tutorial_pos.y + (1.5 * FONT_ID_SIZE)) / (g_windowHeight / 2.f),
+			(tutorial_pos.x - (3.f * FONT_ID_SIZE)) / (g_windowWidth / 2.f),
+			(tutorial_pos.y + (1.5f * FONT_ID_SIZE)) / (g_windowHeight / 2.f),
 			1.2f, 1.f, 1.f, 1.f);
 	}
 

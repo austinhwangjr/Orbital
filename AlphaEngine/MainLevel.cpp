@@ -126,17 +126,17 @@ void main_level::update()
 
 	if (!is_paused)
 	{
-		camera.update(g_dt, player);
-		planet.update(g_dt);
-		player.update(g_dt);
-		space_station.update(g_dt, player, player_ui);
-		player_proj.update(g_dt, player, player_ui);
-		drone.update(g_dt, player, player_ui);
+		camera.update(player);
+		planet.update();
+		player.update();
+		space_station.update(player, player_ui);
+		player_proj.update(player, player_ui);
+		drone.update(player, player_ui);
 
-		shuttle.update(g_dt, player);
-		debris.update(g_dt);
-		player_ui.update(g_dt, player, wave_manager);
-		wave_manager.update(g_dt);
+		shuttle.update(player);
+		debris.update();
+		player_ui.update(player, wave_manager);
+		wave_manager.update();
 	}
 	else if (is_paused)
 	{
@@ -215,7 +215,7 @@ void main_level::draw()
 	wave_manager.draw(pMeshML);
 
 	drone.draw(pMeshML, player_ui);
-	player_ui.draw(pMeshML, player, wave_manager);
+	player_ui.draw(pMeshML, wave_manager);
 
 	if (is_paused)
 	{

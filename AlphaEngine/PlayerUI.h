@@ -118,8 +118,8 @@ struct PlayerUI
 
 	void load();
 	void init();
-	void update(f32, Player&, WaveManager const&);
-	void draw(AEGfxVertexList*, Player, WaveManager const&);
+	void update(Player&, WaveManager const&);
+	void draw(AEGfxVertexList*, WaveManager const&);
 	void free();
 	void unload();
 	

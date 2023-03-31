@@ -21,7 +21,7 @@ namespace Options
 {
     void load();
     void init();
-    void update(float* volume, bool* muted);
+    void update(float* options_volume, bool* options_muted);
     void draw();
     void free();
     void unload();

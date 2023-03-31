@@ -26,18 +26,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "GameStateList.h"
 
 //VARIABLES
-//#define SPEED_DEBRIS 30
-//#define MAX_DEBRIS_SIZE 42
-//#define MIN_DEBRIS_SIZE 28
-//#define SHUTTLE_HEIGHT 20
-//#define MAX_BUFFER 80
-//#define MIN_BUFFER 30
-//#define EXPLOSION_WIDTH 40
-//#define EXPLOSION_HEIGHT 40
-//
-//int OUTERRIM_TO_DEBRIS = 20;
-//static int DEBRIS_MAX;
-
 static float SPEED_DEBRIS;
 static int	 MAX_DEBRIS_SIZE;
 static int	 MIN_DEBRIS_SIZE;
@@ -49,7 +37,6 @@ static float EXPLOSION_HEIGHT;
 static int OUTERRIM_TO_DEBRIS;
 
 static int DEBRIS_MAX;
-
 
 extern WaveManager wave_manager;
 extern Player player;
@@ -83,6 +70,11 @@ std::map<std::string, f32> 			DebrisDataMap;
 std::vector<Data> 					DebrisData;
 extern std::map<std::string, f32> 	ShuttleDataMap;
 
+/******************************************************************************/
+/*!
+	Load Textures and Data
+*/
+/******************************************************************************/
 void Debris::load()
 {
 	debrisTex = AEGfxTextureLoad("Assets/MainLevel/ml_Debris.png");
@@ -90,6 +82,11 @@ void Debris::load()
 	ImportDataFromFile("Assets/GameObjectData/DebrisData.txt", DebrisData, DebrisDataMap);
 }
 
+/******************************************************************************/
+/*!
+	Initialize Variables
+*/
+/******************************************************************************/
 void Debris::init()
 {
 	DEBRIS_MAX			= static_cast<int>(PlanetDataMap["Maximum_Debris"]);
@@ -101,10 +98,15 @@ void Debris::init()
 	MIN_BUFFER			= static_cast<int>(DebrisDataMap["Minimum_Buffer"]);
 	EXPLOSION_WIDTH		= DebrisDataMap["Explosion_Width"];
 	EXPLOSION_HEIGHT	= DebrisDataMap["Explosion_Height"];
-	OUTERRIM_TO_DEBRIS	= DebrisDataMap["Distance_To_Planet"];
+	OUTERRIM_TO_DEBRIS	= static_cast<int>(DebrisDataMap["Distance_To_Planet"]);
 }
 
-void Debris::update(f32 frame_time)
+/******************************************************************************/
+/*!
+	Update Debris
+*/
+/******************************************************************************/
+void Debris::update()
 {
 	for (int j = 0; j < debris_vector_all.size(); j++) {
 		for (size_t i = 0; i < debris_vector_all[j].size(); i++) {
@@ -150,7 +152,7 @@ void Debris::update(f32 frame_time)
 
 			if (debris.state == ORBIT_AROUND_PLANET) {
 				// Orbit around planet
-				debris.angle -= AEDegToRad(0.125f) * debris.turning_speed * static_cast<f32>(frame_time);
+				debris.angle -= AEDegToRad(0.125f) * debris.turning_speed * g_dt;
 				debris.position.x = planet_vector[j].position.x + ((planet_vector[j].size / 2) + debris.distance) * AECos(debris.angle);
 				debris.position.y = planet_vector[j].position.y + ((planet_vector[j].size / 2) + debris.distance) * AESin(debris.angle);
 			}
@@ -206,31 +208,35 @@ void Debris::update(f32 frame_time)
 	// ===================================
 	// calculate the matrix for EXPLOSION
 	// ===================================
-	AEMtx33 scale, rot, trans;
+	AEMtx33 sc, rot, trans;
 	for (int j = 0; j < debris_vector_all.size(); j++) {
 		for (size_t i = 0; i < debris_vector_all[j].size(); i++) {
-			Explosion& explosion = debris_vector_all[j][i].explosion;
 
-			if (explosion.is_draw == 1) {
+			Explosion& debris_explosion = debris_vector_all[j][i].explosion;
+			if (debris_explosion.is_draw == 1) {
 
-				if (explosion.timer <= explosion.total_time) {
-					explosion.timer += static_cast<f32>(frame_time);
-					AEMtx33Scale(&scale, explosion.width, explosion.height);
+				if (debris_explosion.timer <= debris_explosion.total_time) {
+					debris_explosion.timer += g_dt;
+					AEMtx33Scale(&sc, debris_explosion.width, debris_explosion.height);
 					AEMtx33Rot(&rot, 0);
-					AEMtx33Trans(&trans, explosion.position.x, explosion.position.y);
-					AEMtx33Concat(&explosion.transform, &rot, &scale);
-					AEMtx33Concat(&explosion.transform, &trans, &explosion.transform);
+					AEMtx33Trans(&trans, debris_explosion.position.x, debris_explosion.position.y);
+					AEMtx33Concat(&debris_explosion.transform, &rot, &sc);
+					AEMtx33Concat(&debris_explosion.transform, &trans, &debris_explosion.transform);
 				}
 				else {
-					explosion.timer = 0;
-					explosion.is_draw = 0;
+					debris_explosion.timer = 0;
+					debris_explosion.is_draw = 0;
 				}
 			}
 		}
 	}
 }
 
-
+/******************************************************************************/
+/*!
+	Draw Debris
+*/
+/******************************************************************************/
 void Debris::draw(AEGfxVertexList* pMesh)
 {
 	AEGfxTextureSet(debrisTex, 0, 0);
@@ -252,14 +258,14 @@ void Debris::draw(AEGfxVertexList* pMesh)
 	for (int j = 0; j < debris_vector_all.size(); j++) {
 		for (size_t i = 0; i < debris_vector_all[j].size(); i++) {
 
-			Explosion& explosion = debris_vector_all[j][i].explosion;
-			if (explosion.is_draw) {
+			Explosion& debris_explosion = debris_vector_all[j][i].explosion;
+			if (debris_explosion.is_draw) {
 
-				if (explosion.timer <= explosion.total_time) {
-					AEGfxSetTransparency(explosion.total_time - explosion.timer);
+				if (debris_explosion.timer <= debris_explosion.total_time) {
+					AEGfxSetTransparency(debris_explosion.total_time - debris_explosion.timer);
 
 					AEGfxTextureSet(explosionTex, 0, 0);
-					AEGfxSetTransform(explosion.transform.m);
+					AEGfxSetTransform(debris_explosion.transform.m);
 					AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 				}
 				else {
@@ -272,6 +278,11 @@ void Debris::draw(AEGfxVertexList* pMesh)
 
 }
 
+/******************************************************************************/
+/*!
+	Clean Object Instances
+*/
+/******************************************************************************/
 void Debris::free()
 {
 	for (int i = 0; i < debris_vector_all.size(); i++) {
@@ -285,19 +296,22 @@ void Debris::free()
 	}
 }
 
+/******************************************************************************/
+/*!
+	Free Textures
+*/
+/******************************************************************************/
 void Debris::unload()
 {
 	AEGfxTextureUnload(debrisTex);
 	AEGfxTextureUnload(explosionTex);
 }
 
-
-
 // =======================================
 // Create Debris vector for each planet
 // =======================================
-std::vector<Debris> Debris::create_debris(f32 planet_x, f32 planet_y, double size, int total_debris) {
-	std::vector<Debris> debris_vector;
+std::vector<Debris> Debris::create_debris(f32 planet_x, f32 planet_y, double new_size, int total_debris) {
+	std::vector<Debris> new_debris_vector;
 	for (int i = 0; i < total_debris; i++)
 	{
 		Debris new_debris;
@@ -305,8 +319,8 @@ std::vector<Debris> Debris::create_debris(f32 planet_x, f32 planet_y, double siz
 		new_debris.id = i + 1;
 		new_debris.angle = i * (2 * PI / static_cast<f32>(total_debris));
 		new_debris.size = static_cast<f32>(rand() % (MAX_DEBRIS_SIZE - MIN_DEBRIS_SIZE) + MIN_DEBRIS_SIZE);
-		new_debris.position.x = static_cast<f32>(planet_x + ((size / 2) + 20) * AECos(AEDegToRad(new_debris.angle)));
-		new_debris.position.y = static_cast<f32>(planet_y + ((size / 2) + 20) * AESin(AEDegToRad(new_debris.angle)));
+		new_debris.position.x = static_cast<f32>(planet_x + ((new_size / 2) + 20) * AECos(AEDegToRad(new_debris.angle)));
+		new_debris.position.y = static_cast<f32>(planet_y + ((new_size / 2) + 20) * AESin(AEDegToRad(new_debris.angle)));
 		new_debris.turning_speed = SPEED_DEBRIS;
 		new_debris.active = true;
 		new_debris.state = ORBIT_AROUND_PLANET;
@@ -322,10 +336,10 @@ std::vector<Debris> Debris::create_debris(f32 planet_x, f32 planet_y, double siz
 		new_debris.explosion.transform = { 0 };
 		new_debris.explosion.total_time = 1;
 
-		debris_vector.push_back(new_debris);
+		new_debris_vector.push_back(new_debris);
 	}
-	debris_vector_all.push_back(debris_vector);
-	return debris_vector;
+	debris_vector_all.push_back(new_debris_vector);
+	return new_debris_vector;
 }
 
 // ==================================================
@@ -359,7 +373,4 @@ void spawn_debris_shuttle(AEVec2 position, int planet_id, int num_of_debris) {
 
 		debris_vector_all[planet_id].push_back(new_debris);
 	}
-
 }
-
-
