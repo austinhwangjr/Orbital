@@ -52,6 +52,7 @@ void main_level::load()
 	pause.load();
 
 	// load texture
+	wave_manager.load();
 	planet.load();
 	player.load();
 	space_station.load();
@@ -61,7 +62,7 @@ void main_level::load()
 	player_proj.load();
 	debris.load();
 	shuttle.load();
-	wave_manager.load();
+	
 }
 
 // ----------------------------------------------------------------------------

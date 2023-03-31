@@ -12,14 +12,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
  */
 /******************************************************************************/
 #pragma once
-#define PLANET_MAX				10		// Maximum number of planets
-#define SHUTTLE_MAX				10		// Maximum number of shuttles per planet
-#define SHUTTLE_SPAWN_MAX		8		// Maximum number of shuttles a planet can spawn with
-#define SHUTTLE_SPAWN_MIN		4		// Minimum number of shuttles a planet can spawn with
-#define SHUTTLE_INCREASE_AMOUNT 1		// Number of shuttles added after a wave
-#define WAVE_INTERVAL_TIME		15		// Down time between waves
-#define WAVE_ADD_PLANET			4		// Every nth wave planets will be added on
-#define LOSE_CONDITION			5		// Number of shuttles allowed to be destroyed before failure
 
 #include "AEEngine.h"
 #include "Player.h"

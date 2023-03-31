@@ -53,11 +53,16 @@ static int   DRONES_MAX;						// Maximum number of drones on a planet
 static float RUNWAY_LIFESPAN;					// Time taken for runway arrow to reset
 static float RUNWAY_MAX_ACCEL;					// Maximum acceleration value for runway arrow
 
+static int SHUTTLE_SPAWN_MAX;		// Maximum number of shuttles a planet can spawn with
+static int SHUTTLE_SPAWN_MIN;		// Minimum number of shuttles a planet can spawn with
+
 
 // IMPORT DATA VECTOR
 std::map<std::string, f32> 	PlanetDataMap;
 std::vector<Data> 			PlanetData;
 
+//WaveManager DATA MAP
+extern std::map<std::string, f32> 	WaveManagerDataMap;
 
 /******************************************************************************/
 /*!
@@ -100,6 +105,8 @@ void Planets::init()
 	DRONES_MAX					= static_cast<int>(PlanetDataMap["Maximum_Drones"]);
 	RUNWAY_LIFESPAN				= PlanetDataMap["Runway_Lifespan"];
 	RUNWAY_MAX_ACCEL			= PlanetDataMap["Runway_Acceleration"];
+	SHUTTLE_SPAWN_MAX			= WaveManagerDataMap["Maximum_Shuttle_Spawn"];
+	SHUTTLE_SPAWN_MIN			= WaveManagerDataMap["Minimum_Shuttle_Spawn"];
 
 
 	// ============

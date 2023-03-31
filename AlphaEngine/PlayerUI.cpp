@@ -54,6 +54,8 @@ AEGfxTexture* space_station_button_tex;
 // Variables for general UI
 std::string	  score, credits, capacity;
 extern s8	  font_id;
+static int	  LOSE_CONDITION;			// Number of shuttles allowed to be destroyed before failure
+
 
 // Variables for shop
 extern s8	  font_id_shop;
@@ -61,6 +63,9 @@ extern s8	  font_id_shop;
 // Vector of buttons and space stations
 std::vector<ShopOption> button_vector;
 extern std::vector<SpaceStation> space_station_vector;
+
+//WaveManager DATA MAP
+extern std::map<std::string, f32> 	WaveManagerDataMap;
 
 /******************************************************************************/
 /*!
@@ -93,6 +98,8 @@ void PlayerUI::load()
 	strength_button_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_BeamStrengthUpgradeButton.png");
 	drone_button_tex			= AEGfxTextureLoad("Assets/MainLevel/ml_DroneButton.png");
 	space_station_button_tex	= AEGfxTextureLoad("Assets/MainLevel/ml_SpaceStationButton.png");
+
+	LOSE_CONDITION = WaveManagerDataMap["Lose_Condition"];
 }
 
 /******************************************************************************/
