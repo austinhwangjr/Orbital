@@ -55,6 +55,9 @@ static float creditsY = -270.f;
 static float quitX = -530.0f;
 static float quitY = -345.f;
 
+float hoverSoundDelay = 0.0f;
+float hoverSoundCooldown = 0.05f; 
+
 
 // checking input area stuff
 struct Button
@@ -136,7 +139,7 @@ void Menu_Button::load( const char* startButtonFilename,
 
     AudioManager::LoadSound("Assets/BGM/one-last-time-141289.mp3", true);
     AudioManager::LoadSound("Assets/BGM/hyperspace_jumping.mp3", false);
-
+    AudioManager::LoadSound("Assets/BGM/button-124476.mp3", false);
 
 }
 
@@ -176,9 +179,18 @@ void Menu_Button::init()
 /******************************************************************************/
 void Menu_Button::update()
 {
+    hoverSoundDelay += AEFrameRateControllerGetFrameTime();
+
     for (int i = 0; i < 6; ++i)
     {
+        bool previousHoverState = hoverStates[i];
         hoverStates[i] = Input::isMouseHover(buttons[i].x, buttons[i].y, buttons[i].width, buttons[i].height, hoverButtons[i].width, hoverButtons[i].height);
+
+        if (!previousHoverState && hoverStates[i] && hoverSoundDelay >= hoverSoundCooldown)
+        {
+            AudioManager::PlayOneShot("Assets/BGM/button-124476.mp3", 0.5f);
+            hoverSoundDelay = 0.0f;
+        }
 
         if (AEInputCheckTriggered(AEVK_LBUTTON) && hoverStates[i])
         {
@@ -286,6 +298,8 @@ void Menu_Button::update()
             currentXPositions[i] = Lerp(currentXPositions[i], buttons[i].x, easingSpeed);
         }
     }
+    AudioManager::Update();
+
 }
 
 /******************************************************************************/
@@ -313,6 +327,8 @@ void Menu_Button::draw(AEGfxVertexList* pMesh)
 }
 void Menu_Button::free()
 {
+    AudioManager::UnloadAllSounds();
+
 }
 
 /******************************************************************************/

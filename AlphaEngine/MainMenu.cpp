@@ -1211,6 +1211,8 @@ void main_menu::draw()
 
 void main_menu::free()
 {
+    menuButtons.free();
+
     MMplanet.debris_vector.clear();
     AEGfxMeshFree(pMeshMMBackground);
     AEGfxMeshFree(pMeshMM);
