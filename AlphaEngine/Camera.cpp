@@ -15,12 +15,31 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Camera.h"
 #include "WaveManager.h"
 #include "SpaceStation.h"
+#include "Data.h"
+#include "GameStateList.h"
+
+//Smaller the number, the faster the camera speed
+static float CAM_PLAYER_SPEED;			// Camera speed for player
+static float CAM_PLANET_SPEED;			// Camera speed for planet transition
+static float CAM_STATION_SPEED;			// Camera speed for station transition
+static float TRANSITION_TIME_MAX;		// Camera Transition time
+
 
 extern WaveManager wave_manager;
 extern std::vector<SpaceStation> space_station_vector;
 
+// IMPORT DATA VECTOR
+std::map<std::string, f32> 	CameraDataMap;
+std::vector<Data> 			CameraData;
+
 void Camera::init(Player& player)
 {
+	ImportDataFromFile("Assets/GameObjectData/CameraData.txt", CameraData, CameraDataMap);
+	CAM_PLAYER_SPEED	= CameraDataMap["Camera_Player_Speed"];
+	CAM_PLANET_SPEED	= CameraDataMap["Camera_Planet_Speed"];
+	CAM_STATION_SPEED	= CameraDataMap["Camera_Station_Speed"];
+	TRANSITION_TIME_MAX = CameraDataMap["Maximum_Transition_Time"];
+
 	AEVec2Zero(&velocity);
 	transition_time = 0.f;
 	position.x = player.position.x;
@@ -40,6 +59,11 @@ void Camera::update(f32 frame_time, Player& player)
 	else
 	{
 		follow_player(frame_time, player);
+	}
+
+	if (next_state != GS_RESTART) {
+		CameraData.clear();
+		CameraDataMap.clear();
 	}
 }
 

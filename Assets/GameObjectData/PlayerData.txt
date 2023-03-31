@@ -1,36 +1,36 @@
 //--------------------Player--------------------
 /-----Variable------------------Value-----------
-position.x 			        -200
-position.y 			        -200
-velocity.x 			        0
-velocity.y 			        0
-size 				            50
-mov_speed 			            150
-rot_speed 			            0.85
-shortest_distance 		        0
-direction 			            0
+position.x 			-200
+position.y 			-200
+velocity.x 			0
+velocity.y 			0
+size 				50
+mov_speed 			150
+rot_speed 			0.85
+shortest_distance 		0
+direction 			0
 
-current_capacity 		        0
-max_capacity 			        5
-timer 				            0
-max_timer			            0.5
+current_capacity 		0
+max_capacity 			5
+timer 				0
+max_timer			0.5
 
 
 //--------------------Score-keeping-------------
 /-----Variable------------------Value-----------
-score 				             0
-credits 			             250
+score 				0
+credits 			250
 
 
 //--------------------Upgrade Levels------------
 /-----Variable------------------Value-----------
-mov_speed_level			     0
-capacity_level 			     0
-space_station_count 		     0
-beam_level 			         0
+mov_speed_level			0
+capacity_level 			0
+space_station_count 		0
+beam_level 			0
 
 
 //--------------------Tractor Beam--------------
 /-----Variable------------------Value-----------
-beam_pos.x 			         0
-beam_pos.y 			         0
+beam_pos.x 			0
+beam_pos.y 			0

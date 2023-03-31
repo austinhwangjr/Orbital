@@ -1,0 +1,6 @@
+//--------------Camera--------------------
+/-----Variable------------------Value------------
+Camera_Player_Speed		100
+Camera_Planet_Speed		1000
+Camera_Station_Speed		1000
+Maximum_Transition_Time		4
