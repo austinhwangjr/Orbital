@@ -47,6 +47,8 @@ void PlayerProj::load()
 
 	// Import data from file
 	ImportDataFromFile("Assets/GameObjectData/PlayerProjectileData.txt", ProjData, ProjDataMap);
+
+	AudioManager::LoadSound("Assets/BGM/9mm-pistol-shot-6349.mp3", false);
 }
 
 /******************************************************************************/
@@ -91,6 +93,7 @@ void PlayerProj::update(Player& current_player, PlayerUI& player_ui)
 
 			player_proj_vector.push_back(*this);
 			current_player.current_capacity--;
+			AudioManager::PlayOnce("Assets/BGM/9mm-pistol-shot-6349.mp3", 0.05f);
 		}
 	}
 
@@ -163,6 +166,7 @@ void PlayerProj::update(Player& current_player, PlayerUI& player_ui)
 		AEMtx33Concat(&player_proj.transform, &rot, &scale);
 		AEMtx33Concat(&player_proj.transform, &trans, &player_proj.transform);
 	}
+	AudioManager::Update();
 }
 
 /******************************************************************************/
@@ -197,6 +201,7 @@ void PlayerProj::free()
 		ProjData.clear();
 		ProjDataMap.clear();
 	}
+	AudioManager::UnloadAllSounds();
 }
 
 /******************************************************************************/

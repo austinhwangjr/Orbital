@@ -77,7 +77,7 @@ void HighScore::update()
 
         if (Input::isButtonClicked(buttons3[0].x, buttons3[0].y, buttons3[0].width, buttons3[0].height))
         {
-            AudioManager::PlayOneShot("Assets/BGM/hyperspace_jump.mp3", 1.0f);
+            AudioManager::PlayOnce("Assets/BGM/hyperspace_jump.mp3", 1.0f);
             next_state = GS_MAINMENU;
             transition::isTransitionActive = true;
             transition::resetTimer();

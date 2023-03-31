@@ -58,7 +58,6 @@ static float quitY = -345.f;
 float hoverSoundDelay = 0.0f;
 float hoverSoundCooldown = 0.05f; 
 
-
 // checking input area stuff
 struct Button
 {
@@ -98,13 +97,11 @@ HoverButton hoverButtons[] =
 
 Button currentButtonSizes[6];
 
-
 /******************************************************************************/
 /*!
 	Load Textures and Data
 */
 /******************************************************************************/
-
 void Menu_Button::load( const char* startButtonFilename,
                         const char* howToPlayButtonFilename,
                         const char* highScoreButtonFilename,
@@ -137,10 +134,8 @@ void Menu_Button::load( const char* startButtonFilename,
     hoverButtonTextures[5]      = AEGfxTextureLoad(exitButtonHoverFilename);
     squareTexture = AEGfxTextureLoad(squareTextureFilename);
 
-    AudioManager::LoadSound("Assets/BGM/one-last-time-141289.mp3", true);
     AudioManager::LoadSound("Assets/BGM/hyperspace_jumping.mp3", false);
     AudioManager::LoadSound("Assets/BGM/button-124476.mp3", false);
-
 }
 
 /******************************************************************************/
@@ -150,11 +145,6 @@ void Menu_Button::load( const char* startButtonFilename,
 /******************************************************************************/
 void Menu_Button::init()
 {
-    if (!AudioManager::isBGMPlaying)
-    {
-        AudioManager::PlayBGM("Assets/BGM/one-last-time-141289.mp3", 0.5f);
-    }
-
     for (int i = 0; i < 6; ++i)
     {
         hoverStates[i] = false;
@@ -170,7 +160,6 @@ void Menu_Button::init()
         }
     }
 }
-
 
 /******************************************************************************/
 /*!
@@ -188,20 +177,17 @@ void Menu_Button::update()
 
         if (!previousHoverState && hoverStates[i] && hoverSoundDelay >= hoverSoundCooldown)
         {
-            AudioManager::PlayOneShot("Assets/BGM/button-124476.mp3", 0.5f);
+            AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.2f);
             hoverSoundDelay = 0.0f;
         }
 
         if (AEInputCheckTriggered(AEVK_LBUTTON) && hoverStates[i])
         {
             AudioManager::StopBGMIfPlaying();
-
-            AudioManager::PlayOneShot("Assets/BGM/hyperspace_jumping.mp3", 1.0f);
+            AudioManager::PlayOnce("Assets/BGM/hyperspace_jumping.mp3", 0.3f);
             transition::isTransitionActive = true;
             transition::resetTimer();
-            MMtotal_time = 0.f;
 
-            // Set the next game state based on the button that was clicked
             switch (i)
             {
             case 0: // Start button
@@ -225,6 +211,9 @@ void Menu_Button::update()
             default:
                 break;
             }
+
+            MMtotal_time = 0.f;
+            std::cout << "Button " << i << " clicked" << std::endl;
         }
     }
 
@@ -244,7 +233,6 @@ void Menu_Button::update()
 
     float easingSpeed = 0.15f; // Adjust this value to control the speed of the transition i know not suppose to be here.
     float rotationSpeed = 0.25f; // Adjust this value to control the speed of the rotation
-
     for (int i = 0; i < 6; ++i)
     {
         // Update hover state and square rotation
@@ -259,7 +247,6 @@ void Menu_Button::update()
             }
 
             // colour easing
-
             for (int j = 0; j < 4; ++j)
             {
                 currentTints[i][j] = Lerp(currentTints[i][j], hoverTint[j], easingSpeed);
@@ -299,7 +286,6 @@ void Menu_Button::update()
         }
     }
     AudioManager::Update();
-
 }
 
 /******************************************************************************/
@@ -324,10 +310,10 @@ void Menu_Button::draw(AEGfxVertexList* pMesh)
         Rendering::RenderSpriteWithRotations(squareTexture, buttons[i].x + offsetX, buttons[i].y, currentSquareSizes[i], currentSquareSizes[i], pMesh, squareRotations[i], currentTints[i][0], currentTints[i][1], currentTints[i][2], currentTints[i][3]);
     }
 }
+
 void Menu_Button::free()
 {
     AudioManager::UnloadAllSounds();
-
 }
 
 /******************************************************************************/
@@ -343,5 +329,4 @@ void Menu_Button::unload()
         AEGfxTextureUnload(hoverButtonTextures[i]);
     }
     AEGfxTextureUnload(squareTexture);
-
 }

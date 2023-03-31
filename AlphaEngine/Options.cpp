@@ -124,7 +124,7 @@ void Options::update(float* options_volume, bool* options_muted)
 
         if (Input::isButtonClicked(buttons11[0].x, buttons11[0].y, buttons11[0].width, buttons11[0].height))
         {
-            AudioManager::PlayOneShot("Assets/BGM/hyperspace_jump.mp3", 1.0f);
+            AudioManager::PlayOnce("Assets/BGM/hyperspace_jump.mp3", 1.0f);
 
             AudioManager::StopBGMIfPlaying();
             next_state = GS_MAINMENU;

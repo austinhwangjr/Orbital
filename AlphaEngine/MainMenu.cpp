@@ -19,7 +19,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 main_menu::MainMenuState main_menu::currentState = MENU;
 
-
 AEGfxTexture* TexMMBackground = nullptr;
 AEGfxTexture* TexTitle = nullptr;
 
@@ -39,8 +38,6 @@ static int	 DEBRIS_MIN;						// Minimum number of debris on a planet
 static float SHUTTLE_MAX_LIFESPAN;		        // Maximum life time for a shuttle before escaping (expiring)
 static float SHUTTLE_MAX_ACCEL;			        // Maximum acceleration for a shuttle
 
-
-
 static float SPEED_DEBRIS;
 static int	 MAX_DEBRIS_SIZE;
 static int	 MIN_DEBRIS_SIZE;
@@ -50,7 +47,6 @@ static int	 MIN_BUFFER;
 static float EXPLOSION_WIDTH;
 static float EXPLOSION_HEIGHT;
 static int   OUTERRIM_TO_DEBRIS;
-
 
 Player MMplayer;
 Planets MMplanet;
@@ -83,6 +79,7 @@ AEGfxTexture* MM_Keys_Spacebar_ACTIVE;
 
 AEGfxTexture* MM_LMB;
 AEGfxTexture* MM_LMB_ACTIVE;
+
 //bools for keys
 bool wKeyPressed = false;
 bool aKeyPressed = false;
@@ -90,7 +87,6 @@ bool sKeyPressed = false;
 bool dKeyPressed = false;
 bool spacebarActivated = false;
 bool LMB_KeyPressed = false;
-
 
 float w_ButtonWidth = 75.f;
 float w_ButtonHeight = 75.f;
@@ -136,7 +132,6 @@ float spacebar_ButtonHeightActivated = 90.f;
 
 float spacebar_OriginalWidth = 225.f;
 float spacebar_OriginalHeight = 75.f;
-
 
 f32 MMg_dt = 0.f;
 f32 MMtotal_time = 0.f;
@@ -217,12 +212,18 @@ void main_menu::load()
     MM_LMB = AEGfxTextureLoad("Assets/MainMenu/mm_Mouse.png");
     MM_LMB_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/mm_MouseActivated.png");
 
+    AudioManager::LoadSound("Assets/BGM/one-last-time-141289.mp3", true);
+
     AudioManager::LoadSound("Assets/BGM/9mm-pistol-shot-6349.mp3", false);
 
 }
 
 void main_menu::init()
 {
+    if (!AudioManager::isBGMPlaying)
+    {
+        AudioManager::PlayBGM("Assets/BGM/one-last-time-141289.mp3", 0.5f);
+    }
     // Set the camera position to (0, 0) for the background mesh
     AEGfxSetCamPosition(0.f, 0.f);
 
@@ -440,7 +441,6 @@ void main_menu::update()
         if (AEInputCheckCurr(AEVK_LBUTTON))
         {
             LMB_KeyPressed = true;
-
         }
         else
         {
@@ -461,8 +461,8 @@ void main_menu::update()
         MMplayer.position.y = MMplayer.position.y + MMplayer.velocity.y * static_cast<f32>(MMg_dt);
     }
 
-
-    if (MMplayer.state == PLAYER_TRANSIT) {
+    if (MMplayer.state == PLAYER_TRANSIT)
+    {
         // ================
         // Check for input
         // ================
@@ -488,7 +488,8 @@ void main_menu::update()
             }
         }
 
-        else {
+        else
+        {
             // Move player back to orbit
             AEVec2 diff;
             AEVec2Sub(&diff, &MMplanet.position, &MMplayer.position);
@@ -564,7 +565,6 @@ void main_menu::update()
             dKeyPressed = false;
             d_ButtonWidth = Lerp(d_ButtonWidth, w_OriginalButtonWidth, lerpSpeed);
             d_ButtonHeight = Lerp(d_ButtonHeight, w_OriginalButtonHeight, lerpSpeed);
-
         }
 
         if (AEInputCheckPrev(AEVK_W))
@@ -706,14 +706,12 @@ void main_menu::update()
         AEVec2Normalize(&MMplayer_proj.velocity, &MMplayer_proj.velocity);
         AEVec2Scale(&MMplayer_proj.velocity, &MMplayer_proj.velocity, MMplayer_proj.speed);
 
-
-
         MMplayer_proj.is_delete = static_cast<int>(MMProjDataMap["Delete_flag"]);
 
         MMProj_vector.push_back(MMplayer_proj);
 
-        AudioManager::PlayOneShot("Assets/BGM/9mm-pistol-shot-6349.mp3", 0.2f);
-
+        AudioManager::PlayOnce("Assets/BGM/9mm-pistol-shot-6349.mp3", 0.05f);
+        
     }
 
     // =====================================
@@ -769,7 +767,6 @@ void main_menu::update()
     }
 
 
-
     // ============================
     //  SPAWN SHUTTLE
     // ============================
@@ -812,9 +809,6 @@ void main_menu::update()
     AEMtx33Trans(&MMplanet.orbit_translate, MMplanet.position.x, MMplanet.position.y);
     AEMtx33Concat(&MMplanet.orbit_transform, &MMplanet.orbit_rotate, &MMplanet.orbit_scale);
     AEMtx33Concat(&MMplanet.orbit_transform, &MMplanet.orbit_translate, &MMplanet.orbit_transform);
-
-
-
 
     // =========================================
     // Calculate the matrix for player and beam
@@ -1036,7 +1030,6 @@ void main_menu::update()
 
 void main_menu::draw()
 {
-
     if (MMtotal_time >= 1.5f)
     {
         // Clear the screen

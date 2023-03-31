@@ -27,7 +27,7 @@ namespace AudioManager
     void UnloadSound(const std::string& path);
     void UnloadAllSounds();
     void PlayBGM(const std::string& path, float volume = 1.0f);
-    void PlayOneShot(const std::string& path, float volume = 1.0f);
+    intptr_t PlayOnce(const std::string& path, float volume = 1.0f);
     void ToggleMute(bool mute);
     void TogglePause(bool pause);
 

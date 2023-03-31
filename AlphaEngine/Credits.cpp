@@ -125,7 +125,7 @@ void credits::update()
 
         if (AEInputCheckTriggered(AEVK_LBUTTON) && hoverStates2[i])
         {
-            AudioManager::PlayOneShot("Assets/BGM/hyperspace_jump.mp3", 1.0f);
+            AudioManager::PlayOnce("Assets/BGM/hyperspace_jump.mp3", 1.0f);
             transition::isTransitionActive = true;
             transition::resetTimer();
             next_state = GS_MAINMENU;

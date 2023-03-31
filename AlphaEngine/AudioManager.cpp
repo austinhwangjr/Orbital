@@ -150,7 +150,7 @@ namespace AudioManager
     }
 
     // Plays a one-shot sound effect
-    void PlayOneShot(const std::string& path, float volume)
+    intptr_t PlayOnce(const std::string& path, float volume)
     {
         // Clamp the volume of the one-shot sound effect
         if (volume < 0.0f || volume > 1.0f)
@@ -177,6 +177,9 @@ namespace AudioManager
 
         // Unpause the sound
         ErrorCheck(c->setPaused(false));
+
+        // Return the unique sound ID (using FMOD::Channel* pointer as an ID)
+        return reinterpret_cast<intptr_t>(c);
     }
 
     // Toggles the mute state of the audio

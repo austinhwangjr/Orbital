@@ -61,7 +61,8 @@ bool Input::isButtonClicked(float center_x, float center_y, float width, float h
     std::cout << "Button bounds: (" << "Xmin: " << x_min << ", " << "Ymin: " << y_min << ") to (" << "Xmax: " << x_max << ", " << "Ymax: " << y_max << ")\n";*/
 
     // Check if the click coordinates are within the bounds of the button
-    if (screen_x >= x_min && screen_x <= x_max && screen_y >= y_min && screen_y <= y_max) {
+    if (screen_x >= x_min && screen_x <= x_max && screen_y >= y_min && screen_y <= y_max)
+    {
         return true;
     }
     return false;
@@ -86,7 +87,8 @@ bool Input::isMouseHover(float center_x, float center_y, float width, float heig
     float y_max = center_y + height / 2.0f;
 
     // Check if the mouse coordinates are within the bounds of the button
-    if (screen_x >= x_min && screen_x <= x_max && screen_y >= y_min && screen_y <= y_max) {
+    if (screen_x >= x_min && screen_x <= x_max && screen_y >= y_min && screen_y <= y_max)
+    {
         return true;
     }
     return false;

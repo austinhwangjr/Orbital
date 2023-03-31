@@ -61,7 +61,7 @@ void SplashScreen::update()
 
     if (timer > 6.0f || AEInputCheckTriggered(AEVK_LBUTTON) || AEInputCheckTriggered(AEVK_RBUTTON))
     {
-        AudioManager::PlayOneShot("Assets/BGM/hyperspace_jump.mp3", 1.0f);
+        AudioManager::PlayOnce("Assets/BGM/hyperspace_jump.mp3", 1.0f);
         transition::isTransitionActive = true;
         transition::resetTimer();
         next_state = GS_MAINMENU;
@@ -112,5 +112,4 @@ void SplashScreen::unload()
 {
     AEGfxTextureUnload(ss_DigiPen_Logo);
     AEGfxTextureUnload(ss_TeamNameANDLogo);
-
 }
