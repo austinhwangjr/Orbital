@@ -217,6 +217,8 @@ void main_menu::load()
     MM_Keys_Spacebar_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/mm_SpacebarActivated.png");
     MM_LMB = AEGfxTextureLoad("Assets/MainMenu/mm_Mouse.png");
     MM_LMB_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/mm_MouseActivated.png");
+
+    AudioManager::LoadSound("Assets/BGM/9mm-pistol-shot-6349.mp3", false);
 }
 
 void main_menu::init()
@@ -687,7 +689,8 @@ void main_menu::update()
     // PROJECTILE
     // =========================
 
-    if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+    if (AEInputCheckTriggered(AEVK_LBUTTON))
+    {
 
         MMplayer_proj.size = MMProjDataMap["Size"];
         MMplayer_proj.speed = MMProjDataMap["Speed"];
@@ -704,6 +707,7 @@ void main_menu::update()
 
         MMProj_vector.push_back(MMplayer_proj);
         
+        AudioManager::PlayOneShot("Assets/BGM/9mm-pistol-shot-6349.mp3",0.2f);
         
     }
 
@@ -1022,6 +1026,7 @@ void main_menu::update()
         }
     }
 
+    AudioManager::Update();
 }
 
 void main_menu::draw()
@@ -1225,6 +1230,8 @@ void main_menu::free()
     MMShuttleDataMap.clear();
     MMProjData.clear();
     MMProjDataMap.clear();
+
+    AudioManager::UnloadAllSounds();
 }
 
 void main_menu::unload()
