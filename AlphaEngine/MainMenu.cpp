@@ -82,14 +82,7 @@ bool dKeyPressed = false;
 bool spacebarActivated = false;
 bool LMB_KeyPressed = false;
 
-float w_ButtonX = 0.f;
-float w_ButtonY = -100.f;
-float a_ButtonX = -100.f;
-float a_ButtonY = -210.f;
-float s_ButtonX = 0.f;
-float s_ButtonY = -210.f;
-float d_ButtonX = 100.f;
-float d_ButtonY = -210.f;
+
 
 //struct Button
 //{
@@ -104,10 +97,6 @@ float d_ButtonY = -210.f;
 //AEMtx33Trans(&trans, w_howtoplay_x, w_howtoplay.y);
 //AEMtx33Concat(&transform, &rot, &scale);
 //AEMtx33Concat(&transform, &trans, &transform);
-
-float spacebar_ButtonX = 0.f;
-float spacebar_ButtonY = -310.f;
-
 float w_ButtonWidth = 75.f;
 float w_ButtonHeight = 75.f;
 float a_ButtonWidth = 75.f;
@@ -117,6 +106,17 @@ float s_ButtonHeight = 75.f;
 float d_ButtonWidth = 75.f;
 float d_ButtonHeight = 75.f;
 
+// WASD
+float w_ButtonX = -655.f; // Moved to the right by 50.f
+float w_ButtonY = -180.f;
+float a_ButtonX = -750.f; // Moved to the right by 50.f
+float a_ButtonY = -275.f;
+float s_ButtonX = -655.f; // Moved to the right by 50.f
+float s_ButtonY = -275.f;
+float d_ButtonX = -560.f; // Moved to the right by 50.f
+float d_ButtonY = -275.f;
+
+//WASD ACTIVATED
 float w_ButtonWidthHover = 90.f;
 float w_ButtonHeightHover = 90.f;
 float a_ButtonWidthHover = 90.f;
@@ -126,17 +126,27 @@ float s_ButtonHeightHover = 90.f;
 float d_ButtonWidthHover = 90.f;
 float d_ButtonHeightHover = 90.f;
 
-float spacebar_ButtonWidth = 225.f;
-float spacebar_ButtonHeight = 75.f;
-
-float spacebar_ButtonWidthActivated = 250.f;
-float spacebar_ButtonHeightActivated = 90.f;
-
 float w_OriginalButtonWidth = 75.f;
 float w_OriginalButtonHeight = 75.f;
 
+// SPACEBAR
+float spacebar_ButtonX = -655.f; // Moved to the right by 50.f
+float spacebar_ButtonY = -375.f;
+float spacebar_ButtonWidth = 225.f;
+float spacebar_ButtonHeight = 75.f;
+
+// SPACEBAR ACTIVATED
+float spacebar_ButtonWidthActivated = 250.f;
+float spacebar_ButtonHeightActivated = 90.f;
+
 float spacebar_OriginalWidth = 225.f;
 float spacebar_OriginalHeight = 75.f;
+
+// MOUSE
+float mouseTexX = -380.f; // Moved to the right by 50.f and added an additional 10.f gap from the D key
+float mouseTexY = -275.f;
+float mouseWidth = 200.f;
+float mouseHeight = 300.f;
 
 f64 MMframe_time = 0.f;
 f64 MMtotal_time = 0.f;
@@ -198,8 +208,10 @@ void main_menu::load()
     MM_Keys_D = AEGfxTextureLoad("Assets/MainMenu/mm_D.png");
     MM_Keys_D_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/mm_D_Hover.png");
 
-    MM_Keys_Spacebar = AEGfxTextureLoad("Assets/MainMenu/mm_Mouse.png");
-    MM_Keys_Spacebar_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/mm_MouseActivated.png");
+    MM_Keys_Spacebar = AEGfxTextureLoad("Assets/MainMenu/mm_Spacebar.png");
+    MM_Keys_Spacebar_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/mm_SpacebarActivated.png");
+    MM_LMB = AEGfxTextureLoad("Assets/MainMenu/mm_Mouse.png");
+    MM_LMB_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/mm_MouseActivated.png");
 }
 
 void main_menu::init()
@@ -411,9 +423,10 @@ void main_menu::update()
         }
 
         // Mouse click update tentative
-        if (AEInputCheckTriggered(AEVK_LBUTTON))
+        if (AEInputCheckCurr(AEVK_LBUTTON))
         {
             LMB_KeyPressed = true;
+            
         }
         else
         {
@@ -537,7 +550,7 @@ void main_menu::update()
         }
 
         // Mouse click update tentative
-        if (AEInputCheckTriggered(AEVK_LBUTTON))
+        if (AEInputCheckCurr(AEVK_LBUTTON))
         {
             LMB_KeyPressed = true;
         }
@@ -1034,11 +1047,11 @@ void main_menu::draw()
 
             if (LMB_KeyPressed)
             {
-                RenderMMBackground.RenderSprite(MM_LMB_ACTIVE, spacebar_ButtonX+100.f, spacebar_ButtonY+100.f, spacebar_ButtonWidth, spacebar_ButtonHeight, pMeshMM);
+                RenderMMBackground.RenderSprite(MM_LMB_ACTIVE, mouseTexX, mouseTexY, mouseWidth, mouseHeight, pMeshMM);
             }
             else
             {
-                RenderMMBackground.RenderSprite(MM_LMB, spacebar_ButtonX, spacebar_ButtonY, spacebar_ButtonWidth, spacebar_ButtonHeight, pMeshMM);
+                RenderMMBackground.RenderSprite(MM_LMB, mouseTexX, mouseTexY, mouseWidth, mouseHeight, pMeshMM);
             }
         }
     }
