@@ -74,15 +74,13 @@ AEGfxTexture* MM_Keys_Spacebar_ACTIVE;
 
 AEGfxTexture* MM_LMB;
 AEGfxTexture* MM_LMB_ACTIVE;
-
+//bools for keys
 bool wKeyPressed = false;
 bool aKeyPressed = false;
 bool sKeyPressed = false;
 bool dKeyPressed = false;
 bool spacebarActivated = false;
 bool LMB_KeyPressed = false;
-
-
 
 //struct Button
 //{
@@ -97,6 +95,7 @@ bool LMB_KeyPressed = false;
 //AEMtx33Trans(&trans, w_howtoplay_x, w_howtoplay.y);
 //AEMtx33Concat(&transform, &rot, &scale);
 //AEMtx33Concat(&transform, &trans, &transform);
+
 float w_ButtonWidth = 75.f;
 float w_ButtonHeight = 75.f;
 float a_ButtonWidth = 75.f;
@@ -107,13 +106,13 @@ float d_ButtonWidth = 75.f;
 float d_ButtonHeight = 75.f;
 
 // WASD
-float w_ButtonX = -655.f; // Moved to the right by 50.f
+float w_ButtonX = -655.f; 
 float w_ButtonY = -180.f;
-float a_ButtonX = -750.f; // Moved to the right by 50.f
+float a_ButtonX = -750.f; 
 float a_ButtonY = -275.f;
-float s_ButtonX = -655.f; // Moved to the right by 50.f
+float s_ButtonX = -655.f; 
 float s_ButtonY = -275.f;
-float d_ButtonX = -560.f; // Moved to the right by 50.f
+float d_ButtonX = -560.f; 
 float d_ButtonY = -275.f;
 
 //WASD ACTIVATED
@@ -130,7 +129,7 @@ float w_OriginalButtonWidth = 75.f;
 float w_OriginalButtonHeight = 75.f;
 
 // SPACEBAR
-float spacebar_ButtonX = -655.f; // Moved to the right by 50.f
+float spacebar_ButtonX = -655.f; 
 float spacebar_ButtonY = -375.f;
 float spacebar_ButtonWidth = 225.f;
 float spacebar_ButtonHeight = 75.f;
@@ -143,7 +142,7 @@ float spacebar_OriginalWidth = 225.f;
 float spacebar_OriginalHeight = 75.f;
 
 // MOUSE
-float mouseTexX = -380.f; // Moved to the right by 50.f and added an additional 10.f gap from the D key
+float mouseTexX = -380.f; 
 float mouseTexY = -275.f;
 float mouseWidth = 200.f;
 float mouseHeight = 300.f;
