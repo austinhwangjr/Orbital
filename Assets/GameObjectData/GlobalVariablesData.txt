@@ -1,0 +1,11 @@
+//-------------Global Variables-----------------
+/-----Variable------------------Value-----------
+g_WindowWidth			1600
+g_WindowHeight			900
+g_ScreenLeft			0
+g_ScreenRight			0
+g_ScreenTop			0
+g_ScreenBottom			0
+g_BackgroundWidth		7680	
+g_BackgroundHeight		4320
+g_Player_score			0

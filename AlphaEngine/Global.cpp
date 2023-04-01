@@ -12,21 +12,22 @@ prior written consent of DigiPen Institute of Technology is prohibited.
  */
 /******************************************************************************/
 #include "Global.h"	
+#include "Data.h"
 
 bool		g_isMute = false;
 
 // Variables related to console display
-bool g_consoleOn = true;
-bool g_consoleOff = false;
+bool		g_consoleOn = true;
+bool		g_consoleOff = false;
 
 // Variables related to game window size
 bool		g_isFullScreen	= false;
 f32			g_windowWidth;
 f32			g_windowHeight;
-float		g_screenLeft	= 0.0f;			// Left (minimum) X coordinate of the game screen
-float		g_screenRight	= 0.0f;			// Right (maximum) X coordinate of the game screen
-float		g_screenTop		= 0.0f;			// Top (minimum) Y coordinate of the game screen
-float		g_screenBottom	= 0.0f;			// Bottom (maximum) Y coordinate of the game screen
+float		g_screenLeft;					// Left (minimum) X coordinate of the game screen
+float		g_screenRight;					// Right (maximum) X coordinate of the game screen
+float		g_screenTop;					// Top (minimum) Y coordinate of the game screen
+float		g_screenBottom;					// Bottom (maximum) Y coordinate of the game screen
 RECT		g_WindowRect;
 s32			g_mouseScreen_x;				// Mouse X coordinate of the game screen
 s32			g_mouseScreen_y;				// Mouse Y coordinate of the game screen
@@ -34,15 +35,29 @@ AEVec2		g_mouseWorld;					// Mouse coordinates of world
 AEVec2		g_camPos;						// Camera coordinates
 f32			g_dt;							// Game loop delta time
 
-float		backgroundWidth = 7680.f;
-float		backgroundHeight = 4320.f;
-int			player_score = 0;
+float		backgroundWidth;
+float		backgroundHeight;
+int			player_score;
+
+// IMPORT DATA VECTOR
+std::map<std::string, f32> 	GlobalDataMap;
+std::vector<Data> 			GlobalData;
 
 // Initializes the game window size based on whether it's full-screen or not
 void Global_InitWindowSize(bool isFullScreen)
 {
 	RECT desktopRect;
 	GetWindowRect(GetDesktopWindow(), &desktopRect);							// Get size of desktop display
+
+	ImportDataFromFile("Assets/GameObjectData/GlobalVariablesData.txt", GlobalData, GlobalDataMap);
+	g_screenLeft		= GlobalDataMap["g_ScreenLeft"];
+	g_screenRight		= GlobalDataMap["g_ScreenRight"];
+	g_screenTop			= GlobalDataMap["g_ScreenTop"];
+	g_screenBottom		= GlobalDataMap["g_ScreenBottom"];
+
+	backgroundWidth		= GlobalDataMap["g_BackgroundWidth"];
+	backgroundHeight	= GlobalDataMap["g_BackgroundHeight"];
+	player_score		= static_cast<int>(GlobalDataMap["g_Player_score"]);
 
 	if (isFullScreen)
 	{
@@ -53,8 +68,8 @@ void Global_InitWindowSize(bool isFullScreen)
 	else
 	{
 		g_isFullScreen	= false;
-		g_windowWidth	= 1600.f;												// Default window width
-		g_windowHeight	= 900.f;												// Default window height
+		g_windowWidth	= GlobalDataMap["g_WindowWidth"];				// Default window width
+		g_windowHeight	= GlobalDataMap["g_WindowHeight"];				// Default window height
 	}
 }
 
