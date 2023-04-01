@@ -30,6 +30,8 @@ namespace AudioManager
     intptr_t PlayOnce(const std::string& path, float volume = 1.0f);
     void ToggleMute(bool mute);
     void TogglePause(bool pause);
+    void StopAll();
+
 
     void setVolume(float volume);
 

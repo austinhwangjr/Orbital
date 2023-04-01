@@ -63,11 +63,7 @@ namespace AudioManager
 
     }
 
-    // Helper function to check for FMOD errors
-    void ErrorCheck(FMOD_RESULT result)
-    {
-        AE_ASSERT(result == FMOD_OK && FMOD_ErrorString(result));
-    }
+
 
     // Loads a sound file into memory and stores it in a map
     void LoadSound(const std::string& path, bool loop)
@@ -224,6 +220,28 @@ namespace AudioManager
             ErrorCheck(bgm->stop());
             isBGMPlaying = false;
         }
+    }
+
+    void StopAll()
+    {
+        // Stop the background music if it's playing
+        StopBGMIfPlaying();
+
+        // Stop all sound effects
+        FMOD::ChannelGroup* masterGroup = nullptr;
+        _result = _system->getMasterChannelGroup(&masterGroup);
+        ErrorCheck(_result);
+        if (masterGroup)
+        {
+            _result = masterGroup->stop();
+            ErrorCheck(_result);
+        }
+    }
+
+    // Helper function to check for FMOD errors
+    void ErrorCheck(FMOD_RESULT result)
+    {
+        AE_ASSERT(result == FMOD_OK && FMOD_ErrorString(result));
     }
 
 }

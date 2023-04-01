@@ -43,6 +43,9 @@ void Player::load()
 
 	// Import data from file
 	ImportDataFromFile("Assets/GameObjectData/PlayerData.txt", PlayerData, PlayerDataMap);
+
+	AudioManager::LoadSound("Assets/BGM/bgm_ml_tractorbeam.mp3", false);
+
 }
 
 /******************************************************************************/
@@ -177,6 +180,8 @@ void Player::free()
 		PlayerData.clear();
 		PlayerDataMap.clear();
 	}
+	AudioManager::UnloadAllSounds();
+
 }
 
 /******************************************************************************/
@@ -276,6 +281,8 @@ void Player::orbit_state()
 				}
 			}
 		}
+
+		AudioManager::PlayOnce("Assets/BGM/bgm_ml_tractorbeam.mp3", 0.1f);
 	}
 	else {
 		for (int i = 0; i < debris_vector_all[current_planet.id].size(); ++i) {
@@ -284,6 +291,8 @@ void Player::orbit_state()
 			if (debris.state == MOVE_TOWARDS_PLAYER)
 				debris.state = MOVE_TOWARDS_PLANET;
 		}
+		AudioManager::StopAll();
+
 	}
 }
 
