@@ -18,6 +18,8 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Data.h"
 #include "GameStateList.h"
 
+intptr_t tractorBeamSoundID = -1;
+
 // Textures
 AEGfxTexture* player_tex;
 AEGfxTexture* tractor_beam_tex;
@@ -282,7 +284,9 @@ void Player::orbit_state()
 			}
 		}
 
-		AudioManager::PlayOnce("Assets/BGM/bgm_ml_tractorbeam.mp3", 0.1f);
+		if (tractorBeamSoundID == -1) {
+			tractorBeamSoundID = AudioManager::PlayOnce("Assets/BGM/bgm_ml_tractorbeam.mp3", 0.1f);
+		}
 	}
 	else {
 		for (int i = 0; i < debris_vector_all[current_planet.id].size(); ++i) {
@@ -291,8 +295,10 @@ void Player::orbit_state()
 			if (debris.state == MOVE_TOWARDS_PLAYER)
 				debris.state = MOVE_TOWARDS_PLANET;
 		}
-		AudioManager::StopAll();
-
+		if (tractorBeamSoundID != -1) {
+			AudioManager::Stop(tractorBeamSoundID);
+			tractorBeamSoundID = -1;
+		}
 	}
 }
 

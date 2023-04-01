@@ -31,6 +31,7 @@ namespace AudioManager
     void ToggleMute(bool mute);
     void TogglePause(bool pause);
     void StopAll();
+    void Stop(intptr_t soundID);
 
 
     void setVolume(float volume);

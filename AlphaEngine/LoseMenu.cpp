@@ -58,16 +58,20 @@ void lose_menu::load()
 {
 	TexPlayAgain = AEGfxTextureLoad("Assets/MainLevel/LoseMenu/lm_PlayAgainButton.png");
 	TexMainMenu = AEGfxTextureLoad("Assets/MainLevel/LoseMenu/lm_MainMenuButton.png");
+
+    //AudioManager::LoadSound("Assets/BGM/bgm_ml_losemenu.wav", false);
 }
 
 void lose_menu::init()
 {
 	renderLoseMenu.SquareMesh(pMeshLoseMenu);
+    AudioManager::PlayOnce("Assets/BGM/bgm_ml_losemenu.wav", 0.5f);
 
 }
 
 void lose_menu::update()
 {
+
     // Check if the left mouse button has been clicked
     if (AEInputCheckTriggered(AEVK_LBUTTON))
     {
@@ -98,6 +102,8 @@ void lose_menu::update()
             std::cout << "Toggling Screen " << std::endl;
         }
     }
+    AudioManager::Update();
+
 }
 
 void lose_menu::draw()
@@ -118,6 +124,7 @@ void lose_menu::draw()
 void lose_menu::free()
 {
     AEGfxMeshFree(pMeshLoseMenu);
+    AudioManager::UnloadAllSounds();
 }
 
 void lose_menu::unload()

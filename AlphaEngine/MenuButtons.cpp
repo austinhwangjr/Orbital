@@ -168,124 +168,127 @@ void Menu_Button::init()
 /******************************************************************************/
 void Menu_Button::update()
 {
-    hoverSoundDelay += static_cast<float>(g_dt);
-
-    for (int i = 0; i < 6; ++i)
+    if (MMtotal_time >= 1.5f)
     {
-        bool previousHoverState = hoverStates[i];
-        hoverStates[i] = Input::isMouseHover(buttons[i].x, buttons[i].y, buttons[i].width, buttons[i].height, hoverButtons[i].width, hoverButtons[i].height);
+        hoverSoundDelay += static_cast<float>(g_dt);
 
-        if (!previousHoverState && hoverStates[i] && hoverSoundDelay >= hoverSoundCooldown)
+        for (int i = 0; i < 6; ++i)
         {
-            AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.2f);
-            hoverSoundDelay = 0.0f;
+            bool previousHoverState = hoverStates[i];
+            hoverStates[i] = Input::isMouseHover(buttons[i].x, buttons[i].y, buttons[i].width, buttons[i].height, hoverButtons[i].width, hoverButtons[i].height);
+
+            if (!previousHoverState && hoverStates[i] && hoverSoundDelay >= hoverSoundCooldown)
+            {
+                AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.2f);
+                hoverSoundDelay = 0.0f;
+            }
+
+            if (AEInputCheckTriggered(AEVK_LBUTTON) && hoverStates[i])
+            {
+                AudioManager::StopBGMIfPlaying();
+                AudioManager::PlayOnce("Assets/BGM/hyperspace_jumping.mp3", 0.3f);
+                transition::isTransitionActive = true;
+                transition::resetTimer();
+                MMtotal_time = 0.f;
+
+                switch (i)
+                {
+                case 0: // Start button
+                    next_state = GS_MAINLEVEL;
+                    break;
+                case 1: // How to play button
+                    main_menu::currentState = main_menu::HOW_TO_PLAY;
+                    break;
+                case 2: // High Score button
+                    next_state = GS_HIGHSCORE;
+                    break;
+                case 3: // Options button
+                    next_state = GS_OPTIONS;
+                    break;
+                case 4: // Credits button
+                    next_state = GS_CREDITS;
+                    break;
+                case 5: // Quit button
+                    next_state = GS_QUIT;
+                    break;
+                default:
+                    break;
+                }
+
+                std::cout << "Button " << i << " clicked" << std::endl;
+            }
         }
 
-        if (AEInputCheckTriggered(AEVK_LBUTTON) && hoverStates[i])
+        if (AEInputCheckTriggered(AEVK_F11))
         {
-            AudioManager::StopBGMIfPlaying();
-            AudioManager::PlayOnce("Assets/BGM/hyperspace_jumping.mp3", 0.3f);
-            transition::isTransitionActive = true;
-            transition::resetTimer();
-
-            switch (i)
-            {
-            case 0: // Start button
-                next_state = GS_MAINLEVEL;
-                break;
-            case 1: // How to play button
-                main_menu::currentState = main_menu::HOW_TO_PLAY;
-                break;
-            case 2: // High Score button
-                next_state = GS_HIGHSCORE;
-                break;
-            case 3: // Options button
-                next_state = GS_OPTIONS;
-                break;
-            case 4: // Credits button
-                next_state = GS_CREDITS;
-                break;
-            case 5: // Quit button
-                next_state = GS_QUIT;
-                break;
-            default:
-                break;
-            }
-
-            MMtotal_time = 0.f;
-            std::cout << "Button " << i << " clicked" << std::endl;
-        }
-    }
-
-    if (AEInputCheckTriggered(AEVK_F11))
-    {
-        // If the window close button has been clicked, set the game state to quit
-        Global_ToggleScreen();
-        std::cout << "Toggling Screen " << std::endl;
-    }
-
-    // Check if the window close button has been clicked
-    if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
-    {
-        // If the window close button has been clicked, set the game state to quit
-        next_state = GS_QUIT;
-    }
-
-    float easingSpeed = 0.15f; // Adjust this value to control the speed of the transition i know not suppose to be here.
-    float rotationSpeed = 0.25f; // Adjust this value to control the speed of the rotation
-    for (int i = 0; i < 6; ++i)
-    {
-        // Update hover state and square rotation
-        hoverStates[i] = Input::isMouseHover(buttons[i].x, buttons[i].y, buttons[i].width, buttons[i].height, hoverButtons[i].width, hoverButtons[i].height);
-
-        if (hoverStates[i])
-        {
-            squareRotations[i] -= rotationSpeed;
-            if (squareRotations[i] < -M_PI / 2.0f)
-            {
-                (squareRotations[i] = static_cast<float>( - M_PI / 2.0f));
-            }
-
-            // colour easing
-            for (int j = 0; j < 4; ++j)
-            {
-                currentTints[i][j] = Lerp(currentTints[i][j], hoverTint[j], easingSpeed);
-            }
-
-            // width & height 
-            currentButtonSizes[i].width = Lerp(currentButtonSizes[i].width, hoverButtons[i].width, easingSpeed);
-            currentButtonSizes[i].height = Lerp(currentButtonSizes[i].height, hoverButtons[i].height, easingSpeed);
-
-            // sqaure size
-            currentSquareSizes[i] = Lerp(currentSquareSizes[i], hoverSquareSize, easingSpeed);
-
-            currentXPositions[i] = Lerp(currentXPositions[i], buttons[i].x + hoverOffsetX, easingSpeed);
+            // If the window close button has been clicked, set the game state to quit
+            Global_ToggleScreen();
+            std::cout << "Toggling Screen " << std::endl;
         }
 
-        else
+        // Check if the window close button has been clicked
+        if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
         {
-            squareRotations[i] += rotationSpeed;
-            if (squareRotations[i] > 0.0f)
-            {
-                squareRotations[i] = 0.0f;
-            }
-
-            // colour easing
-            for (int j = 0; j < 4; ++j)
-            {
-                currentTints[i][j] = Lerp(currentTints[i][j], normalTint[j], easingSpeed);
-            }
-
-            // width & height 
-            currentButtonSizes[i].width = Lerp(currentButtonSizes[i].width, buttons[i].width, easingSpeed);
-            currentButtonSizes[i].height = Lerp(currentButtonSizes[i].height, buttons[i].height, easingSpeed);
-
-            currentSquareSizes[i] = Lerp(currentSquareSizes[i], normalSquareSize, easingSpeed);
-
-            currentXPositions[i] = Lerp(currentXPositions[i], buttons[i].x, easingSpeed);
+            // If the window close button has been clicked, set the game state to quit
+            next_state = GS_QUIT;
         }
+
+        float easingSpeed = 0.15f; // Adjust this value to control the speed of the transition i know not suppose to be here.
+        float rotationSpeed = 0.25f; // Adjust this value to control the speed of the rotation
+        for (int i = 0; i < 6; ++i)
+        {
+            // Update hover state and square rotation
+            hoverStates[i] = Input::isMouseHover(buttons[i].x, buttons[i].y, buttons[i].width, buttons[i].height, hoverButtons[i].width, hoverButtons[i].height);
+
+            if (hoverStates[i])
+            {
+                squareRotations[i] -= rotationSpeed;
+                if (squareRotations[i] < -M_PI / 2.0f)
+                {
+                    (squareRotations[i] = static_cast<float>(-M_PI / 2.0f));
+                }
+
+                // colour easing
+                for (int j = 0; j < 4; ++j)
+                {
+                    currentTints[i][j] = Lerp(currentTints[i][j], hoverTint[j], easingSpeed);
+                }
+
+                // width & height 
+                currentButtonSizes[i].width = Lerp(currentButtonSizes[i].width, hoverButtons[i].width, easingSpeed);
+                currentButtonSizes[i].height = Lerp(currentButtonSizes[i].height, hoverButtons[i].height, easingSpeed);
+
+                // sqaure size
+                currentSquareSizes[i] = Lerp(currentSquareSizes[i], hoverSquareSize, easingSpeed);
+
+                currentXPositions[i] = Lerp(currentXPositions[i], buttons[i].x + hoverOffsetX, easingSpeed);
+            }
+
+            else
+            {
+                squareRotations[i] += rotationSpeed;
+                if (squareRotations[i] > 0.0f)
+                {
+                    squareRotations[i] = 0.0f;
+                }
+
+                // colour easing
+                for (int j = 0; j < 4; ++j)
+                {
+                    currentTints[i][j] = Lerp(currentTints[i][j], normalTint[j], easingSpeed);
+                }
+
+                // width & height 
+                currentButtonSizes[i].width = Lerp(currentButtonSizes[i].width, buttons[i].width, easingSpeed);
+                currentButtonSizes[i].height = Lerp(currentButtonSizes[i].height, buttons[i].height, easingSpeed);
+
+                currentSquareSizes[i] = Lerp(currentSquareSizes[i], normalSquareSize, easingSpeed);
+
+                currentXPositions[i] = Lerp(currentXPositions[i], buttons[i].x, easingSpeed);
+            }
+        }
+        AudioManager::Update();
     }
-    AudioManager::Update();
 }
 
 /******************************************************************************/

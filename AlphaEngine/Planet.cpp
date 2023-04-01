@@ -25,6 +25,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Easing.h"
 #include "Data.h"
 #include "GameStateList.h"
+#include "AudioManager.h"
 
 //Textures
 AEGfxTexture* planet_tex;
@@ -122,6 +123,7 @@ void Planets::init()
 /******************************************************************************/
 void Planets::update()
 {
+
 	// FOR EACH PLANET----------------------------------------------------------------------------------------------------------------------------
 	for (size_t i{}; i < planet_vector.size(); i++)
 	{
@@ -155,6 +157,7 @@ void Planets::update()
 					runway_vector[i].position = planet_vector[i].position;
 					AEVec2Zero(&runway_vector[i].velocity);
 					runway_vector[i].lifespan = RUNWAY_LIFESPAN;
+
 				}
 			}
 
@@ -242,6 +245,7 @@ void Planets::update()
 	AEMtx33Concat(&orbit_halo_transform, &rot, &sc);
 	AEMtx33Concat(&orbit_halo_transform, &trans, &orbit_halo_transform);
 
+	AudioManager::Update();
 }
 
 /******************************************************************************/
@@ -367,6 +371,7 @@ void Planets::spawn(int shuttle_randomize_amount)
 	{
 		new_planet.current_shuttle = new_planet.max_shuttle = 1;
 		new_planet.shuttle_time_to_spawn /= 2; // Double time for tutorial
+
 	}
 	new_planet.shuttle_spawn_pos.x = new_planet.position.x;
 	new_planet.shuttle_spawn_pos.y = new_planet.position.y;

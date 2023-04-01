@@ -238,6 +238,15 @@ namespace AudioManager
         }
     }
 
+    void Stop(intptr_t soundID)
+    {
+        FMOD::Channel* channel = reinterpret_cast<FMOD::Channel*>(soundID);
+        if (channel)
+        {
+            ErrorCheck(channel->stop());
+        }
+    }
+
     // Helper function to check for FMOD errors
     void ErrorCheck(FMOD_RESULT result)
     {

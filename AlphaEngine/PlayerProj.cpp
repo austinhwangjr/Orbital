@@ -22,6 +22,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "SpaceStation.h"
 #include "GameStateList.h"
 #include "Data.h"
+#include "AudioManager.h"
 
 // Textures
 AEGfxTexture* player_proj_tex;
@@ -93,9 +94,12 @@ void PlayerProj::update(Player& current_player, PlayerUI& player_ui)
 
 			player_proj_vector.push_back(*this);
 			current_player.current_capacity--;
+
+			// Play shooting sound effect
 			AudioManager::PlayOnce("Assets/BGM/9mm-pistol-shot-6349.mp3", 0.05f);
 		}
 	}
+
 
 	// =====================================
 	// Update position of player projectile
@@ -166,7 +170,6 @@ void PlayerProj::update(Player& current_player, PlayerUI& player_ui)
 		AEMtx33Concat(&player_proj.transform, &rot, &scale);
 		AEMtx33Concat(&player_proj.transform, &trans, &player_proj.transform);
 	}
-	AudioManager::Update();
 }
 
 /******************************************************************************/
@@ -201,7 +204,6 @@ void PlayerProj::free()
 		ProjData.clear();
 		ProjDataMap.clear();
 	}
-	AudioManager::UnloadAllSounds();
 }
 
 /******************************************************************************/

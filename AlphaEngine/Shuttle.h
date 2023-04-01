@@ -28,6 +28,7 @@ struct Shuttles
 	f32			lifespan;		// Current life time for a shuttle
 	int			planet_id;		// ID for planet shuttle spawns from
 	bool		active;			// Flag for whether the shuttle is currently active
+	int blastOffSoundID;
 
 	void load();
 	void init();
@@ -40,3 +41,4 @@ struct Shuttles
 };
 
 void MMspawn_shuttle();
+void MMupdate_shuttle();

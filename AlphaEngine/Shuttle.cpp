@@ -17,6 +17,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "GameStateList.h"
 #include <cmath>
 #include "Data.h"
+std::map<size_t, int> shuttleSoundIDs;
 
 static float SHUTTLE_MAX_LIFESPAN;		// Maximum life time for a shuttle before escaping (expiring)
 static float SHUTTLE_MAX_ACCEL;			// Maximum acceleration for a shuttle
@@ -42,6 +43,8 @@ void Shuttles::load()
 {
 	shuttle_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Shuttle.png");
 	ImportDataFromFile("Assets/GameObjectData/ShuttleData.txt", ShuttleData, ShuttleDataMap);
+	AudioManager::LoadSound("Assets/BGM/bgm_ml_blastoff.mp3", false);
+
 }
 
 /******************************************************************************/
@@ -65,6 +68,8 @@ void Shuttles::init()
 /******************************************************************************/
 void Shuttles::update(Player& current_player)
 {
+	AudioManager::Update();
+
 	for (size_t i{}; i < shuttle_vector.size(); i++)
 	{
 		if (shuttle_vector[i].active)
@@ -96,10 +101,17 @@ void Shuttles::update(Player& current_player)
 				shuttle_vector[i].active = false;
 				//spawn_debris(2, shuttle_vector[i].planet_id);
 				spawn_debris_shuttle(shuttle_vector[i].position, shuttle_vector[i].planet_id, 3);
+
+				// Stop the sound when the shuttle's lifespan ends
+				AudioManager::Stop(shuttleSoundIDs[i]);
+				shuttleSoundIDs.erase(i);
 			}
 			shuttle_vector[i].lifespan -= g_dt;
+
 		}
 	}
+
+
 }
 
 /******************************************************************************/
@@ -146,6 +158,7 @@ void Shuttles::free()
 		ShuttleData.clear();
 		ShuttleDataMap.clear();
 	}
+	//AudioManager::UnloadAllSounds();
 }
 
 /******************************************************************************/
@@ -186,4 +199,8 @@ void Shuttles::spawn(int const& current_planet_id, f32 const& rand_angle)
 	AEMtx33Rot(&new_shuttle.rotate, PI / 2 + rand_angle);
 
 	shuttle_vector.push_back(new_shuttle);
+
+	size_t shuttleIndex = shuttle_vector.size() - 1;
+	int soundID = AudioManager::PlayOnce("Assets/BGM/bgm_ml_blastoff.mp3", 0.5f);
+	shuttleSoundIDs[shuttleIndex] = soundID;
 }
