@@ -36,6 +36,7 @@ f32			g_dt;							// Game loop delta time
 
 float		backgroundWidth = 7680.f;
 float		backgroundHeight = 4320.f;
+int			player_score = 0;
 
 // Initializes the game window size based on whether it's full-screen or not
 void Global_InitWindowSize(bool isFullScreen)

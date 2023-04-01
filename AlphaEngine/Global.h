@@ -40,6 +40,7 @@ extern f32		g_dt;
 
 extern float backgroundWidth;
 extern float backgroundHeight;
+extern int	 player_score;
 
 extern RECT g_WindowRect;
 

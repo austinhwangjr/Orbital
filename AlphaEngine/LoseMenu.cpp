@@ -18,6 +18,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "GameStateList.h"
 #include "Global.h"
 #include <iostream>
+#include "Highscore.h"
 
 AEGfxTexture* TexPlayAgain = nullptr;
 AEGfxTexture* TexMainMenu = nullptr;
@@ -86,6 +87,7 @@ void lose_menu::update()
             break;
         case 1:
             next_state = GS_MAINMENU;
+            putHighScore(player_score);
             break;
         }
 

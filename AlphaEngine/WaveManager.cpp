@@ -118,6 +118,7 @@ void WaveManager::update()
 	// Lose Condition--------------------------------------------------------
 	if (shuttle_destroyed == LOSE_CONDITION)
 	{
+		player_score = player.score;
 		next_state = GS_LOSEMENU;
 	}
 	
