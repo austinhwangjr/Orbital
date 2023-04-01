@@ -206,7 +206,6 @@ void putHighScore(int score)
         std::sort(top_10_highscores.begin(), top_10_highscores.end(), std::greater<int>());
 
         const char* filename = "Assets/MainMenu/HighScore/Highscore.txt";
-        FILE* file_highscores;
         errno_t file_check_highscores_update = fopen_s(&file_highscores, filename, "w");
 
         if (file_check_highscores_update != 0) {
