@@ -1,0 +1,38 @@
+//-----------------Player UI--------------------
+/-----Variable------------------Value-----------
+Upgrade_Count			5
+Lost_Overlay_Time		2
+HUD_Buffer			50
+Lost_Overlay_Timer		0
+Maximum_Movement_Speed_Level	5
+Maximum_Capacity_Level		5
+Maximum_Space_Station_Level	5
+Maximum_Beam_Strength_Level	5
+
+
+//-----------------Shop UI--------------------
+/-----Variable------------------Value---------
+Shop_Open_Button_Width		70
+Shop_Open_Button_Height		70
+Player_Upgrade_Button_Width	160
+Player_Upgrade_Button_Height	80
+Upgrade_Indicator_Width		32
+Upgrade_Indicator_Height	16
+Shop_Icon_Size			20
+Upgrade_Preview_Size		400
+Shop_Transition_Timer		0
+Shop_Transition_Duration	1
+Shop_Indicator_Width		70
+Shop_Indicator_Height		70
+Shop_Indicator_Timer		0
+Shop_Indicator_Speed		3
+
+		
+
+//-----------------Tutorial UI------------------
+/-----Variable------------------Value-----------
+Tutorial_Button_Width		70
+Tutorial_Button_Height		70
+Tutorial_OffSet			0
+Tutorial_Transition_Timer	0
+Tutorial_Transition_Duration	1

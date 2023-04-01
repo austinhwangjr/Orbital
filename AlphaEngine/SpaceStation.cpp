@@ -42,6 +42,7 @@ extern AEGfxTexture* shop_icon_tex;
 bool space_station_valid_placement = false;
 bool space_station_added;
 static int BUFFER_SAFE_DISTANCE;
+static int MAX_SPACE_STATION_CNT;
 
 // Vector of space stations, planets and debris
 std::vector<SpaceStation> space_station_vector;
@@ -61,8 +62,9 @@ AEGfxTexture* coin_tex;
 std::vector<Coin> coin_vector;
 
 //IMPORT DATA VECTOR
-std::map<std::string, f32> SpaceStationDataMap;
-std::vector<Data> SpaceStationData;
+std::map<std::string, f32>				SpaceStationDataMap;
+std::vector<Data>						SpaceStationData;
+extern std::map < std::string, f32> 	GameUIDataMap;
 
 void SpaceStation::load()
 {
@@ -79,7 +81,7 @@ void SpaceStation::init()
 	max_capacity			= static_cast<int>(SpaceStationDataMap["Max_Capacity"]);
 	initial_spawn			= static_cast<bool>(SpaceStationDataMap["Initial_spawn"]);
 
-
+	MAX_SPACE_STATION_CNT	= static_cast<int>(GameUIDataMap["Maximum_Space_Station_Level"]);
 	COOLDOWN_HEIGHT			= SpaceStationDataMap["CoolDownBar_height"];
 	COOLDOWN_WIDTH			= SpaceStationDataMap["CoolDownBar_width"];
 	COOLDOWN_TIME			= SpaceStationDataMap["CoolDownBar_time"];

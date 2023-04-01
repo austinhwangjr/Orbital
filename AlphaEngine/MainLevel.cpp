@@ -53,12 +53,11 @@ void main_level::load()
 
 	// load texture
 	wave_manager.load();
+	player_ui.load();
 	planet.load();
 	player.load();
 	space_station.load();
-	player_ui.load();
 	drone.load();
-	
 	player_proj.load();
 	debris.load();
 	shuttle.load();

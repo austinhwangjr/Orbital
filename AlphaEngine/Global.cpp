@@ -39,6 +39,8 @@ float		backgroundWidth;
 float		backgroundHeight;
 int			player_score;
 
+
+
 // IMPORT DATA VECTOR
 std::map<std::string, f32> 	GlobalDataMap;
 std::vector<Data> 			GlobalData;

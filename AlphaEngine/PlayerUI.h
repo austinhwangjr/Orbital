@@ -22,9 +22,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 #define DEBRIS_VALUE		10
 #define DEBRIS_SCORE		100
-#define UPGRADE_COUNT		5
-#define LOST_OVERLAY_TIME	2
-#define HUD_BUFFER			50
 
 enum BUTTON_TYPE 
 {

@@ -24,6 +24,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "SpaceStation.h"
 #include "Global.h"
 #include "Easing.h"
+#include "Data.h"
 
 // General UI textures
 extern AEGfxTexture* player_tex;
@@ -55,6 +56,13 @@ AEGfxTexture* space_station_button_tex;
 // Variables for general UI
 std::string	  score, credits, capacity;
 extern s8	  font_id;
+static int MAX_MOV_SPEED_LVL;
+static int MAX_CAPACITY_LVL;
+static int MAX_SPACE_STATION_CNT;
+static int MAX_BEAM_STRENGTH_LVL;
+static int UPGRADE_COUNT;
+static float LOST_OVERLAY_TIME;
+static int HUD_BUFFER;
 
 // Variables for shop
 extern s8	  font_id_shop;
@@ -62,6 +70,11 @@ extern s8	  font_id_shop;
 // Vector of buttons and space stations
 std::vector<ShopOption> button_vector;
 extern std::vector<SpaceStation> space_station_vector;
+
+// IMPORT DATA VECTOR
+std::map < std::string, f32> 	GameUIDataMap;
+std::vector<Data> 				GameUIData;
+
 
 /******************************************************************************/
 /*!
@@ -95,6 +108,9 @@ void PlayerUI::load()
 	strength_button_tex = AEGfxTextureLoad("Assets/MainLevel/ml_BeamStrengthUpgradeButton.png");
 	drone_button_tex = AEGfxTextureLoad("Assets/MainLevel/ml_DroneButton.png");
 	space_station_button_tex = AEGfxTextureLoad("Assets/MainLevel/ml_SpaceStationButton.png");
+
+	//DATA
+	ImportDataFromFile("Assets/GameObjectData/GameUserInterfaceData.txt", GameUIData, GameUIDataMap);
 }
 
 /******************************************************************************/
@@ -104,22 +120,30 @@ void PlayerUI::load()
 /******************************************************************************/
 void PlayerUI::init()
 {
+	MAX_MOV_SPEED_LVL			= static_cast<int>(GameUIDataMap["Maximum_Movement_Speed_Level"]);
+	MAX_CAPACITY_LVL			= static_cast<int>(GameUIDataMap["Maximum_Capacity_Level"]);
+	MAX_SPACE_STATION_CNT		= static_cast<int>(GameUIDataMap["Maximum_Space_Station_Level"]);
+	MAX_BEAM_STRENGTH_LVL		= static_cast<int>(GameUIDataMap["Maximum_Beam_Strength_Level"]);
+	UPGRADE_COUNT				= static_cast<int>(GameUIDataMap["Upgrade_Count"]);
+	LOST_OVERLAY_TIME			= GameUIDataMap["Lost_Overlay_Time"];
+	HUD_BUFFER					= static_cast<int>(GameUIDataMap["HUD_Buffer"]);
+
 	// Player UI
 	player_hud_width = g_windowWidth + HUD_BUFFER;
 	player_hud_height = g_windowHeight + HUD_BUFFER;
 
 	// Add buttons to vector
 	ShopOption shop_open_button{};
-	shop_open_button.width = 70.f;
-	shop_open_button.height = 70.f;
+	shop_open_button.width = GameUIDataMap["Shop_Open_Button_Width"];
+	shop_open_button.height = GameUIDataMap["Shop_Open_Button_Height"];
 	shop_open_button.button_type = SHOP_OPEN;
 	button_vector.push_back(shop_open_button);
 
 	for (int i = 0; i < UPGRADE_COUNT; ++i) {
 		// Populate button vector
 		ShopOption player_upgrade{};
-		player_upgrade.width = 160.f;
-		player_upgrade.height = 80.f;
+		player_upgrade.width = GameUIDataMap["Player_Upgrade_Button_Width"];
+		player_upgrade.height = GameUIDataMap["Player_Upgrade_Button_Height"];
 		player_upgrade.button_type = MOVEMENT_SPEED + i;
 
 		// Max upgrade levels for each upgrade type
@@ -142,8 +166,8 @@ void PlayerUI::init()
 		// Add indicators (upgrade levels)
 		for (int j = 0; j < count; ++j) {
 			UpgradeLevelIndicator indicator{};
-			indicator.width = 32.0f;
-			indicator.height = 16.0f;
+			indicator.width = GameUIDataMap["Upgrade_Indicator_Width"];
+			indicator.height = GameUIDataMap["Upgrade_Indicator_Height"];
 			player_upgrade.indicator_vector.push_back(indicator);
 		}
 
@@ -151,8 +175,8 @@ void PlayerUI::init()
 	}
 
 	ShopOption tutorial_button{};
-	tutorial_button.width = 70.f;
-	tutorial_button.height = 70.f;
+	tutorial_button.width = GameUIDataMap["Tutorial_Button_Width"];
+	tutorial_button.height = GameUIDataMap["Tutorial_Button_Height"];
 	tutorial_button.button_type = TUTORIAL_OPEN;
 	button_vector.push_back(tutorial_button);
 
@@ -182,30 +206,30 @@ void PlayerUI::init()
 	shop_offset = g_windowWidth;
 
 	// Set the offset of the tutorial
-	tutorial_offset = 0;
+	tutorial_offset = GameUIDataMap["Tutorial_OffSet"];
 
 	// Icons in shop
-	icon_size = 20.f;
+	icon_size = GameUIDataMap["Shop_Icon_Size"];
 
 	// Set the size of the upgrade preview
-	upgrade_preview_size = 400.f;
+	upgrade_preview_size = GameUIDataMap["Upgrade_Preview_Size"];
 
 	// Timer for shop transition
-	shop_trans_timer = 0.f;
-	shop_trans_duration = 1.f;
+	shop_trans_timer = GameUIDataMap["Shop_Transition_Timer"];
+	shop_trans_duration = GameUIDataMap["Shop_Transition_Duration"];
 
 	// Timer for tutorial transition
-	tutorial_trans_timer = 0.f;
-	tutorial_trans_duration = 1.f;
+	tutorial_trans_timer = GameUIDataMap["Tutorial_Transition_Timer"];
+	tutorial_trans_duration = GameUIDataMap["Tutorial_Transition_Duration"];
 
 	// Timer for shuttle lost overlay
-	lost_overlay_timer = 0.f;
+	lost_overlay_timer = GameUIDataMap["Lost_Overlay_Timer"];
 
 	// Shop Indicator
-	shop_indicator_width = 70.f;
-	shop_indicator_height = 70.f;
-	shop_indicator_timer = 0.f;
-	shop_indicator_speed = 3.f;
+	shop_indicator_width = GameUIDataMap["Shop_Indicator_Width"];
+	shop_indicator_height = GameUIDataMap["Shop_Indicator_Height"];
+	shop_indicator_timer = GameUIDataMap["Shop_Indicator_Timer"];
+	shop_indicator_speed = GameUIDataMap["Shop_Indicator_Speed"];
 	clicked_on_shop = false;
 }
 
@@ -725,6 +749,10 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, WaveManager const& wave_manager)
 void PlayerUI::free()
 {
 	button_vector.clear();
+	if (next_state != GS_RESTART) {
+		GameUIData.clear();
+		GameUIDataMap.clear();
+	}
 }
 
 /******************************************************************************/

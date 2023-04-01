@@ -12,11 +12,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
  */
 /******************************************************************************/
 #pragma once
-#define MAX_MOV_SPEED_LVL		5
-#define MAX_CAPACITY_LVL		5
-#define MAX_SPACE_STATION_CNT	5
-#define MAX_BEAM_STRENGTH_LVL	5
-
 #include "Planet.h"
 
 enum PLAYER_STATES
