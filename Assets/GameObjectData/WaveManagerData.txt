@@ -7,7 +7,7 @@ Minimum_Shuttle_Spawn		4
 Shuttle_Increase_Amount		1
 Wave_Interval_Time		15
 Wave_Add_Planet			4
-Lose_Condition			1
+Lose_Condition			5
 Starting_Wave_Number		1
 Wave_Progress			0
 Planet_Count			0
