@@ -11,7 +11,7 @@
 
 			Aceson - File I/O and Deletion Of Projectile upon Off-Screen
 
-All content � 2023 DigiPen Institute of Technology Singapore. All rights reserved.
+All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reserved.
  */
 /******************************************************************************/
 #include <iostream>

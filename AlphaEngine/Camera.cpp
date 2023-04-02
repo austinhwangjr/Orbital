@@ -7,7 +7,7 @@
 \brief		This file contains the definition of functions for the camera 
 			system.
 
-All content � 2023 DigiPen Institute of Technology Singapore. All rights reserved.
+All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reserved.
  */
 /******************************************************************************/
 #include "Camera.h"

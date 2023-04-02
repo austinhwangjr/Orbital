@@ -43,7 +43,7 @@ static f32 timer5 = 0.0f;
 // ----------------------------------------------------------------------------
 // This function loads all necessary assets in Level1
 // It should be called once before the start of the level
-// It loads assets like textures, meshes and music files, etc�
+// It loads assets like textures, meshes and music files, etc(C)
 // ----------------------------------------------------------------------------
 void main_level::load()
 {

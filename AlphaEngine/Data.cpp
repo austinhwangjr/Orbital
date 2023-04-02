@@ -7,7 +7,7 @@
 \brief		This file contains the definitions of functions to read data from 
 			text file
 
-All content � 2023 DigiPen Institute of Technology Singapore. All rights reserved.
+All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reserved.
  */
  /******************************************************************************/
 

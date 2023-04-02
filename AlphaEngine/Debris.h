@@ -10,7 +10,7 @@
 
 			Austin - Added debris state and behaviour in each state
 
-All content � 2023 DigiPen Institute of Technology Singapore. All rights reserved.
+All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reserved.
  */
 /******************************************************************************/
 #pragma once

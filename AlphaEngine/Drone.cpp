@@ -10,7 +10,7 @@
 
 			Aceson - File I/O for Drone Data
 
-All content � 2023 DigiPen Institute of Technology Singapore. All rights reserved.
+All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reserved.
  */
 /******************************************************************************/
 #include "AEEngine.h"
