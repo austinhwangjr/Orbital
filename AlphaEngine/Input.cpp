@@ -68,7 +68,7 @@ bool Input::isButtonClicked(float center_x, float center_y, float width, float h
     return false;
 }
 
-bool Input::isMouseHover(float center_x, float center_y, float width, float height, float hoverWidth, float hoverHeight) {
+bool Input::isMouseHover(float center_x, float center_y, float width, float height) {
     // Get the current mouse position
     AEInputGetCursorPosition(&mouseX, &mouseY);
 

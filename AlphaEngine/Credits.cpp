@@ -121,7 +121,7 @@ void credits::update()
 
     for (int i = 0; i < buttonCount; ++i)
     {
-        hoverStates2[i] = Input::isMouseHover(buttons2[i].x, buttons2[i].y, buttons2[i].width, buttons2[i].height, hoverButtons2[i].width, hoverButtons2[i].height);
+        hoverStates2[i] = Input::isMouseHover(buttons2[i].x, buttons2[i].y, buttons2[i].width, buttons2[i].height);
 
         if (AEInputCheckTriggered(AEVK_LBUTTON) && hoverStates2[i])
         {

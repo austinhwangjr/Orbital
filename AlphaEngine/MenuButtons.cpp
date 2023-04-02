@@ -175,7 +175,7 @@ void Menu_Button::update()
         for (int i = 0; i < 6; ++i)
         {
             bool previousHoverState = hoverStates[i];
-            hoverStates[i] = Input::isMouseHover(buttons[i].x, buttons[i].y, buttons[i].width, buttons[i].height, hoverButtons[i].width, hoverButtons[i].height);
+            hoverStates[i] = Input::isMouseHover(buttons[i].x, buttons[i].y, buttons[i].width, buttons[i].height);
 
             if (!previousHoverState && hoverStates[i] && hoverSoundDelay >= hoverSoundCooldown)
             {
@@ -238,7 +238,7 @@ void Menu_Button::update()
         for (int i = 0; i < 6; ++i)
         {
             // Update hover state and square rotation
-            hoverStates[i] = Input::isMouseHover(buttons[i].x, buttons[i].y, buttons[i].width, buttons[i].height, hoverButtons[i].width, hoverButtons[i].height);
+            hoverStates[i] = Input::isMouseHover(buttons[i].x, buttons[i].y, buttons[i].width, buttons[i].height);
 
             if (hoverStates[i])
             {

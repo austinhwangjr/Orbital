@@ -25,7 +25,7 @@ public:
     static bool isButtonClicked(float center_x, float center_y, float width, float height);
 
     // Static function to check if the mouse is hovering over a button
-    static bool isMouseHover(float center_x, float center_y, float width, float height, float hoverWidth, float hoverHeight);
+    static bool isMouseHover(float center_x, float center_y, float width, float height);
 
     static int GetMouseWheelDelta();
 
