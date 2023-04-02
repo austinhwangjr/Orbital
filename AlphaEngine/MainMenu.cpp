@@ -320,6 +320,8 @@ void main_menu::init()
     MMplanet.size = MMPlanetDataMap["MainMenu_Planet_Size"];
     MMplanet.shuttle_timer = MMShuttleDataMap["Shuttle_Timer"];
     MMplanet.shuttle_time_to_spawn = static_cast<f32>(rand() % (SHUTTLE_SPAWN_TIME_MAX - SHUTTLE_SPAWN_TIME_MIN + 1) + SHUTTLE_SPAWN_TIME_MIN);
+
+    AEGfxSetCamPosition(g_camPos.x = 0.f, g_camPos.y = 0.f);
 }
 
 void main_menu::update()
