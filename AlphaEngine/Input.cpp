@@ -21,8 +21,7 @@ int mouseX = 0;
 int mouseY = 0;
 
 // Constructor
-Input::Input()
-{}
+Input::Input() {}
 
 // ----------------------------------------------------------------------------
 /*
@@ -52,11 +51,6 @@ bool Input::isButtonClicked(float center_x, float center_y, float width, float h
     float x_max = center_x + width / 2.0f;
     float y_min = center_y - height / 2.0f;
     float y_max = center_y + height / 2.0f;
-
-    // Debugging output (Uncomment when got input issue)
-    /*std::cout << "Mouse coordinates: (" << mouseX << ", " << mouseY << ")\n";
-    std::cout << "Normalized device coordinates: (" << screen_x << ", " << screen_y << ")\n";
-    std::cout << "Button bounds: (" << "Xmin: " << x_min << ", " << "Ymin: " << y_min << ") to (" << "Xmax: " << x_max << ", " << "Ymax: " << y_max << ")\n";*/
 
     // Check if the click coordinates are within the bounds of the button
     if (screen_x >= x_min && screen_x <= x_max && screen_y >= y_min && screen_y <= y_max)
@@ -104,4 +98,3 @@ int Input::GetMouseWheelDelta()
     }
     return 0;
 }
-

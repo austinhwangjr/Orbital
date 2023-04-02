@@ -26,7 +26,4 @@ public:
     static bool isMouseHover(float center_x, float center_y, float width, float height);
 
     static int GetMouseWheelDelta();
-
-    // Member function to handle input
-//void handle();
 };

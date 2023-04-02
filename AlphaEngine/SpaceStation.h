@@ -25,7 +25,9 @@ All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reser
 
 struct SpaceStation
 {
-	//--------------------Space Station--------------------
+	// ==============
+	// Space Station
+	// ==============
 	AEVec2			position;
 	f32				size;
 	int				current_capacity;
@@ -33,10 +35,11 @@ struct SpaceStation
 	Planets			current_planet;
 	f32				shortest_distance_spacestation;
 	bool			initial_spawn;
-
-	//--------------------Transform--------------------
 	AEMtx33			transform;
 
+	// ==========
+	// Functions
+	// ==========
 	void load();
 	void init();
 	void update(Player&, PlayerUI&);

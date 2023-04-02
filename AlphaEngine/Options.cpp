@@ -86,18 +86,17 @@ namespace Options
 
 void Options::load()
 {
-    o_RoundedRectangle_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/Options/o_RoundedRectangle_ACTIVE.png");
-    o_RoundedRectangle_NOT_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/Options/o_RoundedRectangle_NOT_ACTIVE.png");
+    o_RoundedRectangle_ACTIVE       = AEGfxTextureLoad("Assets/MainMenu/Options/o_RoundedRectangle_ACTIVE.png");
+    o_RoundedRectangle_NOT_ACTIVE   = AEGfxTextureLoad("Assets/MainMenu/Options/o_RoundedRectangle_NOT_ACTIVE.png");
 
-    o_MuteSliderThumb_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/Options/o_MuteSliderThumb_ACTIVE.png");
-    o_MuteSliderThumb_NOT_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/Options/o_MuteSliderThumb_NOT_ACTIVE.png");
+    o_MuteSliderThumb_ACTIVE        = AEGfxTextureLoad("Assets/MainMenu/Options/o_MuteSliderThumb_ACTIVE.png");
+    o_MuteSliderThumb_NOT_ACTIVE    = AEGfxTextureLoad("Assets/MainMenu/Options/o_MuteSliderThumb_NOT_ACTIVE.png");
 
-    o_VolumeSlider              = AEGfxTextureLoad("Assets/MainMenu/Options/o_Slider.png");
-    o_VolumeSliderThumb         = AEGfxTextureLoad("Assets/MainMenu/Options/o_SliderThumb.png");
+    o_VolumeSlider                  = AEGfxTextureLoad("Assets/MainMenu/Options/o_Slider.png");
+    o_VolumeSliderThumb             = AEGfxTextureLoad("Assets/MainMenu/Options/o_SliderThumb.png");
 
-    returnToMMTexture11 = AEGfxTextureLoad("Assets/MainMenu/Options/o_ExitButtonCredits.png");
+    returnToMMTexture11             = AEGfxTextureLoad("Assets/MainMenu/Options/o_ExitButtonCredits.png");
     AudioManager::LoadSound("Assets/BGM/one-last-time-141289.mp3", true);
-
 }
 
 void Options::init()
@@ -108,7 +107,6 @@ void Options::init()
     {
         AudioManager::PlayBGM("Assets/BGM/one-last-time-141289.mp3", 0.25f);
     }
-
 }
 
 void Options::update(float* options_volume, bool* options_muted)
@@ -119,7 +117,6 @@ void Options::update(float* options_volume, bool* options_muted)
     if (AEInputCheckTriggered(AEVK_LBUTTON))
     {
         // Check which button has been clicked
-
         if (Input::isButtonClicked(buttons11[0].x, buttons11[0].y, buttons11[0].width, buttons11[0].height))
         {
             AudioManager::PlayOnce("Assets/BGM/hyperspace_jump.mp3", 1.0f);
@@ -146,7 +143,6 @@ void Options::update(float* options_volume, bool* options_muted)
         muteSliderThumbX = *options_muted ? EaseOutExpo(muteButtonX, muteButtonX + muteButtonWidth * 0.5f, animationProgress)
             : EaseOutExpo(muteButtonX + muteButtonWidth * 0.5f, muteButtonX, animationProgress);
     }
-
 
     if (Input::isButtonClicked(muteButtonX, muteButtonY, muteButtonWidth, muteButtonHeight))
     {
@@ -201,7 +197,6 @@ void Options::draw()
 {
     if (timer3 >= 1.f)
     {
-
         Rendering::RenderSprite(returnToMMTexture11, returnToMMX11, returnToMMY11, buttonWidth11, buttonHeight11, optionsMesh);
 
         Rendering::RenderSprite(o_VolumeSlider, sliderX, sliderY, sliderWidth, sliderHeight, optionsMesh);
@@ -226,7 +221,6 @@ void Options::draw()
 void Options::free()
 {
     AEGfxMeshFree(optionsMesh);
-
 }
 
 void Options::unload()
@@ -241,7 +235,4 @@ void Options::unload()
     AEGfxTextureUnload(o_VolumeSliderThumb);
 
     AEGfxTextureUnload(returnToMMTexture11);
-
 }
-
-

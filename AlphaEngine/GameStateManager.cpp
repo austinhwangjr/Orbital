@@ -32,9 +32,7 @@ All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reser
 #include <iostream>
 #include "Transition.h"
 
-
 using FP = std::function<void()>;
-
 
 unsigned int current_state, previous_state, next_state;
 
@@ -125,8 +123,6 @@ void gsm::update()
 	case GS_RESTART:
 		break;
 	case GS_QUIT:
-
-		
 		break;
 	default:
 		break;

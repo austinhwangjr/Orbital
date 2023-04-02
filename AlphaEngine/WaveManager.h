@@ -15,7 +15,6 @@ All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reser
 #include "Player.h"
 #include "Planet.h"
 #include "Shuttle.h"
-//#include "SpaceStation.h"
 #include "Camera.h"
 #include "Global.h"
 
@@ -106,4 +105,3 @@ extern Camera camera;
 extern std::vector<Planets> planet_vector;
 extern std::vector<AEGfxTexture*> planet_textures;
 extern std::vector<Shuttles> shuttle_vector;
-//extern std::vector<SpaceStation> space_station_vector;

@@ -43,6 +43,4 @@ public:
     static void GameLevelSquareMesh(AEGfxVertexList*& pMesh);
 
     static void BackgroundMesh(AEGfxVertexList*& pMesh);
-
-    void RenderText(const char* text, float x, float y, int fontSize);
 };

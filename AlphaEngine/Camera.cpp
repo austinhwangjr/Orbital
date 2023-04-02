@@ -22,7 +22,6 @@ static float CAM_PLANET_SPEED;			// Camera speed for planet transition
 static float CAM_STATION_SPEED;			// Camera speed for station transition
 static float TRANSITION_TIME_MAX;		// Camera Transition time
 
-
 extern WaveManager wave_manager;
 extern std::vector<SpaceStation> space_station_vector;
 
@@ -30,6 +29,11 @@ extern std::vector<SpaceStation> space_station_vector;
 std::map<std::string, f32> 	CameraDataMap;
 std::vector<Data> 			CameraData;
 
+/******************************************************************************/
+/*!
+	Initialize Variables
+*/
+/******************************************************************************/
 void Camera::init(Player& current_player)
 {
 	ImportDataFromFile("Assets/GameObjectData/CameraData.txt", CameraData, CameraDataMap);
@@ -45,6 +49,11 @@ void Camera::init(Player& current_player)
 	position.y = current_player.position.y;
 }
 
+/******************************************************************************/
+/*!
+	Update Camera
+*/
+/******************************************************************************/
 void Camera::update(Player& current_player)
 {
 	delay_timer += (delay_timer < START_DELAY) ? g_dt : 0;
@@ -70,6 +79,11 @@ void Camera::update(Player& current_player)
 	}
 }
 
+/******************************************************************************/
+/*!
+	Set Camera to follow player
+*/
+/******************************************************************************/
 void Camera::follow_player(Player& current_player)
 {
 	f32 t{};
@@ -79,6 +93,11 @@ void Camera::follow_player(Player& current_player)
 	AEGfxSetCamPosition(position.x, position.y);
 }
 
+/******************************************************************************/
+/*!
+	Pan to planet
+*/
+/******************************************************************************/
 void Camera::planet_transition()
 {
 	transition_time += g_dt;
@@ -95,6 +114,11 @@ void Camera::planet_transition()
 	}
 }
 
+/******************************************************************************/
+/*!
+	Pan to space station
+*/
+/******************************************************************************/
 void Camera::station_transition()
 {
 	transition_time += g_dt;

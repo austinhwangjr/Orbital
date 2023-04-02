@@ -22,8 +22,8 @@ All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reser
 #include "Player.h"
 #include "WaveManager.h"
 
-#define DEBRIS_VALUE		10
-#define DEBRIS_SCORE		100
+#define DEBRIS_VALUE 10
+#define DEBRIS_SCORE 100
 
 enum BUTTON_TYPE 
 {
@@ -56,7 +56,9 @@ struct ShopOption
 
 struct PlayerUI
 {
-	//--------------------Player UI--------------------
+	// ==========
+	// Player UI
+	// ==========
 	bool		placing_drone;
 	bool		placing_station;
 	bool		shop_triggered;
@@ -73,48 +75,68 @@ struct PlayerUI
 	f32			tutorial_trans_duration;
 	AEMtx33		transform;
 
-	//--------------------Player HUD--------------------
+	// ===========
+	// Player HUD
+	// ===========
 	AEVec2		player_hud_position;
 	f32			player_hud_width, player_hud_height;
 	AEMtx33		player_hud_transform;
 
-	//--------------------Icons in shop--------------------
+	// ===========
+	// Shop Icons
+	// ===========
 	f32			icon_size;
 	AEMtx33		drone_icon_transform;
 	AEMtx33		space_station_icon_transform;
 
+	// ================
+	// Upgrade Preview
+	// ================
 	AEVec2		upgrade_preview_position;
 	f32			upgrade_preview_size;
 	AEMtx33		upgrade_preview_transform;
 
-	//--------------------Shop background--------------------
+	// ================
+	// Shop Background
+	// ================
 	AEVec2		shop_bg_position;
 	f32			shop_bg_width, shop_bg_height;
 	AEMtx33		shop_bg_transform;
 
-	//--------------------Tutorial background--------------------
+	// ====================
+	// Tutorial Background
+	// ====================
 	AEVec2		tutorial_bg_position;
 	f32			tutorial_bg_width, tutorial_bg_height;
 	AEMtx33		tutorial_bg_transform;
 
-	//--------------------Cost of Upgrades--------------------
+	// =================
+	// Cost of Upgrades
+	// =================
 	const int mov_speed_cost		= 100;
 	const int capacity_cost			= 200;
 	const int beam_strength_cost	= 150;
 	const int drone_cost			= 250;
 	const int space_station_cost	= 500;
 
-	//--------------------Shuttle Lost Overlay--------------------
+	// =====================
+	// Shuttle Lost Overlay
+	// =====================
 	AEMtx33		lost_overlay_transform;
 	f32			lost_overlay_timer;
 
-	//--------------------Shop Indicator--------------------
+	// ===============
+	// Shop Indicator
+	// ===============
 	AEMtx33		shop_indicator_transform;
 	f32			shop_indicator_width, shop_indicator_height;
 	f32			shop_indicator_timer;
 	f32			shop_indicator_speed;
 	bool		clicked_on_shop;
 
+	// ==========
+	// Functions
+	// ==========
 	void load();
 	void init();
 	void update(Player&, WaveManager const&);

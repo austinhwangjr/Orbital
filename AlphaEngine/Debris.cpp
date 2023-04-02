@@ -62,7 +62,6 @@ AEGfxTexture* debrisTex;
 //TEXTURE OF EXPLOSION
 AEGfxTexture* explosionTex;
 
-
 // IMPORT DATA VECTOR
 std::map<std::string, f32> 			DebrisDataMap;
 std::vector<Data> 					DebrisData;
@@ -75,7 +74,7 @@ extern std::map<std::string, f32> 	ShuttleDataMap;
 /******************************************************************************/
 void Debris::load()
 {
-	debrisTex = AEGfxTextureLoad("Assets/MainLevel/ml_Debris.png");
+	debrisTex 	 = AEGfxTextureLoad("Assets/MainLevel/ml_Debris.png");
 	explosionTex = AEGfxTextureLoad("Assets/MainLevel/ml_Explosion.png");
 	ImportDataFromFile("Assets/GameObjectData/DebrisData.txt", DebrisData, DebrisDataMap);
 }
@@ -161,7 +160,6 @@ void Debris::update()
 	// Collision Check between DEBRIS AND SHUTTLE
 	// ==========================================
 	for (size_t i{}; i < shuttle_vector.size(); i++) {
-		
 		for (int k = 0; k < debris_vector_all[shuttle_vector[i].planet_id].size(); ++k) {
 			if (shuttle_vector[i].active) {
 				if (AEVec2Distance(&shuttle_vector[i].position, &debris_vector_all[shuttle_vector[i].planet_id][k].position) <= ((SHUTTLE_HEIGHT -80) /2 + debris_vector_all[shuttle_vector[i].planet_id][k].size/2)) { // if collided
@@ -171,7 +169,6 @@ void Debris::update()
 					shuttle_vector[i].active = false;
 					debris_vector_all[shuttle_vector[i].planet_id][k].explosion.is_draw = 1;
 					debris_vector_all[shuttle_vector[i].planet_id][k].explosion.position = debris_vector_all[shuttle_vector[i].planet_id][k].position;
-					//spawn_debris(3, shuttle_vector[i].planet_id);
 					spawn_debris_shuttle(shuttle_vector[i].position, shuttle_vector[i].planet_id, 4);
 					break;
 				}
@@ -188,17 +185,12 @@ void Debris::update()
 	// =======================================
 	for (int j = 0; j < debris_vector_all.size(); j++) {
 		for (size_t i = 0; i < debris_vector_all[j].size(); i++) {
-			if (debris_vector_all[j][i].active)
-			{
+			if (debris_vector_all[j][i].active) {
 				AEMtx33Scale(&debris_vector_all[j][i].scale, debris_vector_all[j][i].size, debris_vector_all[j][i].size);
-
 				AEMtx33Rot(&debris_vector_all[j][i].rotate, AEDegToRad(debris_vector_all[j][i].angle));
-
 				AEMtx33Trans(&debris_vector_all[j][i].translate, debris_vector_all[j][i].position.x, debris_vector_all[j][i].position.y);
-
 				AEMtx33Concat(&debris_vector_all[j][i].transform, &debris_vector_all[j][i].rotate, &debris_vector_all[j][i].scale);
 				AEMtx33Concat(&debris_vector_all[j][i].transform, &debris_vector_all[j][i].translate, &debris_vector_all[j][i].transform);
-
 			}
 		}
 	}
@@ -212,7 +204,6 @@ void Debris::update()
 
 			Explosion& debris_explosion = debris_vector_all[j][i].explosion;
 			if (debris_explosion.is_draw == 1) {
-
 				if (debris_explosion.timer <= debris_explosion.total_time) {
 					debris_explosion.timer += g_dt;
 					AEMtx33Scale(&sc, debris_explosion.width, debris_explosion.height);
@@ -241,10 +232,8 @@ void Debris::draw(AEGfxVertexList* pMesh)
 	
 	for (int j = 0; j < debris_vector_all.size(); j++) {
 		for (size_t i = 0; i < debris_vector_all[j].size(); i++) {
-			if (debris_vector_all[j][i].active)
-			{
+			if (debris_vector_all[j][i].active) {
 				AEGfxSetTransform(debris_vector_all[j][i].transform.m);
-
 				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 			}
 		}
@@ -254,11 +243,10 @@ void Debris::draw(AEGfxVertexList* pMesh)
 	// DRAW EXPLOSION
 	// ===============
 	for (int j = 0; j < debris_vector_all.size(); j++) {
-		for (size_t i = 0; i < debris_vector_all[j].size(); i++) {
+		for (size_t i = 0; i < debris_vector_all[j].size(); i++) { 
 
 			Explosion& debris_explosion = debris_vector_all[j][i].explosion;
 			if (debris_explosion.is_draw) {
-
 				if (debris_explosion.timer <= debris_explosion.total_time) {
 					AEGfxSetTransparency(debris_explosion.total_time - debris_explosion.timer);
 
@@ -273,7 +261,6 @@ void Debris::draw(AEGfxVertexList* pMesh)
 		}
 	}
 	AEGfxSetTransparency(1.f);
-
 }
 
 /******************************************************************************/
@@ -310,9 +297,8 @@ void Debris::unload()
 // =======================================
 std::vector<Debris> Debris::create_debris(f32 planet_x, f32 planet_y, double new_size, int total_debris) {
 	std::vector<Debris> new_debris_vector;
-	for (int i = 0; i < total_debris; i++)
-	{
-		Debris new_debris;
+	for (int i = 0; i < total_debris; i++) {
+		Debris new_debris{};
 
 		new_debris.id = i + 1;
 		new_debris.angle = i * (2 * PI / static_cast<f32>(total_debris));
@@ -346,7 +332,7 @@ std::vector<Debris> Debris::create_debris(f32 planet_x, f32 planet_y, double new
 
 void spawn_debris_shuttle(AEVec2 position, int planet_id, int num_of_debris) {
 	for (int i = 0; i < num_of_debris; i++) {
-		Debris new_debris;
+		Debris new_debris{};
 		new_debris.size = static_cast<f32>(rand() % (MAX_DEBRIS_SIZE - MIN_DEBRIS_SIZE) + MIN_DEBRIS_SIZE);
 		new_debris.angle = static_cast<f32>(rand() % static_cast<int>(new_debris.size));
 		new_debris.position.x = position.x + (-(rand()  % (MAX_BUFFER - MIN_BUFFER)) + new_debris.size);
@@ -361,7 +347,6 @@ void spawn_debris_shuttle(AEVec2 position, int planet_id, int num_of_debris) {
 		new_debris.translate = { 0 };
 		new_debris.transform = { 0 };
 		new_debris.distance = static_cast<f32>(OUTERRIM_TO_DEBRIS + (rand() % MIN_BUFFER));
-
 
 		//EXPLOSION
 		new_debris.explosion.height = EXPLOSION_HEIGHT;

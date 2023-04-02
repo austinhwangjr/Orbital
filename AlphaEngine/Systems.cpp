@@ -51,4 +51,3 @@ void system_call::unload()
 	// Free the system
 	AESysExit();
 }
-

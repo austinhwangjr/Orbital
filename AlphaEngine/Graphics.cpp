@@ -11,15 +11,8 @@ All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reser
  */
 /******************************************************************************/
 #include "AEEngine.h"
-
 #include "Global.h"
-#include "GameStateManager.h"
 #include "Graphics.h"
-
-#include "SplashScreen.h"
-#include "MainMenu.h"
-#include "MenuButtons.h"
-#include "Input.h"
 
 extern s8 font1;
 
@@ -55,7 +48,7 @@ void Rendering::RenderSprite(AEGfxTexture* texture, float centerX, float centerY
     AEGfxSetBlendMode(AE_GFX_BM_BLEND);                     // Set the blend mode to alpha blending
     AEGfxSetTransparency(1.0f);                             // Set the transparency to fully opaque
 
-    AEGfxTextureSet(texture, 0, 0);                   // Set the texture to use for drawing
+    AEGfxTextureSet(texture, 0, 0);                         // Set the texture to use for drawing
     AEGfxSetTransform(transform.m);                         // Set the transformation matrix for the mesh
     AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);             // Draw the mesh
 }
@@ -104,13 +97,13 @@ void Rendering::MainMenuSquareMesh(AEGfxVertexList*& pMesh)
     // UV coordinates to read from loaded textures
     AEGfxTriAdd(
         -0.5f, -0.5f, 0xFFFF00FF, 0.0f, 1.0f,
-        0.5f, -0.5f, 0xFFFFFF00, 1.0f, 1.0f,
-        -0.5f, 0.5f, 0xFF00FFFF, 0.0f, 0.0f);
+         0.5f, -0.5f, 0xFFFFFF00, 1.0f, 1.0f,
+        -0.5f,  0.5f, 0xFF00FFFF, 0.0f, 0.0f);
 
     AEGfxTriAdd(
-        0.5f, -0.5f, 0xFFFFFFFF, 1.0f, 1.0f,
-        0.5f, 0.5f, 0xFFFFFFFF, 1.0f, 0.0f,
-        -0.5f, 0.5f, 0xFFFFFFFF, 0.0f, 0.0f);
+         0.5f, -0.5f, 0xFFFFFFFF, 1.0f, 1.0f,
+         0.5f,  0.5f, 0xFFFFFFFF, 1.0f, 0.0f,
+        -0.5f,  0.5f, 0xFFFFFFFF, 0.0f, 0.0f);
 
     // Saving the mesh (list of triangles) in pMesh 
     pMesh = AEGfxMeshEnd();
@@ -129,13 +122,13 @@ void Rendering::GameLevelSquareMesh(AEGfxVertexList*& pMesh)
     // UV coordinates to read from loaded textures
     AEGfxTriAdd(
         -0.5f, -0.5f, 0xFFFF00FF, 0.0f, 0.0f,
-        0.5f, -0.5f, 0xFFFFFF00, 1.0f, 0.0f,
-        -0.5f, 0.5f, 0xFF00FFFF, 0.0f, 1.0f);
+         0.5f, -0.5f, 0xFFFFFF00, 1.0f, 0.0f,
+        -0.5f,  0.5f, 0xFF00FFFF, 0.0f, 1.0f);
 
     AEGfxTriAdd(
-        0.5f, -0.5f, 0xFFFFFFFF, 1.0f, 0.0f,
-        0.5f, 0.5f, 0xFFFFFFFF, 1.0f, 1.0f,
-        -0.5f, 0.5f, 0xFFFFFFFF, 0.0f, 1.0f);
+         0.5f, -0.5f, 0xFFFFFFFF, 1.0f, 0.0f,
+         0.5f,  0.5f, 0xFFFFFFFF, 1.0f, 1.0f,
+        -0.5f,  0.5f, 0xFFFFFFFF, 0.0f, 1.0f);
 
     // Saving the mesh (list of triangles) in pMesh 
     pMesh = AEGfxMeshEnd();
@@ -154,13 +147,13 @@ void Rendering::BackgroundMesh(AEGfxVertexList*& pMesh)
     // UV coordinates to read from loaded textures
     AEGfxTriAdd(
         -1.0f, -1.0f, 0xFFFFFFFF, 0.0f, 1.0f,
-        1.0f, -1.0f, 0xFFFFFFFF, 1.0f, 1.0f,
-        -1.0f, 1.0f, 0xFFFFFFFF, 0.0f, 0.0f);
+         1.0f, -1.0f, 0xFFFFFFFF, 1.0f, 1.0f,
+        -1.0f,  1.0f, 0xFFFFFFFF, 0.0f, 0.0f);
 
     AEGfxTriAdd(
-        1.0f, -1.0f, 0xFFFFFFFF, 1.0f, 1.0f,
-        1.0f, 1.0f, 0xFFFFFFFF, 1.0f, 0.0f,
-        -1.0f, 1.0f, 0xFFFFFFFF, 0.0f, 0.0f);
+         1.0f, -1.0f, 0xFFFFFFFF, 1.0f, 1.0f,
+         1.0f, 1.0f,  0xFFFFFFFF, 1.0f, 0.0f,
+        -1.0f, 1.0f,  0xFFFFFFFF, 0.0f, 0.0f);
 
     // Saving the mesh (list of triangles) in pMesh 
     pMesh = AEGfxMeshEnd();
@@ -168,29 +161,3 @@ void Rendering::BackgroundMesh(AEGfxVertexList*& pMesh)
     // debugging logs
     AE_ASSERT_MESG(pMesh, "Error: Failed to create pMesh in createBackgroundMesh!");
 }
-
-
-
-//void Rendering::RenderText(const char* text, float x, float y, int fontSize)
-//{
-//    // Calculate the screen position of the text based on the button position and size
-//    float screenX = x + 200.f / 2 - (float)strlen(text) * (float)fontSize / 2;
-//    float screenY = y + 50.f / 2 - fontSize / 2;
-//
-//    // Calculate the scale factor for the text
-//    float scale = fontSize / 12.0f;
-//
-//    // Set the render mode to solid and set the font color
-//    AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-//    AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-//    AEGfxSetTransparency(1.0f);
-//    //AEGfxSetTransform(nullptr);
-//    AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-//
-//    // Render the text using AEGfxPrint
-//    AEGfxPrint(font1, (s8*)text, screenX / scale, screenY / scale, scale, 1.0f, 1.0f, 1.0f);
-//}
-
-
-
-

@@ -35,18 +35,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-	system_call::init(hInstance, nCmdShow);					// Initialize the system
-
-	// debugging log for mainmenu -yy
-	/*AEGfxReset();*/											// Reset the graphics engine before initializing the game state manager
+	system_call::init(hInstance, nCmdShow);		// Initialize the system
 
 	AudioManager::Init();
 
 	// Initialize the game state manager with the starting state
-	gsm::init(GS_SPLASHSCREEN);
-	//gsm::init(GS_MAINMENU);																					// Initialize the Game State Manager (GSM) with Level1 as the initial game state
-	//gsm::init(GS_MAINLEVEL);																					// Initialize the Game State Manager (GSM) with Level1 as the initial game state
-	//gsm::init(GS_PAUSEMENU);
+	gsm::init(GS_SPLASHSCREEN);					// Initialize the Game State Manager (GSM) with Level1 as the initial game state
 
 	transition::load();
 	transition::init();
@@ -101,8 +95,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			AESysFrameEnd();
 		}
 
-
-		// debugging log for mainmenu -yy
 		AEGfxReset();				// Reset graphics context
 
 		fpFree();               // Free current game state

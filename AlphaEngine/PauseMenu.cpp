@@ -42,7 +42,6 @@ void pause_menu::update()
 {
     pauseButtons.update();
     AudioManager::Update();
-
 }
 
 void pause_menu::draw(AEVec2 const& camPos)
@@ -57,7 +56,5 @@ void pause_menu::free()
 
 void pause_menu::unload()
 {
-
     pauseButtons.unload();
-
 }

@@ -39,39 +39,49 @@ extern AEGfxTexture* space_station_tex;
 extern AEGfxTexture* shop_icon_tex;
 
 // Variables for SpaceStation
-bool space_station_valid_placement = false;
-bool space_station_added;
+bool 	   space_station_valid_placement = false;
+bool 	   space_station_added;
 static int BUFFER_SAFE_DISTANCE;
 static int MAX_SPACE_STATION_CNT;
 
 // Vector of space stations, planets and debris
-std::vector<SpaceStation> space_station_vector;
-extern std::vector<Planets> planet_vector;
+std::vector<SpaceStation> 				space_station_vector;
+extern std::vector<Planets> 			planet_vector;
 extern std::vector<std::vector<Debris>> debris_vector_all;
 
 // Variables to print
-std::string capacity_spacestation;
-extern s8 font_id;
+std::string   capacity_spacestation;
+extern s8 	  font_id;
 extern Camera camera;
 
 // Vector of cooldown bar
 std::vector<Cooldown_Bar> cooldown_vector;
 
 //Coin Sprite
-AEGfxTexture* coin_tex;
-std::vector<Coin> coin_vector;
+AEGfxTexture*		coin_tex;
+std::vector<Coin> 	coin_vector;
 
 //IMPORT DATA VECTOR
 std::map<std::string, f32>				SpaceStationDataMap;
 std::vector<Data>						SpaceStationData;
 extern std::map < std::string, f32> 	GameUIDataMap;
 
+/******************************************************************************/
+/*!
+	Load Textures and Data
+*/
+/******************************************************************************/
 void SpaceStation::load()
 {
 	coin_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Coin.png");
 	ImportDataFromFile("Assets/GameObjectData/SpaceStationData.txt", SpaceStationData, SpaceStationDataMap);
 }
 
+/******************************************************************************/
+/*!
+	Initialize Variables
+*/
+/******************************************************************************/
 void SpaceStation::init()
 {
 	position.x				= SpaceStationDataMap["Position_X"];
@@ -90,6 +100,11 @@ void SpaceStation::init()
 	BUFFER_SAFE_DISTANCE	= static_cast<int>(SpaceStationDataMap["Buffer_safe_distance"]);
 }
 
+/******************************************************************************/
+/*!
+	Update Space Station
+*/
+/******************************************************************************/
 void SpaceStation::update(Player& current_player, PlayerUI& player_ui)
 {
 	int safe_position = 0;
@@ -121,7 +136,6 @@ void SpaceStation::update(Player& current_player, PlayerUI& player_ui)
 		// drone follow mouse pos
 		position.x = g_mouseWorld.x;
 		position.y = g_mouseWorld.y;
-
 
 		// =================================
 		// COLLISION CHECK BETWEEN STATION
@@ -387,11 +401,6 @@ void SpaceStation::draw(AEGfxVertexList* pMesh, PlayerUI player_ui)
 	// For UI
 	if (player_ui.placing_station) {
 
-		//Description for Placeables
-		/*std::string	station_text;
-		station_text = "Hover the mouse in space to place Space Station";
-		AEGfxPrint(font_id, const_cast<s8*>(station_text.c_str()), mouse_pos_world.x, mouse_pos_world.y + 100, 1.f, 1.f, 1.f, 1.f);*/
-
 		if (space_station_valid_placement)
 			AEGfxSetTintColor(0.f, 1.f, 0.f, 1.f);
 		else
@@ -416,6 +425,11 @@ void SpaceStation::draw(AEGfxVertexList* pMesh, PlayerUI player_ui)
 	}
 }
 
+/******************************************************************************/
+/*!
+	Clean Object Instances
+*/
+/******************************************************************************/
 void SpaceStation::free()
 {
 	space_station_vector.clear();
@@ -428,6 +442,11 @@ void SpaceStation::free()
 	}
 }
 
+/******************************************************************************/
+/*!
+	Free Textures
+*/
+/******************************************************************************/
 void SpaceStation::unload()
 {
 	AEGfxTextureUnload(coin_tex);
