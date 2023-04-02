@@ -47,6 +47,7 @@ void Player::load()
 	ImportDataFromFile("Assets/GameObjectData/PlayerData.txt", PlayerData, PlayerDataMap);
 
 	AudioManager::LoadSound("Assets/BGM/bgm_ml_tractorbeam.mp3", false);
+	AudioManager::LoadSound("Assets/BGM/bgm_ml_PlayerMovement.mp3", true);
 
 }
 
