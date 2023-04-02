@@ -966,10 +966,10 @@ void PlayerUI::tutorial(WaveManager const& wave_manager)
 		tutorial = "S           Decelerate";
 		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (g_windowWidth / 2.f), 0.6f, 1.f, 1.f, 1.f, 1.f);
 
-		tutorial = "A           Rotate Left";
+		tutorial = "A           Rotate Anti-Clockwise";
 		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (g_windowWidth / 2.f), 0.55f, 1.f, 1.f, 1.f, 1.f);
 
-		tutorial = "D           Rotate Right";
+		tutorial = "D           Rotate Clockwise";
 		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (g_windowWidth / 2.f), 0.5f, 1.f, 1.f, 1.f, 1.f);
 
 		tutorial = "LMB      Release Debris";
@@ -1030,10 +1030,10 @@ void PlayerUI::tutorial(WaveManager const& wave_manager)
 		tutorial = "W          Hold to Leave";
 		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (g_windowWidth / 2.f), 0.65f, 1.f, 1.f, 1.f, 1.f);
 
-		tutorial = "A           Rotate Left";
+		tutorial = "A           Rotate Anti-Clockwise";
 		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (g_windowWidth / 2.f), 0.6f, 1.f, 1.f, 1.f, 1.f);
 
-		tutorial = "D           Rotate Right";
+		tutorial = "D           Rotate Clockwise";
 		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (g_windowWidth / 2.f), 0.55f, 1.f, 1.f, 1.f, 1.f);
 
 		tutorial = "Space   Collect Debris";
@@ -1050,8 +1050,8 @@ void PlayerUI::tutorial(WaveManager const& wave_manager)
 
 			// Draw timer at center of planet using position calculated above
 			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
-				static_cast<f32>((tutorial_pos.x - (2.25 * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
-				static_cast<f32>((tutorial_pos.y + (3 * FONT_ID_SIZE)) / (g_windowHeight / 2.f)),
+				static_cast<f32>((tutorial_pos.x - (2.25f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
+				static_cast<f32>((tutorial_pos.y + (3.f * FONT_ID_SIZE)) / (g_windowHeight / 2.f)),
 				1.5f, 1.f, 1.f, 1.f);
 
 			tutorial = "Collect Debris!";
@@ -1059,8 +1059,8 @@ void PlayerUI::tutorial(WaveManager const& wave_manager)
 
 			// Draw timer at center of planet using position calculated above
 			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
-				static_cast<f32>((tutorial_pos.x - (3 * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
-				static_cast<f32>((tutorial_pos.y + (1.5 * FONT_ID_SIZE)) / (g_windowHeight / 2.f)),
+				static_cast<f32>((tutorial_pos.x - (3.f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
+				static_cast<f32>((tutorial_pos.y + (1.5f * FONT_ID_SIZE)) / (g_windowHeight / 2.f)),
 				1.2f, 1.f, 1.f, 1.f);
 		}
 	}
@@ -1073,7 +1073,7 @@ void PlayerUI::tutorial(WaveManager const& wave_manager)
 		// Draw timer at center of planet using position calculated above
 		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
 			(tutorial_pos.x - FONT_ID_SIZE) / (g_windowWidth / 2.f),
-			(tutorial_pos.y + (3 * FONT_ID_SIZE)) / (g_windowHeight / 2.f),
+			(tutorial_pos.y + (3.f * FONT_ID_SIZE)) / (g_windowHeight / 2.f),
 			1.5f, 1.f, 1.f, 1.f);
 
 		tutorial = "Unload Debris!";
@@ -1123,6 +1123,18 @@ void PlayerUI::tutorial(WaveManager const& wave_manager)
 				static_cast<f32>((tutorial_pos.y + FONT_ID_SIZE) / (g_windowHeight / 2.f)),
 				1.f, 1.f, 1.f, 1.f);
 
+			if (3 == wave_manager.wave_number)
+			{
+				tutorial = "Check out the other planet!";
+				AEVec2Sub(&tutorial_pos, &player.position, &camera.position);
+
+				// Draw timer at center of planet using position calculated above
+				AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+					static_cast<f32>((tutorial_pos.x - (FONT_ID_SIZE * 4.5f)) / (g_windowWidth / 2.f)),
+					static_cast<f32>((tutorial_pos.y + FONT_ID_SIZE * 2.f) / (g_windowHeight / 2.f)),
+					1.f, 1.f, 1.f, 1.f);
+			}
+
 			if (wave_manager.shuttle_destroyed)
 			{
 				tutorial = "Oh no! A shuttle has crashed!";
@@ -1131,7 +1143,7 @@ void PlayerUI::tutorial(WaveManager const& wave_manager)
 				// Draw timer at center of planet using position calculated above
 				AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
 					static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) / 4.5f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
-					static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 4.5) / (g_windowHeight / 2.f)),
+					static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 4.5f) / (g_windowHeight / 2.f)),
 					1.5f, 1.f, 1.f, 1.f);
 
 				tutorial = "Clear debris to help them leave!";
@@ -1140,7 +1152,7 @@ void PlayerUI::tutorial(WaveManager const& wave_manager)
 				// Draw timer at center of planet using position calculated above
 				AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
 					static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) / 4.5f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
-					static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 3.5) / (g_windowHeight / 2.f)),
+					static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 3.5f) / (g_windowHeight / 2.f)),
 					1.5f, 1.f, 1.f, 1.f);
 			}
 			else
@@ -1189,7 +1201,7 @@ void PlayerUI::tutorial(WaveManager const& wave_manager)
 			// Draw timer at center of planet using position calculated above
 			AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
 				static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) * 3.f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
-				static_cast <f32>((tutorial_pos.y - (FONT_ID_SIZE * 4)) / (g_windowHeight / 2.f)),
+				static_cast <f32>((tutorial_pos.y - (FONT_ID_SIZE * 4.f)) / (g_windowHeight / 2.f)),
 				2.5f, 1.f, 0.f, 0.f);
 		}
 
@@ -1210,12 +1222,12 @@ void PlayerUI::tutorial(WaveManager const& wave_manager)
 					static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 5.5) / (g_windowHeight / 2.f)),
 					1.5f, 1.f, 1.f, 1.f);
 
-				tutorial = "Clear Debris to form a path. [SPACEBAR]";
+				tutorial = "Collect debris to clear a path. [SPACEBAR]";
 
 				// Draw timer at center of planet using position calculated above
 				AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
 					static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) / 4.5f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
-					static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 4.25) / (g_windowHeight / 2.f)),
+					static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 4.25f) / (g_windowHeight / 2.f)),
 					1.5f, 1.f, 1.f, 1.f);
 
 				tutorial = "Do not let them crash!";
@@ -1223,7 +1235,7 @@ void PlayerUI::tutorial(WaveManager const& wave_manager)
 				// Draw timer at center of planet using position calculated above
 				AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
 					static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) / 4.5f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
-					static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 3) / (g_windowHeight / 2.f)),
+					static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 3.f) / (g_windowHeight / 2.f)),
 					1.5f, 1.f, 1.f, 1.f);
 
 
@@ -1233,7 +1245,7 @@ void PlayerUI::tutorial(WaveManager const& wave_manager)
 				// Draw timer at center of planet using position calculated above
 				AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
 					static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) / 4.5f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
-					static_cast <f32>((tutorial_pos.y - FONT_ID_SIZE * 8) / (g_windowHeight / 2.f)),
+					static_cast <f32>((tutorial_pos.y - FONT_ID_SIZE * 8.f) / (g_windowHeight / 2.f)),
 					1.5f, 1.f, 1.f, 1.f);
 
 				tutorial = "Countdown ->";
@@ -1242,7 +1254,7 @@ void PlayerUI::tutorial(WaveManager const& wave_manager)
 				// Draw timer at center of planet using position calculated above
 				AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
 					static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) / 1.7f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
-					static_cast <f32>((tutorial_pos.y - (FONT_ID_SIZE * 0.5)) / (g_windowHeight / 2.f)),
+					static_cast <f32>((tutorial_pos.y - (FONT_ID_SIZE * 0.5f)) / (g_windowHeight / 2.f)),
 					1.5f, 1.f, 1.f, 1.f);
 
 				tutorial = "Shuttles Left ->";
@@ -1251,7 +1263,7 @@ void PlayerUI::tutorial(WaveManager const& wave_manager)
 				// Draw timer at center of planet using position calculated above
 				AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
 					static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) / 2.f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
-					static_cast <f32>((tutorial_pos.y - FONT_ID_SIZE * 4) / (g_windowHeight / 2.f)),
+					static_cast <f32>((tutorial_pos.y - FONT_ID_SIZE * 4.f) / (g_windowHeight / 2.f)),
 					1.5f, 1.f, 1.f, 1.f);
 			}
 		}
@@ -1266,7 +1278,7 @@ void PlayerUI::tutorial(WaveManager const& wave_manager)
 		// Draw timer at center of planet using position calculated above
 		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
 			static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) / 4.5f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
-			static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 5.5) / (g_windowHeight / 2.f)),
+			static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 5.5f) / (g_windowHeight / 2.f)),
 			1.5f, 1.f, 1.f, 1.f);
 
 		tutorial = "4";
@@ -1275,7 +1287,7 @@ void PlayerUI::tutorial(WaveManager const& wave_manager)
 		// Draw timer at center of planet using position calculated above
 		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
 			static_cast <f32>((tutorial_pos.x + (static_cast<f32>(tutorial.length()) * 4.5f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
-			static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 5.25) / (g_windowHeight / 2.f)),
+			static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 5.25f) / (g_windowHeight / 2.f)),
 			2.5f, 1.f, 0.f, 0.f);
 
 		tutorial = "Notice the drone here? It auto collects debris for you!";
@@ -1284,7 +1296,7 @@ void PlayerUI::tutorial(WaveManager const& wave_manager)
 		// Draw timer at center of planet using position calculated above
 		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
 			static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) / 4.5f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
-			static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 4) / (g_windowHeight / 2.f)),
+			static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 4.f) / (g_windowHeight / 2.f)),
 			1.5f, 1.f, 1.f, 1.f);
 
 		tutorial = "You can purchase more from the shop!";
@@ -1294,6 +1306,24 @@ void PlayerUI::tutorial(WaveManager const& wave_manager)
 		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
 			static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) / 4.5f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
 			static_cast <f32>((tutorial_pos.y + FONT_ID_SIZE * 2.5f) / (g_windowHeight / 2.f)),
+			1.5f, 1.f, 1.f, 1.f);
+
+		tutorial = "Now survive as long as you can!";
+		AEVec2Sub(&tutorial_pos, &planet_vector[1].position, &camera.position);
+
+		// Draw timer at center of planet using position calculated above
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+			static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) / 4.5f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
+			static_cast <f32>((tutorial_pos.y) / (g_windowHeight / 2.f)),
+			1.5f, 1.f, 1.f, 1.f);
+
+		tutorial = "Good luck!";
+		AEVec2Sub(&tutorial_pos, &planet_vector[1].position, &camera.position);
+
+		// Draw timer at center of planet using position calculated above
+		AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()),
+			static_cast <f32>((tutorial_pos.x - (static_cast<f32>(tutorial.length()) / 4.5f * FONT_ID_SIZE)) / (g_windowWidth / 2.f)),
+			static_cast <f32>((tutorial_pos.y - FONT_ID_SIZE) / (g_windowHeight / 2.f)),
 			1.5f, 1.f, 1.f, 1.f);
 	}
 }
