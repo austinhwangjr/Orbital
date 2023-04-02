@@ -43,6 +43,8 @@ struct Player
 	bool			beam_active;
 	f32				timer;
 	f32 			max_timer;
+	intptr_t movementSoundID;
+
 
 	// ===============
 	// Upgrade Levels
