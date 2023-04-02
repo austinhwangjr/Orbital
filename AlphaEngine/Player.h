@@ -14,6 +14,8 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #pragma once
 #include "Planet.h"
 
+#define CREDIT_CHEAT	1000;
+
 enum PLAYER_STATES
 {
 	PLAYER_ORBIT = 0,

@@ -231,10 +231,10 @@ void main_level::draw()
 		player_proj.draw(pMeshML);
 		debris.draw(pMeshML);
 		shuttle.draw(pMeshML);
-		wave_manager.draw(pMeshML);
 
 		drone.draw(pMeshML, player_ui);
 		player_ui.draw(pMeshML, wave_manager);
+		wave_manager.draw(pMeshML);
 
 		if (is_paused)
 		{

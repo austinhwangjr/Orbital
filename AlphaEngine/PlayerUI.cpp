@@ -527,12 +527,18 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, WaveManager const& wave_manager)
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
 	// Print score
-	score = "Score: " + std::to_string(player.score);
-	AEGfxPrint(font_id, const_cast<s8*>(score.c_str()), -0.45f - (static_cast<f32>(score.length()) * static_cast<f32>(FONT_ID_SIZE) / g_windowWidth), 0.86f, 1.f, 1.f, 1.f, 1.f);
+	score = "Score";
+	AEGfxPrint(font_id, const_cast<s8*>(score.c_str()), -0.4f - (static_cast<f32>(score.length()) * static_cast<f32>(FONT_ID_SIZE) / g_windowWidth), 0.9f, 1.f, 1.f, 1.f, 1.f);
+
+	score = std::to_string(player.score);
+	AEGfxPrint(font_id, const_cast<s8*>(score.c_str()), -0.4f - (3.5f * static_cast<f32>(FONT_ID_SIZE) / g_windowWidth), 0.86f, 1.f, 1.f, 1.f, 1.f);
 
 	// Print credits
-	credits = "Credits: " + std::to_string(player.credits);
-	AEGfxPrint(font_id, const_cast<s8*>(credits.c_str()), 0.45f, 0.86f, 1.f, 1.f, 1.f, 1.f);
+	credits = "Credits";
+	AEGfxPrint(font_id, const_cast<s8*>(credits.c_str()), 0.4f, 0.9f, 1.f, 1.f, 1.f, 1.f);
+
+	score = std::to_string(player.credits);
+	AEGfxPrint(font_id, const_cast<s8*>(score.c_str()), 0.4f + (2.5f / static_cast<f32>(score.length()) * static_cast<f32>(FONT_ID_SIZE) / g_windowWidth), 0.86f, 1.f, 1.f, 1.f, 1.f);
 
 	// Print capacity
 	capacity = std::to_string(player.current_capacity) + " / " + std::to_string(player.max_capacity + player.capacity_level);
