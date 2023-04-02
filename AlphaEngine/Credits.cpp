@@ -117,7 +117,7 @@ void credits::init()
     }
 
     createMeshCredits.BackgroundMesh(pMeshCreditsBackground);
-    createMeshCredits.GameLevelSquareMesh(pMeshCredits);
+    createMeshCredits.MainMenuSquareMesh(pMeshCredits);
 
     AE_ASSERT_MESG(pMeshCreditsBackground, "Error: Failed to create pMeshCreditsBackground in Credits.cpp!");
     AE_ASSERT_MESG(pMeshCredits, "Error: Failed to create pMeshCredits in Credits.cpp!");

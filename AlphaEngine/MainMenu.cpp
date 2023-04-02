@@ -211,7 +211,7 @@ void main_menu::load()
 
     AudioManager::LoadSound("Assets/BGM/one-last-time-141289.mp3", true);
 
-    AudioManager::LoadSound("Assets/BGM/9mm-pistol-shot-6349.mp3", false);
+    AudioManager::LoadSound("Assets/BGM/bgm_ml_PlayerShootingDebris.mp3", false);
 }
 
 void main_menu::init()
@@ -707,7 +707,7 @@ void main_menu::update()
 
         MMProj_vector.push_back(MMplayer_proj);
 
-        AudioManager::PlayOnce("Assets/BGM/9mm-pistol-shot-6349.mp3", 0.05f);
+        AudioManager::PlayOnce("Assets/BGM/bgm_ml_PlayerShootingDebris.mp3", 0.05f);
         
     }
 

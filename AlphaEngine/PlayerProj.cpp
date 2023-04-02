@@ -49,7 +49,7 @@ void PlayerProj::load()
 	// Import data from file
 	ImportDataFromFile("Assets/GameObjectData/PlayerProjectileData.txt", ProjData, ProjDataMap);
 
-	AudioManager::LoadSound("Assets/BGM/9mm-pistol-shot-6349.mp3", false);
+	AudioManager::LoadSound("Assets/BGM/bgm_ml_PlayerShootingDebris.mp3", false);
 }
 
 /******************************************************************************/
@@ -96,7 +96,7 @@ void PlayerProj::update(Player& current_player, PlayerUI& player_ui)
 			current_player.current_capacity--;
 
 			// Play shooting sound effect
-			AudioManager::PlayOnce("Assets/BGM/9mm-pistol-shot-6349.mp3", 0.05f);
+			AudioManager::PlayOnce("Assets/BGM/bgm_ml_PlayerShootingDebris.mp3", 0.05f);
 		}
 	}
 
