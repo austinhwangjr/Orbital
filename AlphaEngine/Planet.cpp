@@ -350,7 +350,7 @@ void Planets::spawn(int shuttle_randomize_amount)
 	// SETTING POSITION / TRANSFORM FOR PLANETS---------------------------------------------------------------------------------------------------
 	new_planet.size = PLANET_SIZE * (new_planet.max_shuttle / 2.f);
 	AEMtx33Scale(&new_planet.scale, new_planet.size, new_planet.size);
-
+		
 	new_planet.direction = PI / 4;
 	AEMtx33Rot(&new_planet.rotate, direction);
 

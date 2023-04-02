@@ -1,6 +1,6 @@
 //--------------------Player--------------------
 /-----Variable------------------Value-----------
-position.x 			-200
+position.x 			-80
 position.y 			-200
 velocity.x 			0
 velocity.y 			0

@@ -13,13 +13,14 @@ All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reser
 #include "AEEngine.h"
 #include "Player.h"
 
-
+#define START_DELAY		2.f
 
 struct Camera
 {
 	AEVec2 position;
 	AEVec2 velocity;
 	f32 transition_time;
+	f32	delay_timer;
 
 	void init(Player& current_player);
 	void update(Player& current_player);

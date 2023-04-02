@@ -46,7 +46,9 @@ void Camera::init(Player& current_player)
 
 void Camera::update(Player& current_player)
 {
-	if (wave_manager.planet_adding)
+	delay_timer += (delay_timer < START_DELAY) ? g_dt : 0;
+
+	if (wave_manager.planet_adding && delay_timer >= START_DELAY)
 	{
 		planet_transition();
 	}
