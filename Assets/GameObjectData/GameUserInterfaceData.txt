@@ -14,8 +14,8 @@ Maximum_Beam_Strength_Level	5
 /-----Variable------------------Value---------
 Shop_Open_Button_Width		70
 Shop_Open_Button_Height		70
-Player_Upgrade_Button_Width	160
-Player_Upgrade_Button_Height	80
+Player_Upgrade_Button_Width	150
+Player_Upgrade_Button_Height	90
 Upgrade_Indicator_Width		32
 Upgrade_Indicator_Height	16
 Shop_Icon_Size			20

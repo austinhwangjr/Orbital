@@ -708,7 +708,7 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, WaveManager const& wave_manager)
 	// Shop buttons (text/icons)
 	std::string	shop_text;
 	shop_text = "PLAYER UPGRADES";
-	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), -0.61f + shop_offset / (g_windowWidth / 2.f), 0.7f, 3.f, 0.f, 0.f, 0.f);
+	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), -0.61f + shop_offset / (g_windowWidth / 2.f), 0.7f, 3.f, 1.f, 1.f, 1.f);
 
 	shop_text = "PLACEABLES";
 	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), 0.28f + shop_offset / (g_windowWidth / 2.f), 0.7f, 3.f, 0.f, 0.f, 0.f);
@@ -735,36 +735,30 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, WaveManager const& wave_manager)
 	shop_text = "Place in Space";
 	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), 0.3f + shop_offset / (g_windowWidth / 2.f), -0.65f, 1.f, 1.f, 1.f, 1.f);
 
-	// Print upgrade name onto buttons
-	for (int i = MOVEMENT_SPEED; i < TUTORIAL_OPEN; ++i) {
-		ShopOption& button = button_vector[i];
+	//// Print upgrade name onto buttons
+	//for (int i = MOVEMENT_SPEED; i < TUTORIAL_OPEN; ++i) {
+	//	ShopOption& button = button_vector[i];
 
-		if (button.button_type == MOVEMENT_SPEED)
-			shop_text = "Movement Speed";
+	//	/*if (button.button_type == MOVEMENT_SPEED)
+	//		shop_text = "Movement Speed";*/
 
-		else if (button.button_type == CAPACITY)
-			shop_text = "Increase Capacity";
+	//	else if (button.button_type == CAPACITY)
+	//		shop_text = "Increase Capacity";
 
-		else if (button.button_type == TRACTOR_BEAM_STRENGTH)
-			shop_text = "Beam Strength";
+	//	else if (button.button_type == TRACTOR_BEAM_STRENGTH)
+	//		shop_text = "Beam Strength";
 
-		else if (button.button_type == CREATE_DRONE)
-			shop_text = "Drone";
+	//	else if (button.button_type == CREATE_DRONE)
+	//		shop_text = "Drone";
 
-		else if (button.button_type == SPACE_STATION)
-			shop_text = "Space Station";
+	//	else if (button.button_type == SPACE_STATION)
+	//		shop_text = "Space Station";
 
-		AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()),
-			(button.position.x - button.width / 2.f - g_camPos.x) / (g_windowWidth / 2.f),
-			(button.position.y - button.height / 2.f - g_camPos.y) / (g_windowHeight / 2.f),
-			1.f, 1.f, 1.f, 1.f);
-	}
-
-	shop_text = "PLAYER UPGRADES";
-	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), -0.61f + shop_offset / (g_windowWidth / 2.f), 0.7f, 3.f, 0.f, 0.f, 0.f);
-
-	shop_text = "PLACEABLES";
-	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), 0.28f + shop_offset / (g_windowWidth / 2.f), 0.7f, 3.f, 0.f, 0.f, 0.f);
+	//	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()),
+	//		(button.position.x - button.width / 2.f - g_camPos.x) / (g_windowWidth / 2.f),
+	//		(button.position.y - button.height / 2.f - g_camPos.y) / (g_windowHeight / 2.f),
+	//		1.f, 1.f, 1.f, 1.f);
+	//}
 
 	// Placed into function to avoid cluttering draw
 	tutorial(wave_manager);

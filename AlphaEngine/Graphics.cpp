@@ -109,7 +109,7 @@ void Rendering::MainMenuSquareMesh(AEGfxVertexList*& pMesh)
     pMesh = AEGfxMeshEnd();
 
     // debugging logs
-    AE_ASSERT_MESG(pMesh, "Error: Failed to create pMesh in MainMenuSquareMesh !");
+    AE_ASSERT_MESG(pMesh, "Error: Failed to create pMesh in MainMenuSquareMesh!");
 }
 
 void Rendering::GameLevelSquareMesh(AEGfxVertexList*& pMesh)
@@ -134,7 +134,7 @@ void Rendering::GameLevelSquareMesh(AEGfxVertexList*& pMesh)
     pMesh = AEGfxMeshEnd();
 
     // debugging logs
-    AE_ASSERT_MESG(pMesh, "Error: Failed to create pMesh in GameLevelSquareMesh !");
+    AE_ASSERT_MESG(pMesh, "Error: Failed to create pMesh in GameLevelSquareMesh!");
 }
 
 void Rendering::BackgroundMesh(AEGfxVertexList*& pMesh)
