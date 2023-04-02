@@ -1,8 +1,8 @@
 /******************************************************************************/
 /*!
 \file		SpaceStation.h
-\author 	Hwang Jing Rui, Austin
-\co-author	Leong Wen Bin Aceson
+\author 	Hwang Jing Rui, Austin (50%)
+\co-author	Leong Wen Bin Aceson (50%)
 \par    	email: jingruiaustin.hwang\@digipen.edu
 				   leong.w\@digipen.edu
 \date   	March 28, 2023
@@ -10,11 +10,12 @@
 
 			Aceson	- Added cooldown bar and coin for space stations.
 					- Added check so that space stations cannot be too close to
-					  each other
+					  each other, to prevent overlap
+					- Added collision check between space station and Nearest planet
 
-Copyright (C) 2023 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents without the
-prior written consent of DigiPen Institute of Technology is prohibited.
+			Austin 	- Integrated UI and player elements 
+
+All content � 2023 DigiPen Institute of Technology Singapore. All rights reserved.
  */
 /******************************************************************************/
 #pragma once

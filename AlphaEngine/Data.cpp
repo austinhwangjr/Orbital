@@ -1,14 +1,13 @@
 /******************************************************************************/
 /*!
 \file		Data.cpp
-\author		Leong Wen Bin, Aceson
+\author		Leong Wen Bin, Aceson (100%)
 \par    	email: leong.w\@digipen.edu
 \date   	March 28, 2023
-\brief		This file contains the definition to import data from text file
+\brief		This file contains the definitions of functions to read data from 
+			text file
 
-Copyright (C) 2023 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents without the
-prior written consent of DigiPen Institute of Technology is prohibited.
+All content � 2023 DigiPen Institute of Technology Singapore. All rights reserved.
  */
  /******************************************************************************/
 

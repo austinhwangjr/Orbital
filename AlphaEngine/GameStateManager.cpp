@@ -1,8 +1,8 @@
 /******************************************************************************/
 /*!
 \file		GameStateManager.cpp
-\author 	Hwang Jing Rui, Austin
-\co-author	Ong You Yang
+\author 	Hwang Jing Rui, Austin (50%)
+\co-author	Ong You Yang (50%)
 \par    	email: jingruiaustin.hwang\@digipen.edu
 				   youyang.o\@digipen.edu
 \date   	March 28, 2023
@@ -13,9 +13,7 @@
 			You Yang	- Implemented the RestartLevel and changeGameState()
 						  functions
 
-Copyright (C) 2023 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents without the
-prior written consent of DigiPen Institute of Technology is prohibited.
+All content � 2023 DigiPen Institute of Technology Singapore. All rights reserved.
  */
 /******************************************************************************/
 #include "pch.h"

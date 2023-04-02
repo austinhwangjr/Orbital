@@ -1,14 +1,16 @@
 /******************************************************************************/
 /*!
 \file		Drone.h
-\author 	Hwang Jing Rui, Austin
+\author 	Hwang Jing Rui, Austin (95%)
+\co_author	Leong Wen Bin, Aceson	(5%)
 \par    	email: jingruiaustin.hwang\@digipen.edu
+				   leong.w\@digipen.edu
 \date   	March 28, 2023
-\brief		This file contains the declaration of functions for the Drone.
+\brief		This file contains the declarations of functions for the Drone.
 
-Copyright (C) 2023 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents without the
-prior written consent of DigiPen Institute of Technology is prohibited.
+			Aceson - File I/O for Drone Data
+
+All content � 2023 DigiPen Institute of Technology Singapore. All rights reserved.
  */
 /******************************************************************************/
 #pragma once
