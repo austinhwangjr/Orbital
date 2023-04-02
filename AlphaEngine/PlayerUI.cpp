@@ -519,9 +519,12 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, WaveManager const& wave_manager)
 	AEGfxSetTintColor(1.f, 1.f, 1.f, 1.f);
 
 	// Shop Indicator
-	AEGfxTextureSet(shop_indicator_tex, 0, 0);
-	AEGfxSetTransform(shop_indicator_transform.m);
-	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	if (!clicked_on_shop && wave_manager.wave_completed)
+	{
+		AEGfxTextureSet(shop_indicator_tex, 0, 0);
+		AEGfxSetTransform(shop_indicator_transform.m);
+		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	}
 
 	// Player HUD
 	AEGfxTextureSet(player_hud_tex, 0, 0);

@@ -13,7 +13,7 @@ All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reser
 #include "AEEngine.h"
 #include "Player.h"
 
-#define START_DELAY		2.f
+#define START_DELAY	2.f
 
 struct Camera
 {
