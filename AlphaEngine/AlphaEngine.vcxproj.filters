@@ -88,7 +88,9 @@
     <ClCompile Include="Data.cpp">
       <Filter>Source\Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="Transition.cpp" />
+    <ClCompile Include="Transition.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -181,9 +183,15 @@
     <ClInclude Include="Data.h">
       <Filter>Header\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="GameStateList.h" />
-    <ClInclude Include="gch.h" />
-    <ClInclude Include="Transition.h" />
+    <ClInclude Include="GameStateList.h">
+      <Filter>Header\StateManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Transition.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="gch.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header">
