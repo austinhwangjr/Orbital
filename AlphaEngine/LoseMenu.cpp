@@ -62,7 +62,7 @@ void lose_menu::load()
 
 void lose_menu::init()
 {
-	renderLoseMenu.SquareMesh(pMeshLoseMenu);
+	renderLoseMenu.MainMenuSquareMesh(pMeshLoseMenu);
     AudioManager::PlayOnce("Assets/BGM/bgm_ml_losemenu.wav", 0.5f);
 
 }

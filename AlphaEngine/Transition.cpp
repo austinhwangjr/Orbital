@@ -37,7 +37,7 @@ void transition::load()
 
 void transition::init()
 {
-    transition_createMesh.SquareMesh(transition_mesh);
+    transition_createMesh.MainMenuSquareMesh(transition_mesh);
     transition_timer = 0.0f;
     transition_alpha = 0.0f;
     isTransitionActive = false;

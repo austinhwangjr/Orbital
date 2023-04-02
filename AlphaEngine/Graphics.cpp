@@ -94,7 +94,7 @@ void Rendering::RenderFadedBackground(AEGfxTexture* texture, float centerX, floa
 }
 
 
-void Rendering::SquareMesh(AEGfxVertexList*& pMesh)
+void Rendering::MainMenuSquareMesh(AEGfxVertexList*& pMesh)
 {
     // Informing the library that we're about to start adding triangles 
     AEGfxMeshStart();
@@ -116,10 +116,10 @@ void Rendering::SquareMesh(AEGfxVertexList*& pMesh)
     pMesh = AEGfxMeshEnd();
 
     // debugging logs
-    AE_ASSERT_MESG(pMesh, "Error: Failed to create pMesh in createSquareMesh!");
+    AE_ASSERT_MESG(pMesh, "Error: Failed to create pMesh in MainMenuSquareMesh !");
 }
 
-void Rendering::IGSquareMesh(AEGfxVertexList*& pMesh)
+void Rendering::GameLevelSquareMesh(AEGfxVertexList*& pMesh)
 {
     // Informing the library that we're about to start adding triangles 
     AEGfxMeshStart();
@@ -141,7 +141,7 @@ void Rendering::IGSquareMesh(AEGfxVertexList*& pMesh)
     pMesh = AEGfxMeshEnd();
 
     // debugging logs
-    AE_ASSERT_MESG(pMesh, "Error: Failed to create pMesh in createSquareMesh!");
+    AE_ASSERT_MESG(pMesh, "Error: Failed to create pMesh in GameLevelSquareMesh !");
 }
 
 void Rendering::BackgroundMesh(AEGfxVertexList*& pMesh)

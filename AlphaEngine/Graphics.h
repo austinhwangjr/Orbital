@@ -38,9 +38,9 @@ public:
     static void RenderFadedBackground(AEGfxTexture* texture, float centerX, float centerY, float width, float height, AEGfxVertexList* pMesh, float alpha);
 
 
-    static void SquareMesh(AEGfxVertexList*& pMesh);
+    static void MainMenuSquareMesh(AEGfxVertexList*& pMesh);
 
-    static void IGSquareMesh(AEGfxVertexList*& pMesh);
+    static void GameLevelSquareMesh(AEGfxVertexList*& pMesh);
 
     static void BackgroundMesh(AEGfxVertexList*& pMesh);
 

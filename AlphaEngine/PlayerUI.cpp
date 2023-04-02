@@ -984,7 +984,7 @@ void PlayerUI::tutorial(WaveManager const& wave_manager)
 	// Tutorial text---------------------------------------------------------------------------------------------------------------------------------------------------
 	AEVec2 tutorial_pos;
 	std::string tutorial;
-	tutorial = "Controls";
+	tutorial = "How To Play";
 	AEGfxPrint(font_id, const_cast<s8*>(tutorial.c_str()), -0.98f + tutorial_offset / (g_windowWidth / 2.f), 0.75f, 1.5f, 1.f, 1.f, 1.f);
 
 	if (PLAYER_FLY == player.state)

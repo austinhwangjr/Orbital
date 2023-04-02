@@ -31,7 +31,7 @@ void pause_menu::load()
 
 void pause_menu::init()
 {
-    createMeshPauseScreen.SquareMesh(pMeshP);
+    createMeshPauseScreen.MainMenuSquareMesh(pMeshP);
 
     pauseButtons.init();
 

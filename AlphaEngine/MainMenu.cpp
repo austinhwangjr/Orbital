@@ -229,8 +229,8 @@ void main_menu::init()
     createMesh.BackgroundMesh(pMeshMMBackground);
 
     // Create a square mesh for the buttons
-    createMesh.SquareMesh(pMeshMM);
-    createMesh.IGSquareMesh(pMeshObj);
+    createMesh.MainMenuSquareMesh(pMeshMM);
+    createMesh.GameLevelSquareMesh(pMeshObj);
     menuButtons.init();
 
     // debugging logs
