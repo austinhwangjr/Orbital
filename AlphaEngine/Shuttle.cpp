@@ -201,6 +201,6 @@ void Shuttles::spawn(int const& current_planet_id, f32 const& rand_angle)
 	shuttle_vector.push_back(new_shuttle);
 
 	size_t shuttleIndex = shuttle_vector.size() - 1;
-	int soundID = AudioManager::PlayOnce("Assets/BGM/bgm_ml_blastoff.mp3", 0.5f);
+	int soundID = static_cast<int>(AudioManager::PlayOnce("Assets/BGM/bgm_ml_blastoff.mp3", 0.5f));
 	shuttleSoundIDs[shuttleIndex] = soundID;
 }
