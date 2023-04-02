@@ -40,6 +40,7 @@ void Camera::init(Player& current_player)
 
 	AEVec2Zero(&velocity);
 	transition_time = 0.f;
+	delay_timer = 0.f;
 	position.x = current_player.position.x;
 	position.y = current_player.position.y;
 }
