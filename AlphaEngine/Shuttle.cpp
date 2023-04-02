@@ -42,7 +42,6 @@ void Shuttles::load()
 	shuttle_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Shuttle.png");
 	ImportDataFromFile("Assets/GameObjectData/ShuttleData.txt", ShuttleData, ShuttleDataMap);
 	AudioManager::LoadSound("Assets/BGM/bgm_ml_blastoff.mp3", false);
-
 }
 
 /******************************************************************************/
@@ -105,11 +104,8 @@ void Shuttles::update(Player& current_player)
 				shuttleSoundIDs.erase(i);
 			}
 			shuttle_vector[i].lifespan -= g_dt;
-
 		}
 	}
-
-
 }
 
 /******************************************************************************/

@@ -37,8 +37,6 @@ float		backgroundWidth;
 float		backgroundHeight;
 int			player_score;
 
-
-
 // IMPORT DATA VECTOR
 std::map<std::string, f32> 	GlobalDataMap;
 std::vector<Data> 			GlobalData;
@@ -78,9 +76,6 @@ void Global_UpdateGlobals()
 	// Update global frame time for each loop
 	g_dt = static_cast<f32>(AEFrameRateControllerGetFrameTime());
 
-	// Get camera position
-	//AEGfxGetCamPosition(&g_camPos.x, &g_camPos.y);
-
 	// Get mouse coordinates (screen)
 	AEInputGetCursorPosition(&g_mouseScreen_x, &g_mouseScreen_y);
 
@@ -92,11 +87,9 @@ void Global_UpdateGlobals()
 // Updates the game window size based on the current window size
 void Global_UpdateWindowSize()
 {
-	GetWindowRect(AESysGetWindowHandle(), &g_WindowRect);						// Get size of the game window display
-	//g_windowWidth	= static_cast<f32>(g_WindowRect.right - g_WindowRect.left);					// Calculate window width
-	g_windowWidth	= static_cast<f32>(AEGetWindowWidth());					// Calculate window width
-	//g_windowHeight	= static_cast<f32>(g_WindowRect.bottom - g_WindowRect.top);					// Calculate window height
-	g_windowHeight	= static_cast<f32>(AEGetWindowHeight());					// Calculate window height
+	GetWindowRect(AESysGetWindowHandle(), &g_WindowRect);			// Get size of the game window display
+	g_windowWidth	= static_cast<f32>(AEGetWindowWidth());			// Calculate window width
+	g_windowHeight	= static_cast<f32>(AEGetWindowHeight());		// Calculate window height
 
 	g_screenLeft	= static_cast<float>(g_windowWidth / -2.0f);
 	g_screenRight	= static_cast<float>(g_windowWidth / 2.0f);
@@ -115,8 +108,7 @@ void Global_ToggleScreen()
  */
 void Global_ToggleWindowed()
 {
-	AESysToggleFullScreen(!g_isFullScreen);  // Toggle full-screen mode
-	if (g_isFullScreen) {}
-	Global_InitWindowSize(!g_isFullScreen);  // Reinitialize game window size
-	Global_UpdateWindowSize();  // Update game window size
+	AESysToggleFullScreen(!g_isFullScreen); // Toggle full-screen mode
+	Global_InitWindowSize(!g_isFullScreen); // Reinitialize game window size
+	Global_UpdateWindowSize();  			// Update game window size
 }

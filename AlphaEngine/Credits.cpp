@@ -85,19 +85,29 @@ credits::HoverButton2 hoverButtons2[] = {
     {hoverButtonWidth2, hoverButtonHeight2}
 };
 
+/******************************************************************************/
+/*!
+	Load Textures and Data
+*/
+/******************************************************************************/
 void credits::load()
 {
-    texCreditsBackground = AEGfxTextureLoad("Assets/MainMenu/Credits/c_credits1.png");
-    texCreditsBackground2 = AEGfxTextureLoad("Assets/MainMenu/Credits/c_credits2.png");
-    texReturnToMMfromCredits = AEGfxTextureLoad("Assets/MainMenu/Credits/home_icon.png");
-    texReturnToMMfromCredits2 = AEGfxTextureLoad("Assets/MainMenu/Credits/home_icon2.png");
+    texCreditsBackground        = AEGfxTextureLoad("Assets/MainMenu/Credits/c_credits1.png");
+    texCreditsBackground2       = AEGfxTextureLoad("Assets/MainMenu/Credits/c_credits2.png");
+    texReturnToMMfromCredits    = AEGfxTextureLoad("Assets/MainMenu/Credits/home_icon.png");
+    texReturnToMMfromCredits2   = AEGfxTextureLoad("Assets/MainMenu/Credits/home_icon2.png");
 
-    texSlider = AEGfxTextureLoad("Assets/MainMenu/Credits/c_Slider.png");
-    texSliderThumb = AEGfxTextureLoad("Assets/MainMenu/Credits/c_SliderThumb.png");
+    texSlider                   = AEGfxTextureLoad("Assets/MainMenu/Credits/c_Slider.png");
+    texSliderThumb              = AEGfxTextureLoad("Assets/MainMenu/Credits/c_SliderThumb.png");
 
     AudioManager::LoadSound("Assets/BGM/hyperspace_jump.mp3", false);
 }
 
+/******************************************************************************/
+/*!
+	Initialize Variables
+*/
+/******************************************************************************/
 void credits::init()
 {
     for (int i = 0; i < buttonCount; ++i)
@@ -113,6 +123,10 @@ void credits::init()
     AE_ASSERT_MESG(pMeshCredits, "Error: Failed to create pMeshCredits in Credits.cpp!");
 }
 
+/******************************************************************************/
+/*!
+	Update Credits screen
+/******************************************************************************/
 void credits::update()
 {
     timer2 += g_dt;
@@ -206,6 +220,11 @@ void credits::update()
     }
 }
 
+/******************************************************************************/
+/*!
+	Draw Credits screen
+*/
+/******************************************************************************/
 void credits::draw()
 {
     if (timer2 >= 1.f)
@@ -233,6 +252,11 @@ void credits::draw()
     }
 }
 
+/******************************************************************************/
+/*!
+	Clean Object Instances
+*/
+/******************************************************************************/
 void credits::free()
 {
     AEGfxMeshFree(pMeshCreditsBackground);
@@ -240,6 +264,11 @@ void credits::free()
 
 }
 
+/******************************************************************************/
+/*!
+	Free Textures
+*/
+/******************************************************************************/
 void credits::unload()
 {
     AEGfxTextureUnload(texCreditsBackground);

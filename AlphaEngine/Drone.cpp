@@ -13,18 +13,18 @@
 All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reserved.
  */
 /******************************************************************************/
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
 #include "AEEngine.h"
 #include "Drone.h"
 #include "Planet.h"
-#include <vector>
-#include <string>
 #include "Data.h"
-#include <iostream>
-#include <fstream>
 #include "GameStateList.h"
 
 // Textures
-AEGfxTexture* drone_tex;
+AEGfxTexture* 		 drone_tex;
 extern AEGfxTexture* tractor_beam_tex;
 extern AEGfxTexture* shop_icon_tex;
 
@@ -34,18 +34,16 @@ bool drone_added;
 static int DRONES_MAX;
 
 // Vectors of drones, planets and debris
-std::vector<std::vector<Drone>> drone_vector_all;
-extern std::vector<Planets> planet_vector;
+std::vector<std::vector<Drone>> 		drone_vector_all;
+extern std::vector<Planets> 			planet_vector;
 extern std::vector<std::vector<Debris>> debris_vector_all;
 
-extern s8 font_id;
-
 //IMPORT DATA VECTOR
-std::map<std::string, f32> DroneDataMap;
-std::vector<Data> DroneData;
+std::map<std::string, f32>				DroneDataMap;
+std::vector<Data> 		   				DroneData;
 
 //PLANET DATA MAP
-extern std::map<std::string, f32> 	PlanetDataMap;
+extern std::map<std::string, f32> 		PlanetDataMap;
 
 /******************************************************************************/
 /*!
@@ -56,7 +54,6 @@ void Drone::load()
 {
 	drone_tex = AEGfxTextureLoad("Assets/MainLevel/ml_Drone.png");
 	ImportDataFromFile("Assets/GameObjectData/DroneData.txt", DroneData, DroneDataMap);
-
 }
 
 /******************************************************************************/

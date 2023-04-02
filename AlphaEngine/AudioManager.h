@@ -37,6 +37,4 @@ namespace AudioManager
     static bool isBGMPlaying;
 
     void StopBGMIfPlaying();
-
 }
-

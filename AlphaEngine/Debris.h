@@ -21,9 +21,9 @@ struct Explosion {
 	AEMtx33 transform;
 	f32		width;
 	f32		height;
-	f32		timer = 0;
+	f32		timer 	   = 0;
 	f32		total_time = 1;
-	int		is_draw = 0;
+	int		is_draw	   = 0;
 };
 
 enum MoveState {
@@ -49,7 +49,7 @@ struct Debris
 	double speed;
 	double is_collide;
 	double is_collect;
-	double texture; // maybe 3-5 textures
+	double texture;
 	bool active;
 	MoveState state;
 	bool to_erase = false;

@@ -29,5 +29,4 @@ enum GS_STATES
 
 	// Global
 	GS_QUIT
-
 };

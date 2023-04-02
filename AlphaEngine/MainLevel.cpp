@@ -33,12 +33,8 @@ Camera			camera{};
 WaveManager		wave_manager{};
 pause_menu		pause{};
 
-//PauseMenu pause_menu;
-//PauseMenuButtons pause_menu_buttons;
-
 bool is_paused = false;
 static f32 timer5 = 0.0f;
-
 
 // ----------------------------------------------------------------------------
 // This function loads all necessary assets in Level1
@@ -64,7 +60,6 @@ void main_level::load()
 	
 	AudioManager::LoadSound("Assets/BGM/one-last-time-141289.mp3", true);
     AudioManager::LoadSound("Assets/BGM/bgm_ml_pausescreen.wav", false);
-
 }
 
 // ----------------------------------------------------------------------------
@@ -96,7 +91,6 @@ void main_level::init()
 	shuttle.init();
 	debris.init();
 
-
 	AE_ASSERT_MESG(pMeshML, "Error: Failed to create pMeshML in MainLevel.cpp!");
 
 	std::cout << std::endl;
@@ -105,7 +99,6 @@ void main_level::init()
 	wave_manager.init();
 
 	//AudioManager::PlayBGM("Assets/BGM/one-last-time-141289.mp3", 0.5f);
-
 }
 
 // ----------------------------------------------------------------------------
@@ -113,7 +106,6 @@ void main_level::init()
 // It should be called once in the game loop after updating the input status
 // It updates game logic/behaviour
 // ----------------------------------------------------------------------------
-
 void main_level::update()
 {
 	timer5 += (timer5 < 1.5f) ? g_dt : 0;
@@ -156,11 +148,6 @@ void main_level::update()
 			pause.update();
 		}
 
-		// Testing
-		//if (AEInputCheckTriggered(AEVK_R))
-		//	next_state = GS_RESTART;
-		//
-
 		if (AEInputCheckTriggered(AEVK_F11))
 		{
 			// If the window close button has been clicked, set the game state to quit
@@ -171,11 +158,7 @@ void main_level::update()
 		if (AEInputCheckTriggered(AEVK_T))
 			next_state = GS_QUIT;
 
-		//// check if forcing the application to quit
-		//if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
-		//{
-		//	next_state = GS_MAINMENU;
-		//}
+
 		AudioManager::Update();
 	}
 }

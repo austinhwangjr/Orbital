@@ -20,7 +20,6 @@ bool isBGMPlaying = false;
 
 namespace AudioManager
 {
-
     // The FMOD system and error result
     static FMOD::System* _system;
     static FMOD_RESULT _result;
@@ -60,8 +59,6 @@ namespace AudioManager
         isBGMPlaying = false;
 
     }
-
-
 
     // Loads a sound file into memory and stores it in a map
     void LoadSound(const std::string& path, bool loop)
@@ -250,5 +247,4 @@ namespace AudioManager
     {
         AE_ASSERT(result == FMOD_OK && FMOD_ErrorString(result));
     }
-
 }

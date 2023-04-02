@@ -51,7 +51,11 @@ Button1 buttons1[] =
     {exitMainMenuX, exitMainMenuY, pauseMButtonWidth, pauseMButtonHeight},  // Credits button
 };
 
-
+/******************************************************************************/
+/*!
+	Load Textures and Data
+*/
+/******************************************************************************/
 void PauseMenuButtons::load(const char* resumeButtonFilename,
                             const char* restartButtonFilename,
                             const char* exitMainMenuFilename,
@@ -63,11 +67,21 @@ void PauseMenuButtons::load(const char* resumeButtonFilename,
     fadeTex = AEGfxTextureLoad(fadeMenuFilename);
 }
 
+/******************************************************************************/
+/*!
+	Initialize Variables
+*/
+/******************************************************************************/
 void PauseMenuButtons::init()
 {
     //empty
 }
 
+/******************************************************************************/
+/*!
+	Update Pause Menu Buttons
+*/
+/******************************************************************************/
 void PauseMenuButtons::update()
 {
     if (AEInputCheckTriggered(AEVK_LBUTTON))
@@ -94,17 +108,14 @@ void PauseMenuButtons::update()
                 is_paused = false;
                 break;
         }
-
-        // debugging yy
-        std::cout << "Clicked button: " << clickedButton << std::endl;
-        std::cout << "Next game state: " << next_state << std::endl;
-        std::cout << "GameState changed to: " << current_state << std::endl;
-
-        //gsm::changeGameState(next_state); // add this line to change the game state
-
     }
 }
 
+/******************************************************************************/
+/*!
+	Draw Pause Menu Buttons
+*/
+/******************************************************************************/
 void PauseMenuButtons::draw(AEGfxVertexList* pMeshP, const AEVec2& camPos)
 {
     // Calculate the dimensions of the screen
@@ -130,16 +141,25 @@ void PauseMenuButtons::draw(AEGfxVertexList* pMeshP, const AEVec2& camPos)
 }
 
 
+/******************************************************************************/
+/*!
+	Clean Object Instances
+*/
+/******************************************************************************/
 void PauseMenuButtons::free()
 {
 
 }
 
+/******************************************************************************/
+/*!
+	Free Textures
+*/
+/******************************************************************************/
 void PauseMenuButtons::unload()
 {
     AEGfxTextureUnload(resumeTexture);
     AEGfxTextureUnload(restartTexture);
     AEGfxTextureUnload(exitMainMenuTexture);
     AEGfxTextureUnload(fadeTex);
-
 }

@@ -34,4 +34,3 @@ namespace main_menu
 
 extern f32 MMg_dt;
 extern f32 MMtotal_time;
-

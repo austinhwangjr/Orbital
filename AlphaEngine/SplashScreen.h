@@ -22,4 +22,3 @@ namespace SplashScreen
     void free();
     void unload();
 }
-

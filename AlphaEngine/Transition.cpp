@@ -30,11 +30,21 @@ namespace transition
     float pause_duration;
 }
 
+/******************************************************************************/
+/*!
+	Load Textures and Data
+*/
+/******************************************************************************/
 void transition::load()
 {
     transition_space = AEGfxTextureLoad("Assets/Transition/transition_space.png");
 }
 
+/******************************************************************************/
+/*!
+	Initialize Variables
+*/
+/******************************************************************************/
 void transition::init()
 {
     transition_createMesh.MainMenuSquareMesh(transition_mesh);
@@ -43,6 +53,11 @@ void transition::init()
     isTransitionActive = false;
 }
 
+/******************************************************************************/
+/*!
+	Update Transition
+*/
+/******************************************************************************/
 void transition::update(float deltaTime)
 {
     if (pause_duration > 0.0f)
@@ -70,6 +85,12 @@ void transition::update(float deltaTime)
         isTransitionActive = false;
     }
 }
+
+/******************************************************************************/
+/*!
+	Draw Transition
+*/
+/******************************************************************************/
 void transition::draw()
 {
     if (transition_alpha > 0.0f)
@@ -84,16 +105,30 @@ void transition::draw()
     }
 }
 
+/******************************************************************************/
+/*!
+	Clean Object Instances
+/******************************************************************************/
 void transition::free()
 {
     AEGfxMeshFree(transition_mesh);
 }
 
+/******************************************************************************/
+/*!
+	Free Textures
+*/
+/******************************************************************************/
 void transition::unload()
 {
     AEGfxTextureUnload(transition_space);
 }
 
+/******************************************************************************/
+/*!
+	Reset Transition Timer
+*/
+/******************************************************************************/
 void transition::resetTimer()
 {
     transition_timer = 0.0f;

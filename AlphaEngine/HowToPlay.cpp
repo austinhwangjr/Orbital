@@ -50,20 +50,18 @@ void how_to_play::load()
     howToPlayBGTexture = AEGfxTextureLoad("Assets/MainMenu/HowToPlay/htp_HowToPlayBackground.png");
     returnToMMTexture = AEGfxTextureLoad("Assets/MainMenu/HowToPlay/htp_ExitButton.png");
     ImportDataFromFileHowToPlay("Assets/MainMenu/HowToPlay/HowToPlayData.txt");
-    
 }
 
 void how_to_play::init()
 {
     createMeshHTP.BackgroundMesh(pMeshHTPBackground);
     createMeshHTP.MainMenuSquareMesh(pMeshHTP1);
+
     // Define the positions and dimensions for each button
     buttons1.x = returnToMMX;
     buttons1.y = returnToMMY;
     buttons1.width = buttonWidth1;
     buttons1.height = buttonHeight1;
-
-  
 }
 
 void how_to_play::update()
@@ -72,10 +70,8 @@ void how_to_play::update()
     if (AEInputCheckTriggered(AEVK_LBUTTON))
     {
         // Check which button has been clicked
-
         if (Input::isButtonClicked(buttons1.x, buttons1.y, buttons1.width, buttons1.height))
         {
-
             next_state = GS_MAINMENU;
         }
     }
@@ -99,6 +95,7 @@ void how_to_play::draw()
 {
     // Clear the screen
     AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
+
     // Draw the start button
     renderhtp.RenderSprite(howToPlayBGTexture, howToPlayBGX, howToPlayBGY, 800, 450, pMeshHTPBackground);
     renderhtp.RenderSprite(returnToMMTexture, returnToMMX, returnToMMY, buttonWidth1, buttonHeight1, pMeshHTP1);
@@ -109,7 +106,6 @@ void how_to_play::free()
 {
     AEGfxMeshFree(pMeshHTPBackground);
     AEGfxMeshFree(pMeshHTP1);
-
 }
 
 void how_to_play::unload()
@@ -117,12 +113,10 @@ void how_to_play::unload()
     // unload the texture for the start button
     AEGfxTextureUnload(howToPlayBGTexture);
     AEGfxTextureUnload(returnToMMTexture);
-
 }
 
 int ImportDataFromFileHowToPlay(const char* FileName)
 {
-
     std::ifstream ifs{ FileName, std::ios_base::in };
     if (!ifs.is_open()) {											// Check if file exist/open	
         std::cout << FileName << "does not exist." << '\n';

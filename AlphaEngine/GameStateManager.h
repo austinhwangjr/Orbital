@@ -27,14 +27,8 @@ extern FP fpLoad, fpInit, fpUpdate, fpDraw, fpFree, fpUnload;
 
 struct gsm
 {
-	//void load();
 	static void init(int start_state);
 	static void update();
-	//void restart();
-	//void quit();
-	//void draw();
-	//void free();
-	//void unload();
 };
 
 void GSM_RestartLevel();

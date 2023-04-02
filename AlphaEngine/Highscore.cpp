@@ -175,7 +175,7 @@ void putHighScore(int score)
     FILE* file_highscores;
     errno_t file_check_highscores_read = fopen_s(&file_highscores, "Assets/MainMenu/HighScore/Highscore.txt", "r");
 
-    if (file_check_highscores_read != 0) {									// Check if file exist/open	
+    if (file_check_highscores_read != 0) {			            // Check if file exist/open	
         std::cout << "Highscore.txt does not exist." << '\n';
         return;
     }

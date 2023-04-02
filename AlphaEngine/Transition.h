@@ -24,5 +24,4 @@ namespace transition
 	extern bool isTransitionActive;
 	extern float transition_alpha;
 	extern float pause_duration;
-
 }
