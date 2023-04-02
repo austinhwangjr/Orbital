@@ -4,7 +4,7 @@ position.x 			-200
 position.y 			-200
 velocity.x 			0
 velocity.y 			0
-size 				50
+size 				60
 mov_speed 			150
 rot_speed 			0.85
 shortest_distance 		0
