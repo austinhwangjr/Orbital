@@ -63,8 +63,8 @@ void transition::draw()
     if (transition_alpha > 0.0f)
     {
         float r = 1.0f, g = 1.0f, b = 1.0f;
-        float centerX = 0.f;
-        float centerY = 0.f;
+        float centerX = 0.f + g_camPos.x;
+        float centerY = 0.f  + g_camPos.y;
         float width = g_windowWidth;
         float height = g_windowHeight;
 

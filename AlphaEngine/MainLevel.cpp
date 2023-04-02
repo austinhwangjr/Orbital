@@ -118,9 +118,9 @@ void main_level::init()
 
 void main_level::update()
 {
-	timer5 += g_dt;
-
-
+	timer5 += (timer5 < 1.5f) ? g_dt : 0;
+	if (timer5 >= 1.5f)
+	{
 		if (AEInputCheckTriggered(AEVK_ESCAPE))
 		{
 			AudioManager::PlayOnce("Assets/BGM/bgm_ml_pausescreen.wav", 0.5f);
@@ -179,6 +179,7 @@ void main_level::update()
 		//	next_state = GS_MAINMENU;
 		//}
 		AudioManager::Update();
+	}
 }
 
 // ----------------------------------------------------------------------------
@@ -188,6 +189,8 @@ void main_level::update()
 // ----------------------------------------------------------------------------
 void main_level::draw()
 {
+	if (timer5 >= 1.5)
+	{
 		// Set the background to black.
 		AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
@@ -237,6 +240,7 @@ void main_level::draw()
 		{
 			pause.draw(camera.position);
 		}
+	}
 }
 
 // ----------------------------------------------------------------------------
@@ -262,7 +266,6 @@ void main_level::free()
 	AEGfxMeshFree(pMeshML);
 	AEGfxMeshFree(pMeshMLBackground);
 	AudioManager::UnloadAllSounds();
-
 }
 
 // ----------------------------------------------------------------------------
