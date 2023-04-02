@@ -176,7 +176,7 @@ void Shuttles::unload()
 /******************************************************************************/
 void Shuttles::spawn(int const& current_planet_id, f32 const& rand_angle)
 {
-	Shuttles new_shuttle;
+	Shuttles new_shuttle{};
 
 	new_shuttle.lifespan = SHUTTLE_MAX_LIFESPAN;
 	new_shuttle.acceleration = SHUTTLE_MAX_ACCEL;
