@@ -383,7 +383,7 @@ void PlayerUI::update(Player& current_player, WaveManager const& wave_manager)
 	for (int i = CREATE_DRONE; i < TUTORIAL_OPEN; ++i) {
 		ShopOption& button = button_vector[i];
 		button.position.x = g_camPos.x + shop_bg_width / 4.f + shop_offset;
-		button.position.y = button_vector[SHOP_OPEN].position.y - (i - 4) * button.height * 4.f;
+		button.position.y = button_vector[SHOP_OPEN].position.y - (i - 4) * button.height * 3.f;
 
 		// Level indicators for upgrades
 		for (int j = 0; j < button.indicator_vector.size(); ++j) {
@@ -711,7 +711,7 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, WaveManager const& wave_manager)
 	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), -0.61f + shop_offset / (g_windowWidth / 2.f), 0.7f, 3.f, 1.f, 1.f, 1.f);
 
 	shop_text = "PLACEABLES";
-	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), 0.28f + shop_offset / (g_windowWidth / 2.f), 0.7f, 3.f, 0.f, 0.f, 0.f);
+	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), 0.28f + shop_offset / (g_windowWidth / 2.f), 0.7f, 3.f, 1.f, 1.f, 1.f);
 
 
 	//Description for Placeables (DRONE)
