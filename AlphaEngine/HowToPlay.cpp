@@ -56,7 +56,7 @@ void how_to_play::load()
 void how_to_play::init()
 {
     createMeshHTP.BackgroundMesh(pMeshHTPBackground);
-    createMeshHTP.SquareMesh(pMeshHTP1);
+    createMeshHTP.MainMenuSquareMesh(pMeshHTP1);
     // Define the positions and dimensions for each button
     buttons1.x = returnToMMX;
     buttons1.y = returnToMMY;

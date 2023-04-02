@@ -102,7 +102,7 @@ void Options::load()
 
 void Options::init()
 {
-    optionsMenu.SquareMesh(optionsMesh);
+    optionsMenu.MainMenuSquareMesh(optionsMesh);
 
     if (!AudioManager::isBGMPlaying)
     {

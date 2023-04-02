@@ -44,7 +44,7 @@ void SplashScreen::load()
 
 void SplashScreen::init()
 {
-    ss_createMesh.SquareMesh(ss_Mesh);
+    ss_createMesh.MainMenuSquareMesh(ss_Mesh);
 
     timer = 0.0f;
 

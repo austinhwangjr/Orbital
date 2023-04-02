@@ -58,7 +58,7 @@ void HighScore::load()
 
 void HighScore::init()
 {
-    renderScoreboard.SquareMesh(pMeshHighScore);
+    renderScoreboard.MainMenuSquareMesh(pMeshHighScore);
     renderScoreboard.BackgroundMesh(pMeshHighScore1);
     AE_ASSERT_MESG(pMeshHighScore, "Error: Failed to create pMeshHighScore in HighScore.cpp!");
 

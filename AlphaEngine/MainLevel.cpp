@@ -81,7 +81,7 @@ void main_level::init()
 
 	createMesh1.BackgroundMesh(pMeshMLBackground);
 
-	createMesh1.IGSquareMesh(pMeshML);
+	createMesh1.GameLevelSquareMesh(pMeshML);
 
 	pause.init();
 
