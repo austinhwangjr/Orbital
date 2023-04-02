@@ -12,6 +12,8 @@ All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reser
 #pragma once
 #include "Planet.h"
 
+#define CREDIT_CHEAT	1000;
+
 enum PLAYER_STATES
 {
 	PLAYER_ORBIT = 0,

@@ -116,6 +116,8 @@ void Player::init()
 /******************************************************************************/
 void Player::update()
 {
+	if (AEInputCheckTriggered(AEVK_1)) credits += CREDIT_CHEAT;
+
 	// Player is in orbit state
 	if (state == PLAYER_ORBIT)
 		orbit_state();
