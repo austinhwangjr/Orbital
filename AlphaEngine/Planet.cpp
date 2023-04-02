@@ -216,7 +216,7 @@ void Planets::update()
 		AEMtx33Concat(&planet_vector[i].orbit_transform, &planet_vector[i].orbit_translate, &planet_vector[i].orbit_transform);
 
 
-		AEMtx33Rot(&runway_vector[i].rotate, planet_vector[i].shuttle_direction - PI);
+		AEMtx33Rot(&runway_vector[i].rotate, planet_vector[i].shuttle_direction);
 		AEMtx33Trans(&runway_vector[i].translate, runway_vector[i].position.x, runway_vector[i].position.y);
 		AEMtx33Concat(&runway_vector[i].transform, &runway_vector[i].rotate, &runway_vector[i].scale);
 		AEMtx33Concat(&runway_vector[i].transform, &runway_vector[i].translate, &runway_vector[i].transform);
@@ -414,7 +414,7 @@ void Planets::check_spawn(Planets& new_planet)
 				(1 == wave_manager.planet_count) ? i-- : i = 0;
 			}
 		}
-		planet_check = true;
+		planet_check = true; 
 
 		// Re-randomize new planet position if too close to space station
 		for (size_t i{}; i < space_station_vector.size(); i++)
