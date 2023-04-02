@@ -363,13 +363,13 @@ void PlayerUI::update(Player& current_player, WaveManager const& wave_manager)
 
 	// Upgrade preview on left half of shop
 	upgrade_preview_position.x = g_camPos.x - shop_bg_width / 4.f + shop_offset;
-	upgrade_preview_position.y = g_camPos.y + shop_bg_width / 8.f;
+	upgrade_preview_position.y = g_camPos.y + shop_bg_height / 8.f;
 
 	// Movement speed, capacity and beam strength buttons on the left half
 	for (int i = MOVEMENT_SPEED; i < CREATE_DRONE; ++i) {
 		ShopOption& button = button_vector[i];
 		button.position.x = g_camPos.x - shop_bg_width / 4.f - button.width * 1.3f * (2 - i) + shop_offset;
-		button.position.y = g_camPos.y - shop_bg_height / 8.f;
+		button.position.y = g_camPos.y - shop_bg_height / 5.f;
 
 		// Level indicators for upgrades
 		for (int j = 0; j < button.indicator_vector.size(); ++j) {
@@ -735,31 +735,6 @@ void PlayerUI::draw(AEGfxVertexList* pMesh, WaveManager const& wave_manager)
 	shop_text = "Place in Space";
 	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()), 0.3f + shop_offset / (g_windowWidth / 2.f), -0.65f, 1.f, 1.f, 1.f, 1.f);
 
-	//// Print upgrade name onto buttons
-	//for (int i = MOVEMENT_SPEED; i < TUTORIAL_OPEN; ++i) {
-	//	ShopOption& button = button_vector[i];
-
-	//	/*if (button.button_type == MOVEMENT_SPEED)
-	//		shop_text = "Movement Speed";*/
-
-	//	else if (button.button_type == CAPACITY)
-	//		shop_text = "Increase Capacity";
-
-	//	else if (button.button_type == TRACTOR_BEAM_STRENGTH)
-	//		shop_text = "Beam Strength";
-
-	//	else if (button.button_type == CREATE_DRONE)
-	//		shop_text = "Drone";
-
-	//	else if (button.button_type == SPACE_STATION)
-	//		shop_text = "Space Station";
-
-	//	AEGfxPrint(font_id_shop, const_cast<s8*>(shop_text.c_str()),
-	//		(button.position.x - button.width / 2.f - g_camPos.x) / (g_windowWidth / 2.f),
-	//		(button.position.y - button.height / 2.f - g_camPos.y) / (g_windowHeight / 2.f),
-	//		1.f, 1.f, 1.f, 1.f);
-	//}
-
 	// Placed into function to avoid cluttering draw
 	tutorial(wave_manager);
 }
@@ -820,7 +795,7 @@ void PlayerUI::shop_open(Player& current_player)
 	// ===================
 
 	// Player clicks outside shop
-	if (click_outside_shop() || AEInputCheckTriggered(AEVK_ESCAPE))
+	if (click_outside_shop() || AEInputCheckTriggered(AEVK_ESCAPE) || AEInputCheckTriggered(AEVK_B))
 		close_shop();
 
 	else {
@@ -872,7 +847,7 @@ void PlayerUI::shop_open(Player& current_player)
 void PlayerUI::shop_closed()
 {
 	// Open the shop and start transition
-	if (button_clicked(button_vector[SHOP_OPEN])) {
+	if (button_clicked(button_vector[SHOP_OPEN]) || AEInputCheckTriggered(AEVK_B)) {
 		shop_triggered = true;
 		shop_transition = true;
 	}
