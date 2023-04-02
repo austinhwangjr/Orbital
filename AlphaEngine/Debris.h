@@ -1,8 +1,8 @@
 /******************************************************************************/
 /*!
 \file		Debris.h
-\author 	Leong Wen Bin, Aceson
-\co_author	Hwang Jing Rui, Austin
+\author 	Leong Wen Bin, Aceson (80%)
+\co_author	Hwang Jing Rui, Austin (20%)
 \par    	email: leong.w\@digipen.edu
 				   jingruiaustin.hwang\@digipen.edu
 \date   	March 28, 2023
@@ -10,9 +10,7 @@
 
 			Austin - Added debris state and behaviour in each state
 
-Copyright (C) 2023 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents without the
-prior written consent of DigiPen Institute of Technology is prohibited.
+All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reserved.
  */
 /******************************************************************************/
 #pragma once

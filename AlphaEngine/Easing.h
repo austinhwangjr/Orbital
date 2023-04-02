@@ -1,17 +1,20 @@
 /******************************************************************************/
 /*!
 \file		Easing.h
-\author 	Hwang Jing Rui, Austin
-\co-author	Ong You Yang
+\author 	Hwang Jing Rui, Austin (25%)
+\co-author	Ong You Yang (75%)
 \par    	email: jingruiaustin.hwang\@digipen.edu
 				   youyang.o\@digipen.edu
 \date   	March 28, 2023
 \brief		This file contains the definition of functions for Easing 
 			transitions.
 
-Copyright (C) 2023 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents without the
-prior written consent of DigiPen Institute of Technology is prohibited.
+			Austin - Added EaseOutExpo() and EaseInOutBack()
+
+			You Yang - Added Lerp(), easeLinear(), EaseInQuad(), easeOutQuad(),
+			easeInOutQuad() and EaseAudioVolume().
+
+All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reserved.
  */
 /******************************************************************************/
 #pragma once

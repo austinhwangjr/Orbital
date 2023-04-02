@@ -1,19 +1,21 @@
 /******************************************************************************/
 /*!
 \file		PlayerUI.cpp
-\author 	Hwang Jing Rui, Austin
-\co-author	Tan Rui An Ryan
+\author 	Hwang Jing Rui, Austin (60%)
+\co-author	Tan Rui An Ryan (35%)
+			Leong Wen Bin, Aceson (5%)
 \par    	email: jingruiaustin.hwang\@digipen.edu
-					ruianryan.t\@digipen.edu
+				   ruianryan.t\@digipen.edu
+				   leong.w\@digipen.edu
 \date   	March 28, 2023
 \brief		This file contains the definition of functions for the player
 			UI (user interface).
 
 			Ryan - All tutorial elements
+			
+			Aceson - File I/O 
 
-Copyright (C) 2023 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents without the
-prior written consent of DigiPen Institute of Technology is prohibited.
+All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reserved.
  */
  /******************************************************************************/
 #include <iostream>
@@ -25,7 +27,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Global.h"
 #include "Easing.h"
 #include "Data.h"
-#include "Input.h"
+#include "GameStateList.h"
 
 // General UI textures
 extern AEGfxTexture* player_tex;

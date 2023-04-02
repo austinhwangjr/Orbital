@@ -1,12 +1,12 @@
 /******************************************************************************/
 /*!
 \file		Planet.h
-\author 	Tan Rui An Ryan
-\co-author	Ong You Yang
-			Leong Wen Bin, Aceson
+\author 	Tan Rui An Ryan (90%)
+\co-author	Ong You Yang (5%)
+			Leong Wen Bin, Aceson (5%)
 \par    	email: ruianryan.t\@digipen.edu
-					youyang.o\@digipen.edu
-					leong.w\@digipen.edu
+				   youyang.o\@digipen.edu
+			       leong.w\@digipen.edu
 \date   	March 28, 2023
 \brief		This file contains the declaration of functions for the planet.
 
@@ -14,9 +14,7 @@
 
 			Aceson - Debris variables
 
-Copyright (C) 2023 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents without the
-prior written consent of DigiPen Institute of Technology is prohibited.
+All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reserved.
  */
 /******************************************************************************/
 #pragma once
