@@ -446,7 +446,11 @@ void WaveManager::draw(AEGfxVertexList* pMesh)
 	print_string = str_count.c_str();
 	AEGfxPrint(font_id, const_cast<s8*>(print_string), -0.2f - (static_cast<f32>(str_headers.length()) * 1.2f * static_cast<f32>(FONT_ID_SIZE) / g_windowWidth), 0.86f, 1.f, 1.f, 1.f, 1.f);
 
-	str_headers = "SHUTTLE";
+	str_headers = "TOTAL";
+	print_string = str_headers.c_str();
+	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.f - (static_cast<f32>(str_headers.length()) / 1.70f * static_cast<f32>(FONT_ID_SIZE) / g_windowWidth), 0.94f, 1.f, 1.f, 1.f, 1.f);
+
+	str_headers = "SHUTTLES";
 	print_string = str_headers.c_str();
 	AEGfxPrint(font_id, const_cast<s8*>(print_string), 0.f - (static_cast<f32>(str_headers.length()) / 2 * static_cast<f32>(FONT_ID_SIZE) / g_windowWidth), 0.9f, 1.f, 1.f, 1.f, 1.f);
 
