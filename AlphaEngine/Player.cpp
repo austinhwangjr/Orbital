@@ -362,6 +362,7 @@ void Player::flying_state()
 	// ================
 	// Check for input
 	// ================
+	bool isMoving = false;
 
 	if (AEInputCheckCurr(AEVK_W))
 	{
@@ -376,6 +377,8 @@ void Player::flying_state()
 
 		// Limit player's speed
 		AEVec2Scale(&velocity, &velocity, 0.99f);
+		isMoving = true;
+
 	}
 
 	if (AEInputCheckCurr(AEVK_S))
@@ -391,6 +394,8 @@ void Player::flying_state()
 
 		// Limit player's speed
 		AEVec2Scale(&velocity, &velocity, 0.99f);
+		isMoving = true;
+
 	}
 
 	if (AEInputCheckCurr(AEVK_A)) {
@@ -401,6 +406,22 @@ void Player::flying_state()
 	if (AEInputCheckCurr(AEVK_D)) {
 		direction -= rot_speed * g_dt;
 		direction = AEWrap(direction, -PI, PI);
+	}
+
+	if (isMoving)
+	{
+		if (movementSoundID == 0)
+		{
+			movementSoundID = AudioManager::PlayOnce("Assets/BGM/bgm_ml_PlayerMovement.mp3", 0.05f);
+		}
+	}
+	else
+	{
+		if (movementSoundID != 0)
+		{
+			AudioManager::Stop(movementSoundID);
+			movementSoundID = 0;
+		}
 	}
 
 	if (AEVec2Distance(&current_planet.position, &position) <= (current_planet.size / 2 + current_planet.orbit_range)) {

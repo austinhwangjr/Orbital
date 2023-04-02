@@ -25,6 +25,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Global.h"
 #include "Easing.h"
 #include "Data.h"
+#include "Input.h"
 
 // General UI textures
 extern AEGfxTexture* player_tex;
@@ -75,7 +76,8 @@ extern std::vector<SpaceStation> space_station_vector;
 std::map < std::string, f32> 	GameUIDataMap;
 std::vector<Data> 				GameUIData;
 
-
+bool shop_sound_played = false;
+bool shop_close_sound_played = false;
 /******************************************************************************/
 /*!
 	Load Textures and Data
@@ -243,8 +245,15 @@ void PlayerUI::update(Player& current_player, WaveManager const& wave_manager)
 	// Shop transitions
 	if (shop_triggered) {
 		clicked_on_shop = true;
+
 		// Start transition
 		if (shop_transition) {
+			// Play the sound effect when the transition starts
+			if (!shop_sound_played) {
+				AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.05f);
+				shop_sound_played = true;
+			}
+
 			// Adjust shop offset
 			shop_trans_timer += g_dt;
 			shop_offset = EaseOutExpo(static_cast<f32>(g_windowWidth), 0, shop_trans_timer / shop_trans_duration);
@@ -255,7 +264,6 @@ void PlayerUI::update(Player& current_player, WaveManager const& wave_manager)
 				shop_transition = false;
 			}
 		}
-
 		// Transition done
 		else
 			shop_open(current_player);
@@ -263,6 +271,12 @@ void PlayerUI::update(Player& current_player, WaveManager const& wave_manager)
 	else {
 		// Start transition
 		if (shop_transition) {
+			// Play the sound effect when the transition starts
+			if (!shop_close_sound_played) {
+				AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.05f);
+				shop_close_sound_played = true;
+			}
+
 			// Adjust shop offset
 			shop_trans_timer += g_dt;
 			shop_offset = EaseInOutBack(0, static_cast<f32>(g_windowWidth), shop_trans_timer / shop_trans_duration);
@@ -273,11 +287,15 @@ void PlayerUI::update(Player& current_player, WaveManager const& wave_manager)
 				shop_transition = false;
 			}
 		}
-
 		// Transition done
-		else
+		else {
 			shop_closed();
+			// Reset the shop sound played states when the transition is done
+			shop_sound_played = false;
+			shop_close_sound_played = false;
+		}
 	}
+
 
 	// Tutorial transitions
 	if (tutorial_triggered) {
@@ -810,24 +828,28 @@ void PlayerUI::shop_open(Player& current_player)
 
 			if (button_clicked(button)) {
 				if (button.button_type == MOVEMENT_SPEED) {
+					AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.05f);
 					if (current_player.credits >= mov_speed_cost && current_player.mov_speed_level < MAX_MOV_SPEED_LVL) {
 						current_player.credits -= mov_speed_cost;
 						current_player.mov_speed_level++;
 					}
 				}
 				else if (button.button_type == CAPACITY) {
+					AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.05f);
 					if (current_player.credits >= capacity_cost && current_player.capacity_level < MAX_CAPACITY_LVL) {
 						current_player.credits -= capacity_cost;
 						current_player.capacity_level++;
 					}
 				}
 				else if (button.button_type == TRACTOR_BEAM_STRENGTH) {
+					AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.05f);
 					if (current_player.credits >= beam_strength_cost && current_player.beam_level < MAX_BEAM_STRENGTH_LVL) {
 						current_player.credits -= beam_strength_cost;
 						current_player.beam_level++;
 					}
 				}
 				else if (button.button_type == CREATE_DRONE || button.button_type == SPACE_STATION) {
+					AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.05f);
 					if (button.button_type == CREATE_DRONE && !placing_drone && current_player.credits >= drone_cost)
 						placing_drone = true;
 
