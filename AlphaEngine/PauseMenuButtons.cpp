@@ -26,13 +26,13 @@ static float pauseMButtonHeight = 50.f;
 
 // Define the positions for each button
 static float resumeX = 0.0f;
-static float resumeY = -25.f;
+static float resumeY = 50.f;
 
 static float restartX = 0.0f;
-static float restartY = -100.f;
+static float restartY = -50.f;
 
 static float exitMainMenuX = 0.0f;
-static float exitMainMenuY = -175.f;
+static float exitMainMenuY = -150.f;
 
 // checking input area stuff
 struct Button1

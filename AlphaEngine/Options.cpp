@@ -20,6 +20,10 @@ All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reser
 #include <iostream>
 #include "Transition.h"
 
+AEGfxTexture* o_OptionsBackground = nullptr;
+AEGfxTexture* o_ToggleMute = nullptr;
+AEGfxTexture* o_VolumeSliderTEXT = nullptr;
+
 AEGfxTexture* o_RoundedRectangle_ACTIVE = nullptr;
 AEGfxTexture* o_RoundedRectangle_NOT_ACTIVE = nullptr;
 
@@ -29,7 +33,7 @@ AEGfxTexture* o_MuteSliderThumb_NOT_ACTIVE = nullptr;
 AEGfxTexture* o_VolumeSlider = nullptr;
 AEGfxTexture* o_VolumeSliderThumb = nullptr;
 
-AEGfxTexture* returnToMMTexture11 = nullptr;
+AEGfxTexture* o_returnToMMTexture = nullptr;
 
 AEGfxVertexList* optionsMesh;
 
@@ -38,11 +42,11 @@ Rendering optionsMenu;
 static f32 timer3 = 0.f;
 
 static float returnToMMX11 = 0.0f;
-static float returnToMMY11 = -400.0f;
+static float returnToMMY11 = -380.0f;
 
 // Set the dimensions of each button
-static float buttonWidth11 = 200.f;
-static float buttonHeight11 = 50.f;
+static float buttonWidth11 = 100.f;
+static float buttonHeight11 = 100.f;
 
 // Define the positions and dimensions for each button
 Options::Button11 buttons11[] =
@@ -58,6 +62,19 @@ namespace Options
     bool draggingSlider = false;
 
     float targetVolume = 0.5f;
+
+    float oCenterX = g_windowWidth / 2;
+    float oCenterY = g_windowHeight / 2;
+
+    float toggleMuteX = -250.f;
+    float toggleMuteY = 100.f;
+    float toggleMuteWidth = 250.f;
+    float toggleMuteHeight = 80.f;
+
+    float VolumeSliderX = -250.f;
+    float VolumeSliderY = -100.f;
+    float VolumeSliderWidth = 250.f;
+    float VolumeSliderHeight = 80.f;
 
     // mute button
     float muteButtonX = 0.0f;
@@ -86,6 +103,10 @@ namespace Options
 
 void Options::load()
 {
+    o_OptionsBackground             = AEGfxTextureLoad("Assets/MainMenu/Options/o_OptionsBackground.png");
+    o_ToggleMute                    = AEGfxTextureLoad("Assets/MainMenu/Options/o_ToggleMute.png");
+    o_VolumeSliderTEXT              = AEGfxTextureLoad("Assets/MainMenu/Options/o_VolumeSlider.png");
+
     o_RoundedRectangle_ACTIVE       = AEGfxTextureLoad("Assets/MainMenu/Options/o_RoundedRectangle_ACTIVE.png");
     o_RoundedRectangle_NOT_ACTIVE   = AEGfxTextureLoad("Assets/MainMenu/Options/o_RoundedRectangle_NOT_ACTIVE.png");
 
@@ -95,7 +116,7 @@ void Options::load()
     o_VolumeSlider                  = AEGfxTextureLoad("Assets/MainMenu/Options/o_Slider.png");
     o_VolumeSliderThumb             = AEGfxTextureLoad("Assets/MainMenu/Options/o_SliderThumb.png");
 
-    returnToMMTexture11             = AEGfxTextureLoad("Assets/MainMenu/Options/o_ExitButtonCredits.png");
+    o_returnToMMTexture             = AEGfxTextureLoad("Assets/MainMenu/Options/o_HomeIcon.png");
     AudioManager::LoadSound("Assets/BGM/one-last-time-141289.mp3", true);
 }
 
@@ -197,7 +218,12 @@ void Options::draw()
 {
     if (timer3 >= 1.f)
     {
-        Rendering::RenderSprite(returnToMMTexture11, returnToMMX11, returnToMMY11, buttonWidth11, buttonHeight11, optionsMesh);
+        Rendering::RenderSprite(o_OptionsBackground, oCenterX, oCenterY, g_windowWidth, g_windowHeight, optionsMesh);
+        Rendering::RenderSprite(o_ToggleMute, toggleMuteX, toggleMuteY, toggleMuteWidth, toggleMuteHeight, optionsMesh);
+        Rendering::RenderSprite(o_VolumeSliderTEXT, VolumeSliderX, VolumeSliderY, VolumeSliderWidth, VolumeSliderHeight, optionsMesh);
+
+
+        Rendering::RenderSprite(o_returnToMMTexture, returnToMMX11, returnToMMY11, buttonWidth11, buttonHeight11, optionsMesh);
 
         Rendering::RenderSprite(o_VolumeSlider, sliderX, sliderY, sliderWidth, sliderHeight, optionsMesh);
         Rendering::RenderSprite(o_VolumeSliderThumb, sliderThumbX, sliderThumbY, sliderThumbWidth, sliderThumbHeight, optionsMesh);
@@ -234,5 +260,5 @@ void Options::unload()
     AEGfxTextureUnload(o_VolumeSlider);
     AEGfxTextureUnload(o_VolumeSliderThumb);
 
-    AEGfxTextureUnload(returnToMMTexture11);
+    AEGfxTextureUnload(o_returnToMMTexture);
 }
