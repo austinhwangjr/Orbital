@@ -24,28 +24,45 @@ Left-Click	- Open up shop tab on right
 In Free-Flying Mode:
 W 			- Forward Acceleration
 S 			- Deceleration
-A 			- Rotate Left
-D 			- Rotate Right
+A 			- Rotate Anti-Clockwise
+D 			- Rotate Clockwise
 
 In Orbiting Mode:
 W 			- Leave Orbit Mode & Enter Free-Flying Mode
 S 			- N/A
-A 			- Rotate Left along Planet
-D 			- Rotate Right along Planent
-Spacebar 	- Activate Tractor Beam to collect Debris
+A 			- Rotate Anti-Clockwise along Planet
+D 			- Rotate Clockwiise along Planet
+Spacebar 		- Activate Tractor Beam to collect Debris
 
+
+Cheat Codes:
+1			- Add 1000 Credits
+2			- Add 1 Planet
+3			- Skip Wave
 
 -----------------------------GAMEPLAY-----------------------------
+
+Game is endless with a lose condition of 5 Shuttles collided with debris
 
 Fly between Planets to collect debris with Tractor Beam
 Shuttles spawn from Planets and are able to crash with debris
 Prevent Shuttles from crashing into debris by collecting debris
-Debris act as credits and can be spent at the shop for upgrades:
-	- Movement Speed Increase
-	- Ship Debris Capacity
-Planets start with 3 Shuttles and slowly increase every wave
-Wave Information can be found in the Terminal
-	- Wave Number
-	- Wave Progress (Planets with no Shuttles Left)
-	- Planet Added
-	- Planet Count
+
+Credits are earned by:
+	- Processing Debris in Space Stations
+	- Shuttle escaping the planet
+
+Credits and can be spent at the shop for upgrades:
+	Player Upgrade:
+		- Movement Speed Increase
+		- Ship Debris Capacity
+		- Tractor Beam Strength
+	Placeables:
+		- Drone 		(Place on surface of planets)
+		- Space Station	(Place in space away from planets)
+
+Planets are added every 4th wave, maximum of 10 planets
+Planets size determined shuttle count, the bigger the planet the more shuttles
+
+Shuttles per planet are increased every wave
+Shuttles increase to a maximum of 10 per planet
