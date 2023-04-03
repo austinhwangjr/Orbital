@@ -18,8 +18,14 @@ All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reser
 #include <iostream>
 #include "Highscore.h"
 
-AEGfxTexture* TexPlayAgain = nullptr;
-AEGfxTexture* TexMainMenu = nullptr;
+AEGfxTexture* LM_Background = nullptr;
+AEGfxTexture* LM_MainMenuButton = nullptr;
+AEGfxTexture* LM_PlayAgain = nullptr;
+AEGfxTexture* LM_PlayAgainHover = nullptr;
+AEGfxTexture* LM_MainMenuButtonHover = nullptr;
+
+bool lm_PlayAgainHovered = false;
+bool lm_MainMenuHovered = false;
 
 AEGfxVertexList* pMeshLoseMenu;
 
@@ -54,21 +60,25 @@ lose_menu::lm_Button lm_buttons[] =
 
 void lose_menu::load()
 {
-	TexPlayAgain = AEGfxTextureLoad("Assets/MainLevel/LoseMenu/lm_PlayAgainButton.png");
-	TexMainMenu = AEGfxTextureLoad("Assets/MainLevel/LoseMenu/lm_MainMenuButton.png");
+    LM_Background = AEGfxTextureLoad("Assets/MainLevel/LoseMenu/lm_Background.png");
+	LM_PlayAgain = AEGfxTextureLoad("Assets/MainLevel/LoseMenu/lm_PlayAgainButton.png");
+	LM_MainMenuButton = AEGfxTextureLoad("Assets/MainLevel/LoseMenu/lm_MainMenuButton.png");
+    LM_PlayAgainHover = AEGfxTextureLoad("Assets/MainLevel/LoseMenu/lm_PlayAgainButtonHover.png");
+    LM_MainMenuButtonHover = AEGfxTextureLoad("Assets/MainLevel/LoseMenu/lm_MainMenuButtonHover.png");
 
-    //AudioManager::LoadSound("Assets/BGM/bgm_ml_losemenu.wav", false);
+    AudioManager::LoadSound("Assets/BGM/bgm_ml_losemenu.wav", false);
 }
 
 void lose_menu::init()
 {
 	renderLoseMenu.MainMenuSquareMesh(pMeshLoseMenu);
     AudioManager::PlayOnce("Assets/BGM/bgm_ml_losemenu.wav", 0.5f);
-
 }
 
 void lose_menu::update()
 {
+    lm_PlayAgainHovered = Input::isMouseHover(lm_PlayAgainX, lm_PlayAgainY, lm_ButtonWidth, lm_ButtonHeight);
+    lm_MainMenuHovered = Input::isMouseHover(lm_MainMenuX, lm_MainMenuY, lm_ButtonWidth, lm_ButtonHeight);
 
     // Check if the left mouse button has been clicked
     if (AEInputCheckTriggered(AEVK_LBUTTON))
@@ -101,21 +111,34 @@ void lose_menu::update()
         }
     }
     AudioManager::Update();
-
 }
 
 void lose_menu::draw()
 {
-    /*f32 camPos_x{}, camPos_y{};
-    AEGfxGetCamPosition(&camPos_x, &camPos_y);*/
-
     float translatedPlayAgainX = lm_PlayAgainX + g_camPos.x;
     float translatedPlayAgainY = lm_PlayAgainY + g_camPos.y;
     float translatedMainMenuX = lm_MainMenuX + g_camPos.x;
     float translatedMainMenuY = lm_MainMenuY + g_camPos.y;
 
-    renderLoseMenu.RenderSprite(TexPlayAgain, translatedPlayAgainX, translatedPlayAgainY, lm_ButtonWidth, lm_ButtonHeight, pMeshLoseMenu);
-    renderLoseMenu.RenderSprite(TexMainMenu, translatedMainMenuX, translatedMainMenuY, lm_ButtonWidth, lm_ButtonHeight, pMeshLoseMenu);
+    renderLoseMenu.RenderSprite(LM_Background, g_camPos.x, g_camPos.y, g_windowWidth, g_windowHeight, pMeshLoseMenu);
+
+    // Render play again button with or without hover
+    if (lm_PlayAgainHovered)
+    {
+        AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.2f);
+        renderLoseMenu.RenderSprite(LM_PlayAgainHover, translatedPlayAgainX, translatedPlayAgainY, lm_ButtonWidth, lm_ButtonHeight, pMeshLoseMenu);
+    }
+    else
+        renderLoseMenu.RenderSprite(LM_PlayAgain, translatedPlayAgainX, translatedPlayAgainY, lm_ButtonWidth, lm_ButtonHeight, pMeshLoseMenu);
+
+    // Render main menu button with or without hover
+    if (lm_MainMenuHovered)
+    {
+        AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.2f);
+        renderLoseMenu.RenderSprite(LM_MainMenuButtonHover, translatedMainMenuX, translatedMainMenuY, lm_ButtonWidth, lm_ButtonHeight, pMeshLoseMenu);
+    }
+    else
+        renderLoseMenu.RenderSprite(LM_MainMenuButton, translatedMainMenuX, translatedMainMenuY, lm_ButtonWidth, lm_ButtonHeight, pMeshLoseMenu);
 }
 
 
@@ -127,7 +150,10 @@ void lose_menu::free()
 
 void lose_menu::unload()
 {
-    AEGfxTextureUnload(TexPlayAgain);
-    AEGfxTextureUnload(TexMainMenu);
+    AEGfxTextureUnload(LM_Background);
+    AEGfxTextureUnload(LM_PlayAgain);
+    AEGfxTextureUnload(LM_PlayAgainHover);
+    AEGfxTextureUnload(LM_MainMenuButton);
+    AEGfxTextureUnload(LM_MainMenuButtonHover);
 
 }
