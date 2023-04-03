@@ -7,7 +7,7 @@ Game Name: Orbital
 
 Team Name: TehPengNoIce
 
-Class/Section: CSD1451 Section B
+Class/Section: CSD1451s23 (Section B)
 
 Team Members:
 1. TAN Rui An Ryan (ruianryan.t@digipen.edu)
@@ -15,6 +15,7 @@ Team Members:
 3. LEONG Wen Bin Aceson (leong.w@digipen.edu)
 4. HWANG Jing Rui, Austin (jingruiaustin.hwang@digipen.edu)
 
+All content (C) 2023 DigiPen Institute of Technology Singapore. All Rights Reserved.
 
 -----------------------------CONTROLS-----------------------------
 
@@ -66,3 +67,9 @@ Planets size determined shuttle count, the bigger the planet the more shuttles
 
 Shuttles per planet are increased every wave
 Shuttles increase to a maximum of 10 per planet
+
+
+-----------------------------CREDITS-----------------------------
+Audio - fmod
+Assets - Canva & Kenney
+Font - Hoefler & Frere-Jones (gooova)
