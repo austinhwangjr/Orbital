@@ -100,7 +100,7 @@ void main_level::init()
 
 	wave_manager.init();
 
-	//AudioManager::PlayBGM("Assets/BGM/one-last-time-141289.mp3", 0.5f);
+	AudioManager::PlayBGM("Assets/BGM/one-last-time-141289.mp3", 0.1f);
 }
 
 // ----------------------------------------------------------------------------

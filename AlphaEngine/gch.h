@@ -14,7 +14,6 @@ All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reser
 
 #include "GameStateList.h"
 #include "MenuButtons.h"
-#include "HowToPlay.h"
 #include "PauseMenu.h"
 #include "PauseMenuButtons.h"
 #include "Camera.h"

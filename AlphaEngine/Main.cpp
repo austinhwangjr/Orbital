@@ -40,8 +40,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	AudioManager::Init();
 
 	// Initialize the game state manager with the starting state
-	//gsm::init(GS_SPLASHSCREEN);					// Initialize the Game State Manager (GSM) with Level1 as the initial game state
-	gsm::init(GS_MAINLEVEL);
+	gsm::init(GS_SPLASHSCREEN);					// Initialize the Game State Manager (GSM) with Level1 as the initial game state
 	transition::load();
 	transition::init();
 

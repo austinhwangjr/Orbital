@@ -380,7 +380,7 @@ void Planets::spawn(int shuttle_randomize_amount)
 
 	// DEBRIS STUFF-------------------------------------------------------------------------------------------------------------------------------
 	new_planet.max_debris = rand() % (DEBRIS_MAX - DEBRIS_MIN) + DEBRIS_MIN;												// Randomize debris count on planet spawn
-	new_planet.max_debris /= ((shuttle_randomize_amount / 2) < ((SHUTTLE_SPAWN_MAX - SHUTTLE_SPAWN_MIN) / 2)) ? 2 : 1;		// Limiting debris count on smaller planets
+	new_planet.max_debris *= ((shuttle_randomize_amount / 2) < ((SHUTTLE_SPAWN_MAX - SHUTTLE_SPAWN_MIN) / 2)) ? 2 : 1;		// Limiting debris count on smaller planets
 	new_planet.debris_vector = debris.create_debris(new_planet.position.x, new_planet.position.y, new_planet.size, new_planet.max_debris);
 
 	// DRONE STUFF-------------------------------------------------------------------------------------------------------------------------------
@@ -435,7 +435,7 @@ void Planets::check_spawn(Planets& new_planet)
 // Add runway for shuttle
 void Planets::add_runway(AEVec2 const& planet_pos)
 {
-	Planets::Runway new_runway;
+	Planets::Runway new_runway{};
 
 	new_runway.size = 35.f;
 	new_runway.direction = 0.f;

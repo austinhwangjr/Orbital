@@ -22,7 +22,6 @@ All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reser
 #include "MainMenu.h"
 #include "MainLevel.h"
 #include "PauseMenu.h"
-#include "HowToPlay.h"
 #include "Credits.h"
 #include "Highscore.h"
 #include "LoseMenu.h"
@@ -71,14 +70,6 @@ void gsm::update()
 		fpDraw		= main_menu::draw;
 		fpFree		= main_menu::free;
 		fpUnload	= main_menu::unload;
-		break;
-	case GS_HOWTOPLAY:
-		fpLoad		= how_to_play::load;
-		fpInit		= how_to_play::init;
-		fpUpdate	= how_to_play::update;
-		fpDraw		= how_to_play::draw;
-		fpFree		= how_to_play::free;
-		fpUnload	= how_to_play::unload;
 		break;
 	case GS_CREDITS:
 		fpLoad		= credits::load;
