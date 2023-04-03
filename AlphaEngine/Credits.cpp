@@ -68,7 +68,7 @@ static float sliderHeight = 800.0f;
 
 static float sliderThumbX = sliderX;
 static float sliderThumbY = 0.0f;
-static float sliderThumbWidth = 20.0f;
+static float sliderThumbWidth = 10.0f;
 
 static float contentHeight = 900.0f;
 static float visibleHeight = 450.0f;

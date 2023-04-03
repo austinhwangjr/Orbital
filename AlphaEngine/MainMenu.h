@@ -30,6 +30,14 @@ namespace main_menu
     void draw();
     void free();
     void unload();
+
+    struct mm_Button
+    {
+        float x;
+        float y;
+        float width;
+        float height;
+    };
 }
 
 extern f32 MMg_dt;

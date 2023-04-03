@@ -78,6 +78,8 @@ AEGfxTexture* MM_Keys_Spacebar_ACTIVE;
 AEGfxTexture* MM_LMB;
 AEGfxTexture* MM_LMB_ACTIVE;
 
+AEGfxTexture* MM_HOMEBUTTON;
+
 //bools for keys
 bool wKeyPressed = false;
 bool aKeyPressed = false;
@@ -156,6 +158,19 @@ std::vector<Data> 			MMDebrisData;
 std::map<std::string, f32> 	MMProjDataMap;
 std::vector<Data> 			MMProjData;
 
+static float HTPreturnToMMX = 0.0f;
+static float HTPreturnToMMY = -380.0f;
+
+// Set the dimensions of each button
+static float MMbuttonWidth = 100.f;
+static float MMbuttonHeight = 100.f;
+
+// Define the positions and dimensions for each button
+main_menu::mm_Button mm_Buttons[] =
+{
+    {HTPreturnToMMX, HTPreturnToMMY, MMbuttonWidth, MMbuttonHeight},   // Return to main menu button
+};
+
 void main_menu::load()
 {
     TexMMBackground = AEGfxTextureLoad("Assets/MainMenu/mm_Background.png");
@@ -208,6 +223,8 @@ void main_menu::load()
 
     MM_LMB = AEGfxTextureLoad("Assets/MainMenu/mm_Mouse.png");
     MM_LMB_ACTIVE = AEGfxTextureLoad("Assets/MainMenu/mm_MouseActivated.png");
+
+    MM_HOMEBUTTON = AEGfxTextureLoad("Assets/MainMenu/mm_HomeIcon.png");
 
     AudioManager::LoadSound("Assets/BGM/one-last-time-141289.mp3", true);
 
@@ -1012,13 +1029,15 @@ void main_menu::update()
     }
     else if (currentState == HOW_TO_PLAY)
     {
-        // Check if the window close button has been clicked
-        if (AEInputCheckTriggered(AEVK_Q) || 0 == AESysDoesWindowExist())
+        if (AEInputCheckTriggered(AEVK_LBUTTON))
         {
-            // If the window close button has been clicked, set the game state to quit
-            currentState = MENU;
-            transition::isTransitionActive = true;
-            transition::resetTimer();
+            // Check which button has been clicked
+            if (Input::isButtonClicked(mm_Buttons[0].x, mm_Buttons[0].y, mm_Buttons[0].width, mm_Buttons[0].height))
+            {
+                currentState = MENU;
+
+
+            }
         }
     }
 
@@ -1154,57 +1173,59 @@ void main_menu::draw()
         {
             if (wKeyPressed)
             {
-                RenderMMBackground.RenderSprite(MM_Keys_W_ACTIVE, w_ButtonX, w_ButtonY, w_ButtonWidth, w_ButtonHeight, pMeshMM);
+                createMesh.RenderSprite(MM_Keys_W_ACTIVE, w_ButtonX, w_ButtonY, w_ButtonWidth, w_ButtonHeight, pMeshMM);
             }
             else
             {
-                RenderMMBackground.RenderSprite(MM_Keys_W, w_ButtonX, w_ButtonY, w_ButtonWidth, w_ButtonHeight, pMeshMM);
+                createMesh.RenderSprite(MM_Keys_W, w_ButtonX, w_ButtonY, w_ButtonWidth, w_ButtonHeight, pMeshMM);
             }
 
             if (aKeyPressed)
             {
-                RenderMMBackground.RenderSprite(MM_Keys_A_ACTIVE, a_ButtonX, a_ButtonY, a_ButtonWidth, a_ButtonHeight, pMeshMM);
+                createMesh.RenderSprite(MM_Keys_A_ACTIVE, a_ButtonX, a_ButtonY, a_ButtonWidth, a_ButtonHeight, pMeshMM);
             }
             else
             {
-                RenderMMBackground.RenderSprite(MM_Keys_A, a_ButtonX, a_ButtonY, a_ButtonWidth, a_ButtonHeight, pMeshMM);
+                createMesh.RenderSprite(MM_Keys_A, a_ButtonX, a_ButtonY, a_ButtonWidth, a_ButtonHeight, pMeshMM);
             }
 
             if (sKeyPressed)
             {
-                RenderMMBackground.RenderSprite(MM_Keys_S_ACTIVE, s_ButtonX, s_ButtonY, s_ButtonWidth, s_ButtonHeight, pMeshMM);
+                createMesh.RenderSprite(MM_Keys_S_ACTIVE, s_ButtonX, s_ButtonY, s_ButtonWidth, s_ButtonHeight, pMeshMM);
             }
             else
             {
-                RenderMMBackground.RenderSprite(MM_Keys_S, s_ButtonX, s_ButtonY, s_ButtonWidth, s_ButtonHeight, pMeshMM);
+                createMesh.RenderSprite(MM_Keys_S, s_ButtonX, s_ButtonY, s_ButtonWidth, s_ButtonHeight, pMeshMM);
             }
 
             if (dKeyPressed)
             {
-                RenderMMBackground.RenderSprite(MM_Keys_D_ACTIVE, d_ButtonX, d_ButtonY, d_ButtonWidth, d_ButtonHeight, pMeshMM);
+                createMesh.RenderSprite(MM_Keys_D_ACTIVE, d_ButtonX, d_ButtonY, d_ButtonWidth, d_ButtonHeight, pMeshMM);
             }
             else
             {
-                RenderMMBackground.RenderSprite(MM_Keys_D, d_ButtonX, d_ButtonY, d_ButtonWidth, d_ButtonHeight, pMeshMM);
+                createMesh.RenderSprite(MM_Keys_D, d_ButtonX, d_ButtonY, d_ButtonWidth, d_ButtonHeight, pMeshMM);
             }
 
             if (spacebarActivated)
             {
-                RenderMMBackground.RenderSprite(MM_Keys_Spacebar_ACTIVE, spacebar_ButtonX, spacebar_ButtonY, spacebar_ButtonWidth, spacebar_ButtonHeight, pMeshMM);
+                createMesh.RenderSprite(MM_Keys_Spacebar_ACTIVE, spacebar_ButtonX, spacebar_ButtonY, spacebar_ButtonWidth, spacebar_ButtonHeight, pMeshMM);
             }
             else
             {
-                RenderMMBackground.RenderSprite(MM_Keys_Spacebar, spacebar_ButtonX, spacebar_ButtonY, spacebar_ButtonWidth, spacebar_ButtonHeight, pMeshMM);
+                createMesh.RenderSprite(MM_Keys_Spacebar, spacebar_ButtonX, spacebar_ButtonY, spacebar_ButtonWidth, spacebar_ButtonHeight, pMeshMM);
             }
 
             if (LMB_KeyPressed)
             {
-                RenderMMBackground.RenderSprite(MM_LMB_ACTIVE, mouseTexX, mouseTexY, mouseWidth, mouseHeight, pMeshMM);
+                createMesh.RenderSprite(MM_LMB_ACTIVE, mouseTexX, mouseTexY, mouseWidth, mouseHeight, pMeshMM);
             }
             else
             {
-                RenderMMBackground.RenderSprite(MM_LMB, mouseTexX, mouseTexY, mouseWidth, mouseHeight, pMeshMM);
+                createMesh.RenderSprite(MM_LMB, mouseTexX, mouseTexY, mouseWidth, mouseHeight, pMeshMM);
             }
+
+            createMesh.RenderSprite(MM_HOMEBUTTON, HTPreturnToMMX, HTPreturnToMMY, MMbuttonWidth, MMbuttonHeight, pMeshMM);
         }
     }
 }
@@ -1260,7 +1281,7 @@ void main_menu::unload()
     AEGfxTextureUnload(MM_Keys_Spacebar_ACTIVE);
     AEGfxTextureUnload(MM_LMB_ACTIVE);
     AEGfxTextureUnload(MM_LMB);
-
+    AEGfxTextureUnload(MM_HOMEBUTTON);
 }
 
 // ===========================

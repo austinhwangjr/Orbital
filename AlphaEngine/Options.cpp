@@ -96,8 +96,8 @@ namespace Options
     // volume slider thumb
     float sliderThumbX = sliderX;
     float sliderThumbY = sliderY;
-    float sliderThumbWidth = 20.0f;
-    float sliderThumbHeight = 20.0f;
+    float sliderThumbWidth = 30.0f;
+    float sliderThumbHeight = 30.0f;
 }
 
 
