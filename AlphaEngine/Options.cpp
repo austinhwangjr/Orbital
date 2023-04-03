@@ -117,6 +117,7 @@ void Options::load()
     o_VolumeSliderThumb             = AEGfxTextureLoad("Assets/MainMenu/Options/o_SliderThumb.png");
 
     o_returnToMMTexture             = AEGfxTextureLoad("Assets/MainMenu/Options/o_HomeIcon.png");
+
     AudioManager::LoadSound("Assets/BGM/one-last-time-141289.mp3", true);
 }
 
@@ -261,4 +262,8 @@ void Options::unload()
     AEGfxTextureUnload(o_VolumeSliderThumb);
 
     AEGfxTextureUnload(o_returnToMMTexture);
+
+    AEGfxTextureUnload(o_ToggleMute);
+    AEGfxTextureUnload(o_VolumeSliderTEXT);
+    AEGfxTextureUnload(o_OptionsBackground);        
 }
