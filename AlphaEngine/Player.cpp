@@ -403,7 +403,7 @@ void Player::flying_state()
 	// ================
 	// Check for input
 	// ================
-	bool isMoving = false;w
+	bool isMoving = false;
 
 	if (AEInputCheckCurr(AEVK_W))
 	{
