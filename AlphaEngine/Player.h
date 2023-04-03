@@ -11,6 +11,7 @@ All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reser
 /******************************************************************************/
 #pragma once
 #include "Planet.h"
+#include "ParticleManager.h"
 
 #define CREDIT_CHEAT	1000;
 
@@ -43,7 +44,9 @@ struct Player
 	bool			beam_active;
 	f32				timer;
 	f32 			max_timer;
-	intptr_t movementSoundID;
+	intptr_t		movementSoundID;
+	ParticleManager particleManager;
+
 
 
 	// ===============

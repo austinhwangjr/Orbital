@@ -150,6 +150,46 @@ void Player::update()
 	AEMtx33Concat(&beam_transform, &rot, &scale);
 	AEMtx33Concat(&beam_transform, &trans, &beam_transform);
 
+	// Emit particles based on player movement
+	const float particleEmissionRate = 0.1f;						// Emit particles every 0.1 seconds
+	static float particleEmissionCooldown = 0.0f;
+	if (AEInputCheckCurr(AEVK_W))
+	{
+		particleEmissionCooldown -= g_dt;
+		if (particleEmissionCooldown <= 0.0f)
+		{
+			// Emit particles
+			AEVec2 particlePosition;
+			particlePosition.x = position.x + cos(direction) * (size * 0.5f);
+			particlePosition.y = position.y + sin(direction + PI / 2) * (size * 0.4f);
+
+			// Calculate the offset for emitting the particle from the bottom of the flying saucer
+			AEVec2 offset;
+			offset.x = -cos(direction) * (size * 0.5f);
+			offset.y = -sin(direction) * (size * 0.5f);
+
+			// Add the offset to the particle position
+			particlePosition.x += offset.x;
+			particlePosition.y += offset.y;
+
+			AEVec2 particleVelocity;
+			particleVelocity.x = -cos(direction) * 150.f;
+			particleVelocity.y = -sin(direction) * 150.f;
+
+			float particleLifespan = 1.0f;
+			particleManager.Emit(particlePosition, particleVelocity, particleLifespan);
+
+			// Reset the cooldown timer
+			particleEmissionCooldown = particleEmissionRate;
+		}
+	}
+	else
+	{
+		// Reset the cooldown timer when the input is released
+		particleEmissionCooldown = 0.0f;
+	}
+
+	particleManager.Update(g_dt);
 }
 
 /******************************************************************************/
@@ -169,7 +209,7 @@ void Player::draw(AEGfxVertexList* pMesh)
 		AEGfxSetTransform(beam_transform.m);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 	}
-
+	particleManager.Draw(pMesh);
 }
 
 /******************************************************************************/
@@ -363,7 +403,7 @@ void Player::flying_state()
 	// ================
 	// Check for input
 	// ================
-	bool isMoving = false;
+	bool isMoving = false;w
 
 	if (AEInputCheckCurr(AEVK_W))
 	{
@@ -426,6 +466,13 @@ void Player::flying_state()
 	}
 
 	if (AEVec2Distance(&current_planet.position, &position) <= (current_planet.size / 2 + current_planet.orbit_range)) {
+
+		if (movementSoundID != 0)
+		{
+			AudioManager::Stop(movementSoundID);
+			movementSoundID = 0;
+		}
+
 		direction = static_cast<f32>(atan2(position.y - current_planet.position.y, position.x - current_planet.position.x));
 		state = PLAYER_ORBIT;
 	}

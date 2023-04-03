@@ -42,5 +42,8 @@ public:
 
     static void GameLevelSquareMesh(AEGfxVertexList*& pMesh);
 
+    static void ParticleMesh(AEGfxVertexList*& pMesh);
+
+
     static void BackgroundMesh(AEGfxVertexList*& pMesh);
 };

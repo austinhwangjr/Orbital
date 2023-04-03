@@ -121,6 +121,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.09\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClCompile Include="MainLevel.cpp" />
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Options.cpp" />
+    <ClCompile Include="ParticleManager.cpp" />
     <ClCompile Include="PauseMenu.cpp" />
     <ClCompile Include="PauseMenuButtons.cpp" />
     <ClCompile Include="Planet.cpp" />
@@ -155,6 +156,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.09\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClInclude Include="MainLevel.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Options.h" />
+    <ClInclude Include="ParticleManager.h" />
     <ClInclude Include="PauseMenu.h" />
     <ClInclude Include="PauseMenuButtons.h" />
     <ClInclude Include="pch.h" />

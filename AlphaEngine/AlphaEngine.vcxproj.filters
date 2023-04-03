@@ -91,6 +91,9 @@
     <ClCompile Include="Transition.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="ParticleManager.cpp">
+      <Filter>Source\InGame\GameObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -191,6 +194,9 @@
     </ClInclude>
     <ClInclude Include="gch.h">
       <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleManager.h">
+      <Filter>Header\InGame\GameObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

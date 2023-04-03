@@ -27,5 +27,5 @@ All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reser
 #include "Drone.h"
 #include "SpaceStation.h"
 #include "WaveManager.h"
-
+#include "ParticleManager.h"
 #endif //GCH_H

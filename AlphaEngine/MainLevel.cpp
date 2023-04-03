@@ -17,6 +17,7 @@ AEGfxTexture* TexMLBackground = nullptr;
 
 AEGfxVertexList* pMeshMLBackground;				// Background Mesh
 AEGfxVertexList* pMeshML;						// Object square mesh
+AEGfxVertexList* pMeshPARTICLE;						// Object square mesh
 
 // class declaration 
 Rendering		RenderMLBackground;
@@ -77,6 +78,7 @@ void main_level::init()
 	createMesh1.BackgroundMesh(pMeshMLBackground);
 
 	createMesh1.GameLevelSquareMesh(pMeshML);
+	createMesh1.ParticleMesh(pMeshPARTICLE);
 
 	pause.init();
 

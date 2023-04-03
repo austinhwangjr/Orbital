@@ -22,4 +22,6 @@ namespace main_level
 	void free();
 	void unload();
 }
+
+void EmitPlayerParticles(Player& player, ParticleManager& particleManager);
 extern bool is_paused;
