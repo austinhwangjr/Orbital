@@ -3,10 +3,12 @@
 \file		PlayerUI.cpp
 \author 	Hwang Jing Rui, Austin (60%)
 \co-author	Tan Rui An Ryan (35%)
-			Leong Wen Bin, Aceson (5%)
+			Leong Wen Bin, Aceson (2.5%)
+			Ong You Yang (2.5%)
 \par    	email: jingruiaustin.hwang\@digipen.edu
 				   ruianryan.t\@digipen.edu
 				   leong.w\@digipen.edu
+				   youyang.o\@digipen.edu
 \date   	March 28, 2023
 \brief		This file contains the definition of functions for the player
 			UI (user interface).
@@ -14,6 +16,8 @@
 			Ryan - All tutorial elements
 			
 			Aceson - File I/O 
+
+			You Yang - Audio-related aspects
 
 All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reserved.
  */
@@ -80,6 +84,7 @@ std::vector<Data> 				GameUIData;
 
 bool shop_sound_played = false;
 bool shop_close_sound_played = false;
+
 /******************************************************************************/
 /*!
 	Load Textures and Data

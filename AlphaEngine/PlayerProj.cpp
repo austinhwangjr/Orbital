@@ -2,14 +2,18 @@
 /*!
 \file		PlayerProj.cpp
 \author 	Hwang Jing Rui, Austin (90%)
-\co-author	Leong Wen Bin, Aceson (10%)
+\co-author	Leong Wen Bin, Aceson (5%)
+			Ong You Yang (5%)
 \par    	email: jingruiaustin.hwang\@digipen.edu
 				   leong.w\@digipen.edu
+				   youyang.o\@digipen.edu
 \date   	March 28, 2023
 \brief		This file contains the definition of functions for the player 
 			projectile.
 
 			Aceson - File I/O and Deletion Of Projectile upon Off-Screen
+
+			You Yang - Audio-related aspects
 
 All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reserved.
  */
@@ -49,6 +53,7 @@ void PlayerProj::load()
 	// Import data from file
 	ImportDataFromFile("Assets/GameObjectData/PlayerProjectileData.txt", ProjData, ProjDataMap);
 
+	// Load sound
 	AudioManager::LoadSound("Assets/BGM/bgm_ml_PlayerShootingDebris.mp3", false);
 }
 

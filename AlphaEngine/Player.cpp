@@ -1,10 +1,18 @@
 /******************************************************************************/
 /*!
 \file		Player.cpp
-\author 	Hwang Jing Rui, Austin (100%)
+\author 	Hwang Jing Rui, Austin (95%)
+\co_author	Leong Wen Bin, Aceson (2.5%)
+			Ong You Yang (2.5%)
 \par    	email: jingruiaustin.hwang\@digipen.edu
+				   leong.w\@digipen.edu
+				   youyang.o\@digipen.edu
 \date   	March 28, 2023
 \brief		This file contains the definition of functions for the player.
+
+			Aceson - File I/O for Player Data
+
+			You Yang - Added audio and particle-related aspects
 
 All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reserved.
  */
@@ -44,9 +52,9 @@ void Player::load()
 	// Import data from file
 	ImportDataFromFile("Assets/GameObjectData/PlayerData.txt", PlayerData, PlayerDataMap);
 
+	// Load audio
 	AudioManager::LoadSound("Assets/BGM/bgm_ml_tractorbeam.mp3", false);
 	AudioManager::LoadSound("Assets/BGM/bgm_ml_PlayerMovement.mp3", true);
-
 }
 
 /******************************************************************************/
@@ -151,7 +159,7 @@ void Player::update()
 	AEMtx33Concat(&beam_transform, &trans, &beam_transform);
 
 	// Emit particles based on player movement
-	const float particleEmissionRate = 0.1f;						// Emit particles every 0.1 seconds
+	const float particleEmissionRate = 0.1f;		// Emit particles every 0.1 seconds
 	static float particleEmissionCooldown = 0.0f;
 	if (AEInputCheckCurr(AEVK_W))
 	{
@@ -159,20 +167,11 @@ void Player::update()
 		if (particleEmissionCooldown <= 0.0f)
 		{
 			// Emit particles
-			AEVec2 particlePosition;
-			particlePosition.x = position.x;/*+ cos(direction) * (size * 0.5f);*/
-			particlePosition.y = position.y; /*+sin(direction + PI / 2) * (size * 0.4f);*/
+			AEVec2 particlePosition{};
+			particlePosition.x = position.x;
+			particlePosition.y = position.y;
 
-			// Calculate the offset for emitting the particle from the bottom of the flying saucer
-			//AEVec2 offset;
-			//offset.x = -cos(direction) * (size * 0.5f);
-			//offset.y = -sin(direction) * (size * 0.5f);
-
-			//// Add the offset to the particle position
-			//particlePosition.x += offset.x;
-			//particlePosition.y += offset.y;
-
-			AEVec2 particleVelocity;
+			AEVec2 particleVelocity{};
 			particleVelocity.x = -cos(direction) * 150.f;
 			particleVelocity.y = -sin(direction) * 150.f;
 
@@ -226,7 +225,6 @@ void Player::free()
 		PlayerDataMap.clear();
 	}
 	AudioManager::UnloadAllSounds();
-
 }
 
 /******************************************************************************/
@@ -421,7 +419,6 @@ void Player::flying_state()
 		// Limit player's speed
 		AEVec2Scale(&velocity, &velocity, 0.99f);
 		isMoving = true;
-
 	}
 
 	if (AEInputCheckCurr(AEVK_S))
@@ -438,7 +435,6 @@ void Player::flying_state()
 		// Limit player's speed
 		AEVec2Scale(&velocity, &velocity, 0.99f);
 		isMoving = true;
-
 	}
 
 	if (AEInputCheckCurr(AEVK_A)) {
@@ -489,11 +485,6 @@ void Player::flying_state()
 	// ===================================
 	// Update active game object instances
 	// ===================================
-
-	/* if (0 <= Halo_Timer)
-	{
-		Halo_Timer -= g_dt;
-	}*/
 
 	// Determine planet closest to player
 	current_planet = planet_vector[0];

@@ -9,7 +9,7 @@
 \brief		This file contains the definition of functions for the Game State
 			Manager.
 
-			Austin 		- Basic Implementation
+			Austin 		- Setting up of GSM (Basic Implementation)
 			You Yang	- Implemented the RestartLevel and changeGameState()
 						  functions
 

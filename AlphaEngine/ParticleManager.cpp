@@ -1,3 +1,15 @@
+/******************************************************************************/
+/*!
+\file		ParticleManager.cpp
+\author 	Ong You Yang (100%)
+\par    	email: youyang.o\@digipen.edu
+\date   	March 28, 2023
+\brief		This file contains the definition of functions for the particle
+            manager.
+
+All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reserved.
+ */
+ /******************************************************************************/
 #include "ParticleManager.h"
 #include <random>
 #include <ctime>
@@ -9,20 +21,34 @@ float randomFloat(float min, float max)
     return distribution(generator);
 }
 
+/******************************************************************************/
+/*!
+    Load Textures
+*/
+/******************************************************************************/
 ParticleManager::ParticleManager()
 {
     particleTexture = AEGfxTextureLoad("Assets/MainLevel/ml_Explosion.png");
 }
 
+/******************************************************************************/
+/*!
+    Destructor
+*/
+/******************************************************************************/
 ParticleManager::~ParticleManager()
 {
-    //AEGfxTextureUnload(particleTexture);
     Clear();
 }
 
+/******************************************************************************/
+/*!
+    Generate particle
+*/
+/******************************************************************************/
 void ParticleManager::Emit(const AEVec2& position, const AEVec2& velocity, float lifespan)
 {
-    Particle particle;
+    Particle particle{};
     particle.position = position;
     particle.velocity = velocity;
     particle.lifespan = lifespan;
@@ -36,9 +62,13 @@ void ParticleManager::Emit(const AEVec2& position, const AEVec2& velocity, float
     particles.push_back(particle);
 }
 
+/******************************************************************************/
+/*!
+    Update particle
+*/
+/******************************************************************************/
 void ParticleManager::Update(float dt)
 {
-
     for (size_t i = 0; i < particles.size();)
     {
         particles[i].position.x += particles[i].velocity.x * dt;
@@ -56,6 +86,11 @@ void ParticleManager::Update(float dt)
     }
 }
 
+/******************************************************************************/
+/*!
+    Draw Particle
+*/
+/******************************************************************************/
 void ParticleManager::Draw(AEGfxVertexList* pMesh)
 {
     AEGfxSetRenderMode(AE_GFX_RM_COLOR);
@@ -82,6 +117,11 @@ void ParticleManager::Draw(AEGfxVertexList* pMesh)
     AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 }
 
+/******************************************************************************/
+/*!
+    Clear particles
+*/
+/******************************************************************************/
 void ParticleManager::Clear()
 {
     particles.clear();
