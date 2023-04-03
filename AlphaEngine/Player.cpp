@@ -160,17 +160,17 @@ void Player::update()
 		{
 			// Emit particles
 			AEVec2 particlePosition;
-			particlePosition.x = position.x + cos(direction) * (size * 0.5f);
-			particlePosition.y = position.y + sin(direction + PI / 2) * (size * 0.4f);
+			particlePosition.x = position.x;/*+ cos(direction) * (size * 0.5f);*/
+			particlePosition.y = position.y; /*+sin(direction + PI / 2) * (size * 0.4f);*/
 
 			// Calculate the offset for emitting the particle from the bottom of the flying saucer
-			AEVec2 offset;
-			offset.x = -cos(direction) * (size * 0.5f);
-			offset.y = -sin(direction) * (size * 0.5f);
+			//AEVec2 offset;
+			//offset.x = -cos(direction) * (size * 0.5f);
+			//offset.y = -sin(direction) * (size * 0.5f);
 
-			// Add the offset to the particle position
-			particlePosition.x += offset.x;
-			particlePosition.y += offset.y;
+			//// Add the offset to the particle position
+			//particlePosition.x += offset.x;
+			//particlePosition.y += offset.y;
 
 			AEVec2 particleVelocity;
 			particleVelocity.x = -cos(direction) * 150.f;
@@ -199,6 +199,8 @@ void Player::update()
 /******************************************************************************/
 void Player::draw(AEGfxVertexList* pMesh)
 {
+	particleManager.Draw(pMesh);
+
 	AEGfxTextureSet(player_tex, 0, 0);
 	AEGfxSetTransform(player_transform.m);
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
@@ -209,7 +211,7 @@ void Player::draw(AEGfxVertexList* pMesh)
 		AEGfxSetTransform(beam_transform.m);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 	}
-	particleManager.Draw(pMesh);
+
 }
 
 /******************************************************************************/

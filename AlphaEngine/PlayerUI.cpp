@@ -252,7 +252,7 @@ void PlayerUI::update(Player& current_player, WaveManager const& wave_manager)
 		if (shop_transition) {
 			// Play the sound effect when the transition starts
 			if (!shop_sound_played) {
-				AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.05f);
+				AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.3f);
 				shop_sound_played = true;
 			}
 
@@ -275,7 +275,7 @@ void PlayerUI::update(Player& current_player, WaveManager const& wave_manager)
 		if (shop_transition) {
 			// Play the sound effect when the transition starts
 			if (!shop_close_sound_played) {
-				AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.05f);
+				AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.3f);
 				shop_close_sound_played = true;
 			}
 
@@ -808,28 +808,28 @@ void PlayerUI::shop_open(Player& current_player)
 
 			if (button_clicked(button)) {
 				if (button.button_type == MOVEMENT_SPEED) {
-					AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.05f);
+					AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.3f);
 					if (current_player.credits >= mov_speed_cost && current_player.mov_speed_level < MAX_MOV_SPEED_LVL) {
 						current_player.credits -= mov_speed_cost;
 						current_player.mov_speed_level++;
 					}
 				}
 				else if (button.button_type == CAPACITY) {
-					AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.05f);
+					AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.3f);
 					if (current_player.credits >= capacity_cost && current_player.capacity_level < MAX_CAPACITY_LVL) {
 						current_player.credits -= capacity_cost;
 						current_player.capacity_level++;
 					}
 				}
 				else if (button.button_type == TRACTOR_BEAM_STRENGTH) {
-					AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.05f);
+					AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.3f);
 					if (current_player.credits >= beam_strength_cost && current_player.beam_level < MAX_BEAM_STRENGTH_LVL) {
 						current_player.credits -= beam_strength_cost;
 						current_player.beam_level++;
 					}
 				}
 				else if (button.button_type == CREATE_DRONE || button.button_type == SPACE_STATION) {
-					AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.05f);
+					AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.3f);
 					if (button.button_type == CREATE_DRONE && !placing_drone && current_player.credits >= drone_cost)
 						placing_drone = true;
 

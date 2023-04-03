@@ -16,7 +16,7 @@ ParticleManager::ParticleManager()
 
 ParticleManager::~ParticleManager()
 {
-    AEGfxTextureUnload(particleTexture);
+    //AEGfxTextureUnload(particleTexture);
     Clear();
 }
 

@@ -195,6 +195,13 @@ void Shuttles::spawn(int const& current_planet_id, f32 const& rand_angle)
 	shuttle_vector.push_back(new_shuttle);
 
 	size_t shuttleIndex = shuttle_vector.size() - 1;
-	int soundID = static_cast<int>(AudioManager::PlayOnce("Assets/BGM/bgm_ml_blastoff.mp3", 0.5f));
-	shuttleSoundIDs[shuttleIndex] = soundID;
+	if (planet_vector[current_planet_id].position.x < g_camPos.x + g_windowWidth / 2 && planet_vector[current_planet_id].position.x > g_camPos.x - g_windowWidth / 2)
+	{
+		if (planet_vector[current_planet_id].position.y < g_camPos.y + g_windowHeight / 2 && planet_vector[current_planet_id].position.y > g_camPos.y - g_windowHeight / 2)
+		{
+			int soundID = static_cast<int>(AudioManager::PlayOnce("Assets/BGM/bgm_ml_blastoff.mp3", 0.2f));
+			shuttleSoundIDs[shuttleIndex] = soundID;
+		}
+	}
+
 }
