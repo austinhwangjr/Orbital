@@ -67,6 +67,7 @@ void lose_menu::load()
     LM_MainMenuButtonHover = AEGfxTextureLoad("Assets/MainLevel/LoseMenu/lm_MainMenuButtonHover.png");
 
     AudioManager::LoadSound("Assets/BGM/bgm_ml_losemenu.wav", false);
+
 }
 
 void lose_menu::init()
@@ -88,6 +89,8 @@ void lose_menu::update()
         for (int i = 0; i < 2; i++) {
             if (Input::isButtonClicked(lm_buttons[i].x, lm_buttons[i].y, lm_buttons[i].width, lm_buttons[i].height)) {
                 clickedButton = i;
+                AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.2f);
+
                 break;
             }
         }
@@ -125,7 +128,6 @@ void lose_menu::draw()
     // Render play again button with or without hover
     if (lm_PlayAgainHovered)
     {
-        AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.2f);
         renderLoseMenu.RenderSprite(LM_PlayAgainHover, translatedPlayAgainX, translatedPlayAgainY, lm_ButtonWidth, lm_ButtonHeight, pMeshLoseMenu);
     }
     else
@@ -134,7 +136,6 @@ void lose_menu::draw()
     // Render main menu button with or without hover
     if (lm_MainMenuHovered)
     {
-        AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.2f);
         renderLoseMenu.RenderSprite(LM_MainMenuButtonHover, translatedMainMenuX, translatedMainMenuY, lm_ButtonWidth, lm_ButtonHeight, pMeshLoseMenu);
     }
     else
