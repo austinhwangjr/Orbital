@@ -89,7 +89,7 @@ void lose_menu::update()
         for (int i = 0; i < 2; i++) {
             if (Input::isButtonClicked(lm_buttons[i].x, lm_buttons[i].y, lm_buttons[i].width, lm_buttons[i].height)) {
                 clickedButton = i;
-                AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.2f);
+                //AudioManager::PlayOnce("Assets/BGM/button-124476.mp3", 0.3f);
 
                 break;
             }
