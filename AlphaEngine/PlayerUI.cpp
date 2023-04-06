@@ -17,7 +17,7 @@
 			
 			Aceson - File I/O 
 
-			You Yang - Audio-related aspects
+			You Yang - UI & Audio-related aspects
 
 All content (C) 2023 DigiPen Institute of Technology Singapore. All rights reserved.
  */
@@ -98,8 +98,8 @@ void PlayerUI::load()
 	shop_close_tex			 = AEGfxTextureLoad("Assets/MainLevel/ml_ShopCloseButton.png");
 	space_station_tex		 = AEGfxTextureLoad("Assets/MainLevel/ml_SpaceStation.png");
 	shop_background_tex		 = AEGfxTextureLoad("Assets/MainLevel/ml_ShopBackground.png");
-	tutorial_open_tex		 = AEGfxTextureLoad("Assets/MainLevel/ml_TutorialBackground.png");
-	tutorial_background_tex  = AEGfxTextureLoad("Assets/MainLevel/ml_TutorialBackground.png");
+	tutorial_open_tex		 = AEGfxTextureLoad("Assets/MainLevel/ml_TutOpenButton.png");
+	tutorial_background_tex  = AEGfxTextureLoad("Assets/MainLevel/ml_ShopBackground.png");
 	upgrade_level_hollow_tex = AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelHollow.png");
 	upgrade_level_solid_tex	 = AEGfxTextureLoad("Assets/MainLevel/ml_UpgradeLevelSolid.png");
 	player_hud_tex			 = AEGfxTextureLoad("Assets/MainLevel/ml_HeadsUpDisplay.png");
