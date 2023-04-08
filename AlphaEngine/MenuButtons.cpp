@@ -28,12 +28,12 @@ static float currentXPositions[6];
 static float hoverOffsetX = 30.0f; 
 
 // Set the dimensions of each button
-static float buttonWidth = 300.f;
-static float buttonHeight = 100.f;
+static float buttonWidth = 175.f;
+static float buttonHeight = 75.f;
 
 // Set the dimensions of each button for the hover state
-static float hoverButtonWidth = 310.f;
-static float hoverButtonHeight = 110.f;
+static float hoverButtonWidth = 185.f;
+static float hoverButtonHeight = 85.f;
 
 static float startX = -530.0f;
 static float startY = 40.f;
